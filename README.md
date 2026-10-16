@@ -21,6 +21,9 @@ As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dent
 
 - **Trilhas de aprendizado:** objetivos, pré-requisitos educacionais e tarefas de estudo.
 - **Gamificação:** XP e níveis associados às atividades registradas e aos exercícios.
+- **Medalhas:** 26 medalhas em quatro raridades (bronze, prata, ouro e dragão) por leitura, pesquisa, prática, questões, módulos, trilhas, laboratório, cenários e dias seguidos de estudo. Cada uma dá XP bônus uma única vez (10, 20, 40 e 100 XP) e as bloqueadas mostram quanto falta.
+- **Evolução por trilha:** cada trilha (Fundamentos, Ataques e defesa, Governança e Regulação) mostra XP, módulos e tarefas concluídas, com medalha bronze a partir de 40%, prata a partir de 70% e ouro aos 100%. Os módulos também recebem a medalha pelo mesmo critério.
+- **Pontos de melhoria:** sugestões calculadas pelo progresso: questões que ainda não foram acertadas, módulos quase concluídos, o próximo módulo com pré-requisitos em dia, o laboratório e os cenários pendentes.
 - **Quiz:** perguntas de múltipla escolha com correção e explicações.
 - **Cenários de remediação:** situações fictícias organizadas por porte de empresa, com alternativas de solução e feedback.
 - **Anotações e progresso:** armazenamento local no navegador.
@@ -111,6 +114,8 @@ O progresso fica no `localStorage` do navegador. Não há conta de usuário, ban
 - O progresso da versão hospedada não é transferido automaticamente para a versão local.
 - Alterar entre `localhost` e `127.0.0.1`, ou mudar a porta, utiliza outro armazenamento do navegador.
 - O XP reflete atividades registradas na interface; não comprova domínio técnico nem valida pesquisas externas.
+- Além das tarefas, o navegador guarda a data de cada medalha, o número de erros por questão (usado nos pontos de melhoria e nas medalhas de precisão) e a sequência de dias de estudo. O progresso salvo por versões anteriores continua válido; as medalhas já merecidas são reconhecidas ao abrir o site, exceto as de acerto de primeira, que dependem de erros que antes não eram registrados.
+- O XP bônus das medalhas é calculado a partir do progresso salvo, sem contar duas vezes. O XP máximo passa a ser 1.660: 1.070 em tarefas e 590 em medalhas. Foram acrescentados dois níveis acima de “Defensor de IA”: “Guardião de IA” (1.250 XP) e “Mestre Dragão” (1.500 XP).
 
 ## Uso educacional
 
