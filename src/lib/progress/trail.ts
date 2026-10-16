@@ -1,3 +1,4 @@
+import { isEarlyAccess, moduleUnlockPrice } from './catalog'
 import { challengesOf, isBossWon, isChallengeDone } from './challenges'
 import { BOSS_QUESTIONS, BOSS_XP, CHALLENGE_XP, QUESTIONS_PER_MODULE, READS_PER_MODULE, XP } from './constants'
 import { countDone, isModuleComplete, moduleSteps } from './core'
@@ -23,6 +24,12 @@ export interface TrailStep {
 export interface TrailModule {
   module: number
   unlocked: boolean
+  /** Módulo de acesso antecipado: o conteúdo só abre depois da liberação. */
+  earlyAccess: boolean
+  /** Preço do desbloqueio imediato com moedas (`null` se o módulo não é vendido). */
+  price: number | null
+  /** Já foi desbloqueado com moedas. */
+  purchased: boolean
   /** Módulos pré-requisito cuja fogueira ainda não está acesa. */
   missing: number[]
   complete: boolean
@@ -35,12 +42,18 @@ export function missingPrereqs(s: StudyState, ctx: ProgressContext, module: numb
   return (ctx.prereqs[module] ?? []).filter((p) => !(s.modules[p] && isModuleComplete(s.modules[p])))
 }
 
-/** Um módulo está liberado quando todos os pré-requisitos têm a fogueira acesa. Quem já tinha
- *  começado o módulo antes dessa regra existir continua com acesso. */
+/** Um módulo está liberado quando todos os pré-requisitos têm a fogueira acesa, quando foi
+ *  desbloqueado com moedas, ou quando o aluno já tinha começado o módulo antes dessa regra existir. */
 export function isModuleUnlocked(s: StudyState, ctx: ProgressContext, module: number): boolean {
   const m = s.modules[module]
   if (!m) return false
-  return missingPrereqs(s, ctx, module).length === 0 || moduleSteps(m) > 0
+  return missingPrereqs(s, ctx, module).length === 0 || s.shop.unlocked.includes(module) || moduleSteps(m) > 0
+}
+
+/** O conteúdo (textos, quiz, cartões, desafios) abre? Módulos comuns sempre abrem para leitura;
+ *  os de acesso antecipado só depois de liberados. */
+export function canOpenContent(s: StudyState, ctx: ProgressContext, module: number): boolean {
+  return !isEarlyAccess(module) || isModuleUnlocked(s, ctx, module)
 }
 
 export function trail(s: StudyState, ctx: ProgressContext): TrailModule[] {
@@ -90,6 +103,9 @@ export function trail(s: StudyState, ctx: ProgressContext): TrailModule[] {
     return {
       module: i,
       unlocked,
+      earlyAccess: isEarlyAccess(i),
+      price: moduleUnlockPrice(i),
+      purchased: s.shop.unlocked.includes(i),
       missing: missingPrereqs(s, ctx, i),
       complete,
       steps,

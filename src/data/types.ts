@@ -1,5 +1,5 @@
-export type Category = 'Fundamentos' | 'Ataques e defesa' | 'Governança' | 'Regulação'
-export type Level = 'Básico' | 'Intermediário'
+export type Category = 'Fundamentos' | 'Ataques e defesa' | 'Governança' | 'Regulação' | 'Engenharia reversa'
+export type Level = 'Básico' | 'Intermediário' | 'Avançado'
 export type CompanySize = 'Pequena' | 'Média' | 'Grande'
 
 /** Questão de múltipla escolha: `feedback[i]` explica a alternativa `i`. */
@@ -29,6 +29,10 @@ export interface StudyModule {
   /** Índices dos módulos recomendados antes deste. */
   prereqs: number[]
   questions: Question[]
+  /** Módulo de acesso antecipado: o conteúdo só abre depois do desbloqueio (moedas ou pré-requisitos). */
+  earlyAccess?: boolean
+  /** Assuntos do módulo, mostrados como prévia enquanto ele está bloqueado. */
+  topics?: string[]
 }
 
 export interface RemediationCase {
@@ -57,6 +61,11 @@ export interface MateriaSection {
   html: string
 }
 
+export interface GlossaryEntry {
+  term: string
+  definition: string
+}
+
 export interface Materia {
   slug: string
   moduleIndex: number
@@ -65,6 +74,10 @@ export interface Materia {
   summary: string
   note: string
   sections: MateriaSection[]
+  /** Pontos-chave para fixar depois da leitura. */
+  recap?: string[]
+  /** Termos da matéria, em ordem alfabética. */
+  glossary?: GlossaryEntry[]
   research: { heading: string; html: string }
   bibliography: { heading: string; html: string }
 }

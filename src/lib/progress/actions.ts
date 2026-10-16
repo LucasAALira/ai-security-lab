@@ -1,4 +1,4 @@
-import { isThemeId, DEFAULT_THEME, REVIEW, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
+import { isThemeId, DEFAULT_THEME, moduleUnlockPrice, REVIEW, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
 import { findChallenge, gradeBoss, gradeFix, gradeLines, hintsUsed, isRunDone } from './challenges'
 import {
   BOSS_QUESTIONS,
@@ -37,6 +37,8 @@ export type Action =
   | { type: 'review'; total: number; lost: number }
   | { type: 'buyShield' }
   | { type: 'buyTheme'; theme: string }
+  /** Desbloqueio imediato de um módulo de acesso antecipado, pago com moedas. */
+  | { type: 'unlockModule'; module: number }
   | { type: 'setTheme'; theme: string }
   | { type: 'addReward'; title: string; price: number }
   | { type: 'removeReward'; id: string }
@@ -65,7 +67,7 @@ export type ProgressEvent =
   | { kind: 'streak'; current: number }
   | { kind: 'shield-used'; count: number }
   | { kind: 'coins'; amount: number }
-  | { kind: 'purchase'; item: 'shield' | 'theme'; name: string }
+  | { kind: 'purchase'; item: 'shield' | 'theme' | 'module'; name: string }
   | { kind: 'redeem'; title: string; price: number }
   | { kind: 'hint'; challenge: string }
   /** `identify`: falha identificada; `done`: tentativa concluída. `first`: foi a primeira vez (rende XP). */
@@ -79,7 +81,7 @@ export type ProgressEvent =
   | ChestEvent
 
 /** Por que uma ação foi recusada (quando não foi só repetida). */
-export type RejectReason = 'invalid' | 'coins' | 'limit' | 'owned' | 'locked' | 'missing' | 'prereq' | 'fogueira' | 'order'
+export type RejectReason = 'invalid' | 'coins' | 'limit' | 'owned' | 'locked' | 'missing' | 'prereq' | 'fogueira' | 'order' | 'open'
 
 export interface ApplyResult {
   /** O mesmo objeto recebido quando nada mudou, para a interface não renderizar de novo. */
@@ -167,6 +169,21 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
       s.shop.owned.push(theme.id)
       s.shop.theme = theme.id
       return { changed: true, events: [{ kind: 'purchase', item: 'theme', name: `Tema ${theme.name}` }] }
+    }
+
+    case 'unlockModule': {
+      const price = Number.isInteger(action.module) ? moduleUnlockPrice(action.module) : null
+      if (price === null || !s.modules[action.module]) return reject('invalid')
+      if (s.shop.unlocked.includes(action.module)) return reject('owned')
+      // Já liberado pelos pré-requisitos (ou por progresso anterior): não há o que pagar.
+      if (isModuleUnlocked(s, ctx, action.module)) return reject('open')
+      if (!spend(s, ctx, price)) return reject('coins')
+      s.shop.unlocked = [...s.shop.unlocked, action.module].sort((a, b) => a - b)
+      return {
+        changed: true,
+        events: [{ kind: 'purchase', item: 'module', name: `Módulo ${action.module + 1}` }],
+        log: [['unlock', `m${action.module}`]],
+      }
     }
 
     case 'setTheme':

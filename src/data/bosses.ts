@@ -449,9 +449,68 @@ export const bosses: Boss[] = [
       },
     ],
   },
+  {
+    module: 8,
+    name: 'O Decifrador',
+    epithet: 'leitor de artefatos alheios',
+    intro: 'Ele já abriu mil pacotes e sabe o que cada um esconde. Só respeita quem lê um artefato sem se deixar ler por ele.',
+    questions: [
+      {
+        scenario:
+          'Um fornecedor entregou um aplicativo e sua equipe precisa saber se ele envia dados para fora da empresa. Qual sequência de trabalho é a mais segura e a mais informativa?',
+        options: [
+          'Instalar no celular pessoal de um gerente e observar se algo estranho acontece.',
+          'Em ambiente isolado: calcular o hash, examinar textos e bibliotecas (análise estática) e só então executar com a rede monitorada para ver os destinos (análise dinâmica), registrando as evidências.',
+          'Executar primeiro e só analisar se aparecer algum comportamento suspeito.',
+          'Ler a descrição do aplicativo na loja e confiar nas permissões declaradas.',
+        ],
+        correct: 1,
+        feedback: [
+          'Um aparelho pessoal em uso real mistura dados verdadeiros com a análise e não contém o risco.',
+          'Correto. A análise estática vem primeiro porque não executa nada; a dinâmica acontece isolada e com a rede observada, e cada passo deixa evidência.',
+          'Executar antes de olhar elimina a chance de escolher o ambiente e aceita o risco sem contenção.',
+          'A descrição é uma declaração do fornecedor, não uma verificação do que o aplicativo realmente faz.',
+        ],
+      },
+      {
+        scenario:
+          'Um time baixou de um repositório público um modelo salvo em formato pickle e quer usá-lo em produção amanhã. O que reduz melhor o risco?',
+        options: [
+          'Renomear o arquivo para outra extensão antes de carregá-lo.',
+          'Carregar direto em produção e acompanhar o consumo de memória.',
+          'Conferir se o arquivo é grande o bastante para ser um modelo de verdade.',
+          'Confirmar a origem e o hash, preferir um formato que guarda só pesos (como safetensors), carregar com a opção de só pesos e fazer o primeiro carregamento em ambiente isolado e com poucas permissões.',
+        ],
+        correct: 3,
+        feedback: [
+          'A extensão não muda como o conteúdo é interpretado: o pickle continua podendo executar código na carga.',
+          'O consumo de memória não indica código malicioso, e o dano já teria ocorrido em produção.',
+          'O tamanho do arquivo não diz nada sobre o que ele executa ao ser carregado.',
+          'Correto. Origem e hash confirmam o que foi recebido, um formato só de pesos não carrega código, e o ambiente isolado limita o dano se algo falhar.',
+        ],
+      },
+      {
+        scenario:
+          'Nos registros do seu endpoint de inferência, um mesmo cliente fez milhares de consultas bem espalhadas, variando as entradas de forma sistemática e guardando as respostas. Que leitura e que medida fazem mais sentido?',
+        options: [
+          'Pode ser uma tentativa de reproduzir o comportamento do modelo. Vale exigir autenticação, limitar taxa e volume, monitorar padrões de consulta e expor menos detalhe nas respostas quando não for necessário.',
+          'É uma falha de autenticação do navegador do cliente.',
+          'É sempre tráfego legítimo, porque o cliente tem uma chave válida.',
+          'Basta aumentar a janela de contexto do modelo para que as respostas sejam mais difíceis de copiar.',
+        ],
+        correct: 0,
+        feedback: [
+          'Correto. O padrão sugere extração do comportamento do modelo pela API; autenticação, limites, monitoramento e menos detalhe nas respostas dificultam o processo e geram evidência.',
+          'O cenário descreve o volume e o padrão das consultas, não um problema de autenticação do navegador.',
+          'Uma chave válida prova quem chamou, mas não que o uso é legítimo; o padrão de consultas é o sinal.',
+          'O tamanho do contexto não dificulta a cópia do comportamento observado pelas respostas.',
+        ],
+      },
+    ],
+  },
 ]
 
 export const bossOfModule = (module: number) => bosses.find((b) => b.module === module)
 
 /** Alternativa correta de cada cenário, por módulo: o que o motor de progresso precisa. */
-export const bossAnswers: number[][] = Array.from({ length: 8 }, (_, i) => bossOfModule(i)?.questions.map((q) => q.correct) ?? [])
+export const bossAnswers: number[][] = Array.from({ length: bosses.length }, (_, i) => bossOfModule(i)?.questions.map((q) => q.correct) ?? [])

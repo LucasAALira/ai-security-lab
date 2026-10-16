@@ -41,6 +41,10 @@ export const navGroups: NavGroup[] = [
     ],
   },
   {
+    label: 'NOVIDADES',
+    items: [{ label: 'Em breve', to: '/em-breve' }],
+  },
+  {
     label: 'BIBLIOTECA',
     items: [
       { label: 'Biblioteca de matérias', to: home('fontes') },

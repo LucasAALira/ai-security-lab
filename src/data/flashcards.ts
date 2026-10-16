@@ -59,6 +59,13 @@ const deck: Record<number, [string, string][]> = {
     ['Como tratar os prazos?', 'Há aplicação faseada. Consulte o texto e as atualizações oficiais para o cenário concreto.'],
     ['ISO 42001 e LGPD substituem a análise do AI Act?', 'Não. São instrumentos diferentes: regulação, norma de gestão e lei de proteção de dados.'],
   ],
+  8: [
+    ['Análise estática ou dinâmica: qual a diferença?', 'A estática examina o artefato sem executá-lo (tipo, hash, textos, bibliotecas, código desmontado). A dinâmica o observa em execução, em ambiente isolado. Comece pela estática.'],
+    ['O que é preciso antes de qualquer engenharia reversa?', 'Autorização (software seu, amostra de treino ou escopo combinado por escrito) e um laboratório isolado: máquina virtual, instantâneo limpo e rede controlada.'],
+    ['Por que um segredo embutido no aplicativo não é segredo?', 'Tudo o que vai ao cliente pode ser extraído, e textos aparecem em ferramentas simples de leitura. Segredos e decisões de autorização ficam no servidor.'],
+    ['Por que carregar um modelo em formato pickle é arriscado?', 'O pickle pode executar código ao ser carregado. Prefira formatos só de pesos (como safetensors), confira origem e hash e carregue em ambiente com poucas permissões.'],
+    ['Ofuscar o código protege o aplicativo?', 'Só atrasa quem lê. Não tira segredos do pacote nem substitui autorização no servidor. É camada extra, nunca o controle principal.'],
+  ],
 }
 
 export const flashcards: Flashcard[] = Object.entries(deck).flatMap(([module, cards]) =>

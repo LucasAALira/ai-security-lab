@@ -1,6 +1,6 @@
 import { bossCount, challengeStats, isBossWon, gameXp } from './challenges'
 import { BOSS_XP, CHALLENGE_XP, MAX_TASK_XP, READS_PER_MODULE, STUDY_GOAL, TIER_XP, TOTAL_TASKS } from './constants'
-import { baseTotals, countDone, isModuleComplete } from './core'
+import { baseTotals, coreModules, countDone, isModuleComplete } from './core'
 import type { AchievementCategory, Medal, MedalIcon, ProgressContext, StudyState, Tier } from './types'
 
 export interface ProgressStats {
@@ -34,12 +34,17 @@ export interface ProgressStats {
   studyDays: number
   /** Módulos com as aulas concluídas e o chefe derrotado. */
   mastered: number
+  /** Módulos de acesso antecipado desbloqueados com moedas. */
+  unlocks: number
 }
 
 const sum = <T,>(list: readonly T[], f: (item: T) => number) => list.reduce((n, item) => n + f(item), 0)
 
 export function computeStats(s: StudyState, ctx: ProgressContext): ProgressStats {
-  const ms = Object.values(s.modules)
+  // As metas que citam totais ("24 leituras", "12 de 16 questões", "8 módulos") valem só para a trilha
+  // principal; o módulo de acesso antecipado tem as próprias conquistas.
+  const ms = coreModules(s)
+  const all = Object.values(s.modules)
   const ch = challengeStats(s, ctx)
   return {
     reads: sum(ms, (m) => countDone(m.reads)),
@@ -61,14 +66,15 @@ export function computeStats(s: StudyState, ctx: ProgressContext): ProgressStats
     shields: s.lifetime.shields,
     redeemed: s.lifetime.redeemed,
     bestDayXp: s.bestDayXp,
-    lessons: ms.filter((m) => countDone(m.reads) === READS_PER_MODULE).length,
+    lessons: all.filter((m) => countDone(m.reads) === READS_PER_MODULE).length,
     vulnIdentified: ch.vulnIdentified,
     authDone: ch.authDone,
     fixedDistinct: ch.fixed,
     helpless: ch.helpless,
     extra: ch.extra,
     studyDays: s.study.best,
-    mastered: ms.filter((m, i) => countDone(m.reads) === READS_PER_MODULE && (ctx.bosses[i]?.length ?? 0) > 0 && isBossWon(s.bosses[i])).length,
+    mastered: all.filter((m, i) => countDone(m.reads) === READS_PER_MODULE && (ctx.bosses[i]?.length ?? 0) > 0 && isBossWon(s.bosses[i])).length,
+    unlocks: s.shop.unlocked.length,
   }
 }
 
@@ -157,6 +163,7 @@ export function medalDefinitions(ctx: ProgressContext): MedalDef[] {
     { id: 'quest-1', category: 'constancia', name: 'Missão cumprida', tier: 'bronze', icon: 'scroll-text', desc: 'Conclua uma missão diária.', goal: (st) => [st.quests, 1] },
     { id: 'quest-15', category: 'constancia', name: 'Rotina de estudos', tier: 'prata', icon: 'scroll-text', desc: 'Conclua 15 missões diárias.', goal: (st) => [st.quests, 15] },
     { id: 'shield-up', category: 'extras', name: 'Escudo ativado', tier: 'bronze', icon: 'shield', desc: 'Compre um escudo de sequência na loja.', goal: (st) => [st.shields, 1] },
+    { id: 'acesso-antecipado', category: 'extras', name: 'Acesso Antecipado', tier: 'prata', icon: 'lock-open', desc: 'Desbloqueie o módulo de Engenharia Reversa com moedas, sem esperar pelos pré-requisitos.', goal: (st) => [st.unlocks, 1] },
     { id: 'first-reward', category: 'extras', name: 'Recompensa merecida', tier: 'bronze', icon: 'gift', desc: 'Resgate uma recompensa pessoal.', goal: (st) => [st.redeemed, 1] },
     { id: 'big-day', category: 'extras', name: 'Dia de peso', tier: 'prata', icon: 'zap', desc: 'Ganhe 200 XP em um único dia.', goal: (st) => [st.bestDayXp, 200] },
     { id: 'full-track', category: 'trilha', name: 'Trilha completa', tier: 'dragao', icon: 'crown', desc: `Conclua todas as ${TOTAL_TASKS} tarefas: módulos, laboratório e cenários.`, goal: (st) => [st.steps, TOTAL_TASKS] },

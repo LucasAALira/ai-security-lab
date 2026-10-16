@@ -1,13 +1,14 @@
-import { Check, Coins, Gift, Palette, Shield, Trash2 } from 'lucide-react'
+import { Check, Coins, Gift, LockOpen, Palette, Shield, Trash2 } from 'lucide-react'
 import { useId, useState } from 'react'
 import { Link } from 'react-router'
 import { SectionHeading } from '@/components/common/SectionHeading'
+import { UnlockModuleCard } from '@/components/shop/UnlockModuleCard'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { formatNumber, plural } from '@/lib/format'
-import { coinsEarned, REWARD_LIMITS, SHIELD, THEMES, XP_PER_COIN } from '@/lib/progress'
+import { coinsEarned, MODULE_UNLOCKS, REWARD_LIMITS, SHIELD, THEMES, XP_PER_COIN } from '@/lib/progress'
 import { useDocumentTitle } from '@/lib/use-document-title'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
@@ -56,6 +57,20 @@ export function ShopPage() {
           </div>
         </div>
       </div>
+
+      <section aria-labelledby="loja-modulos" className="mt-10">
+        <h2 id="loja-modulos" className="mb-1 flex items-center gap-2 text-lg font-semibold">
+          <LockOpen className="size-5 text-primary" aria-hidden="true" /> Desbloqueio imediato de módulos
+        </h2>
+        <p className="mb-3 max-w-2xl text-sm text-muted-foreground">
+          Módulos de acesso antecipado também abrem de graça ao concluir os módulos recomendados. Quem prefere pular a espera paga o desbloqueio com moedas. Veja também <Link to="/em-breve" className="text-primary underline underline-offset-2">o que vem por aí</Link>.
+        </p>
+        <div className="grid gap-4">
+          {Object.keys(MODULE_UNLOCKS).map((m) => (
+            <UnlockModuleCard key={m} module={Number(m)} />
+          ))}
+        </div>
+      </section>
 
       <section aria-labelledby="loja-escudo" className="mt-10">
         <h2 id="loja-escudo" className="mb-3 flex items-center gap-2 text-lg font-semibold">

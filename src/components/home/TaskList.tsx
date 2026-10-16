@@ -11,7 +11,7 @@ export type TaskFilter = 'pending' | 'all' | 'completed'
 
 /** Uma linha por módulo, uma para o laboratório e uma por cenário de correção. */
 export function TaskList({ filter, onOpenCase }: { filter: TaskFilter; onOpenCase: (index: number) => void }) {
-  const { state } = useProgress()
+  const { state, derived } = useProgress()
   const show = (done: boolean) => !((filter === 'pending' && done) || (filter === 'completed' && !done))
   const rows: React.ReactNode[] = []
 
@@ -19,6 +19,7 @@ export function TaskList({ filter, onOpenCase }: { filter: TaskFilter; onOpenCas
     const s = state.modules[i]
     const done = isModuleComplete(s)
     if (!show(done)) return
+    if (m.earlyAccess && !derived.trail[i].unlocked) return // só aparece depois de liberado
     const entries: Array<[string, boolean, number]> = [
       ['Leitura 1', s.reads[0], XP.read],
       ['Leitura 2', s.reads[1], XP.read],

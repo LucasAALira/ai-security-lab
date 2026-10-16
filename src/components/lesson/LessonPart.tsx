@@ -1,4 +1,4 @@
-import { ArrowRight, BookOpen, Check, Code2 } from 'lucide-react'
+import { ArrowRight, BookOpen, BookText, Check, Code2, ListChecks } from 'lucide-react'
 import { Link } from 'react-router'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
@@ -6,6 +6,7 @@ import { challengesOfModule } from '@/data/challenges'
 import { modules } from '@/data/modules'
 import { isModuleComplete, XP } from '@/lib/progress'
 import { useProgress } from '@/state/ProgressProvider'
+import { MateriaExtras } from './MateriaExtras'
 import { SaibaMais } from './SaibaMais'
 
 export const PART_TABS = [
@@ -55,6 +56,30 @@ export function LessonPart({ module, part, locked, onContinue, onRead }: Props) 
             </Link>
           </AccordionContent>
         </AccordionItem>
+        {part === 0 ? (
+          <AccordionItem value="glossario">
+            <AccordionTrigger className="py-3 text-[13px] hover:no-underline">
+              <span className="inline-flex items-center gap-2">
+                <BookText className="size-4" aria-hidden="true" /> Glossário rápido
+              </span>
+            </AccordionTrigger>
+            <AccordionContent>
+              <MateriaExtras slug={m.slug} kind="glossary" />
+            </AccordionContent>
+          </AccordionItem>
+        ) : null}
+        {part === 2 ? (
+          <AccordionItem value="resumo">
+            <AccordionTrigger className="py-3 text-[13px] hover:no-underline">
+              <span className="inline-flex items-center gap-2">
+                <ListChecks className="size-4" aria-hidden="true" /> Resumo em pontos-chave
+              </span>
+            </AccordionTrigger>
+            <AccordionContent>
+              <MateriaExtras slug={m.slug} kind="recap" />
+            </AccordionContent>
+          </AccordionItem>
+        ) : null}
         {part === 0 ? (
           <AccordionItem value="antes">
             <AccordionTrigger className="py-3 text-[13px] hover:no-underline">Antes de começar e objetivos</AccordionTrigger>

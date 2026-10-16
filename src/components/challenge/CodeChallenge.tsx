@@ -9,7 +9,8 @@ import { challengeById } from '@/data/challenges'
 import { modules } from '@/data/modules'
 import { eventsToText, rejectText } from '@/lib/events-text'
 import { letters } from '@/lib/format'
-import { CHALLENGE_XP, emptyChallenge, findChallenge, gradeLines, hintsUsed, HINT_PHASES, isRunDone, type ApplyResult } from '@/lib/progress'
+import { canOpenContent, CHALLENGE_XP, emptyChallenge, findChallenge, gradeLines, hintsUsed, HINT_PHASES, isRunDone, type ApplyResult } from '@/lib/progress'
+import { EarlyAccessPreview } from '@/components/shop/EarlyAccessPreview'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
 import { CodeLines, type LineMark } from './CodeLines'
@@ -46,6 +47,8 @@ export function CodeChallenge({ id, nextTo }: Props) {
   const run = state.challenges[id] ?? emptyChallenge()
   const trailModule = derived.trail[challenge?.module ?? 0]
   if (!challenge || !spec) return <p className="text-sm text-muted-foreground">Desafio não encontrado.</p>
+  // Desafios de um módulo de acesso antecipado só abrem depois da liberação: antes disso, a prévia do módulo.
+  if (!canOpenContent(state, ctx, challenge.module)) return <EarlyAccessPreview module={challenge.module} headingLevel={2} />
 
   const locked = !trailModule?.unlocked
   const phase: Phase = isRunDone(run) ? 'done' : run.run.identified ? 'fix' : 'identify'

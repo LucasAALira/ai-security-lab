@@ -219,6 +219,21 @@
   .study-prose ul, .study-prose ol { padding-left: 1.3rem; margin: 0.9rem 0; font-size: 15px; line-height: 1.8; color: color-mix(in oklab, var(--foreground) 78%, transparent); list-style: revert; }
   .study-prose dt { margin-top: 1.25rem; font-size: 17px; font-weight: 700; color: var(--primary); }
   .study-prose dd { margin: 0.3rem 0 0; font-size: 15px; line-height: 1.85; color: color-mix(in oklab, var(--foreground) 74%, transparent); }
+  .study-prose h3 { margin: 2rem 0 0.4rem; font-size: 19px; font-weight: 600; line-height: 1.4; color: var(--foreground); }
+  .study-prose h3:first-child { margin-top: 0.4rem; }
+  .study-prose li { margin: 0.35rem 0; }
+  .study-prose code { padding: 0.08em 0.38em; border: 1px solid var(--border); border-radius: 4px; background: var(--tint); font-family: var(--font-mono); font-size: 0.88em; color: var(--foreground); }
+  .study-prose pre { overflow-x: auto; margin: 1.1rem 0; padding: 0.9rem 1.05rem; border: 1px solid var(--border); border-radius: 8px; background: color-mix(in oklab, var(--background) 70%, black); }
+  .study-prose pre code { padding: 0; border: 0; background: none; font-size: 13px; line-height: 1.75; color: color-mix(in oklab, var(--foreground) 88%, transparent); }
+  .study-prose .callout { margin: 1.3rem 0; padding: 0.8rem 1.05rem 0.9rem; border: 1px solid var(--tint-line); border-left: 3px solid var(--primary); border-radius: 8px; background: var(--tint); }
+  .study-prose .callout p { margin: 0.4rem 0 0; font-size: 15px; line-height: 1.8; }
+  .study-prose .callout p.callout-title { margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary); }
+  .study-prose .callout.is-warn { border-left-color: var(--color-warning); }
+  .study-prose .callout.is-warn p.callout-title { color: var(--color-warning); }
+  .study-prose .callout ul, .study-prose .callout ol { margin: 0.4rem 0 0; }
+  .study-prose.is-compact h3 { font-size: 16px; }
+  .study-prose.is-compact .callout p, .study-prose.is-compact li { font-size: 14px; line-height: 1.8; }
+  .study-prose.is-compact .callout p.callout-title { font-size: 10.5px; }
   .study-prose.is-compact p { font-size: 14px; line-height: 1.8; }
   .study-prose.is-small p, .study-prose.is-small li { font-size: 12.5px; line-height: 1.7; color: var(--muted-foreground); }
 

@@ -9,7 +9,8 @@ import { TrailStep } from '@/components/trail/TrailStep'
 import { Card } from '@/components/ui/card'
 import { bossOfModule } from '@/data/bosses'
 import { modules } from '@/data/modules'
-import type { StepId, TrailModule } from '@/lib/progress'
+import { formatNumber } from '@/lib/format'
+import { CORE_MODULE_COUNT, type StepId, type TrailModule } from '@/lib/progress'
 import { useDocumentTitle } from '@/lib/use-document-title'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
@@ -69,7 +70,32 @@ function ModuleNode({ t, onBoss }: { t: TrailModule; onBoss: (module: number) =>
           </p>
         </header>
 
-        {!t.unlocked ? (
+        {!t.unlocked && t.earlyAccess ? (
+          <div className="rounded-lg border border-dashed border-tint-line bg-tint p-3 text-[13px] leading-relaxed">
+            <p className="flex items-start gap-2">
+              <Lock className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+              <span>
+                <strong>Módulo de acesso antecipado.</strong> Abra agora por {formatNumber(t.price ?? 0)} moedas ou, de graça, acendendo a fogueira de{' '}
+                {t.missing.map((p, i) => (
+                  <span key={p}>
+                    {i > 0 ? (i === t.missing.length - 1 ? ' e ' : ', ') : ''}
+                    <strong>
+                      módulo {modules[p].number} ({modules[p].title})
+                    </strong>
+                  </span>
+                ))}
+                .
+              </span>
+            </p>
+            <p className="mt-1.5 ml-6 text-xs">
+              <Link to={`/trilha/modulo/${t.module}`} className="text-primary underline underline-offset-2">
+                Ver prévia e desbloquear
+              </Link>
+            </p>
+          </div>
+        ) : null}
+
+        {!t.unlocked && !t.earlyAccess ? (
           <div className="rounded-lg border border-dashed border-border p-3 text-[13px] leading-relaxed">
             <p className="flex items-start gap-2">
               <Lock className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
@@ -143,9 +169,11 @@ export function TrailPage() {
   const { derived } = useProgress()
   const [params, setParams] = useSearchParams()
   const trail = derived.trail
-  const fires = trail.filter((t) => t.fire.lit).length
-  const bossesWon = trail.filter((t) => t.boss.won).length
-  const bossTotal = trail.filter((t) => t.boss.exists).length
+  const core = trail.filter((t) => t.module < CORE_MODULE_COUNT)
+  const fires = core.filter((t) => t.fire.lit).length
+  const bossesWon = core.filter((t) => t.boss.won).length
+  const bossTotal = core.filter((t) => t.boss.exists).length
+  const extra = trail.filter((t) => t.module >= CORE_MODULE_COUNT)
 
   const bossParam = params.get('chefe')
   const bossModule = bossParam !== null && /^\d+$/.test(bossParam) && Number(bossParam) < trail.length && trail[Number(bossParam)].boss.exists ? Number(bossParam) : null
@@ -165,7 +193,8 @@ export function TrailPage() {
         <Card className="gap-4 p-5">
           <XpBar />
           <p className="text-xs text-muted-foreground">
-            {fires} de {trail.length} fogueiras acesas · {bossesWon} de {bossTotal} chefes vencidos
+            {fires} de {core.length} fogueiras acesas · {bossesWon} de {bossTotal} chefes vencidos
+            {extra.length ? ` (trilha principal; ${extra.length === 1 ? 'o módulo extra não entra' : 'os módulos extras não entram'} na conta)` : ''}
           </p>
         </Card>
         <NextObjective variant="card" className="self-stretch" />

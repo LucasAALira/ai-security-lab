@@ -36,6 +36,8 @@ export interface Shop {
   owned: string[]
   theme: string
   rewards: PersonalReward[]
+  /** Módulos de acesso antecipado desbloqueados com moedas (ids). */
+  unlocked: number[]
 }
 
 /** Contadores do dia local atual; zeram na virada do dia. */
@@ -200,6 +202,7 @@ export type MedalIcon =
   | 'file-lock'
   | 'lightbulb-off'
   | 'calendar-check'
+  | 'lock-open'
   | 'swords'
   | 'eye'
   | 'circle-help'

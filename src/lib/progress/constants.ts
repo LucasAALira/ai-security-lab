@@ -4,14 +4,17 @@ import type { Tier } from './types'
 export const STORAGE_KEY = 'ai-security-study-v2'
 export const LEGACY_STORAGE_KEY = 'ai-security-study-v1'
 
-export const MODULE_COUNT = 8
+/** Módulos da trilha principal. As conquistas de "tudo concluído" (e as tarefas totais) contam só estes. */
+export const CORE_MODULE_COUNT = 8
+/** Todos os módulos, incluindo os de acesso antecipado (que vêm depois dos da trilha principal). */
+export const MODULE_COUNT = 9
 export const CASE_COUNT = 6
 export const READS_PER_MODULE = 3
 export const QUESTIONS_PER_MODULE = 2
 /** 3 leituras + pesquisa + prática + 2 questões. */
 export const TASKS_PER_MODULE = 7
-/** Módulos + laboratório + cenários de correção. */
-export const TOTAL_TASKS = MODULE_COUNT * TASKS_PER_MODULE + 1 + CASE_COUNT
+/** Módulos da trilha principal + laboratório + cenários de correção. */
+export const TOTAL_TASKS = CORE_MODULE_COUNT * TASKS_PER_MODULE + 1 + CASE_COUNT
 
 export const XP = { read: 10, research: 20, practice: 20, question: 15, lab: 30, fix: 40 } as const
 /** 3 × 10 + 20 + 20 + 2 × 15 */
@@ -54,6 +57,7 @@ export const EVENT_KINDS = [
   'review',
   'case',
   'lab',
+  'unlock',
 ] as const
 
 /** XP de bônus de cada medalha, por nível. */

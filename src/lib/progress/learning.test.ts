@@ -76,7 +76,7 @@ describe('conteúdo do aprendizado interativo', () => {
     expect(challengeSpecs.length).toBeGreaterThanOrEqual(3) // Código Protegido
     expect(challengeSpecs.some((c) => c.extra.length > 0)).toBe(true) // Além do Óbvio
     expect(real.bosses.every((a) => a.length === 3)).toBe(true) // Mestre do Módulo, em qualquer módulo
-    expect(bossAnswers).toHaveLength(8)
+    expect(bossAnswers).toHaveLength(9)
   })
 })
 
@@ -551,7 +551,7 @@ describe('próximo objetivo', () => {
 
   it('com tudo feito, avisa que a trilha terminou', () => {
     let s = quiet()
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 9; i++) {
       s = run(s, real, NOW, ...finishModule(i))
       for (let j = 0; j < 3; j++) s = run(s, real, NOW, { type: 'bossAnswer', module: i, index: j, option: bossAnswers[i][j] })
     }
@@ -560,7 +560,7 @@ describe('próximo objetivo', () => {
     expect(nextObjective(s, real)).toEqual({ kind: 'done' })
     expect(summary(s, real).xp).toBeGreaterThan(2400) // o último nível exige concluir tudo
     expect(levelFor(summary(s, real).xp).name).toBe('Lenda do AppSec')
-    expect(medals(s, real).filter((m) => m.unlocked && !m.secret)).toHaveLength(30) // faltam só as de mecânicas e de dias reais
+    expect(medals(s, real).filter((m) => m.unlocked && !m.secret)).toHaveLength(31) // faltam só as de mecânicas e de dias reais
     expect(unlockedIds(s, real)).toEqual(expect.arrayContaining(['primeira-chama', 'explorador-de-falhas', 'guardiao-das-apis', 'codigo-protegido', 'sem-ajuda', 'mestre-do-modulo']))
   })
 })

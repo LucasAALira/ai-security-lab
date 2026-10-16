@@ -16,7 +16,7 @@ export function eventsToText(events: readonly ProgressEvent[]): string[] {
         lines.push('Fogueira acesa: módulo concluído!')
         break
       case 'unlock':
-        lines.push(`Novo módulo liberado na trilha`)
+        lines.push(modules[e.module] ? `Módulo liberado: ${modules[e.module].title}` : 'Novo módulo liberado na trilha')
         break
       case 'challenge':
         if (e.phase === 'done') lines.push(e.helpless ? 'Desafio concluído sem dicas' : 'Desafio concluído')
@@ -51,7 +51,8 @@ export function eventsToText(events: readonly ProgressEvent[]): string[] {
         lines.push(`+${e.amount} ${plural(e.amount, 'moeda', 'moedas')}`)
         break
       case 'purchase':
-        lines.push(`Comprado: ${e.name}`)
+        // O desbloqueio de módulo já tem a própria linha ("Módulo liberado").
+        if (e.item !== 'module') lines.push(`Comprado: ${e.name}`)
         break
       case 'redeem':
         lines.push(`Recompensa resgatada: ${e.title}`)
@@ -78,6 +79,7 @@ export const rejectText: Record<RejectReason, string> = {
   prereq: 'Conclua os pré-requisitos do módulo (acenda a fogueira de cada um) para liberar esta etapa.',
   fogueira: 'Acenda a fogueira do módulo, concluindo todas as tarefas, para enfrentar o chefe.',
   order: 'Faça a etapa anterior antes desta.',
+  open: 'Este módulo já está liberado pelos pré-requisitos: não é preciso gastar moedas.',
 }
 
 /** Linha do histórico de estudo ("Aula 2 do módulo 03 concluída"). `ref` é o identificador salvo no evento. */
@@ -124,5 +126,7 @@ export function describeLogEvent(kind: LearningEventKind, ref: string, medalName
       return `Cenário de correção ${ref.replace('cenario-', '')} resolvido`
     case 'lab':
       return 'Laboratório de prompt concluído'
+    case 'unlock':
+      return mod ? `Módulo ${mod.number} (${mod.title}) desbloqueado com moedas` : 'Módulo desbloqueado com moedas'
   }
 }

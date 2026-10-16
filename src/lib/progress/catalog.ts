@@ -18,6 +18,13 @@ export const isThemeId = (v: unknown): v is ThemeId => typeof v === 'string' && 
 
 export const SHIELD = { price: 20, max: 2 } as const
 
+/** Preço, em moedas, do desbloqueio imediato de cada módulo de acesso antecipado (id do módulo -> preço).
+ *  O módulo também se libera de graça ao acender a fogueira dos pré-requisitos; pagar só pula essa espera.
+ *  Comprar gasta moedas e nunca reduz XP, nível nem medalhas. */
+export const MODULE_UNLOCKS: Readonly<Record<number, number>> = { 8: 5000 }
+export const isEarlyAccess = (module: number): boolean => Object.hasOwn(MODULE_UNLOCKS, module)
+export const moduleUnlockPrice = (module: number): number | null => (isEarlyAccess(module) ? MODULE_UNLOCKS[module] : null)
+
 export const REWARD_LIMITS = { max: 8, title: 60, price: 999 } as const
 
 export const REVIEW = {

@@ -1,4 +1,4 @@
-import { DEFAULT_THEME, isThemeId, QUEST_IDS, QUESTS_PER_DAY, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
+import { DEFAULT_THEME, isEarlyAccess, isThemeId, QUEST_IDS, QUESTS_PER_DAY, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
 import {
   BOSS_QUESTIONS,
   CASE_COUNT,
@@ -165,6 +165,7 @@ export function cleanState(raw: unknown): StudyState {
   const rawOwned = at(at(raw, 'shop'), 'owned')
   const owned = Array.isArray(rawOwned) ? paid.filter((id) => rawOwned.includes(id)) : []
   const theme = at(at(raw, 'shop'), 'theme')
+  const rawUnlocked = at(at(raw, 'shop'), 'unlocked')
   const rewards: PersonalReward[] = []
   const rawRewards = at(at(raw, 'shop'), 'rewards')
   if (Array.isArray(rawRewards)) {
@@ -182,6 +183,7 @@ export function cleanState(raw: unknown): StudyState {
     owned,
     theme: isThemeId(theme) && (theme === DEFAULT_THEME || owned.includes(theme)) ? theme : DEFAULT_THEME,
     rewards,
+    unlocked: Array.isArray(rawUnlocked) ? [...new Set(rawUnlocked.filter((n): n is number => typeof n === 'number' && Number.isInteger(n) && isEarlyAccess(n)))].sort((a, b) => a - b) : [],
   }
 
   const d = at(raw, 'daily')

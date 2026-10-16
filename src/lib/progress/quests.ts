@@ -1,24 +1,29 @@
 import { CHEST_COINS, QUESTS, QUESTS_PER_DAY, REVIEW, type QuestDef } from './catalog'
 import { countDone } from './core'
-import { LIMITS, MODULE_COUNT, QUESTIONS_PER_MODULE, READS_PER_MODULE, CASE_COUNT } from './constants'
+import { CORE_MODULE_COUNT, LIMITS, QUESTIONS_PER_MODULE, READS_PER_MODULE, CASE_COUNT } from './constants'
 import { dayKey } from './dates'
 import { maxXp, summary } from './medals'
 import { seededRandom, shuffled } from './random'
+import { isModuleUnlocked } from './trail'
 import type { Daily, ProgressContext, StudyState } from './types'
 
 const zeroDaily = (day: string): Daily => ({ day, reads: 0, answers: 0, practices: 0, cases: 0, reviews: 0, xp: 0 })
 
 /** Uma missão só entra no dia se ainda for possível cumpri-la com o que falta estudar. */
 function feasible(q: QuestDef, s: StudyState, ctx: ProgressContext): boolean {
-  const modules = Object.values(s.modules)
+  // Contam os módulos da trilha principal e os de acesso antecipado que já estão liberados.
+  const modules = Object.keys(s.modules)
+    .map(Number)
+    .filter((i) => i < CORE_MODULE_COUNT || isModuleUnlocked(s, ctx, i))
+    .map((i) => s.modules[i])
   const count = (f: (m: StudyState['modules'][number]) => number) => modules.reduce((n, m) => n + f(m), 0)
   switch (q.counter) {
     case 'reads':
-      return MODULE_COUNT * READS_PER_MODULE - count((m) => countDone(m.reads)) >= q.target
+      return modules.length * READS_PER_MODULE - count((m) => countDone(m.reads)) >= q.target
     case 'answers':
-      return MODULE_COUNT * QUESTIONS_PER_MODULE - count((m) => countDone(m.solved)) >= q.target
+      return modules.length * QUESTIONS_PER_MODULE - count((m) => countDone(m.solved)) >= q.target
     case 'practices':
-      return MODULE_COUNT - count((m) => Number(m.practice)) >= q.target
+      return modules.length - count((m) => Number(m.practice)) >= q.target
     case 'cases':
       return CASE_COUNT - countDone(s.cases) >= q.target
     case 'reviews':
