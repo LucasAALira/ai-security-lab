@@ -25,7 +25,12 @@ import {
 } from '.'
 import { seededRandom } from './random'
 
-const ctx = buildContext(modules, remediationCases)
+// Aqui só importam as mecânicas (missões, revisão, loja): módulos sem pré-requisitos deixam os testes
+// estudarem em qualquer ordem. A regra de liberação por fogueira é testada em trail.test.ts.
+const ctx = buildContext(
+  modules.map((m) => ({ ...m, prereqs: [] })),
+  remediationCases,
+)
 const D = (y: number, m: number, d: number) => new Date(y, m - 1, d, 12)
 const NOW = D(2026, 10, 16)
 const TODAY = '2026-10-16'

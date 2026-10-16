@@ -1,3 +1,4 @@
+import { ArrowRight, Check, Circle } from 'lucide-react'
 import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { modules } from '@/data/modules'
@@ -32,7 +33,7 @@ export function TaskList({ filter, onOpenCase }: { filter: TaskFilter; onOpenCas
         <ul className="my-3.5 flex flex-wrap gap-2">
           {entries.map(([name, yes, xp]) => (
             <li key={name} className={cn('rounded border px-2 py-1 text-[11px]', yes ? 'border-tint-line bg-tint-strong text-primary' : 'border-border bg-card text-foreground/70')}>
-              {yes ? '✓' : '○'} {name} <small className="ml-0.5 text-[10px]">{xp} XP</small>
+              {yes ? <Check className="mr-0.5 inline size-3 align-[-1px]" aria-label="concluída:" /> : <Circle className="mr-0.5 inline size-3 align-[-1px]" aria-label="pendente:" />} {name} <small className="ml-0.5 text-[10px]">{xp} XP</small>
             </li>
           ))}
         </ul>
@@ -45,10 +46,10 @@ export function TaskList({ filter, onOpenCase }: { filter: TaskFilter; onOpenCas
 
   if (show(state.lab)) {
     rows.push(
-      <TaskRow key="lab" title={`${state.lab ? '✓' : '○'} Laboratório de injeção de prompt`} meta={`${state.lab ? XP.lab : 0}/${XP.lab} XP`}>
+      <TaskRow key="lab" title={<StatusTitle done={state.lab}>Laboratório de injeção de prompt</StatusTitle>} meta={`${state.lab ? XP.lab : 0}/${XP.lab} XP`}>
         <p className="my-2 text-xs text-muted-foreground">Analise um cenário e confirme que revisou o resultado.</p>
         <Link to="/?secao=laboratorio" className="text-xs text-primary hover:underline">
-          Ir ao laboratório →
+          Ir ao laboratório <ArrowRight className="ml-1 inline size-3.5" aria-hidden="true" />
         </Link>
       </TaskRow>,
     )
@@ -58,7 +59,7 @@ export function TaskList({ filter, onOpenCase }: { filter: TaskFilter; onOpenCas
     const done = state.cases[i]
     if (!show(done)) return
     rows.push(
-      <TaskRow key={c.id} title={`${done ? '✓' : '○'} ${c.title}`} meta={`${done ? XP.fix : 0}/${XP.fix} XP`}>
+      <TaskRow key={c.id} title={<StatusTitle done={done}>{c.title}</StatusTitle>} meta={`${done ? XP.fix : 0}/${XP.fix} XP`}>
         <p className="my-2 text-xs text-muted-foreground">Sandbox de correção · Empresa {c.size.toLowerCase()}</p>
         <Button variant="outline" size="sm" onClick={() => onOpenCase(i)}>
           {done ? 'Revisar solução' : 'Resolver cenário'}
@@ -77,7 +78,18 @@ export function TaskList({ filter, onOpenCase }: { filter: TaskFilter; onOpenCas
   return <div>{rows}</div>
 }
 
-function TaskRow({ title, meta, children }: { title: string; meta: string; children: React.ReactNode }) {
+/** Título de tarefa com o estado em ícone e em texto para leitores de tela. */
+function StatusTitle({ done, children }: { done: boolean; children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      {done ? <Check className="size-4 text-primary" aria-hidden="true" /> : <Circle className="size-4 text-muted-foreground" aria-hidden="true" />}
+      <span className="sr-only">{done ? 'Concluída: ' : 'Pendente: '}</span>
+      {children}
+    </span>
+  )
+}
+
+function TaskRow({ title, meta, children }: { title: React.ReactNode; meta: string; children: React.ReactNode }) {
   return (
     <article className="mb-2.5 rounded-lg border border-border bg-tint px-5 py-4 max-sm:px-4 max-sm:py-3.5">
       <div className="flex justify-between gap-3 text-sm text-foreground/90 max-sm:text-xs">

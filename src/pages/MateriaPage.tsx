@@ -1,3 +1,4 @@
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import { useEffect } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router'
 import { TrustedHtml } from '@/components/common/TrustedHtml'
@@ -66,7 +67,13 @@ function Article({ slug }: { slug: string }) {
             <h2 className="mt-2.5 mb-[18px] text-2xl leading-snug font-medium tracking-tight text-foreground/90 sm:text-[29px]">{s.heading}</h2>
             <TrustedHtml html={s.html} className="study-prose" />
             <Button variant="outline" size="sm" className="mt-2.5" disabled={m.reads[i]} onClick={() => dispatch({ type: 'read', module: index, index: i })}>
-              {m.reads[i] ? `✓ Leitura registrada · ${XP.read} XP` : `Li esta parte · +${XP.read} XP`}
+              {m.reads[i] ? (
+                <>
+                  <Check aria-hidden="true" /> Leitura registrada · {XP.read} XP
+                </>
+              ) : (
+                `Li esta parte · +${XP.read} XP`
+              )}
             </Button>
           </section>
         ))}
@@ -87,7 +94,8 @@ function Article({ slug }: { slug: string }) {
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-[22px] text-xs max-sm:flex-col max-sm:items-stretch">
           {prev ? (
             <Link to={`/materias/${prev.slug}`} className="text-primary hover:underline">
-              ← Matéria anterior
+              <ArrowLeft className="mr-1 inline size-3.5" aria-hidden="true" />
+              Matéria anterior
             </Link>
           ) : (
             <span />
@@ -97,7 +105,8 @@ function Article({ slug }: { slug: string }) {
           </Button>
           {next ? (
             <Link to={`/materias/${next.slug}`} className="text-primary hover:underline">
-              Próxima matéria →
+              Próxima matéria
+              <ArrowRight className="ml-1 inline size-3.5" aria-hidden="true" />
             </Link>
           ) : (
             <span />

@@ -1,13 +1,26 @@
 import { isThemeId, DEFAULT_THEME, REVIEW, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
-import { CASE_COUNT, LIMITS, MODULE_COUNT, QUESTIONS_PER_MODULE, READS_PER_MODULE } from './constants'
+import { findChallenge, gradeBoss, gradeFix, gradeLines, hintsUsed, isRunDone } from './challenges'
+import {
+  BOSS_QUESTIONS,
+  CASE_COUNT,
+  FLASHCARD_ID,
+  HINTS_PER_CHALLENGE,
+  LIMITS,
+  MODULE_COUNT,
+  QUESTIONS_PER_MODULE,
+  READS_PER_MODULE,
+} from './constants'
 import { coinBalance } from './coins'
 import { isModuleComplete, levelFor, trackProgress } from './core'
 import { dayKey } from './dates'
+import { logEvent } from './events'
 import { recordMedals, summary } from './medals'
 import { rollDay, settleQuests, type ChestEvent, type QuestEvent } from './quests'
 import { canReview } from './review'
-import { touchStreak } from './streak'
-import type { LevelInfo, Medal, ProgressContext, StudyState, Tier } from './types'
+import { touchStreak, touchStudy } from './streak'
+import { emptyBoss, emptyChallenge } from './state'
+import { isModuleUnlocked } from './trail'
+import type { LearningEventKind, LevelInfo, Medal, ProgressContext, StudyState, Tier } from './types'
 
 export type Action =
   | { type: 'read'; module: number; index: number }
@@ -28,6 +41,20 @@ export type Action =
   | { type: 'addReward'; title: string; price: number }
   | { type: 'removeReward'; id: string }
   | { type: 'redeemReward'; id: string }
+  /** Mostra uma dica do desafio (posição 0 a 2). Qualquer dica impede o "Sem Ajuda" desta tentativa. */
+  | { type: 'hint'; challenge: string; index: number }
+  /** Envia as linhas marcadas como vulneráveis (posições a partir de 0). */
+  | { type: 'identify'; challenge: string; lines: number[] }
+  /** Escolhe a correção (só depois de identificar a falha na tentativa). */
+  | { type: 'fix'; challenge: string; option: number }
+  /** Começa outra tentativa de um desafio já concluído. Não rende XP de novo. */
+  | { type: 'retry'; challenge: string }
+  /** Resposta a um cenário do chefe do módulo (exige a fogueira acesa). */
+  | { type: 'bossAnswer'; module: number; index: number; option: number }
+  | { type: 'bossRetry'; module: number }
+  /** Marca um flashcard como sabido ou para revisar. Não rende XP. */
+  | { type: 'card'; id: string; known: boolean }
+  | { type: 'setSound'; on: boolean }
 
 export type ProgressEvent =
   | { kind: 'xp'; amount: number }
@@ -40,11 +67,19 @@ export type ProgressEvent =
   | { kind: 'coins'; amount: number }
   | { kind: 'purchase'; item: 'shield' | 'theme'; name: string }
   | { kind: 'redeem'; title: string; price: number }
+  | { kind: 'hint'; challenge: string }
+  /** `identify`: falha identificada; `done`: tentativa concluída. `first`: foi a primeira vez (rende XP). */
+  | { kind: 'challenge'; challenge: string; phase: 'identify' | 'done'; first: boolean; helpless: boolean }
+  | { kind: 'challenge-miss'; challenge: string; phase: 'identify' | 'fix' }
+  | { kind: 'boss'; module: number; flawless: boolean; first: boolean }
+  | { kind: 'boss-miss'; module: number }
+  /** Um módulo foi liberado porque os pré-requisitos ganharam fogueira. */
+  | { kind: 'unlock'; module: number }
   | QuestEvent
   | ChestEvent
 
 /** Por que uma ação foi recusada (quando não foi só repetida). */
-export type RejectReason = 'invalid' | 'coins' | 'limit' | 'owned' | 'locked' | 'missing'
+export type RejectReason = 'invalid' | 'coins' | 'limit' | 'owned' | 'locked' | 'missing' | 'prereq' | 'fogueira' | 'order'
 
 export interface ApplyResult {
   /** O mesmo objeto recebido quando nada mudou, para a interface não renderizar de novo. */
@@ -60,6 +95,8 @@ interface Outcome {
   study?: boolean
   rejected?: RejectReason
   events?: ProgressEvent[]
+  /** Entradas do histórico de aprendizagem: [tipo, referência]. */
+  log?: [LearningEventKind, string][]
 }
 
 const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(value)) as T
@@ -67,6 +104,8 @@ const inRange = (n: unknown, size: number): n is number => Number.isInteger(n) &
 const nothing: Outcome = { changed: false }
 const reject = (rejected: RejectReason): Outcome => ({ changed: false, rejected })
 const bump = (n: number) => Math.min(LIMITS.small, n + 1)
+const challengeOf = (s: StudyState, id: string) => (s.challenges[id] ??= emptyChallenge())
+const bossOf = (s: StudyState, module: number) => (s.bosses[module] ??= emptyBoss())
 
 /** Gasta moedas do saldo, se houver. */
 function spend(s: StudyState, ctx: ProgressContext, price: number): boolean {
@@ -88,13 +127,13 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
     case 'completeLab':
       if (s.lab) return nothing
       s.lab = true
-      return { changed: true, study: true }
+      return { changed: true, study: true, log: [['lab', 'laboratorio']] }
 
     case 'solveCase':
       if (!inRange(action.index, CASE_COUNT) || s.cases[action.index]) return nothing
       s.cases[action.index] = true
       s.daily.cases = bump(s.daily.cases)
-      return { changed: true, study: true }
+      return { changed: true, study: true, log: [['case', `cenario-${action.index + 1}`]] }
 
     case 'review': {
       const { total, lost } = action
@@ -109,7 +148,7 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
         s.coins.bonus = Math.min(LIMITS.big, s.coins.bonus + amount)
         events.push({ kind: 'coins', amount })
       }
-      return { changed: true, study: true, events }
+      return { changed: true, study: true, events, log: [['review', `revisao-${total}`]] }
     }
 
     case 'buyShield': {
@@ -160,41 +199,187 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
       s.lifetime.redeemed = bump(s.lifetime.redeemed)
       return { changed: true, events: [{ kind: 'redeem', title: reward.title, price: reward.price }] }
     }
+
+    case 'hint': {
+      const spec = findChallenge(ctx, action.challenge)
+      if (!spec) return reject('missing')
+      if (!Number.isInteger(action.index) || action.index < 0 || action.index >= HINTS_PER_CHALLENGE) return reject('invalid')
+      if (!isModuleUnlocked(s, ctx, spec.module)) return reject('prereq')
+      const c = challengeOf(s, spec.id)
+      if (isRunDone(c) || c.run.hints[action.index]) return nothing
+      c.run.hints[action.index] = true
+      c.hints = bump(c.hints)
+      return { changed: true, study: true, events: [{ kind: 'hint', challenge: spec.id }], log: [['hint', `${spec.id}:${action.index + 1}`]] }
+    }
+
+    case 'identify': {
+      const spec = findChallenge(ctx, action.challenge)
+      if (!spec) return reject('missing')
+      if (!isModuleUnlocked(s, ctx, spec.module)) return reject('prereq')
+      const grade = gradeLines(spec, action.lines)
+      if (!grade.valid) return reject('invalid')
+      const c = challengeOf(s, spec.id)
+      if (c.run.identified) return nothing
+      c.attempts = bump(c.attempts)
+      if (!grade.ok) {
+        c.misses = bump(c.misses)
+        return {
+          changed: true,
+          study: true,
+          events: [{ kind: 'challenge-miss', challenge: spec.id, phase: 'identify' }],
+          log: [['challenge-miss', `${spec.id}:identificar`]],
+        }
+      }
+      const first = !c.identified
+      c.run.identified = true
+      c.identified = true
+      if (grade.extra) c.extra = true
+      return {
+        changed: true,
+        study: true,
+        events: [{ kind: 'challenge', challenge: spec.id, phase: 'identify', first, helpless: false }],
+        log: [['identify', spec.id]],
+      }
+    }
+
+    case 'fix': {
+      const spec = findChallenge(ctx, action.challenge)
+      if (!spec) return reject('missing')
+      if (!isModuleUnlocked(s, ctx, spec.module)) return reject('prereq')
+      const grade = gradeFix(spec, action.option)
+      if (!grade.valid) return reject('invalid')
+      const c = challengeOf(s, spec.id)
+      if (!c.run.identified) return reject('order')
+      if (c.run.fixed) return nothing
+      c.attempts = bump(c.attempts)
+      if (!grade.ok) {
+        c.misses = bump(c.misses)
+        return {
+          changed: true,
+          study: true,
+          events: [{ kind: 'challenge-miss', challenge: spec.id, phase: 'fix' }],
+          log: [['challenge-miss', `${spec.id}:corrigir`]],
+        }
+      }
+      const first = !c.fixed
+      c.run.fixed = true
+      c.fixed = true
+      if (!c.solved) c.solved = dayKey(now)
+      const helpless = hintsUsed(c) === 0
+      if (helpless) c.helpless = true
+      return {
+        changed: true,
+        study: true,
+        events: [{ kind: 'challenge', challenge: spec.id, phase: 'done', first, helpless }],
+        log: [
+          ['fix', spec.id],
+          ['challenge', spec.id],
+        ],
+      }
+    }
+
+    case 'retry': {
+      const spec = findChallenge(ctx, action.challenge)
+      if (!spec) return reject('missing')
+      if (!isModuleUnlocked(s, ctx, spec.module)) return reject('prereq')
+      const c = challengeOf(s, spec.id)
+      if (!isRunDone(c)) return reject('order')
+      c.run = emptyChallenge().run
+      return { changed: true, log: [['retry', spec.id]] }
+    }
+
+    case 'card': {
+      if (typeof action.id !== 'string' || !FLASHCARD_ID.test(action.id) || typeof action.known !== 'boolean') return reject('invalid')
+      if (Number(action.id[1]) >= MODULE_COUNT) return reject('invalid')
+      if (s.cards[action.id] === action.known) return nothing
+      if (!(action.id in s.cards) && Object.keys(s.cards).length >= LIMITS.cards) return reject('limit')
+      s.cards[action.id] = action.known
+      return { changed: true, study: true, log: [['card', action.id]] }
+    }
+
+    case 'setSound':
+      if (typeof action.on !== 'boolean' || s.prefs.sound === action.on) return nothing
+      s.prefs.sound = action.on
+      return { changed: true }
   }
 
   // As demais ações são sobre um módulo.
   if (!inRange(action.module, MODULE_COUNT)) return nothing
   const m = s.modules[action.module]
+  const n = action.module
+  // Registrar tarefas exige o módulo liberado (pré-requisitos com fogueira acesa, ou progresso anterior).
+  const closed = () => !isModuleUnlocked(s, ctx, n)
   switch (action.type) {
     case 'read':
       if (!inRange(action.index, READS_PER_MODULE) || m.reads[action.index]) return nothing
+      if (closed()) return reject('prereq')
       m.reads[action.index] = true
       s.daily.reads = bump(s.daily.reads)
-      return { changed: true, study: true }
+      return { changed: true, study: true, log: [['read', `m${n}-aula-${action.index + 1}`]] }
     case 'research':
       if (m.research) return nothing
+      if (closed()) return reject('prereq')
       m.research = true
-      return { changed: true, study: true }
+      return { changed: true, study: true, log: [['research', `m${n}-pesquisa`]] }
     case 'practice':
       if (m.practice) return nothing
+      if (closed()) return reject('prereq')
       m.practice = true
       s.daily.practices = bump(s.daily.practices)
-      return { changed: true, study: true }
+      return { changed: true, study: true, log: [['practice', `m${n}-pratica`]] }
     case 'answer':
       if (!inRange(action.index, QUESTIONS_PER_MODULE) || m.solved[action.index]) return nothing
+      if (closed()) return reject('prereq')
       m.firstTry[action.index] = m.misses[action.index] === 0
       m.solved[action.index] = true
       s.daily.answers = bump(s.daily.answers)
-      return { changed: true, study: true }
+      return { changed: true, study: true, log: [['answer', `m${n}-q${action.index + 1}`]] }
     case 'miss':
       if (!inRange(action.index, QUESTIONS_PER_MODULE) || m.solved[action.index]) return nothing
+      if (closed()) return reject('prereq')
       m.misses[action.index] = Math.min(LIMITS.misses, m.misses[action.index] + 1)
-      return { changed: true, study: true }
+      return { changed: true, study: true, log: [['miss', `m${n}-q${action.index + 1}`]] }
     case 'note': {
       const value = String(action.value).slice(0, LIMITS.noteLength)
       if (m[action.field] === value) return nothing
       m[action.field] = value
       return { changed: true }
+    }
+
+    case 'bossAnswer': {
+      const answers = ctx.bosses[n] ?? []
+      if (!answers.length) return reject('missing')
+      if (!isModuleComplete(m)) return reject('fogueira')
+      const grade = gradeBoss(answers, action.index, action.option)
+      if (!grade.valid) return reject('invalid')
+      const boss = bossOf(s, n)
+      if (boss.done[action.index]) return nothing
+      if (!grade.ok) {
+        boss.mistakes = bump(boss.mistakes)
+        return { changed: true, study: true, events: [{ kind: 'boss-miss', module: n }], log: [['boss-miss', `m${n}-chefe-${action.index + 1}`]] }
+      }
+      boss.done[action.index] = true
+      const total = Math.min(BOSS_QUESTIONS, answers.length)
+      if (!boss.done.slice(0, total).every(Boolean)) {
+        return { changed: true, study: true, log: [['boss', `m${n}-chefe-${action.index + 1}`]] }
+      }
+      const first = !boss.won
+      const flawless = boss.mistakes === 0
+      boss.wins = bump(boss.wins)
+      if (first) boss.won = dayKey(now)
+      if (flawless) boss.flawless = true
+      return { changed: true, study: true, events: [{ kind: 'boss', module: n, flawless, first }], log: [['boss', `m${n}-chefe`]] }
+    }
+
+    case 'bossRetry': {
+      const answers = ctx.bosses[n] ?? []
+      if (!answers.length) return reject('missing')
+      const boss = bossOf(s, n)
+      const total = Math.min(BOSS_QUESTIONS, answers.length)
+      if (!boss.won || !boss.done.slice(0, total).every(Boolean)) return reject('order')
+      boss.done = emptyBoss().done
+      boss.mistakes = 0
+      return { changed: true, log: [['retry', `m${n}-chefe`]] }
     }
   }
 }
@@ -209,12 +394,18 @@ export function applyAction(state: StudyState, action: Action, ctx: ProgressCont
   const before = summary(draft, ctx)
   const tracksBefore = trackProgress(draft, ctx)
   const completeBefore = Object.values(draft.modules).map(isModuleComplete)
+  const openBefore = Object.keys(draft.modules).map((i) => isModuleUnlocked(draft, ctx, Number(i)))
 
   const out = mutate(draft, action, ctx, now)
   if (!out.changed) return { state, events: [], changed: false, rejected: out.rejected }
 
+  const today = dayKey(now)
+  if (!draft.learner.id) draft.learner = { id: `a${now.getTime().toString(36)}`, since: today }
+  for (const [kind, ref] of out.log ?? []) logEvent(draft, now, kind, ref)
+
   const head: ProgressEvent[] = []
   if (out.study) {
+    touchStudy(draft, now)
     const touch = touchStreak(draft, now)
     if (touch.shieldsUsed) head.push({ kind: 'shield-used', count: touch.shieldsUsed })
     if (touch.extended) head.push({ kind: 'streak', current: draft.streak.current })
@@ -222,12 +413,14 @@ export function applyAction(state: StudyState, action: Action, ctx: ProgressCont
   head.push(...(out.events ?? []))
 
   // Medalhas dão XP, XP cumpre missões, missões liberam medalhas: repete até estabilizar.
-  const today = dayKey(now)
   const tail: ProgressEvent[] = []
   let seen = before.xp
   for (let guard = 0; guard < 6; guard++) {
     const fresh = recordMedals(draft, ctx, today)
-    for (const medal of fresh) tail.push({ kind: 'medal', medal })
+    for (const medal of fresh) {
+      tail.push({ kind: 'medal', medal })
+      logEvent(draft, now, 'achievement', medal.id)
+    }
     const xp = summary(draft, ctx).xp
     draft.daily.xp = Math.min(LIMITS.small, draft.daily.xp + (xp - seen))
     draft.bestDayXp = Math.max(draft.bestDayXp, draft.daily.xp)
@@ -240,7 +433,14 @@ export function applyAction(state: StudyState, action: Action, ctx: ProgressCont
   const events: ProgressEvent[] = [...head]
   if (seen > before.xp) events.push({ kind: 'xp', amount: seen - before.xp })
   Object.values(draft.modules).forEach((m, i) => {
-    if (!completeBefore[i] && isModuleComplete(m)) events.push({ kind: 'module', module: i })
+    if (!completeBefore[i] && isModuleComplete(m)) {
+      draft.fires[i] = today
+      logEvent(draft, now, 'fogueira', `m${i}`)
+      events.push({ kind: 'module', module: i })
+    }
+  })
+  Object.keys(draft.modules).forEach((key, i) => {
+    if (!openBefore[i] && isModuleUnlocked(draft, ctx, Number(key))) events.push({ kind: 'unlock', module: Number(key) })
   })
   trackProgress(draft, ctx).forEach((t, i) => {
     const was = tracksBefore[i].tier

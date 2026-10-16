@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router'
 import { modules } from '@/data/modules'
 
@@ -12,7 +13,7 @@ export function LibrarySection() {
       <div className="mt-6 grid border-t border-border sm:grid-cols-2 min-[1151px]:grid-cols-3">
         {modules.map((m) => (
           <Link key={m.slug} to={`/materias/${m.slug}`} className="border-b border-border px-2 py-5 text-sm hover:text-primary focus-visible:ring-2 focus-visible:ring-ring">
-            {m.title} →
+            {m.title} <ArrowRight className="ml-1 inline size-3.5" aria-hidden="true" />
             <small className="mt-1 block text-xs text-muted-foreground">Módulo {m.number} · leitura completa</small>
           </Link>
         ))}

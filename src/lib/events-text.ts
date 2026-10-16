@@ -1,4 +1,6 @@
-import type { ProgressEvent, RejectReason } from '@/lib/progress'
+import { challengeById } from '@/data/challenges'
+import { modules } from '@/data/modules'
+import type { LearningEventKind, ProgressEvent, RejectReason } from '@/lib/progress'
 import { formatNumber, plural, tierNames } from '@/lib/format'
 
 /** Frases curtas e em português para cada evento do progresso (aria-live e avisos). */
@@ -11,7 +13,21 @@ export function eventsToText(events: readonly ProgressEvent[]): string[] {
         lines.push(`+${formatNumber(e.amount)} XP`)
         break
       case 'module':
-        lines.push('Módulo concluído!')
+        lines.push('Fogueira acesa: módulo concluído!')
+        break
+      case 'unlock':
+        lines.push(`Novo módulo liberado na trilha`)
+        break
+      case 'challenge':
+        if (e.phase === 'done') lines.push(e.helpless ? 'Desafio concluído sem dicas' : 'Desafio concluído')
+        else lines.push('Falha identificada')
+        break
+      case 'boss':
+        lines.push(e.first ? (e.flawless ? 'Chefe derrotado sem erros!' : 'Chefe derrotado!') : 'Chefe vencido de novo (sem XP extra)')
+        break
+      case 'hint':
+      case 'challenge-miss':
+      case 'boss-miss':
         break
       case 'track':
         lines.push(`Trilha ${e.name}: medalha ${tierNames[e.tier]}`)
@@ -59,4 +75,54 @@ export const rejectText: Record<RejectReason, string> = {
   owned: 'Você já tem este item.',
   locked: 'Compre este item antes de usá-lo.',
   missing: 'Item não encontrado.',
+  prereq: 'Conclua os pré-requisitos do módulo (acenda a fogueira de cada um) para liberar esta etapa.',
+  fogueira: 'Acenda a fogueira do módulo, concluindo todas as tarefas, para enfrentar o chefe.',
+  order: 'Faça a etapa anterior antes desta.',
+}
+
+/** Linha do histórico de estudo ("Aula 2 do módulo 03 concluída"). `ref` é o identificador salvo no evento. */
+export function describeLogEvent(kind: LearningEventKind, ref: string, medalNames: Record<string, string> = {}): string {
+  const module = ref.match(/^m(\d+)/)
+  const mod = module ? modules[Number(module[1])] : undefined
+  const where = mod ? ` do módulo ${mod.number}` : ''
+  const challenge = (id: string) => challengeById(id.split(':')[0])?.title ?? 'desafio de código'
+  switch (kind) {
+    case 'read':
+      return `Etapa ${ref.match(/aula-(\d+)/)?.[1] ?? ''}${where} concluída`.replace('Etapa  ', 'Etapa ')
+    case 'research':
+      return `Pesquisa orientada${where} registrada`
+    case 'practice':
+      return `Atividade prática${where} registrada`
+    case 'answer':
+      return `Questão ${ref.match(/q(\d+)/)?.[1] ?? ''}${where} acertada`
+    case 'miss':
+      return `Questão ${ref.match(/q(\d+)/)?.[1] ?? ''}${where}: resposta errada, com explicação`
+    case 'identify':
+      return `Falha identificada: ${challenge(ref)}`
+    case 'fix':
+    case 'challenge':
+      return `Desafio concluído: ${challenge(ref)}`
+    case 'challenge-miss':
+      return `Tentativa errada em ${challenge(ref)} (sem perda de progresso)`
+    case 'hint':
+      return `Dica usada em ${challenge(ref)}`
+    case 'retry':
+      return ref.includes('chefe') ? `Nova tentativa do chefe${where}` : `Nova tentativa: ${challenge(ref)}`
+    case 'boss':
+      return ref.endsWith('chefe') ? `Chefe${where} vencido` : `Cenário do chefe${where} resolvido`
+    case 'boss-miss':
+      return `Cenário do chefe${where} errado (pode tentar de novo)`
+    case 'fogueira':
+      return `Fogueira acesa${where}`
+    case 'achievement':
+      return `Conquista desbloqueada: ${medalNames[ref] ?? ref}`
+    case 'card':
+      return `Flashcard revisado${where}`
+    case 'review':
+      return 'Sessão de revisão concluída'
+    case 'case':
+      return `Cenário de correção ${ref.replace('cenario-', '')} resolvido`
+    case 'lab':
+      return 'Laboratório de prompt concluído'
+  }
 }

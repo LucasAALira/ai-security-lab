@@ -36,9 +36,13 @@ export function TopBar() {
           <Coins className="size-3.5" aria-hidden="true" />
           <Bump value={balance}>{balance}</Bump>
         </Link>
-        <span className="hidden rounded-full border border-border px-3 py-1 text-[11px] sm:inline" title={level.name}>
+        <Link
+          to="/conquistas"
+          aria-label={`Nível ${level.number}, ${level.name} — abrir as conquistas`}
+          className="hidden rounded-full border border-border px-3 py-1 text-[11px] hover:border-tint-line hover:text-primary focus-visible:ring-2 focus-visible:ring-ring sm:inline"
+        >
           Nível {level.number}
-        </span>
+        </Link>
         <span className="rounded-full border border-border px-3 py-1 text-[10px] tracking-[1.4px]">
           PT-BR <span className="ml-0.5 inline-block size-1.5 rounded-full bg-primary" aria-hidden="true" />
         </span>

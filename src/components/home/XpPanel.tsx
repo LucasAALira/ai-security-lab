@@ -1,7 +1,8 @@
+import { Check } from 'lucide-react'
 import CountUp from '@/components/reactbits/CountUp'
 import { Progress } from '@/components/ui/progress'
 import { formatNumber, plural, tierNames } from '@/lib/format'
-import { formatDay, MAX_TASK_XP, maxXp } from '@/lib/progress'
+import { formatDay, maxXp } from '@/lib/progress'
 import { useProgress } from '@/state/ProgressProvider'
 
 export function XpPanel() {
@@ -10,7 +11,7 @@ export function XpPanel() {
   const got = medals.filter((m) => m.unlocked)
   const recent = [...got].sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')).slice(0, 3)
   const next = level.next
-  const bonus = maxXp(ctx).medals
+  const max = maxXp(ctx)
   const pct = next ? Math.min(100, ((summary.xp - level.start) / (next - level.start)) * 100) : 100
 
   return (
@@ -21,7 +22,7 @@ export function XpPanel() {
           <span className="block text-xs text-foreground/80">
             Nível {level.number} · {level.name}
           </span>
-          <small className="mt-1 block text-[11px] text-muted-foreground">
+          <small data-testid="xp-split" className="mt-1 block text-[11px] text-muted-foreground">
             {summary.taskXp} XP em tarefas + {summary.medalXp} XP em medalhas
           </small>
         </div>
@@ -35,7 +36,8 @@ export function XpPanel() {
           </Chip>
           {recent.map((m) => (
             <Chip key={m.id} on title={`${tierNames[m.tier]}${m.date ? ` · ${formatDay(m.date)}` : ''}`}>
-              ✓ {m.name}
+              <Check className="mr-1 inline size-3 align-[-1px]" aria-hidden="true" />
+              {m.name}
             </Chip>
           ))}
           <Chip on={streak > 0} title="Dias seguidos com atividade de estudo">
@@ -44,7 +46,7 @@ export function XpPanel() {
         </ul>
       </div>
       <p className="mt-3 text-xs text-muted-foreground">
-        Ganhe até 100 XP por módulo: 30 por leitura, 20 por pesquisa, 20 pela atividade e 30 pelas questões. O laboratório vale 30 XP e cada um dos seis cenários de correção vale 40 XP. Total disponível em tarefas: {formatNumber(MAX_TASK_XP)} XP. Cada conquista pontua uma única vez. Medalhas somam até {formatNumber(bonus)} XP de bônus ({medals.length} medalhas).
+        Até 100 XP por módulo: 30 pelas etapas da aula, 20 pela pesquisa, 20 pela atividade e 30 pelo quiz. O laboratório vale 30 XP, cada cenário de correção 40 XP, cada desafio de código até 30 XP e cada chefe 60 XP. Repetir uma atividade nunca soma XP de novo. Tarefas somam até {formatNumber(max.tasks)} XP; as {medals.length} conquistas somam até {formatNumber(max.medals)} XP de bônus, cada uma uma única vez.
       </p>
       {state.migrated ? (
         <p className="mt-3 rounded-md border border-tint-line bg-tint px-3 py-2.5 text-xs">

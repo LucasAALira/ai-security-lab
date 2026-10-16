@@ -68,3 +68,58 @@ export interface Materia {
   research: { heading: string; html: string }
   bibliography: { heading: string; html: string }
 }
+
+/** Desafio de código: identificar a(s) linha(s) vulnerável(is) e escolher a correção. */
+export interface CodeChallenge {
+  /** Identificador estável, usado no progresso salvo. Nunca renomeie um desafio já publicado. */
+  id: string
+  /** Módulo a que o desafio pertence; ele só abre quando o módulo está liberado na trilha. */
+  module: number
+  /** `vuln`: identificação de falhas em geral. `auth`: falhas de autorização. */
+  kind: 'vuln' | 'auth'
+  title: string
+  /** Contexto curto: o que o código faz. */
+  scenario: string
+  file: string
+  language: 'ts' | 'py'
+  code: string[]
+  /** Linhas (a partir de 0) que formam a falha principal: todas precisam ser marcadas. */
+  vulnerable: number[]
+  /** Linhas relacionadas também aceitas como corretas, sem serem obrigatórias. */
+  also: number[]
+  /** Linhas de uma falha opcional. Não são pedidas no enunciado; achá-las revela uma conquista secreta. */
+  extra: number[]
+  extraNote: string
+  /** Por que algumas linhas parecidas não são o problema (mostrado após um erro na identificação). */
+  notes: Record<number, string>
+  /** Explicação mostrada depois de identificar a falha. */
+  why: string
+  fixes: { text: string; feedback: string }[]
+  fix: number
+  /** Duas dicas para identificar e uma para escolher a correção, em ordem crescente de ajuda. */
+  hints: [string, string, string]
+}
+
+export interface Flashcard {
+  /** `m{módulo}-c{n}`: o formato é validado pelo progresso. */
+  id: string
+  module: number
+  front: string
+  back: string
+}
+
+/** Um cenário do chefe: combina conhecimentos do módulo e exige uma única resposta certa. */
+export interface BossQuestion {
+  scenario: string
+  options: string[]
+  correct: number
+  feedback: string[]
+}
+
+export interface Boss {
+  module: number
+  name: string
+  epithet: string
+  intro: string
+  questions: BossQuestion[]
+}

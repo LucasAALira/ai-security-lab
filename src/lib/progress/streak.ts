@@ -53,3 +53,20 @@ export function streakStatus(s: StudyState, now: Date): StreakStatus {
   if (gap === 1) return 'open'
   return gap <= 1 + s.shop.shields ? 'shielded' : 'lost'
 }
+
+/** Conta o dia de `now` como dia real de estudo (altera `s`). Diferente da sequência acima, aqui
+ *  não há escudos: um dia sem estudo zera a contagem. É a base da conquista "Persistência". */
+export function touchStudy(s: StudyState, now: Date): void {
+  const today = dayKey(now)
+  const k = s.study
+  if (k.last && daysBetween(k.last, today) <= 0) return
+  k.current = k.last && daysBetween(k.last, today) === 1 ? k.current + 1 : 1
+  k.best = Math.max(k.best, k.current)
+  k.last = today
+}
+
+/** Dias reais seguidos em andamento: vale se o último estudo foi hoje ou ontem. */
+export function activeStudyDays(s: StudyState, now: Date): number {
+  const { last, current } = s.study
+  return last && daysBetween(last, dayKey(now)) <= 1 ? current : 0
+}

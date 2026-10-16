@@ -11,7 +11,7 @@ export function TierChip({ tier, className }: { tier: Tier | null; className?: s
         className,
       )}
     >
-      <span aria-hidden="true">●</span>
+      <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
       {tier ? tierNames[tier] : 'Sem medalha'}
     </span>
   )

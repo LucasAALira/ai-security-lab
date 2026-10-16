@@ -1,9 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react'
-import { modules } from '@/data/modules'
-import { remediationCases } from '@/data/scenarios'
+import { progressContext } from '@/data/progress-context'
 import {
   activeStreak,
-  buildContext,
+  activeStudyDays,
   canReview,
   coinBalance,
   dailyView,
@@ -11,24 +10,28 @@ import {
   improvements,
   levelFor,
   medals,
+  nextObjective,
   streakStatus,
   summary,
   trackProgress,
+  trail,
   type Action,
   type ApplyResult,
   type DailyView,
   type Improvement,
   type LevelInfo,
   type Medal,
+  type Objective,
   type ProgressContext,
   type StreakStatus,
   type StudyState,
   type Summary,
   type TrackProgress,
+  type TrailModule,
 } from '@/lib/progress'
 import { browserStorage, createProgressStore, type ProgressStore } from './progress-store'
 
-export const progressContext: ProgressContext = buildContext(modules, remediationCases)
+export { progressContext }
 
 /** Tudo o que a interface mostra, calculado uma vez por mudança de estado ou de dia. */
 export interface Derived {
@@ -42,6 +45,11 @@ export interface Derived {
   streak: number
   streakStatus: StreakStatus
   canReview: boolean
+  /** Dias reais seguidos de estudo (sem escudos). */
+  studyDays: number
+  trail: TrailModule[]
+  /** O próximo objetivo real da trilha. */
+  objective: Objective
 }
 
 export interface ProgressValue {
@@ -70,6 +78,9 @@ export function derive(state: StudyState, ctx: ProgressContext, now: Date): Deri
     streak: activeStreak(state, now),
     streakStatus: streakStatus(state, now),
     canReview: canReview(state),
+    studyDays: activeStudyDays(state, now),
+    trail: trail(state, ctx),
+    objective: nextObjective(state, ctx),
   }
 }
 

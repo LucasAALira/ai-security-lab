@@ -6,6 +6,9 @@ import { HomePage } from '@/pages/HomePage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 
 // As outras páginas (com o texto das matérias, a revisão e a loja) só são baixadas quando abertas.
+const AchievementsPage = lazy(() => import('@/pages/AchievementsPage').then((m) => ({ default: m.AchievementsPage })))
+const TrailPage = lazy(() => import('@/pages/TrailPage').then((m) => ({ default: m.TrailPage })))
+const ChallengesPage = lazy(() => import('@/pages/ChallengesPage').then((m) => ({ default: m.ChallengesPage })))
 const MateriaPage = lazy(() => import('@/pages/MateriaPage').then((m) => ({ default: m.MateriaPage })))
 const ReferencesPage = lazy(() => import('@/pages/ReferencesPage').then((m) => ({ default: m.ReferencesPage })))
 const ReviewPage = lazy(() => import('@/pages/ReviewPage').then((m) => ({ default: m.ReviewPage })))
@@ -20,6 +23,11 @@ export function App() {
           <Route path="/" element={<HomePage />}>
             <Route path="modulo/:n" element={<LessonRoute />} />
           </Route>
+          <Route path="trilha" element={<TrailPage />}>
+            <Route path="modulo/:n" element={<LessonRoute />} />
+          </Route>
+          <Route path="desafios" element={<ChallengesPage />} />
+          <Route path="conquistas" element={<AchievementsPage />} />
           <Route path="materias/:slug" element={<MateriaPage />} />
           <Route path="revisao" element={<ReviewPage />} />
           <Route path="loja" element={<ShopPage />} />

@@ -33,12 +33,29 @@ endereco e porta para manter o mesmo progresso. Limpar dados do navegador
 apaga-o. O progresso salvo por versoes anteriores continua valendo.
 O aviso 'me responsabilizo' e uma confirmacao de interface, nao autenticacao.
 
+TRILHA, DESAFIOS E CONQUISTAS
+Trilha de modulos com fogueiras (conclusao e revisao) e um chefe por modulo;
+os modulos abrem quando os pre-requisitos estao concluidos. Aulas em abas
+(Conceito, Exemplo, Como corrigir, Revisar, Praticar, Quiz), flashcards e o
+Laboratorio de codigo: marque as linhas vulneraveis e escolha a correcao.
+Dicas ajudam, mas tiram a conquista 'Sem Ajuda' daquela tentativa. Repetir
+uma atividade nao soma XP de novo.
+A pagina Conquistas mostra as 42 conquistas (uma e secreta), com filtros,
+progresso real e detalhes. Ha som opcional (desligado por padrao).
+
+BACKUP DO PROGRESSO
+O progresso fica so neste navegador; nao ha conta nem sincronizacao entre
+aparelhos. Em Conquistas, use 'Exportar progresso' para baixar um arquivo e
+'Importar progresso' para restaurar em outro navegador ou aparelho.
+Os dias de estudo usam o fuso horario do navegador.
+
 MEDALHAS, MISSOES E LOJA
-O site tem 34 medalhas (bronze, prata, ouro e dragao) que dao XP bonus uma
-unica vez, evolucao por trilha e sugestoes de melhoria. Tambem tem missoes do
-dia com bau, moedas (1 a cada 5 XP), revisao com 3 vidas e uma loja com escudo
-de sequencia, temas de cor e recompensas pessoais. XP maximo: 1.780 (1.070
-em tarefas e 710 em medalhas). Gastar moedas nunca reduz XP, nivel ou medalhas.
+Medalhas (bronze, prata, ouro e dragao) dao XP bonus uma unica vez, ha
+evolucao por trilha e sugestoes de melhoria. Tambem ha missoes do dia com
+bau, moedas (1 a cada 5 XP), revisao com 3 vidas e uma loja com escudo de
+sequencia, temas de cor e recompensas pessoais. XP maximo: 2.860 (1.940 em
+tarefas e 920 em conquistas). Gastar moedas nunca reduz XP, nivel ou
+conquistas.
 
 ARQUIVOS
 iniciar.py: servidor e abertura do navegador.
