@@ -1,11 +1,39 @@
 #!/usr/bin/env python3
-"""Servidor local do AI Security Lab; apenas biblioteca padrao do Python."""
+"""Servidor local do AI Security Lab; apenas biblioteca padrao do Python.
+
+Serve o site ja gerado na pasta `dist/` (veja o README para gerar de novo com Node).
+"""
 import argparse
 import functools
 import http.server
 import pathlib
 import threading
 import webbrowser
+
+
+class Handler(http.server.SimpleHTTPRequestHandler):
+    """Garante os tipos de arquivo que o navegador exige dos modulos JavaScript e do WebAssembly
+    (no Windows o Python as vezes serve .js como texto simples, e o site nao abriria)."""
+
+    extensions_map = {
+        **http.server.SimpleHTTPRequestHandler.extensions_map,
+        '.js': 'text/javascript',
+        '.mjs': 'text/javascript',
+        '.css': 'text/css',
+        '.json': 'application/json',
+        '.svg': 'image/svg+xml',
+        '.wasm': 'application/wasm',
+        '.woff2': 'font/woff2',
+    }
+
+    def end_headers(self):
+        # Os arquivos tem nome com codigo no final; so a pagina inicial muda de nome. Sem cache longo,
+        # uma versao nova do site aparece assim que a pagina e recarregada.
+        self.send_header('Cache-Control', 'no-cache')
+        super().end_headers()
+
+    def log_message(self, format, *args):  # noqa: A002 - mantem o terminal limpo
+        pass
 
 
 def main():
@@ -15,8 +43,12 @@ def main():
     args = parser.parse_args()
     if not 1 <= args.porta <= 65535:
         parser.error('A porta deve estar entre 1 e 65535.')
-    root = pathlib.Path(__file__).resolve().parent / 'site'
-    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(root))
+    root = pathlib.Path(__file__).resolve().parent / 'dist'
+    if not (root / 'index.html').is_file():
+        print('O site ainda nao foi gerado (falta a pasta dist/).\n'
+              'Com o Node.js instalado, rode: npm install && npm run build')
+        return 1
+    handler = functools.partial(Handler, directory=str(root))
     try:
         server = http.server.ThreadingHTTPServer(('127.0.0.1', args.porta), handler)
     except OSError as exc:

@@ -1,6 +1,6 @@
 AI SECURITY LAB — VERSAO LOCAL
 
-REQUISITO: Python 3.8 ou superior. Nenhuma biblioteca adicional.
+REQUISITO: Python 3.8 ou superior. Nenhuma biblioteca adicional e sem Node.js.
 Este pacote contem scripts executaveis; nao e um binario .exe independente.
 
 1. Extraia todo o ZIP para uma pasta.
@@ -13,32 +13,37 @@ Este pacote contem scripts executaveis; nao e um binario .exe independente.
    Se nao abrir, acesse esse endereco manualmente.
 5. Mantenha o terminal aberto. Ctrl+C encerra o servidor.
 
+Nao abra dist/index.html com dois cliques: os navegadores bloqueiam modulos
+JavaScript fora de um servidor. Use sempre o iniciador.
+
 OUTRA PORTA
    Windows: py -3 iniciar.py --porta 8081
    Linux/macOS: python3 iniciar.py --porta 8081
    Sem abertura automatica: acrescente --sem-navegador.
 
 CONTEUDO
-Todos os arquivos do site, materias internas, quizzes, cenarios,
-textos de pentest e o logo dos dois dragoes estao incluidos.
-Depois de instalar Python, o conteudo funciona sem internet.
+Materias internas, quizzes, cenarios, textos de pentest, o logo dos dois
+dragoes, a fonte e o motor das animacoes estao incluidos.
+Depois de instalar Python, tudo funciona sem internet.
 O servidor escuta apenas em 127.0.0.1, no proprio computador.
 
 PROGRESSO E XP
-Ficam no armazenamento local do navegador. O progresso da versao hospedada
-nao e transferido automaticamente. Use sempre o mesmo navegador, endereco
-e porta para manter o mesmo progresso. Limpar dados do navegador apaga-o.
+Ficam no armazenamento local do navegador. Use sempre o mesmo navegador,
+endereco e porta para manter o mesmo progresso. Limpar dados do navegador
+apaga-o. O progresso salvo por versoes anteriores continua valendo.
 O aviso 'me responsabilizo' e uma confirmacao de interface, nao autenticacao.
 
-MEDALHAS E EVOLUCAO
-O site tem 26 medalhas (bronze, prata, ouro e dragao) que dao XP bonus uma
-unica vez, evolucao por trilha e sugestoes de melhoria baseadas no seu
-progresso. Tudo fica no mesmo armazenamento local: data das medalhas, erros por
-questao e dias seguidos de estudo. XP maximo: 1.660 (1.070 em tarefas e
-590 em medalhas).
+MEDALHAS, MISSOES E LOJA
+O site tem 34 medalhas (bronze, prata, ouro e dragao) que dao XP bonus uma
+unica vez, evolucao por trilha e sugestoes de melhoria. Tambem tem missoes do
+dia com bau, moedas (1 a cada 5 XP), revisao com 3 vidas e uma loja com escudo
+de sequencia, temas de cor e recompensas pessoais. XP maximo: 1.780 (1.070
+em tarefas e 710 em medalhas). Gastar moedas nunca reduz XP, nivel ou medalhas.
 
 ARQUIVOS
 iniciar.py: servidor e abertura do navegador.
 iniciar-windows.bat: iniciador Windows.
 iniciar-linux-mac.sh: iniciador Linux/macOS.
-site/: HTML, CSS, JavaScript, textos e imagens editaveis.
+dist/: o site pronto para uso.
+Quem quiser alterar o site precisa do Node.js (20.19+ ou 22.12+); veja o
+README.md, secao Desenvolvimento (npm install, npm run dev, npm run build).

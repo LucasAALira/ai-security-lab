@@ -1,0 +1,252 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/inter";
+
+/* Só o código-fonte alimenta o Tailwind: o site gerado (dist) e o site antigo ficam de fora. */
+@source not "../dist";
+@source not "../site";
+
+/* daisyUI: temas próprios, sem os temas prontos da biblioteca, e só os componentes usados
+   (estatísticas e progresso radial); o resto da interface é shadcn/ui. */
+@plugin "daisyui" {
+  themes: false;
+  logs: false;
+  include: stat, radialprogress;
+}
+
+/* Tema padrão "Dragão": azul-escuro quase preto com destaque coral. */
+@plugin "daisyui/theme" {
+  name: "dragon";
+  default: true;
+  prefersdark: true;
+  color-scheme: dark;
+  --color-base-100: #0b1013;
+  --color-base-200: #11191e;
+  --color-base-300: #233037;
+  --color-base-content: #f0e9e9;
+  --color-primary: #ed8080;
+  --color-primary-content: #231616;
+  --color-secondary: #1a2328;
+  --color-secondary-content: #f0e9e9;
+  --color-accent: #1f2d34;
+  --color-accent-content: #f0e9e9;
+  --color-neutral: #162026;
+  --color-neutral-content: #c9d3d6;
+  --color-info: #6cb6d9;
+  --color-info-content: #06212c;
+  --color-success: #7fcf9e;
+  --color-success-content: #08210f;
+  --color-warning: #ecc258;
+  --color-warning-content: #2b2005;
+  --color-error: #ff7b72;
+  --color-error-content: #2b0a08;
+  --radius-selector: 0.25rem;
+  --radius-field: 0.3rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* Temas desbloqueados na loja: mudam só a cor de destaque. */
+@plugin "daisyui/theme" {
+  name: "cyber";
+  color-scheme: dark;
+  --color-base-100: #0a1114;
+  --color-base-200: #0f1a1f;
+  --color-base-300: #1f3239;
+  --color-base-content: #e8f1f2;
+  --color-primary: #5cd6e6;
+  --color-primary-content: #04252b;
+  --color-secondary: #16252a;
+  --color-secondary-content: #e8f1f2;
+  --color-accent: #1a2f36;
+  --color-accent-content: #e8f1f2;
+  --color-neutral: #132228;
+  --color-neutral-content: #c4d6d9;
+  --color-info: #6cb6d9;
+  --color-info-content: #06212c;
+  --color-success: #7fcf9e;
+  --color-success-content: #08210f;
+  --color-warning: #ecc258;
+  --color-warning-content: #2b2005;
+  --color-error: #ff7b72;
+  --color-error-content: #2b0a08;
+  --radius-selector: 0.25rem;
+  --radius-field: 0.3rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+  name: "arcane";
+  color-scheme: dark;
+  --color-base-100: #0e0d16;
+  --color-base-200: #15131f;
+  --color-base-300: #2a2640;
+  --color-base-content: #efecf7;
+  --color-primary: #b79af2;
+  --color-primary-content: #1a1030;
+  --color-secondary: #1e1b2e;
+  --color-secondary-content: #efecf7;
+  --color-accent: #28233d;
+  --color-accent-content: #efecf7;
+  --color-neutral: #1a1727;
+  --color-neutral-content: #cdc8de;
+  --color-info: #6cb6d9;
+  --color-info-content: #06212c;
+  --color-success: #7fcf9e;
+  --color-success-content: #08210f;
+  --color-warning: #ecc258;
+  --color-warning-content: #2b2005;
+  --color-error: #ff7b72;
+  --color-error-content: #2b0a08;
+  --radius-selector: 0.25rem;
+  --radius-field: 0.3rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* Todos os temas são escuros: o variant `dark:` do shadcn vale sempre. */
+@custom-variant dark (&:where([data-theme], [data-theme] *));
+
+/* Variáveis do shadcn/ui derivadas do tema ativo do daisyUI (fonte única de cor).
+   Declaradas também em [data-theme] para que prévias aninhadas de tema funcionem. */
+:root,
+[data-theme] {
+  --background: var(--color-base-100);
+  --foreground: var(--color-base-content);
+  --card: var(--color-base-200);
+  --card-foreground: var(--color-base-content);
+  --popover: var(--color-base-200);
+  --popover-foreground: var(--color-base-content);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-content);
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-secondary-content);
+  --muted: var(--color-neutral);
+  --muted-foreground: #92a2a7;
+  --accent: var(--color-accent);
+  --accent-foreground: var(--color-accent-content);
+  --destructive: var(--color-error);
+  --border: var(--color-base-300);
+  --input: var(--color-base-300);
+  --ring: var(--color-primary);
+  --radius: 0.5rem;
+}
+
+/* Superfícies com um toque da cor de destaque, derivadas do tema ativo. */
+:root,
+[data-theme] {
+  --tint: color-mix(in oklab, var(--primary) 6%, var(--card));
+  --tint-strong: color-mix(in oklab, var(--primary) 13%, var(--card));
+  --tint-line: color-mix(in oklab, var(--primary) 24%, var(--border));
+}
+
+@theme inline {
+  --color-tint: var(--tint);
+  --color-tint-strong: var(--tint-strong);
+  --color-tint-line: var(--tint-line);
+  --color-tier: var(--tier);
+  --color-tier-soft: var(--tier-soft);
+  --color-tier-line: var(--tier-line);
+  --font-sans: "Inter Variable", Inter, "Segoe UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* Cores das medalhas, iguais em todos os temas. */
+@theme {
+  --color-bronze: #d9955c;
+  --color-silver: #c9d2da;
+  --color-gold: #ecc258;
+  --color-dragon: #ed8080;
+}
+
+@layer base {
+  .tier-bronze { --tier: var(--color-bronze); }
+  .tier-prata { --tier: var(--color-silver); }
+  .tier-ouro { --tier: var(--color-gold); }
+  .tier-dragao { --tier: var(--color-dragon); }
+  .tier-none { --tier: var(--muted-foreground); }
+  .tier-bronze, .tier-prata, .tier-ouro, .tier-dragao, .tier-none {
+    --tier-soft: color-mix(in oklab, var(--tier) 15%, transparent);
+    --tier-line: color-mix(in oklab, var(--tier) 60%, transparent);
+  }
+
+  * { @apply border-border outline-ring/50; }
+  html { scroll-behavior: smooth; scroll-padding-top: 30px; color-scheme: dark; }
+  body { @apply bg-background text-foreground font-sans antialiased; font-size: 15px; line-height: 1.6; margin: 0; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+}
+
+/* Texto dos conteúdos do repositório (HTML confiável): matérias e leitura de pentest. */
+@layer components {
+  .study-prose p { margin: 0.9rem 0; font-size: 16px; line-height: 1.9; color: color-mix(in oklab, var(--foreground) 80%, transparent); }
+  .study-prose strong { color: var(--foreground); }
+  .study-prose ul, .study-prose ol { padding-left: 1.3rem; margin: 0.9rem 0; font-size: 15px; line-height: 1.8; color: color-mix(in oklab, var(--foreground) 78%, transparent); list-style: revert; }
+  .study-prose dt { margin-top: 1.25rem; font-size: 17px; font-weight: 700; color: var(--primary); }
+  .study-prose dd { margin: 0.3rem 0 0; font-size: 15px; line-height: 1.85; color: color-mix(in oklab, var(--foreground) 74%, transparent); }
+  .study-prose.is-compact p { font-size: 14px; line-height: 1.8; }
+  .study-prose.is-small p, .study-prose.is-small li { font-size: 12.5px; line-height: 1.7; color: var(--muted-foreground); }
+
+  .pentest-prose { font-size: 14px; }
+  .pentest-prose .eyebrow { color: var(--primary); font-size: 10px; font-weight: 650; letter-spacing: 0.2em; }
+  .pentest-prose h3 { margin: 0.75rem 0; font-size: 24px; line-height: 1.4; font-weight: 500; color: var(--foreground); }
+  .pentest-prose h4 { margin: 1.75rem 0 1rem; padding-bottom: 0.65rem; border-bottom: 1px solid var(--tint-line); font-size: 19px; font-weight: 500; color: var(--foreground); }
+  .pentest-prose h5 { margin: 1.4rem 0 0.5rem; font-size: 15px; font-weight: 600; color: var(--primary); }
+  .pentest-prose p { margin: 0.7rem 0; font-size: 14px; line-height: 1.8; color: color-mix(in oklab, var(--foreground) 78%, transparent); }
+  .pentest-prose strong { color: var(--foreground); }
+  .pentest-prose ul { padding-left: 1.3rem; list-style: revert; font-size: 14px; line-height: 1.8; color: color-mix(in oklab, var(--foreground) 78%, transparent); }
+  .pentest-prose .reading-lead { font-size: 15px; }
+  .pentest-prose .hint, .pentest-prose .source-link { font-size: 12px; color: var(--muted-foreground); }
+  .pentest-prose a { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+  .pentest-prose .reading-nav { display: flex; flex-wrap: wrap; gap: 0.55rem 1.25rem; margin: 1.25rem 0; padding: 0.75rem 1rem; border: 1px solid var(--tint-line); border-radius: 6px; background: var(--tint-strong); }
+  .pentest-prose .reading-nav a { font-size: 12px; text-decoration: none; }
+  .pentest-prose .reading-nav a:hover { text-decoration: underline; }
+  .pentest-prose .reading-case { margin: 1.5rem 0; padding-left: 1rem; border-left: 3px solid var(--tint-line); }
+  .pentest-prose .reverse-reflection { border-top: 2px solid var(--primary); margin-top: 1.5rem; }
+  .pentest-prose .reflection-question { padding: 0.95rem; border: 1px solid var(--tint-line); border-radius: 6px; background: var(--tint-strong); color: var(--foreground); }
+  .pentest-prose section { scroll-margin-top: 22px; }
+  .pentest-prose .notice { padding: 0.65rem 0.75rem; border: 1px solid var(--tint-line); border-radius: 6px; background: var(--tint); font-size: 12px; }
+
+  @media (max-width: 600px) {
+    .pentest-prose h3 { font-size: 21px; }
+    .pentest-prose h4 { font-size: 18px; }
+    .pentest-prose p, .pentest-prose ul { font-size: 13px; }
+    .pentest-prose .reading-nav { display: grid; }
+    .pentest-prose .reading-case { padding-left: 0.75rem; }
+    .study-prose p { font-size: 14px; }
+  }
+}

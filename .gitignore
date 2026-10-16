@@ -4,3 +4,12 @@ __pycache__/
 Thumbs.db
 .env
 .env.*
+
+# Node
+node_modules/
+.vite/
+coverage/
+*.log
+npm-debug.log*
+
+tsconfig.tsbuildinfo
