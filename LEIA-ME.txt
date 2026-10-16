@@ -1,0 +1,37 @@
+AI SECURITY LAB — VERSAO LOCAL
+
+REQUISITO: Python 3.8 ou superior. Nenhuma biblioteca adicional.
+Este pacote contem scripts executaveis; nao e um binario .exe independente.
+
+1. Extraia todo o ZIP para uma pasta.
+2. No Windows: abra iniciar-windows.bat com dois cliques ou execute no terminal:
+   .\iniciar-windows.bat
+   Alternativa: py -3 iniciar.py
+3. No Linux/macOS, abra o terminal na pasta extraida e execute:
+   sh iniciar-linux-mac.sh
+4. O navegador abrira http://localhost:8080 automaticamente.
+   Se nao abrir, acesse esse endereco manualmente.
+5. Mantenha o terminal aberto. Ctrl+C encerra o servidor.
+
+OUTRA PORTA
+   Windows: py -3 iniciar.py --porta 8081
+   Linux/macOS: python3 iniciar.py --porta 8081
+   Sem abertura automatica: acrescente --sem-navegador.
+
+CONTEUDO
+Todos os arquivos do site, materias internas, quizzes, cenarios,
+textos de pentest e o logo dos dois dragoes estao incluidos.
+Depois de instalar Python, o conteudo funciona sem internet.
+O servidor escuta apenas em 127.0.0.1, no proprio computador.
+
+PROGRESSO E XP
+Ficam no armazenamento local do navegador. O progresso da versao hospedada
+nao e transferido automaticamente. Use sempre o mesmo navegador, endereco
+e porta para manter o mesmo progresso. Limpar dados do navegador apaga-o.
+O aviso 'me responsabilizo' e uma confirmacao de interface, nao autenticacao.
+
+ARQUIVOS
+iniciar.py: servidor e abertura do navegador.
+iniciar-windows.bat: iniciador Windows.
+iniciar-linux-mac.sh: iniciador Linux/macOS.
+site/: HTML, CSS, JavaScript, textos e imagens editaveis.
