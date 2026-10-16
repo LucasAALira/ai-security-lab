@@ -203,6 +203,7 @@
   .tier-bronze, .tier-prata, .tier-ouro, .tier-dragao, .tier-none {
     --tier-soft: color-mix(in oklab, var(--tier) 15%, transparent);
     --tier-line: color-mix(in oklab, var(--tier) 60%, transparent);
+    --tier-edge: color-mix(in oklab, var(--tier) 52%, #1a0d0e);
   }
 
   * { @apply border-border outline-ring/50; }

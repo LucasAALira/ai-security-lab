@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Check } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -104,7 +104,13 @@ export function LabSection() {
         </div>
         {ran || state.lab ? (
           <Button variant="outline" className="mt-3 w-full" disabled={state.lab} onClick={() => dispatch({ type: 'completeLab' })}>
-            {state.lab ? `✓ Laboratório concluído · ${XP.lab} XP` : `Revisei o resultado · concluir laboratório +${XP.lab} XP`}
+            {state.lab ? (
+              <>
+                <Check aria-hidden="true" /> Laboratório concluído · {XP.lab} XP
+              </>
+            ) : (
+              `Revisei o resultado · concluir laboratório +${XP.lab} XP`
+            )}
           </Button>
         ) : null}
       </div>

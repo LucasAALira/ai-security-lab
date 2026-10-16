@@ -273,7 +273,10 @@ function Result({ won = false, session, events, missedModules = [], onAgain }: R
       {won && lines.length ? (
         <ul role="status" className="mx-auto my-5 grid max-w-sm gap-1.5 rounded-lg border border-tint-line bg-tint p-4 text-left text-sm">
           {lines.map((l) => (
-            <li key={l}>✓ {l}</li>
+            <li key={l} className="flex items-start gap-2">
+              <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+              {l}
+            </li>
           ))}
         </ul>
       ) : null}

@@ -1,3 +1,4 @@
+import { ArrowRight, Check, ExternalLink } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { Badge } from '@/components/ui/badge'
@@ -66,7 +67,15 @@ export function RemediationSection({ size, onSizeChange, active, onActiveChange,
               <h3 className="mt-3.5 mb-2 text-xl leading-snug">{c.title}</h3>
               <p className="mb-[18px] text-xs text-muted-foreground">{c.risk}</p>
               <Button variant="outline" size="sm" className="mt-auto self-start" onClick={() => onActiveChange(i)}>
-                {state.cases[i] ? '✓ Revisar solução' : 'Investigar e corrigir →'}
+                {state.cases[i] ? (
+                  <>
+                    <Check aria-hidden="true" /> Revisar solução
+                  </>
+                ) : (
+                  <>
+                    Investigar e corrigir <ArrowRight aria-hidden="true" />
+                  </>
+                )}
               </Button>
             </article>
           ),
@@ -135,7 +144,13 @@ function CaseDetail({ index }: { index: number }) {
           </RadioGroup>
         </fieldset>
         <Button type="submit" className="mt-4" disabled={done}>
-          {done ? `✓ Correção concluída · ${XP.fix} XP` : 'Avaliar correção'}
+          {done ? (
+            <>
+              <Check aria-hidden="true" /> Correção concluída · {XP.fix} XP
+            </>
+          ) : (
+            'Avaliar correção'
+          )}
         </Button>
       </form>
       <div role="status" aria-live="polite" className={cn('mt-[18px] text-[13px]', feedback?.kind === 'warn' && 'rounded-md border border-warning/50 bg-warning/10 px-3 py-2.5 text-warning', feedback?.kind === 'info' && 'rounded-md border border-tint-line bg-tint px-3 py-2.5')}>
@@ -154,7 +169,7 @@ function CaseDetail({ index }: { index: number }) {
       ) : null}
       {done ? <SolutionPlan c={c} /> : null}
       <a href={c.source} className="mt-[18px] inline-block text-xs text-primary hover:underline" target="_blank" rel="noopener noreferrer">
-        Referência OWASP · edição 2025 ↗
+        Referência OWASP · edição 2025 <ExternalLink className="ml-1 inline size-3" aria-hidden="true" />
       </a>
     </article>
   )

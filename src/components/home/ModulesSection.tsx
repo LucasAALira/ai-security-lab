@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Check } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { SectionHeading } from '@/components/common/SectionHeading'
@@ -72,7 +72,13 @@ export function ModulesSection({ filter, onFilterChange }: Props) {
                 {m.level} · {steps}/{TASKS_PER_MODULE} tarefas · {moduleXp(s)}/{MODULE_XP} XP {tierFor(steps, TASKS_PER_MODULE) ? <TierChip tier={tierFor(steps, TASKS_PER_MODULE)} className="ml-1" /> : null}
               </p>
               <Link to={`/modulo/${m.id}`} state={{ overlay: true }} className="flex items-center justify-between border-t border-border pt-3.5 text-xs text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring">
-                {done ? '✓ Revisar módulo' : 'Estudar módulo'}
+                {done ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Check className="size-3.5" aria-hidden="true" /> Revisar módulo
+                  </span>
+                ) : (
+                  'Estudar módulo'
+                )}
                 <ArrowRight className="size-3.5" aria-hidden="true" />
               </Link>
               <Link to={`/materias/${m.slug}`} className="mt-3 text-[11px] leading-normal text-foreground/60 hover:text-primary">

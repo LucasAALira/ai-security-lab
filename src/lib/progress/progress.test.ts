@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { modules } from '@/data/modules'
-import { remediationCases } from '@/data/scenarios'
+import { progressContext } from '@/data/progress-context'
 import {
   activeStreak,
   applyAction,
-  buildContext,
   cleanState,
   emptyState,
   improvements,
@@ -27,14 +25,20 @@ import {
 } from '.'
 import { touchStreak } from './streak'
 
-const ctx = buildContext(modules, remediationCases)
-const emptyCtx: ProgressContext = { tracks: [], prereqs: [], sizes: [] }
+const ctx = progressContext
+const emptyCtx: ProgressContext = { tracks: [], prereqs: [], sizes: [], challenges: [], bosses: [] }
 /** Meio-dia local, para a data não depender do fuso do computador de testes. */
 const D = (y: number, m: number, d: number) => new Date(y, m - 1, d, 12)
 const NOW = D(2026, 10, 16)
 
 function run(state: StudyState, now: Date, ...actions: Action[]): StudyState {
   return actions.reduce((s, a) => applyAction(s, a, ctx, now).state, state)
+}
+
+/** Como `run`, mas sem pré-requisitos entre módulos: para testar contas de XP e trilhas em qualquer ordem. */
+const openCtx: ProgressContext = { ...ctx, prereqs: ctx.prereqs.map(() => []) }
+function runOpen(state: StudyState, now: Date, ...actions: Action[]): StudyState {
+  return actions.reduce((s, a) => applyAction(s, a, openCtx, now).state, state)
 }
 
 const finishModule = (i: number): Action[] => [
@@ -49,6 +53,19 @@ const finishModule = (i: number): Action[] => [
 
 /** Medalhas que dependem de revisão, missões, loja e dia de muito XP — não de concluir o conteúdo. */
 const MECHANIC_MEDALS = ['first-review', 'reviewer-10', 'flawless-review', 'quest-1', 'quest-15', 'shield-up', 'first-reward', 'big-day']
+
+/** As oito conquistas do aprendizado interativo (desafios de código, trilha e chefes). */
+const INTERACTIVE_MEDALS = [
+  'primeira-chama',
+  'explorador-de-falhas',
+  'guardiao-das-apis',
+  'codigo-protegido',
+  'sem-ajuda',
+  'persistencia',
+  'mestre-do-modulo',
+  'alem-do-obvio',
+]
+const STUDY_ONLY = [...MECHANIC_MEDALS, ...INTERACTIVE_MEDALS]
 
 /** Estado sem missões no dia de `NOW`, para testar XP sem a interferência de medalhas de missão. */
 function quiet(): StudyState {
@@ -73,17 +90,18 @@ describe('contexto', () => {
 })
 
 describe('totais', () => {
-  it('estado vazio: 0 XP, nenhuma medalha, catálogo de 34 (26 de estudo + 8 das mecânicas)', () => {
+  it('estado vazio: 0 XP, nenhuma medalha, catálogo de 42 (26 de estudo + 8 das mecânicas + 8 do aprendizado interativo)', () => {
     const sm = summary(emptyState(), ctx)
     expect(sm.xp).toBe(0)
     expect(sm.medals).toBe(0)
-    expect(sm.medalTotal).toBe(34)
-    expect(medals(emptyState(), ctx).filter((m) => !MECHANIC_MEDALS.includes(m.id))).toHaveLength(26)
+    expect(sm.medalTotal).toBe(42)
+    expect(medals(emptyState(), ctx).filter((m) => !STUDY_ONLY.includes(m.id))).toHaveLength(26)
+    expect(medals(emptyState(), ctx).filter((m) => INTERACTIVE_MEDALS.includes(m.id))).toHaveLength(8)
   })
 
-  it('máximos: 1070 XP em tarefas + 710 de bônus de medalhas (590 de estudo + 120 das mecânicas)', () => {
-    expect(maxXp(ctx)).toEqual({ tasks: 1070, medals: 710 })
-    const study = medals(emptyState(), ctx).filter((m) => !MECHANIC_MEDALS.includes(m.id))
+  it('máximos: 1940 XP em tarefas (1070 + 13 desafios x 30 + 8 chefes x 60) + 920 de bônus de medalhas', () => {
+    expect(maxXp(ctx)).toEqual({ tasks: 1070 + 13 * 30 + 8 * 60, medals: 710 + 210 })
+    const study = medals(emptyState(), ctx).filter((m) => !STUDY_ONLY.includes(m.id))
     expect(study.reduce((n, m) => n + m.xp, 0)).toBe(590)
   })
 
@@ -97,17 +115,18 @@ describe('totais', () => {
     expect(sm.steps).toBe(63)
     expect(sm.complete).toBe(8)
     const missing = medals(s, ctx).filter((m) => !m.unlocked && !MECHANIC_MEDALS.includes(m.id)).map((m) => m.id)
-    expect(missing).toEqual(['streak-3', 'streak-7'])
+    // Concluir os módulos não conquista o que depende de desafios de código, chefes ou dias reais de estudo.
+    expect(missing).toEqual(['explorador-de-falhas', 'guardiao-das-apis', 'codigo-protegido', 'sem-ajuda', 'persistencia', 'mestre-do-modulo', 'alem-do-obvio', 'streak-3', 'streak-7'])
 
     for (let k = 0; k < 7; k++) touchStreak(s, D(2026, 11, 1 + k))
     const all = summary(s, ctx)
-    const study = medals(s, ctx).filter((m) => m.unlocked && !MECHANIC_MEDALS.includes(m.id))
+    const study = medals(s, ctx).filter((m) => m.unlocked && !STUDY_ONLY.includes(m.id))
     expect(study).toHaveLength(26)
     expect(study.reduce((n, m) => n + m.xp, 0)).toBe(590)
     expect(all.taskXp).toBe(1070)
     expect(all.xp).toBeGreaterThanOrEqual(1070 + 590)
     expect(levelFor(all.xp).name).toBe('Mestre Dragão')
-    expect(levelFor(all.xp).next).toBeNull()
+    expect(levelFor(all.xp).next).toBe(1900) // os desafios de código e os chefes abrem mais dois níveis
     expect(improvements(s, ctx)).toEqual([])
   })
 })
@@ -382,6 +401,8 @@ describe('níveis, faixas e melhorias', () => {
     expect(levelFor(1000).name).toBe('Defensor de IA')
     expect(levelFor(1250).name).toBe('Guardião de IA')
     expect(levelFor(1500).number).toBe(8)
+    expect(levelFor(1900).name).toBe('Sentinela da Brasa')
+    expect(levelFor(2400)).toMatchObject({ number: 10, name: 'Lenda do AppSec', next: null })
   })
 
   it('medalha de módulo/trilha: 40% / 70% / 100%', () => {
@@ -400,8 +421,8 @@ describe('níveis, faixas e melhorias', () => {
     expect(imp.map((x) => x.kind)).toEqual(['start', 'lab', 'cases'])
     expect(imp[0]).toMatchObject({ kind: 'start', module: 0 })
 
-    s = run(s, NOW, { type: 'miss', module: 3, index: 0 }, { type: 'miss', module: 3, index: 0 })
-    s = run(s, NOW, { type: 'read', module: 1, index: 0 }, { type: 'read', module: 1, index: 1 }, { type: 'read', module: 1, index: 2 }, { type: 'research', module: 1 })
+    s = runOpen(s, NOW, { type: 'miss', module: 3, index: 0 }, { type: 'miss', module: 3, index: 0 })
+    s = runOpen(s, NOW, { type: 'read', module: 1, index: 0 }, { type: 'read', module: 1, index: 1 }, { type: 'read', module: 1, index: 2 }, { type: 'research', module: 1 })
     imp = improvements(s, ctx)
     expect(imp[0]).toMatchObject({ kind: 'retry', module: 3, misses: 2 })
     expect(imp[1]).toMatchObject({ kind: 'finish', module: 1, xp: 100 - 50 })
@@ -416,7 +437,7 @@ describe('níveis, faixas e melhorias', () => {
   })
 
   it('progresso por trilha', () => {
-    const s = run(emptyState(), NOW, { type: 'read', module: 1, index: 0 }, { type: 'read', module: 1, index: 1 }, { type: 'read', module: 1, index: 2 })
+    const s = runOpen(emptyState(), NOW, { type: 'read', module: 1, index: 0 }, { type: 'read', module: 1, index: 1 }, { type: 'read', module: 1, index: 2 })
     const t = trackProgress(s, ctx).find((x) => x.name === 'Ataques e defesa')
     expect(t).toMatchObject({ count: 3, steps: 3, maxSteps: 21, xp: 30, maxXp: 300, tier: null })
   })

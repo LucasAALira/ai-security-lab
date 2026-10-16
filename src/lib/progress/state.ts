@@ -1,6 +1,10 @@
 import { DEFAULT_THEME, isThemeId, QUEST_IDS, QUESTS_PER_DAY, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
 import {
+  BOSS_QUESTIONS,
   CASE_COUNT,
+  EVENT_KINDS,
+  FLASHCARD_ID,
+  HINTS_PER_CHALLENGE,
   ID_PATTERN,
   LEGACY_STORAGE_KEY,
   LIMITS,
@@ -10,7 +14,7 @@ import {
   STORAGE_KEY,
 } from './constants'
 import { isDayKey } from './dates'
-import type { ModuleState, PersonalReward, StudyState } from './types'
+import type { BossState, ChallengeState, LearningEvent, ModuleState, PersonalReward, StudyState } from './types'
 
 type Loose = Record<string | number, unknown>
 
@@ -38,6 +42,87 @@ export function emptyModule(): ModuleState {
     misses: range(QUESTIONS_PER_MODULE).map(() => 0),
     firstTry: range(QUESTIONS_PER_MODULE).map(() => false),
   }
+}
+
+export function emptyChallenge(): ChallengeState {
+  return {
+    identified: false,
+    fixed: false,
+    helpless: false,
+    extra: false,
+    attempts: 0,
+    misses: 0,
+    hints: 0,
+    solved: '',
+    run: { hints: range(HINTS_PER_CHALLENGE).map(() => false), identified: false, fixed: false },
+  }
+}
+
+export function emptyBoss(): BossState {
+  return { done: range(BOSS_QUESTIONS).map(() => false), mistakes: 0, wins: 0, won: '', flawless: false }
+}
+
+function cleanChallenge(raw: unknown): ChallengeState {
+  const run = at(raw, 'run')
+  const runIdentified = at(run, 'identified') === true
+  const runFixed = runIdentified && at(run, 'fixed') === true
+  const identified = at(raw, 'identified') === true || runIdentified
+  const fixed = (identified && at(raw, 'fixed') === true) || runFixed
+  const completed = identified && fixed
+  return {
+    identified,
+    fixed,
+    helpless: completed && at(raw, 'helpless') === true,
+    extra: identified && at(raw, 'extra') === true,
+    attempts: small(at(raw, 'attempts')),
+    misses: small(at(raw, 'misses')),
+    hints: small(at(raw, 'hints')),
+    solved: completed ? day(at(raw, 'solved')) : '',
+    run: {
+      hints: range(HINTS_PER_CHALLENGE).map((j) => at(at(run, 'hints'), j) === true),
+      identified: runIdentified,
+      fixed: runFixed,
+    },
+  }
+}
+
+function cleanBoss(raw: unknown): BossState {
+  const won = day(at(raw, 'won'))
+  return {
+    done: range(BOSS_QUESTIONS).map((j) => at(at(raw, 'done'), j) === true),
+    mistakes: small(at(raw, 'mistakes')),
+    wins: won ? Math.max(1, small(at(raw, 'wins'))) : 0,
+    won,
+    flawless: Boolean(won) && at(raw, 'flawless') === true,
+  }
+}
+
+const EVENT_REF = /^[A-Za-z0-9:._-]{1,60}$/
+const MAX_TIME = 8.64e15
+
+function cleanEvents(raw: unknown): LearningEvent[] {
+  if (!Array.isArray(raw)) return []
+  const out: LearningEvent[] = []
+  for (const e of raw.slice(-LIMITS.events)) {
+    const time = at(e, 'at')
+    const kind = at(e, 'kind')
+    const ref = at(e, 'ref')
+    const d = at(e, 'day')
+    if (
+      typeof time === 'number' &&
+      Number.isInteger(time) &&
+      time >= 0 &&
+      time <= MAX_TIME &&
+      typeof kind === 'string' &&
+      (EVENT_KINDS as readonly string[]).includes(kind) &&
+      typeof ref === 'string' &&
+      EVENT_REF.test(ref) &&
+      isDayKey(d)
+    ) {
+      out.push({ at: time, day: d, kind: kind as LearningEvent['kind'], ref })
+    }
+  }
+  return out
 }
 
 /** Saneia qualquer valor vindo do armazenamento: só o que tem forma e limite válidos é mantido. */
@@ -116,9 +201,44 @@ export function cleanState(raw: unknown): StudyState {
     chest: at(q, 'chest') === true && ids.length > 0 && done.length === ids.length,
   }
 
+  // Dias reais de estudo (sem escudos). Dados antigos não têm o campo: só se aproveita a sequência
+  // antiga quando nenhum escudo foi usado, porque um escudo mascara dias sem estudo.
+  const rawStudy = at(raw, 'study')
+  const studyLast = day(at(rawStudy, 'last'))
+  const studyCurrent = small(at(rawStudy, 'current'))
+  const study: StudyState['study'] = isObject(rawStudy)
+    ? { last: studyLast, current: studyCurrent, best: Math.max(small(at(rawStudy, 'best')), studyCurrent) }
+    : streak.shieldUsed
+      ? { last: streak.last, current: streak.last ? 1 : 0, best: streak.last ? 1 : 0 }
+      : { last: streak.last, current: streak.current, best: streak.best }
+
+  const challenges: StudyState['challenges'] = {}
+  const rawChallenges = at(raw, 'challenges')
+  if (isObject(rawChallenges)) {
+    for (const [id, c] of Object.entries(rawChallenges).slice(0, LIMITS.challenges)) {
+      if (ID_PATTERN.test(id)) challenges[id] = cleanChallenge(c)
+    }
+  }
+  const bosses: StudyState['bosses'] = {}
+  const fires: StudyState['fires'] = {}
+  for (const i of range(MODULE_COUNT)) {
+    bosses[i] = cleanBoss(at(at(raw, 'bosses'), i))
+    const fire = day(at(at(raw, 'fires'), i))
+    if (fire) fires[i] = fire
+  }
+  const cards: StudyState['cards'] = {}
+  const rawCards = at(raw, 'cards')
+  if (isObject(rawCards)) {
+    for (const [id, known] of Object.entries(rawCards).slice(0, LIMITS.cards)) {
+      if (FLASHCARD_ID.test(id) && typeof known === 'boolean') cards[id] = known
+    }
+  }
+  const rawLearner = at(raw, 'learner')
+  const learnerId = at(rawLearner, 'id')
+
   const l = at(raw, 'lifetime')
   return {
-    version: 2,
+    version: 3,
     modules,
     lab: at(raw, 'lab') === true,
     migrated: at(raw, 'migrated') === true,
@@ -145,6 +265,14 @@ export function cleanState(raw: unknown): StudyState {
       redeemed: small(at(l, 'redeemed')),
     },
     bestDayXp: big(at(raw, 'bestDayXp')),
+    challenges,
+    bosses,
+    fires,
+    cards,
+    study,
+    events: cleanEvents(at(raw, 'events')),
+    prefs: { sound: at(at(raw, 'prefs'), 'sound') === true },
+    learner: { id: typeof learnerId === 'string' && ID_PATTERN.test(learnerId) ? learnerId : '', since: day(at(rawLearner, 'since')) },
   }
 }
 

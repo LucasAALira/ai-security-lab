@@ -20,6 +20,8 @@ export interface ProgressStore {
   /** Chamado a cada ação, inclusive as recusadas, com o resultado e os eventos. */
   onResult(listener: (result: ApplyResult, action: Action) => void): () => void
   dispatch(action: Action): ApplyResult
+  /** Troca todo o progresso (importação de backup): grava e avisa a interface. */
+  replace(next: StudyState): void
   /** Relê o armazenamento (outra aba mudou o progresso). */
   reload(): void
   /** Reage a um evento `storage` do navegador. */
@@ -68,6 +70,11 @@ export function createProgressStore(options: { storage: StorageLike | null; ctx:
       }
       resultListeners.forEach((l) => l(result, action))
       return result
+    },
+    replace(next) {
+      state = next
+      if (storage) storageOk = saveState(storage, state)
+      emit()
     },
     reload,
     handleStorageEvent(event) {

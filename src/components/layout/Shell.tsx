@@ -1,6 +1,7 @@
 import { motion } from 'motion/react'
 import { Suspense, useEffect, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router'
+import { NextObjective } from '@/components/gamification/NextObjective'
 import { useProgress } from '@/state/ProgressProvider'
 import { Footer } from './Footer'
 import { Sidebar } from './Sidebar'
@@ -14,8 +15,8 @@ function useApplyTheme() {
   }, [state.shop.theme])
 }
 
-/** A página inicial e o módulo aberto sobre ela contam como uma só. */
-const pageOf = (pathname: string) => (pathname.startsWith('/modulo/') ? '/' : pathname)
+/** A página (inicial ou trilha) e o módulo aberto sobre ela contam como uma só. */
+const pageOf = (pathname: string) => (pathname.startsWith('/modulo/') ? '/' : pathname.startsWith('/trilha') ? '/trilha' : pathname)
 
 /** Entre páginas volta ao topo. */
 function useScrollToTopOnPageChange() {
@@ -39,6 +40,8 @@ export function Shell() {
   useScrollToTopOnPageChange()
   const main = useRef<HTMLElement>(null)
   const page = pageOf(useLocation().pathname)
+  // Estas páginas já mostram o objetivo em destaque no próprio conteúdo.
+  const showObjective = !['/conquistas', '/trilha'].includes(page)
   return (
     <div className="min-h-screen">
       <button
@@ -51,6 +54,7 @@ export function Shell() {
       <Sidebar />
       <div className="px-5 md:ml-[205px] md:px-7 min-[1151px]:ml-[245px] min-[1151px]:px-[52px] min-[1450px]:px-[75px]">
         <TopBar />
+        {showObjective ? <NextObjective className="mx-auto max-w-[1400px]" /> : null}
         <main id="conteudo" ref={main} tabIndex={-1} className="mx-auto max-w-[1400px] pt-0 outline-none">
           <motion.div key={page} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, ease: 'easeOut' }}>
             <Suspense fallback={<p role="status" className="py-24 text-center text-sm text-muted-foreground">Carregando…</p>}>

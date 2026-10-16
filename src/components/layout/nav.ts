@@ -16,9 +16,10 @@ export const navGroups: NavGroup[] = [
     label: 'SEU ESPAÇO DE ESTUDO',
     items: [
       { label: 'Visão geral', to: home('inicio') },
+      { label: 'Trilha de módulos', to: '/trilha' },
+      { label: 'Conquistas', to: '/conquistas' },
       { label: 'Trilhas de aprendizado', to: home('trilhas') },
       { label: 'Tarefas e XP', to: home('tarefas') },
-      { label: 'Medalhas', to: home('medalhas') },
       { label: 'Pré-requisitos', to: home('requisitos') },
     ],
   },
@@ -33,6 +34,7 @@ export const navGroups: NavGroup[] = [
   {
     label: 'PRÁTICA',
     items: [
+      { label: 'Laboratório de código', to: '/desafios' },
       { label: 'Laboratório de prompt', to: home('laboratorio') },
       { label: 'Cenários por porte', to: home('cenarios') },
       { label: 'Ferramentas e pentest LLM', to: home('pentest') },
