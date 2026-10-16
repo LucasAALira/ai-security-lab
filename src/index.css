@@ -221,6 +221,23 @@
   .study-prose dd { margin: 0.3rem 0 0; font-size: 15px; line-height: 1.85; color: color-mix(in oklab, var(--foreground) 74%, transparent); }
   .study-prose h3 { margin: 2rem 0 0.4rem; font-size: 19px; font-weight: 600; line-height: 1.4; color: var(--foreground); }
   .study-prose h3:first-child { margin-top: 0.4rem; }
+  /* Tabela que cabe, cabe; a que não cabe rola dentro da própria caixa, com uma sombra na borda que ainda tem conteúdo. */
+  .study-prose .table-wrap {
+    overflow-x: auto; margin: 1.1rem 0; border: 1px solid var(--border); border-radius: 8px;
+    background:
+      linear-gradient(to right, var(--card) 30%, transparent) left center / 28px 100% no-repeat local,
+      linear-gradient(to left, var(--card) 30%, transparent) right center / 28px 100% no-repeat local,
+      radial-gradient(farthest-side at 0 50%, color-mix(in oklab, var(--primary) 45%, transparent), transparent) left center / 12px 100% no-repeat scroll,
+      radial-gradient(farthest-side at 100% 50%, color-mix(in oklab, var(--primary) 45%, transparent), transparent) right center / 12px 100% no-repeat scroll;
+  }
+  .study-prose table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.65; }
+  .study-prose td, .study-prose th { overflow-wrap: break-word; }
+  .study-prose caption { padding: 0.6rem 0.9rem; text-align: left; font-size: 12.5px; color: var(--muted-foreground); }
+  .study-prose th, .study-prose td { padding: 0.55rem 0.9rem; text-align: left; vertical-align: top; border-top: 1px solid var(--border); }
+  .study-prose th { font-weight: 600; color: var(--foreground); background: var(--tint); }
+  .study-prose td { color: color-mix(in oklab, var(--foreground) 80%, transparent); }
+  .study-prose tbody th { background: transparent; }
+  @media (max-width: 640px) { .study-prose table { font-size: 13px; } .study-prose th, .study-prose td { padding: 0.5rem 0.65rem; } }
   .study-prose li { margin: 0.35rem 0; }
   .study-prose code { padding: 0.08em 0.38em; border: 1px solid var(--border); border-radius: 4px; background: var(--tint); font-family: var(--font-mono); font-size: 0.88em; color: var(--foreground); }
   .study-prose pre { overflow-x: auto; margin: 1.1rem 0; padding: 0.9rem 1.05rem; border: 1px solid var(--border); border-radius: 8px; background: color-mix(in oklab, var(--background) 70%, black); }

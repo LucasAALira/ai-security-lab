@@ -60,14 +60,28 @@ A interface só lê estes resultados (`useProgress()`), sem regra própria.
 | 06 ISO/IEC 42001 | 05 |
 | 07 LGPD aplicada à IA | nenhum |
 | 08 EU AI Act | 05 |
+| 09 Engenharia reversa para defensores (acesso antecipado) | 01 e 04, **ou** 5.000 moedas |
 
-Etapas, desafios e chefe de um módulo bloqueado ficam indisponíveis para pontuar. As **explicações, matérias e flashcards nunca são bloqueados.**
+Etapas, desafios e chefe de um módulo bloqueado ficam indisponíveis para pontuar. As **explicações, matérias e flashcards dos módulos 01 a 08 nunca são bloqueados.** A exceção é o módulo 09: enquanto está fechado, a matéria, a aula e os desafios mostram só uma prévia dos assuntos e as duas formas de abrir (veja abaixo).
+
+### Acesso antecipado por moedas (módulo 09)
+
+- **Catálogo:** `MODULE_UNLOCKS` em `src/lib/progress/catalog.ts` lista o preço de cada módulo à venda. Hoje é só `{ 8: 5000 }`. `CORE_MODULE_COUNT` (8) separa a trilha principal do total de módulos (9).
+- **Ação `unlockModule`:** única forma de comprar. Recusas, com o motivo devolvido à interface: `invalid` (não está à venda ou não existe), `owned` (já comprado), `open` (já está liberado pelos pré-requisitos, então **não cobra**) e `coins` (saldo menor que 5.000; nada é alterado). Com saldo suficiente, grava o id em `shop.unlocked`, soma o preço em `coins.spent` e registra os eventos `purchase` e `unlock`.
+- **O que a compra não muda:** XP, nível e medalhas já conquistadas nunca diminuem. O módulo 09 é uma trilha à parte: não entra nas contas de "módulos dominados", "trilha completa" e semelhantes, que continuam exigindo os oito principais. Ele tem medalhas próprias (`acesso-antecipado` e a da trilha de Engenharia reversa).
+- **Dados salvos:** `shop.unlocked` é uma lista de ids. `cleanState` aceita só ids à venda, sem repetição; progresso antigo sem a lista ou sem o módulo 09 é migrado com tudo vazio, preservando o restante.
+- **Limite honesto:** o preço é conferido no navegador, como todo o resto. Quem editar o `localStorage` pode se dar moedas ou o desbloqueio; o objetivo é motivar o estudo, não proteger conteúdo.
+
+### Página Em breve
+
+`src/data/upcoming.ts` lista os itens, cada um com situação (`early`, `planned` ou `idea`), resumo e tópicos. **Não há datas, porcentagens de andamento nem números de usuários**: só entra o que já existe ou o que se pretende fazer, dito como intenção. O item `early` aponta para um módulo do site (`module`), e a página mostra o cartão de desbloqueio dele. Para acrescentar um item, inclua-o no arquivo; para promover um item a módulo, crie o módulo, a matéria, os desafios, os flashcards e o chefe, e marque `earlyAccess: true` em `modules.ts` se ele for ficar à venda.
 
 ## Como acrescentar
 
 - **Conquista:** inclua um item em `medalDefinitions` (`src/lib/progress/medals.ts`) com `id` estável, `category`, `tier`, `icon` (um dos ícones de `medal-icons.ts`) e `goal`. Se precisar de um contador novo, acrescente-o em `ProgressStats`. Para torná-la secreta, use `secret: true` e `hint`.
 - **Desafio de código:** inclua em `src/data/challenges.ts`. O gabarito vai nas marcas no fim da linha (`⟦v⟧` falha principal, `⟦a⟧` também aceita, `⟦x⟧` falha opcional, `⟦n=texto⟧` linha parecida que não é o problema); nenhum número de linha é contado à mão. Nunca renomeie o `id` de um desafio publicado. O teste de conteúdo valida a forma e as respostas.
 - **Flashcards e chefes:** `src/data/flashcards.ts` e `src/data/bosses.ts` (o id `m{módulo}-c{n}` dos cartões é salvo no progresso).
+- **Texto de estudo (matéria):** um arquivo por módulo em `src/data/materias/`, com as três leituras (`compreender`, `conectar`, `aplicar`), `recap` (resumo em pontos-chave, pelo menos 5), `glossary` (em ordem alfabética, pelo menos 8 termos) e as seções de pesquisa e bibliografia. O HTML pode usar `<h3>`, listas, `<dl class="concept-list">`, `<pre><code>`, quadros `<div class="callout">` (com `is-warn` para avisos) e tabelas. **Tabelas** precisam de `<caption>`, cabeçalhos com `scope` e do invólucro `<div class="table-wrap" role="region" aria-label="..." tabindex="0">`, para rolar no celular e ser alcançadas pelo teclado. O teste `textos de estudo` exige pelo menos 300 palavras por leitura e 1.400 por matéria. O resumo curto de cada etapa da aula (`parts`, em `modules.ts`) deve explicar a ideia, não só listar siglas. Nos módulos regulatórios, escreva a data de revisão e confirme datas e números em fonte oficial antes de publicar.
 
 ## Testes
 
@@ -83,3 +97,4 @@ Etapas, desafios e chefe de um módulo bloqueado ficam indisponíveis para pontu
 - **Sem raridade:** não há porcentagem de quem tem cada conquista, porque não há onde comparar.
 - **Som:** é gerado pelo navegador (Web Audio), pode ser bloqueado até haver uma interação com a página e fica desligado por padrão.
 - **Conteúdo:** há uma falha opcional (conquista secreta) em um desafio; novos desafios podem acrescentar outras.
+- **Regulação muda:** os módulos 07 e 08 (LGPD e AI Act) e a nota do NIST AI RMF refletem as fontes consultadas em 16/10/2026. O AI Act teve prazos alterados pelo Regulamento (UE) 2026/1744, o PL 2338/2023 ainda tramita no Brasil e o NIST informa que o AI RMF 1.0 está em revisão. As matérias avisam isso e mandam confirmar a fonte oficial; elas não são parecer jurídico.

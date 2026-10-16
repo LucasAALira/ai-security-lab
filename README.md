@@ -14,17 +14,19 @@ Um site de aprendizado em português que reúne matérias, tarefas, perguntas de
 - ISO/IEC 42001.
 - LGPD aplicada à inteligência artificial.
 - Regulamento europeu de inteligência artificial (AI Act).
+- Engenharia reversa para defensores (módulo 09, de [acesso antecipado](#acesso-antecipado-e-página-em-breve)).
 
-As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dentro do próprio site.
+As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dentro do próprio site. Cada uma tem três leituras (Compreender, Conectar e Aplicar) com exemplos, tabelas e quadros "Em palavras simples", além de um **resumo em pontos-chave** e um **glossário**. Os módulos regulatórios trazem a data de revisão e avisam quando um prazo ou texto pode ter mudado.
 
 ## Funcionalidades
 
 - **Trilhas de aprendizado:** objetivos, pré-requisitos educacionais e tarefas de estudo.
 - **Trilha de módulos:** os módulos formam um caminho com etapas, **fogueiras** (pontos de conclusão e revisão) e um **chefe** por módulo. Módulos só abrem quando as fogueiras dos pré-requisitos estão acesas, e o próximo objetivo fica sempre visível.
 - **Aulas interativas:** cada módulo tem abas *Conceito, Exemplo, Como corrigir, Revisar, Praticar* e *Quiz*, com o resumo primeiro e o texto completo em "Saiba mais".
-- **Laboratório de código:** 13 desafios em que você marca as linhas vulneráveis e escolhe a correção, com dicas, explicação do erro e a opção de repetir.
+- **Laboratório de código:** 16 desafios em que você marca as linhas vulneráveis e escolhe a correção, com dicas, explicação do erro e a opção de repetir.
 - **Flashcards** com resposta que se revela, em cada módulo.
-- **Conquistas:** 42 conquistas (inclui as 8 do sistema de aprendizado e uma secreta), com brasões em SVG, filtros, progresso real e detalhes. Veja [Aprendizado interativo e conquistas](#aprendizado-interativo-e-conquistas).
+- **Conquistas:** 44 conquistas (inclui as 8 do sistema de aprendizado e uma secreta), com brasões em SVG, filtros, progresso real e detalhes. Veja [Aprendizado interativo e conquistas](#aprendizado-interativo-e-conquistas).
+- **Em breve:** página com o que está por vir (Engenharia reversa e preparação para a CompTIA SecurityX, entre outros), sem datas inventadas. O módulo de Engenharia reversa já está disponível por **desbloqueio imediato de 5.000 moedas** ou de graça, concluindo os módulos recomendados.
 - **XP e níveis:** pontos pelas atividades registradas e pelos exercícios. Repetir uma atividade nunca soma XP de novo.
 - **Medalhas e conquistas:** quatro níveis (bronze, prata, ouro e dragão), por leitura, pesquisa, prática, questões, módulos, trilhas, laboratório, cenários, desafios, chefes, dias seguidos, revisões, missões, escudos e recompensas. Cada uma dá XP bônus uma única vez (10, 20, 40 e 100 XP) e as bloqueadas mostram quanto falta.
 - **Evolução por trilha:** cada trilha (Fundamentos, Ataques e defesa, Governança e Regulação) mostra XP, módulos e tarefas concluídas, com medalha bronze a partir de 40%, prata a partir de 70% e ouro aos 100%.
@@ -46,7 +48,8 @@ A direção visual é escura, com detalhes em vermelho e medalhas em forma de br
 
 | Página | O que faz |
 | --- | --- |
-| **Trilha de módulos** (`#/trilha`) | Caminho dos oito módulos, com etapas, fogueiras e chefes. Etapas bloqueadas dizem o que falta. Dá para revisar aulas e repetir chefes. |
+| **Trilha de módulos** (`#/trilha`) | Caminho dos nove módulos (o 09 é de acesso antecipado), com etapas, fogueiras e chefes. Etapas bloqueadas dizem o que falta. Dá para revisar aulas e repetir chefes. |
+| **Em breve** (`#/em-breve`) | O que está por vir, por situação (acesso antecipado, em planejamento, ideia em avaliação), e o cartão de desbloqueio do módulo 09. |
 | **Conquistas** (`#/conquistas`) | Resumo (desbloqueadas e progresso geral), filtros *Todas, Desbloqueadas, Pendentes e Secretas*, filtro por categoria, detalhes de cada conquista, atividade recente, som opcional e backup. |
 | **Laboratório de código** (`#/desafios`) | Os desafios de identificar a falha e corrigir, com metas das conquistas à vista. |
 | **Aula do módulo** (`#/modulo/N`) | Abas Conceito, Exemplo, Como corrigir, Revisar (flashcards), Praticar e Quiz. |
@@ -66,7 +69,7 @@ A direção visual é escura, com detalhes em vermelho e medalhas em forma de br
 
 **Progressão**
 
-- XP total: 2.860, sendo 1.940 em tarefas (módulos 800, laboratório 30, cenários 240, desafios de código 390 e chefes 480) e 920 em conquistas. Níveis de *Iniciante* (0) a *Lenda do AppSec* (2.400).
+- XP total: 3.150, sendo 2.190 em tarefas (módulos 900, laboratório 30, cenários 240, desafios de código 480 e chefes 540) e 960 em conquistas. Níveis de *Iniciante* (0) a *Lenda do AppSec* (2.400).
 - Desafio de código: 15 XP ao identificar e 15 ao corrigir, só na primeira vez. Chefe: 60 XP, só na primeira vitória.
 - Errar dá explicação e nova tentativa; nunca apaga XP, conquistas nem bloqueia as explicações.
 - Conquistas são concedidas uma única vez e registram a data. Não há estatística de raridade nem comparação com outras pessoas.
@@ -89,6 +92,21 @@ Inspiradas em apps de aprendizado como o Duolingo e em Habitica, mas escritas do
 | **Recompensas pessoais** | Prêmios que você cria (um café, uma pausa) e resgata com moedas. O resgate é por conta e confiança. |
 
 Ligas e placares ficaram de fora: exigiriam contas e um servidor.
+
+## Acesso antecipado e página Em breve
+
+A página **Em breve** (`#/em-breve`) mostra o que está por vir em três situações: *acesso antecipado* (já está no site), *em planejamento* e *ideia em avaliação*. Ela não promete datas, não mostra porcentagem de andamento e não inventa números de usuários. Hoje lista a **Engenharia reversa para defensores** (já disponível em acesso antecipado), a **preparação para a CompTIA SecurityX** (exame CAS-005; conteúdo independente, sem vínculo com a CompTIA), a segurança de agentes e servidores MCP e a resposta a incidentes com IA.
+
+O **módulo 09, Engenharia reversa para defensores**, abre de duas formas:
+
+| Caminho | Como funciona |
+| --- | --- |
+| **Desbloqueio imediato** | **5.000 moedas**, com confirmação antes de gastar. As moedas gastas não voltam, mas XP, nível e medalhas nunca diminuem. Quem não tem saldo vê quanto falta e como ganhar moedas. |
+| **Liberação gratuita** | Acender a fogueira dos módulos 01 (OWASP Top 10) e 04 (Red teaming). Quem já abriu o módulo assim não paga nada. |
+
+Enquanto está fechado, o módulo mostra só uma prévia dos assuntos. Depois de aberto, ele tem as mesmas partes dos demais: aulas em abas, flashcards, três desafios de código, chefe e matéria completa. Estudá-lo rende XP e uma medalha própria, mas **não conta** para as conquistas que exigem terminar os oito módulos principais. Quem tem progresso salvo antes dessa versão não perde nada: o módulo 09 entra vazio.
+
+O conteúdo é defensivo: laboratório isolado, autorização, análise de aplicativos e de arquivos de modelo que você tem direito de examinar, e como corrigir o que se encontra. Não traz instruções para violar proteções de software de terceiros.
 
 ## Executar localmente
 
@@ -184,7 +202,7 @@ O progresso fica no `localStorage` do navegador. Não há conta de usuário, ban
 - Alterar entre `localhost` e `127.0.0.1`, ou mudar a porta, utiliza outro armazenamento do navegador.
 - O XP reflete atividades registradas na interface; não comprova domínio técnico nem valida pesquisas externas.
 - O progresso salvo por versões anteriores continua válido: as medalhas já merecidas são reconhecidas ao abrir o site, e os endereços antigos (`?modulo=2`, `#trilhas`, `materias/x.html`) continuam levando ao lugar certo.
-- O XP bônus das conquistas é calculado a partir do progresso salvo, sem contar duas vezes. O XP máximo é 2.860: 1.940 em tarefas e 920 em conquistas.
+- O XP bônus das conquistas é calculado a partir do progresso salvo, sem contar duas vezes. O XP máximo é 3.150: 2.190 em tarefas e 960 em conquistas.
 - **Backup:** na página Conquistas, *Exportar progresso* baixa um arquivo JSON e *Importar progresso* o restaura (pede confirmação, porque substitui o progresso atual). É o jeito de levar o progresso a outro navegador ou aparelho.
 - **Fuso horário:** os dias de estudo e a sequência usam o fuso do navegador. Viajar ou mudar o fuso do sistema pode mover o limite do dia.
 - O progresso, o XP e as conquistas ficam no navegador e podem ser editados por quem tem acesso a ele: servem ao seu acompanhamento, não como prova de aprendizado. Pesquisa e prática são autodeclaradas.

@@ -40,8 +40,15 @@ os modulos abrem quando os pre-requisitos estao concluidos. Aulas em abas
 Laboratorio de codigo: marque as linhas vulneraveis e escolha a correcao.
 Dicas ajudam, mas tiram a conquista 'Sem Ajuda' daquela tentativa. Repetir
 uma atividade nao soma XP de novo.
-A pagina Conquistas mostra as 42 conquistas (uma e secreta), com filtros,
+A pagina Conquistas mostra as 44 conquistas (uma e secreta), com filtros,
 progresso real e detalhes. Ha som opcional (desligado por padrao).
+
+EM BREVE E ACESSO ANTECIPADO
+A pagina Em breve mostra o que esta por vir (Engenharia reversa e preparacao
+para a CompTIA SecurityX, entre outros), sem datas inventadas. O modulo 09,
+Engenharia reversa para defensores, ja esta no site: abre na hora com 5.000
+moedas (pede confirmacao) ou de graca, concluindo os modulos 01 e 04. Gastar
+moedas nao reduz XP, nivel nem conquistas.
 
 BACKUP DO PROGRESSO
 O progresso fica so neste navegador; nao ha conta nem sincronizacao entre
@@ -53,8 +60,8 @@ MEDALHAS, MISSOES E LOJA
 Medalhas (bronze, prata, ouro e dragao) dao XP bonus uma unica vez, ha
 evolucao por trilha e sugestoes de melhoria. Tambem ha missoes do dia com
 bau, moedas (1 a cada 5 XP), revisao com 3 vidas e uma loja com escudo de
-sequencia, temas de cor e recompensas pessoais. XP maximo: 2.860 (1.940 em
-tarefas e 920 em conquistas). Gastar moedas nunca reduz XP, nivel ou
+sequencia, temas de cor e recompensas pessoais. XP maximo: 3.150 (2.190 em
+tarefas e 960 em conquistas). Gastar moedas nunca reduz XP, nivel ou
 conquistas.
 
 ARQUIVOS

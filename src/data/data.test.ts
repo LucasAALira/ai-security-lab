@@ -55,6 +55,67 @@ describe('matérias', () => {
   })
 })
 
+/** Os textos de estudo: cada matéria precisa ser explicada com profundidade, não só listada. Os pisos abaixo
+ *  não medem qualidade, mas impedem que uma edição futura volte a deixar uma matéria em poucas linhas. */
+describe('textos de estudo', () => {
+  const words = (html: string) => html.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length
+  const collator = new Intl.Collator('pt-BR', { sensitivity: 'base' })
+
+  it.each(materias.map((m) => [m.slug, m] as const))('%s: cada leitura tem corpo suficiente e o conjunto passa de 1.400 palavras', (_slug, m) => {
+    for (const s of m.sections) {
+      expect(words(s.html), `${m.slug}#${s.id}`).toBeGreaterThanOrEqual(300)
+      expect(s.html, `${m.slug}#${s.id} sem subtítulos`).toMatch(/<h3>|<dl class="concept-list">/)
+    }
+    expect(m.sections.reduce((n, s) => n + words(s.html), 0)).toBeGreaterThanOrEqual(1400)
+  })
+
+  it.each(materias.map((m) => [m.slug, m] as const))('%s: tem resumo, glossário em ordem alfabética e um quadro "Em palavras simples" ou exemplo', (_slug, m) => {
+    expect(m.recap?.length ?? 0).toBeGreaterThanOrEqual(5)
+    for (const r of m.recap ?? []) {
+      expect(r).not.toMatch(/[<>]/)
+      expect(r.length).toBeGreaterThan(40)
+    }
+    const terms = (m.glossary ?? []).map((g) => g.term)
+    expect(terms.length).toBeGreaterThanOrEqual(8)
+    expect(new Set(terms.map((t) => t.toLowerCase())).size).toBe(terms.length)
+    expect([...terms].sort(collator.compare)).toEqual(terms)
+    for (const g of m.glossary ?? []) {
+      expect(g.definition.length).toBeGreaterThan(30)
+      expect(g.definition).not.toMatch(/[<>]/)
+    }
+    expect(m.sections.map((s) => s.html).join('\n')).toMatch(/Em palavras simples|Exemplo|Caso didático/)
+  })
+
+  it('as tabelas são acessíveis: legenda, cabeçalhos com escopo e região rolável focável', () => {
+    let tables = 0
+    for (const m of materias) {
+      for (const s of m.sections) {
+        const found = s.html.match(/<table\b/g)?.length ?? 0
+        tables += found
+        if (!found) continue
+        expect(s.html.match(/<caption>/g)?.length, `${m.slug}#${s.id} sem legenda`).toBe(found)
+        expect(s.html.match(/<th scope="(col|row)">/g)?.length ?? 0, `${m.slug}#${s.id} sem escopo`).toBeGreaterThan(0)
+        expect(s.html.match(/<th>/g), `${m.slug}#${s.id} cabeçalho sem escopo`).toBeNull()
+        expect(s.html.match(/<div class="table-wrap" role="region" aria-label="[^"]+" tabindex="0">/g)?.length, `${m.slug}#${s.id} região`).toBe(found)
+      }
+    }
+    expect(tables).toBeGreaterThan(10)
+  })
+
+  it('o resumo de cada etapa (parts) explica a ideia, em vez de listar siglas', () => {
+    for (const m of modules) for (const p of m.parts) expect(p.length, `${m.slug}`).toBeGreaterThanOrEqual(150)
+  })
+
+  it('o calendário do AI Act cita o regulamento que o alterou e as datas conferidas', () => {
+    const ai = materias.find((m) => m.slug === 'eu-ai-act')!
+    const text = ai.sections.map((s) => s.html).join('\n')
+    expect(text).toContain('2026/1744')
+    expect(text).toContain('2 dez 2027')
+    expect(text).toContain('2 ago 2028')
+    expect(text).toContain('EUR-Lex')
+  })
+})
+
 /** Todo HTML do repositório é renderizado como confiável (TrustedHtml). Este teste barra
  *  o que não deveria existir nele: scripts, manipuladores de evento e destinos de link inseguros. */
 describe('HTML confiável', () => {
