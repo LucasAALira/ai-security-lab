@@ -30,6 +30,13 @@ nao e transferido automaticamente. Use sempre o mesmo navegador, endereco
 e porta para manter o mesmo progresso. Limpar dados do navegador apaga-o.
 O aviso 'me responsabilizo' e uma confirmacao de interface, nao autenticacao.
 
+MEDALHAS E EVOLUCAO
+O site tem 26 medalhas (bronze, prata, ouro e dragao) que dao XP bonus uma
+unica vez, evolucao por trilha e sugestoes de melhoria baseadas no seu
+progresso. Tudo fica no mesmo armazenamento local: data das medalhas, erros por
+questao e dias seguidos de estudo. XP maximo: 1.660 (1.070 em tarefas e
+590 em medalhas).
+
 ARQUIVOS
 iniciar.py: servidor e abertura do navegador.
 iniciar-windows.bat: iniciador Windows.
