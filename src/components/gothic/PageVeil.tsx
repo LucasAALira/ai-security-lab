@@ -2,8 +2,8 @@ import { useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 
-/** Duração total da tela de carregamento na troca de página. Curta de propósito: é uma pausa, não uma espera. */
-export const VEIL_MS = 480
+/** Duração total da tela de carregamento na troca de página (480 ms + 50%). Curta de propósito: é uma pausa, não uma espera. */
+export const VEIL_MS = 720
 
 /** O brasão do site recolorido no metal do tema (o PNG serve de máscara). */
 export function LogoMark({ className }: { className?: string }) {

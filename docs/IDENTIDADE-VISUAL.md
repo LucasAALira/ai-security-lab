@@ -66,7 +66,7 @@ Todas SIL OFL 1.1, empacotadas pelo Fontsource (subconjuntos latino e latino est
 
 | Efeito | Quando | Duração | Componente |
 | --- | --- | --- | --- |
-| Tela de carregamento com o brasão | Troca de página; código da página chegando | 480 ms, sem bloquear cliques | `PageVeil`, `LoadingSigil` |
+| Tela de carregamento com o brasão | Troca de página; código da página chegando | 720 ms, sem bloquear cliques | `PageVeil`, `LoadingSigil` |
 | Entrada da página | Troca de página | 420 ms | `gx-page-enter` |
 | Brasas | O XP aumentou | < 1 s, uma vez | `EmberBurst` |
 | Medalhão revelado | Conquista nova (aviso) | 700 ms | `gx-reveal` em `MedalToast` |
