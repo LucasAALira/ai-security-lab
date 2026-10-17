@@ -39,7 +39,7 @@ export function CampaignsPage() {
         </p>
       ) : null}
 
-      <ul className="mt-6 grid gap-4 md:grid-cols-2">
+      <ul className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
         {campaigns.map((c) => {
           const spec = findCampaign(ctx, c.id)
           if (!spec) return null
@@ -58,7 +58,7 @@ export function CampaignsPage() {
               </h2>
               <p className="mt-1 text-[13px] text-muted-foreground italic">{c.tagline}</p>
               <p className="mt-2 text-[13px] leading-relaxed">{c.summary}</p>
-              <ol className="mt-3 m-0 grid list-none gap-1 p-0 text-xs">
+              <ol className="mt-3 m-0 grid grid-cols-[minmax(0,1fr)] list-none gap-1 p-0 text-xs">
                 {sum.missions.map((m) => {
                   const st = missionStatus(state, ctx, m)
                   const content = c.missions.find((x) => x.id === m.id)

@@ -93,7 +93,8 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
     const previous = lock.previous ? missionContentById(lock.previous) : undefined
     return (
       <div className="rounded-xl border border-dashed border-border p-5 text-sm">
-        <p className="flex items-center gap-2 font-medium">
+        <h1 className="text-2xl leading-tight font-medium tracking-tight">{content.title}</h1>
+        <p className="mt-2 flex items-center gap-2 font-medium">
           <Lock className="size-4" aria-hidden="true" /> Missão bloqueada
         </p>
         <p className="mt-2 text-muted-foreground">
