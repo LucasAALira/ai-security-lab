@@ -1,6 +1,9 @@
 export interface NavItem {
+  /** Nome temático, quando ele corresponde a uma função que existe. */
   label: string
-  /** Destino no roteador. Seções da página inicial usam `?secao=`. */
+  /** O que a página faz, em linguagem direta. Aparece junto do nome temático. */
+  hint?: string
+  /** Destino no roteador. Seções da página inicial usam `?secao=`. As rotas não mudaram. */
   to: string
 }
 
@@ -11,51 +14,50 @@ export interface NavGroup {
 
 const home = (secao: string) => `/?secao=${secao}`
 
+/* Os nomes temáticos ("Provações", "Mercador"...) vêm sempre com a descrição funcional ao lado,
+   para ninguém precisar adivinhar o que há em cada lugar. */
 export const navGroups: NavGroup[] = [
   {
-    label: 'SEU ESPAÇO DE ESTUDO',
+    label: 'Santuário',
     items: [
-      { label: 'Visão geral', to: home('inicio') },
-      { label: 'Áreas de estudo', to: '/areas' },
-      { label: 'Trilha de módulos', to: '/trilha' },
-      { label: 'Conquistas', to: '/conquistas' },
-      { label: 'Trilhas de aprendizado', to: home('trilhas') },
-      { label: 'Tarefas e XP', to: home('tarefas') },
-      { label: 'Pré-requisitos', to: home('requisitos') },
+      { label: 'Jornada', hint: 'Continuar os estudos', to: home('inicio') },
+      { label: 'Arquivos', hint: 'Áreas, módulos e aulas', to: '/areas' },
+      { label: 'Contratos', hint: 'Missões do dia', to: home('hoje') },
+      { label: 'Provações', hint: 'Desafios de código', to: '/desafios' },
+      { label: 'Relicário', hint: 'Conquistas', to: '/conquistas' },
+      { label: 'Sala de troféus', hint: 'Relíquias expostas', to: '/sala-de-trofeus' },
+      { label: 'Mercador', hint: 'Loja de moedas', to: '/loja' },
     ],
   },
   {
-    label: 'JOGO',
+    label: 'Prática',
     items: [
-      { label: 'Missões do dia', to: home('hoje') },
-      { label: 'Revisão com vidas', to: '/revisao' },
-      { label: 'Sala de troféus', to: '/sala-de-trofeus' },
-      { label: 'Loja de moedas', to: '/loja' },
-    ],
-  },
-  {
-    label: 'PRÁTICA',
-    items: [
-      { label: 'Campanhas', to: '/campanhas' },
-      { label: 'Casos reais', to: '/casos' },
-      { label: 'Modo Arquiteto', to: '/arquiteto' },
-      { label: 'Laboratório de código', to: '/desafios' },
+      { label: 'Campanhas', hint: 'Missões investigativas', to: '/campanhas' },
+      { label: 'Casos reais', hint: 'Incidentes documentados', to: '/casos' },
+      { label: 'Modo Arquiteto', hint: 'Revisões de arquitetura', to: '/arquiteto' },
+      { label: 'Trilha de módulos', hint: 'Fogueiras e chefes', to: '/trilha' },
+      { label: 'Revisão com vidas', hint: 'Questões já acertadas', to: '/revisao' },
       { label: 'Laboratório de prompt', to: home('laboratorio') },
       { label: 'Cenários por porte', to: home('cenarios') },
       { label: 'Ferramentas e pentest LLM', to: home('pentest') },
     ],
   },
   {
-    label: 'NOVIDADES',
-    items: [{ label: 'Em breve', to: '/em-breve' }],
+    label: 'Seu progresso',
+    items: [
+      { label: 'Trilhas de aprendizado', to: home('trilhas') },
+      { label: 'Tarefas e XP', to: home('tarefas') },
+      { label: 'Pré-requisitos', to: home('requisitos') },
+    ],
   },
   {
-    label: 'BIBLIOTECA',
+    label: 'Biblioteca',
     items: [
       { label: 'Biblioteca de matérias', to: home('fontes') },
-      { label: 'Referências', to: '/referencias' },
-      { label: 'Explorar o conteúdo', to: '/explorar' },
+      { label: 'Explorar o conteúdo', hint: 'Busca', to: '/explorar' },
       { label: 'Cobertura de frameworks', to: '/cobertura' },
+      { label: 'Referências', to: '/referencias' },
+      { label: 'Em breve', to: '/em-breve' },
     ],
   },
 ]

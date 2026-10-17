@@ -6,17 +6,22 @@
 export const XP_PER_COIN = 5
 
 export const THEMES = [
+  { id: 'library', name: 'Biblioteca dos Condenados', description: 'Carvão, marfim, bronze e luz de vela — o tema padrão.', price: 0 },
   { id: 'ashes', name: 'Fortaleza de Cinzas', description: 'Pedra escura, cobre e brasas vermelhas.', price: 60 },
   { id: 'eclipse', name: 'Catedral do Eclipse', description: 'Obsidiana, ouro envelhecido e marfim.', price: 80 },
   { id: 'abyss', name: 'Arquivo Abissal', description: 'Azul profundo, prata e luz fria.', price: 80 },
   { id: 'sanctuary', name: 'Santuário Arcano', description: 'Ametista, bronze e inscrições antigas.', price: 100 },
-  { id: 'dragon', name: 'Dragão', description: 'Coral sobre grafite — o tema original.', price: 0 },
+  { id: 'dragon', name: 'Dragão', description: 'Coral sobre grafite — o tema das versões anteriores, gratuito.', price: 0 },
   { id: 'cyber', name: 'Ciano', description: 'Ciano elétrico sobre azul-noite.', price: 40 },
   { id: 'arcane', name: 'Arcano', description: 'Violeta suave sobre roxo profundo.', price: 40 },
 ] as const
 
 export type ThemeId = (typeof THEMES)[number]['id']
-export const DEFAULT_THEME: ThemeId = 'dragon'
+export const DEFAULT_THEME: ThemeId = 'library'
+/** O tema padrão das versões anteriores. Quem nunca escolheu um tema (só tinha o padrão) passa para o novo padrão. */
+export const LEGACY_DEFAULT_THEME: ThemeId = 'dragon'
+/** Temas gratuitos não precisam de compra. */
+export const isFreeTheme = (id: string): boolean => THEMES.some((t) => t.id === id && t.price === 0)
 export const THEME_IDS: readonly string[] = THEMES.map((t) => t.id)
 export const isThemeId = (v: unknown): v is ThemeId => typeof v === 'string' && THEME_IDS.includes(v)
 

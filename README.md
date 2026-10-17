@@ -53,13 +53,13 @@ As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dent
 - **Cenários de remediação:** situações fictícias organizadas por porte de empresa, com alternativas de solução e feedback.
 - **Anotações e progresso:** armazenamento local no navegador.
 - **Ferramentas e pentest de LLMs:** material textual com exemplos técnicos e situações do cotidiano.
-- **Três temas de cor** (Dragão, Ciano e Arcano) e interface responsiva, com respeito à preferência do sistema por menos movimento.
+- **Identidade de RPG gótico, "Biblioteca dos Condenados"**, com oito temas de cor (dois gratuitos e seis na loja), interface responsiva e respeito à preferência do sistema por menos movimento. Veja [Identidade visual](#identidade-visual-biblioteca-dos-condenados).
 
 > Os cenários são exercícios educacionais de decisão. O projeto não provisiona máquinas virtuais nem executa ataques, ferramentas de pentest ou ambientes vulneráveis.
 
 ## Aprendizado interativo e conquistas
 
-A direção visual é escura, com detalhes em vermelho e medalhas em forma de brasão, e identidade própria: nenhum nome, imagem ou arte de jogos ou da Steam foi copiado. Os ícones são SVG (Lucide) e os estados nunca dependem só da cor.
+A direção visual é a de um RPG gótico (veja [Identidade visual](#identidade-visual-biblioteca-dos-condenados)), com medalhas em forma de brasão e identidade própria: nenhum nome, imagem, fonte, som ou arte de jogos ou da Steam foi copiado. Os ícones são SVG (Lucide e Game-icons.net, com crédito) e os estados nunca dependem só da cor.
 
 **Onde fica cada coisa**
 
@@ -95,6 +95,21 @@ A direção visual é escura, com detalhes em vermelho e medalhas em forma de br
 
 Regras, dados salvos e como acrescentar conquistas ou desafios: [docs/APRENDIZADO-E-CONQUISTAS.md](docs/APRENDIZADO-E-CONQUISTAS.md).
 
+## Identidade visual: Biblioteca dos Condenados
+
+Um santuário de conhecimento dentro de uma fortaleza em ruínas: pedra escura, metal envelhecido, luz de vela, selos e vitrais, com um toque de tecnologia (a rosácea do vitral é um circuito). A atmosfera é inspirada em RPGs góticos, mas toda a arte é original, feita em CSS e SVG; nenhum personagem, logotipo, trilha sonora ou asset de franquias foi usado.
+
+| Elemento | Como funciona |
+| --- | --- |
+| **Início (Santuário do Conhecimento)** | Primeiro a missão atual, com uma ação principal ("Continuar jornada"; "Começar jornada" para quem acabou de chegar). Duração e recompensa só aparecem quando vêm do conteúdo. Depois: áreas (Arquivos), contratos do dia e progresso com a última conquista. No celular, a cena encolhe para a ação aparecer na primeira tela. |
+| **Navegação** | Nomes temáticos com a função escrita ao lado: Jornada (continuar os estudos), Arquivos (áreas e aulas), Contratos (missões do dia), Provações (desafios de código), Relicário (conquistas), Mercador (loja). As rotas e os links antigos não mudaram. |
+| **Componentes** | Botões retangulares com borda dupla; a ação principal é uma placa de metal; seleção com luz âmbar e estado em ARIA; painéis de grimório; bloqueios com selo de cera e o requisito escrito; medidores de XP com o valor sempre visível; conquistas como medalhões em nichos, com a raridade no desenho, no símbolo e no nome. |
+| **Animações** | Tela de carregamento com o brasão (menos de meio segundo, sem bloquear cliques), entrada de página, brasas ao receber XP, medalhão revelado ao desbloquear e a faixa "Provação superada" na primeira vitória. Nada repete conquistas antigas, nada toca som sozinho e tudo some com "reduzir movimento". |
+| **Fontes** | Cinzel nos títulos, Grenze Gotisch só na marca e em inscrições curtas, Literata no texto e nos controles, JetBrains Mono no código. Empacotadas para uso offline. |
+| **Temas** | O novo tema padrão é gratuito. Temas comprados continuam seus; quem escolheu um tema continua com ele. Só quem nunca escolheu (e usava o padrão antigo) passa ao novo padrão, e o Dragão continua gratuito na loja. |
+
+Tokens, componentes e regras de uso: [docs/IDENTIDADE-VISUAL.md](docs/IDENTIDADE-VISUAL.md).
+
 ## Mecânicas de jogo
 
 Inspiradas em apps de aprendizado como o Duolingo e em Habitica, mas escritas do zero (nenhum código nem arte foi copiado). Tudo funciona no navegador, sem conta e sem servidor.
@@ -105,7 +120,7 @@ Inspiradas em apps de aprendizado como o Duolingo e em Habitica, mas escritas do
 | **Missões do dia** | 3 missões por dia, sorteadas entre 7 tipos (só as que ainda são possíveis). Cada uma rende 5 a 8 moedas; cumprir as três abre um baú de 15 moedas. |
 | **Revisão com vidas** | Sessão de até 5 questões que você já acertou, com 3 vidas. Erro custa uma vida e a questão volta para o fim da fila. Terminar com vidas conta como dia de estudo e rende moedas (nas 3 primeiras sessões do dia). |
 | **Escudo de sequência** | 20 moedas, no máximo 2. Cobre um dia sem estudo e mantém a sequência. |
-| **Temas** | Ciano e Arcano, 40 moedas cada. |
+| **Temas** | Biblioteca dos Condenados (padrão) e Dragão são gratuitos; Ciano e Arcano custam 40 moedas, e os da sala de troféus de 60 a 100. |
 | **Recompensas pessoais** | Prêmios que você cria (um café, uma pausa) e resgata com moedas. O resgate é por conta e confiança. |
 
 Ligas e placares ficaram de fora: exigiriam contas e um servidor.
@@ -191,10 +206,11 @@ A pasta `dist/` é versionada de propósito, para que `iniciar.py` funcione sem 
 | React 19 + TypeScript + Vite | Aplicação. As rotas usam hash (`#/materias/...`), então o site abre de qualquer pasta ou servidor estático. |
 | Tailwind CSS v4 | Estilos e tokens de tema. |
 | [shadcn/ui](https://ui.shadcn.com) | Componentes de interface (em `src/components/ui`, copiados e ajustados ao tema, sobre o Radix UI). |
-| [daisyUI](https://daisyui.com) | Temas de cor (Dragão, Ciano, Arcano) e componentes de estatísticas e progresso radial. As cores do shadcn derivam do mesmo tema. |
+| [daisyUI](https://daisyui.com) | Temas de cor (Biblioteca dos Condenados, Dragão e os da loja) e componentes de estatísticas e progresso radial. As cores do shadcn derivam do mesmo tema. |
 | [Motion](https://motion.dev) | Animações de entrada, de medalhas, de moedas e de vidas. Respeita "reduzir movimento". |
 | [Rive](https://rive.app) | Dois espaços para animações `.riv` (topo da página inicial e fim da revisão). Sem arquivo, aparece a ilustração padrão. Veja `src/assets/rive/LEIA-ME.md`. |
-| [React Bits](https://reactbits.dev) | Quatro componentes em `src/components/reactbits`: texto decifrando, contador animado, brilho em texto e cartão com destaque. |
+| [React Bits](https://reactbits.dev) | Dois componentes em `src/components/reactbits`: contador animado e cartão com destaque. |
+| [Fontsource](https://fontsource.org) | Cinzel, Literata, Grenze Gotisch e JetBrains Mono empacotadas com o site (SIL OFL 1.1), só os subconjuntos latinos. |
 
 ### Estrutura
 
@@ -204,11 +220,12 @@ A pasta `dist/` é versionada de propósito, para que `iniciar.py` funcione sem 
 | `dist/` | Site gerado, pronto para servir. |
 | `src/lib/progress/` | Regras do jogo em TypeScript puro: XP, medalhas, sequência, missões, moedas, revisão e a função única `applyAction`. |
 | `src/data/` | Conteúdo: módulos, matérias, cenários e pentest; `curriculum/` (áreas, módulos, submódulos, aulas e integradores), `campaigns/` (campanhas, missões e dossiês), `challenge-packs/` (desafios novos), `architect/` (projetos do modo Arquiteto), `frameworks.ts` (registro verificado) e `glossary.ts`. |
-| `src/components/`, `src/pages/` | Interface. `gamification/` (brasões, conquistas, XP), `trail/` (trilha, fogueira, chefe), `challenge/` (laboratório de código), `study/` (quiz e flashcards), `lesson/` (aulas em abas). |
+| `src/components/`, `src/pages/` | Interface. `gothic/` (selos, brasões de área, medidor, cena do Santuário, tela de carregamento e faixa de vitória), `gamification/` (brasões, conquistas, XP), `trail/` (trilha, fogueira, chefe), `challenge/` (laboratório de código), `study/` (quiz e flashcards), `lesson/` (aulas em abas). |
 | `src/state/` | Armazenamento local e ligação do progresso com o React. |
 | `public/materias/` | Páginas de redirecionamento: endereços antigos (`materias/x.html`) levam à matéria nova. |
 | `design/` | Arte original da marca, fora do site. |
-| `docs/` | Notas de projeto, como [adicionar conteúdo](docs/COMO-ADICIONAR-CONTEUDO.md) e as [referências](docs/REFERENCIAS.md). |
+| `src/styles/` | `gothic.css` (tokens e componentes visuais) e `fonts.css` (fontes empacotadas). |
+| `docs/` | Notas de projeto, como [adicionar conteúdo](docs/COMO-ADICIONAR-CONTEUDO.md), a [identidade visual](docs/IDENTIDADE-VISUAL.md) e as [referências](docs/REFERENCIAS.md). |
 
 ## Como adicionar conteúdo
 
@@ -253,8 +270,8 @@ Ao propor uma alteração, descreva o problema, a solução e como verificar o r
 
 ## Créditos e licenças
 
-- **Bibliotecas:** shadcn/ui, daisyUI, Motion, Rive, Tailwind CSS, Radix UI, Lucide, Sonner e React Router são MIT/ISC; a fonte Inter é SIL OFL 1.1. A página **Referências** do site lista cada uma com a licença.
-- **React Bits** usa MIT + Commons Clause. Os quatro componentes copiados estão dentro do app, o que a licença permite; ela **não** permite revender nem redistribuir os componentes isoladamente. O aviso completo está em `src/components/reactbits/LICENSE.md`.
+- **Bibliotecas:** shadcn/ui, daisyUI, Motion, Rive, Tailwind CSS, Radix UI, Lucide, Sonner e React Router são MIT/ISC; as fontes Cinzel, Literata, Grenze Gotisch e JetBrains Mono são SIL OFL 1.1. A página **Referências** do site lista cada uma com a licença.
+- **React Bits** usa MIT + Commons Clause. Os dois componentes copiados estão dentro do app, o que a licença permite; ela **não** permite revender nem redistribuir os componentes isoladamente. O aviso completo está em `src/components/reactbits/LICENSE.md`.
 - **Projetos de estudo:** [Lingo — Duolingo Clone](https://github.com/sanidhyy/duolingo-clone) (MIT), [Duolingo Next.js](https://github.com/RikhiSingh/Duolingo-Clone) (MIT) e [Habitica](https://github.com/HabitRPG/habitica) (código GPL v3, arte CC BY-NC-SA 3.0) serviram só de inspiração para as ideias de jogo; nenhum código ou imagem foi copiado, e as mecânicas foram reescritas.
 - **Frameworks citados:** as edições e os itens estão em `src/data/frameworks.ts`, cada um com o endereço oficial e a data da conferência. O MITRE ATLAS foi conferido na versão 2026.09 (dados publicados em [mitre-atlas/atlas-data](https://github.com/mitre-atlas/atlas-data)).
 - OWASP, MITRE ATLAS, NIST, ISO/IEC e Kali Linux são referências ou marcas de seus respectivos responsáveis. Este é um projeto educacional independente, sem indicação de afiliação ou endosso dessas organizações.

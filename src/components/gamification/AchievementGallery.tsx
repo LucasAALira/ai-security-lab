@@ -10,7 +10,7 @@ export function AchievementGallery({ medals, empty }: { medals: Medal[]; empty: 
   const current = medals.find((m) => m.id === open) ?? null
   return (
     <>
-      <ul className="grid gap-3 sm:grid-cols-2 min-[1151px]:grid-cols-3">
+      <ul className="grid grid-cols-[minmax(0,1fr)] gap-4 min-[460px]:grid-cols-2 lg:grid-cols-3 min-[1300px]:grid-cols-4">
         {medals.length ? medals.map((m) => <AchievementCard key={m.id} medal={m} onOpen={(x) => setOpen(x.id)} />) : <li className="col-span-full rounded-lg border border-dashed border-border p-5 text-sm text-muted-foreground">{empty}</li>}
       </ul>
       <AchievementDialog medal={current} onClose={() => setOpen(null)} />

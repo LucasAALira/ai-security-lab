@@ -28,10 +28,11 @@ export function DailyPanel() {
   return (
     <section id="hoje" aria-labelledby="hoje-titulo" className="mb-14">
       <SectionHeading
-        eyebrow="MISSÕES E SEQUÊNCIA"
+        eyebrow="Contratos"
         id="hoje-titulo"
-        title="Seu dia de estudo"
-        aside={daily.quests.length ? `${doneCount}/${daily.quests.length} missões` : undefined}
+        title="Contratos do dia"
+        description="Três missões diárias, sorteadas entre as que ainda são possíveis. Cumprir todas abre o baú."
+        aside={daily.quests.length ? `${doneCount}/${daily.quests.length} cumpridos` : undefined}
       />
       <div className="mt-4 grid gap-4 lg:grid-cols-[260px_1fr_260px]">
         <Card className="gap-3 border-tint-line bg-[linear-gradient(135deg,var(--tint-strong),var(--card))] p-5">
@@ -59,21 +60,34 @@ export function DailyPanel() {
           {daily.quests.length ? (
             <ul className="grid gap-2.5">
               {daily.quests.map((q) => (
-                <li key={q.id} className="grid grid-cols-[auto_1fr_auto] items-center gap-x-3 gap-y-1.5 text-[13px]">
+                <li
+                  key={q.id}
+                  className={cn(
+                    'gx-candle relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 rounded-[2px] border border-[var(--stone-line)] bg-[linear-gradient(180deg,color-mix(in_oklab,#e8d8b0_7%,var(--card)),var(--card))] px-3 py-2.5 text-[13.5px]',
+                    q.done && 'border-[var(--ornament-soft)]',
+                  )}
+                >
                   {q.done ? (
                     <Pop>
-                      <Check className="size-4 text-primary" aria-hidden="true" />
+                      <span className="grid size-7 place-items-center rounded-full border border-[var(--ornament)] bg-tint-strong text-primary">
+                        <Check className="size-4" aria-hidden="true" />
+                      </span>
                     </Pop>
                   ) : (
-                    <Circle className="size-4 text-muted-foreground" aria-hidden="true" />
+                    <span className="grid size-7 place-items-center rounded-full border border-dashed border-[var(--stone-line)] text-muted-foreground">
+                      <Circle className="size-3" aria-hidden="true" />
+                    </span>
                   )}
-                  <span className={cn(q.done && 'text-muted-foreground line-through')}>
+                  <span className={cn('font-medium', q.done && 'text-muted-foreground line-through')}>
                     {q.title}
-                    <span className="sr-only">{q.done ? ' (concluída)' : ` (${q.progress} de ${q.target})`}</span>
+                    <span className="sr-only">{q.done ? ' (cumprido)' : ` (${q.progress} de ${q.target})`}</span>
                   </span>
-                  <span className="font-mono text-[11px] text-primary">+{q.coins} moedas</span>
-                  <span className="col-start-2 col-end-4">
-                    <Progress value={(q.progress / q.target) * 100} aria-label={`${q.title}: ${q.progress} de ${q.target}`} className="h-1" />
+                  <span className="text-[12px] font-semibold text-[var(--candle)] tabular-nums">+{q.coins} moedas</span>
+                  <span className="col-start-2 col-end-4 flex items-center gap-2">
+                    <Progress value={(q.progress / q.target) * 100} aria-label={`${q.title}: ${q.progress} de ${q.target}`} className="h-1.5 flex-1" />
+                    <span className="text-[11.5px] text-muted-foreground tabular-nums" aria-hidden="true">
+                      {q.progress}/{q.target}
+                    </span>
                   </span>
                   {!q.done && <QuestSwapButton id={q.id} title={q.title} />}
                 </li>
@@ -82,7 +96,7 @@ export function DailyPanel() {
           ) : (
             <p className="text-sm text-muted-foreground">Sem missões possíveis hoje: você já cobriu todo o conteúdo. Faça uma revisão para manter tudo fresco.</p>
           )}
-          <div className={cn('mt-1 flex items-center gap-2 rounded-md border px-3 py-2 text-xs', daily.chest ? 'border-tier-line bg-tier-soft text-tier tier-ouro' : 'border-border text-muted-foreground')}>
+          <div className={cn('mt-1 flex items-center gap-2 rounded-[2px] border px-3 py-2 text-xs', daily.chest ? 'border-tier-line bg-tier-soft text-tier tier-ouro' : 'border-border text-muted-foreground')}>
             <Gift className="size-4" aria-hidden="true" />
             {daily.chest ? `Baú do dia aberto: +${daily.chestCoins} moedas!` : daily.quests.length ? `Conclua todas as missões para abrir o baú: +${daily.chestCoins} moedas.` : 'O baú abre quando há missões cumpridas.'}
           </div>
@@ -106,7 +120,7 @@ export function DailyPanel() {
               </Link>
             </Button>
           ) : (
-            <p className="rounded-md border border-border px-3 py-2 text-xs text-muted-foreground" role="note">
+            <p className="rounded-[2px] border border-border px-3 py-2 text-xs text-muted-foreground" role="note">
               Acerte pelo menos {REVIEW.minPool} questões nos módulos para liberar a revisão.
             </p>
           )}

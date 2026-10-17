@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router'
+import { Crest } from '@/components/gothic/Crest'
 import { Progress } from '@/components/ui/progress'
 import type { Area } from '@/data/curriculum'
 import { areaRollup } from '@/lib/progress'
@@ -15,13 +16,11 @@ export function AreaCard({ area, headingLevel: H = 'h3' }: { area: Area; heading
   const Icon = areaIcons[area.icon]
   const planned = r.subsTotal - r.subsAvailable
   return (
-    <li className="flex flex-col rounded-xl border border-border bg-card p-4 sm:p-5">
+    <li className="gx-panel gx-candle flex flex-col border p-4 sm:p-5">
       <div className="flex items-start gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-lg border border-tint-line bg-tint text-primary">
-          <Icon className="size-5" aria-hidden="true" />
-        </span>
+        <Crest area={area.id} icon={Icon} />
         <div className="min-w-0">
-          <H className="text-lg leading-snug font-medium">
+          <H className="font-display text-[17px] leading-snug font-semibold">
             <Link to={`/areas/${area.id}`} className="hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
               {area.title}
             </Link>

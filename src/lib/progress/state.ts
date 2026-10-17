@@ -1,5 +1,5 @@
 import { RELICS, ROOMS, DISPLAY_LIMIT, roomOwned } from './relics'
-import { DEFAULT_THEME, isEarlyAccess, isThemeId, QUEST_IDS, QUESTS_PER_DAY, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
+import { DEFAULT_THEME, isEarlyAccess, isFreeTheme, isThemeId, LEGACY_DEFAULT_THEME, QUEST_IDS, QUESTS_PER_DAY, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
 import {
   BOSS_QUESTIONS,
   CASE_COUNT,
@@ -16,6 +16,7 @@ import {
   STORAGE_KEY,
 } from './constants'
 import { isDayKey } from './dates'
+import type { ThemeId } from './catalog'
 import type { ActivityResult, Answer, ArchitectState, BossState, ChallengeState, DecisionEntry, LearningEvent, MissionRun, MissionState, ModuleState, PersonalReward, Quality, StudyState } from './types'
 
 type Loose = Record<string | number, unknown>
@@ -241,6 +242,16 @@ function cleanEvents(raw: unknown): LearningEvent[] {
 }
 
 /** Saneia qualquer valor vindo do armazenamento: só o que tem forma e limite válidos é mantido. */
+/** Tema ativo depois de limpar o estado salvo. Um tema pago só vale se foi comprado. Quem estava no padrão
+ *  antigo sem nunca ter escolhido tema (e sem tema comprado) passa para o novo padrão; quem escolheu de
+ *  propósito, ou tem outro tema, continua onde estava. */
+export function pickTheme(theme: unknown, owned: string[], chosen: boolean): ThemeId {
+  if (!isThemeId(theme)) return DEFAULT_THEME
+  if (!isFreeTheme(theme) && !owned.includes(theme)) return DEFAULT_THEME
+  if (theme === LEGACY_DEFAULT_THEME && !chosen && owned.length === 0) return DEFAULT_THEME
+  return theme
+}
+
 export function cleanState(raw: unknown): StudyState {
   const modules: StudyState['modules'] = {}
   for (const i of range(MODULE_COUNT)) {
@@ -280,6 +291,7 @@ export function cleanState(raw: unknown): StudyState {
   const rawOwned = at(at(raw, 'shop'), 'owned')
   const owned = Array.isArray(rawOwned) ? paid.filter((id) => rawOwned.includes(id)) : []
   const theme = at(at(raw, 'shop'), 'theme')
+  const themeChosen = at(at(raw, 'shop'), 'themeChosen') === true
   const rawUnlocked = at(at(raw, 'shop'), 'unlocked')
   const rewards: PersonalReward[] = []
   const rawRewards = at(at(raw, 'shop'), 'rewards')
@@ -302,7 +314,8 @@ export function cleanState(raw: unknown): StudyState {
     relics, display, room: ROOMS.some(r => r.id === room) && roomOwned(room, relics) ? room : 'stone',
     shields: Math.min(SHIELD.max, small(at(at(raw, 'shop'), 'shields'))),
     owned,
-    theme: isThemeId(theme) && (theme === DEFAULT_THEME || owned.includes(theme)) ? theme : DEFAULT_THEME,
+    theme: pickTheme(theme, owned, themeChosen),
+    themeChosen,
     rewards,
     unlocked: Array.isArray(rawUnlocked) ? [...new Set(rawUnlocked.filter((n): n is number => typeof n === 'number' && Number.isInteger(n) && isEarlyAccess(n)))].sort((a, b) => a - b) : [],
   }

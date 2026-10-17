@@ -9,6 +9,7 @@ import { findCampaign, missionXp } from '@/lib/progress'
 import { useDocumentTitle } from '@/lib/use-document-title'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
+import { SealMark } from '@/components/gothic/Seal'
 
 export function CampaignPage() {
   const { campaign: id } = useParams()
@@ -44,7 +45,7 @@ export function CampaignPage() {
       <p className="mt-2 text-sm text-muted-foreground italic">{content.tagline}</p>
       {sum.pendingRequirements.length ? (
         <p className="mt-4 flex items-center gap-2 rounded-lg border border-dashed border-border p-3 text-sm">
-          <Lock className="size-4" aria-hidden="true" /> Esta campanha abre depois de concluir: {sum.pendingRequirements.join(', ')}.
+          <SealMark className="!size-8" /> Esta campanha abre depois de concluir: {sum.pendingRequirements.join(', ')}.
         </p>
       ) : null}
       <ol className="mt-6 grid list-none gap-3 p-0">

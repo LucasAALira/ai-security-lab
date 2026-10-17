@@ -16,13 +16,13 @@ export function SectionHeading({ eyebrow, title, id, aside, description, level: 
   return (
     <div className={cn('flex items-start justify-between gap-5', className)}>
       <div className="min-w-0">
-        <div className="text-[10px] font-semibold tracking-[0.2em] text-primary">{eyebrow}</div>
-        <Level id={id} className={cn('mt-3 mb-1 font-medium tracking-tight', Level === 'h3' ? 'text-xl' : 'text-[26px] leading-tight sm:text-3xl')}>
+        <div className="gx-inscription">{eyebrow}</div>
+        <Level id={id} className={cn('mt-2.5 mb-1', Level === 'h3' ? 'text-xl font-semibold' : 'text-[26px] leading-tight sm:text-[32px]')}>
           {title}
         </Level>
         {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
       </div>
-      {aside ? <div className="mt-6 shrink-0 text-right font-mono text-xs text-primary">{aside}</div> : null}
+      {aside ? <div className="mt-6 shrink-0 text-right text-xs font-semibold text-primary tabular-nums">{aside}</div> : null}
     </div>
   )
 }

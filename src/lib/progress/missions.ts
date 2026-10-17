@@ -107,6 +107,12 @@ export const isMissionUnlocked = (s: StudyState, ctx: ProgressContext, id: strin
 /** Atividades de uma missão que rendem XP próprio (as de código rendem o XP do desafio). */
 const paying = (mission: MissionSpec) => mission.activities.filter((a) => a.kind !== 'spot')
 
+/** XP máximo de uma missão (atividades próprias e bônus de conclusão), sem o dos desafios de código. */
+export function missionMaxXp(mission: MissionSpec): number {
+  const dossier = mission.kind === 'dossier'
+  return paying(mission).length * (dossier ? DOSSIER_XP.activity : MISSION_XP.activity) + (dossier ? DOSSIER_XP.passed : MISSION_XP.passed)
+}
+
 export function missionXp(s: StudyState, mission: MissionSpec): number {
   const m = s.missions[mission.id]
   if (!m) return 0

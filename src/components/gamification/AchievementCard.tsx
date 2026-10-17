@@ -1,9 +1,23 @@
 import { Check, EyeOff, Lock } from 'lucide-react'
 import { tierNames } from '@/lib/format'
-import { formatDay, type Medal } from '@/lib/progress'
+import { formatDay, type Medal, type Tier } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 import { categoryNames } from './achievement-meta'
 import { MedalBadge } from './MedalBadge'
+
+/** Raridade em três sinais além da cor: o desenho do medalhão (asas, coroa, chifres), este símbolo e o nome. */
+const RARITY_GLYPH: Record<Tier, string> = { bronze: '◆', prata: '◆◆', ouro: '♛', dragao: '✦✦✦' }
+
+export function Rarity({ tier }: { tier: Tier }) {
+  return (
+    <span className="inline-flex items-center gap-1 text-tier">
+      <span aria-hidden="true" className="text-[9px] tracking-[0.1em]">
+        {RARITY_GLYPH[tier]}
+      </span>
+      {tierNames[tier]}
+    </span>
+  )
+}
 
 function Status({ medal }: { medal: Medal }) {
   if (medal.unlocked) {
@@ -32,7 +46,7 @@ interface Props {
   onOpen: (medal: Medal) => void
 }
 
-/** Cartão da galeria de conquistas: brasão, nome, descrição curta e progresso real. Abre os detalhes. */
+/** Um nicho do relicário: o medalhão em destaque, o nome, o requisito escrito e o progresso real. Abre os detalhes. */
 export function AchievementCard({ medal, onOpen }: Props) {
   const pct = medal.target ? Math.round((medal.value / medal.target) * 100) : 0
   return (
@@ -41,34 +55,32 @@ export function AchievementCard({ medal, onOpen }: Props) {
         type="button"
         onClick={() => onOpen(medal)}
         className={cn(
-          `tier-${medal.tier} group flex h-full w-full items-start gap-3.5 rounded-xl border p-3.5 text-left transition-[transform,border-color,background-color] hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none motion-reduce:hover:translate-y-0`,
-          medal.unlocked
-            ? 'border-tier-line bg-[linear-gradient(135deg,var(--tier-soft),var(--card)_70%)]'
-            : 'border-dashed border-border bg-card/60 hover:border-tint-line',
+          `tier-${medal.tier} gx-niche gx-candle flex h-full w-full flex-col items-center px-4 pt-6 pb-4 text-center`,
+          !medal.unlocked && 'is-locked',
         )}
       >
-        <MedalBadge icon={medal.icon} tier={medal.tier} locked={!medal.unlocked} hidden={medal.masked} className="mt-0.5 size-[54px]" />
-        <span className="min-w-0 flex-1">
-          <span className="flex flex-wrap items-center gap-x-2 text-[10px] tracking-[0.6px] text-muted-foreground uppercase">
-            <Status medal={medal} />
-            <span aria-hidden="true">·</span>
-            <span>{medal.masked ? 'Secreta' : categoryNames[medal.category]}</span>
-          </span>
-          <strong className={cn('mt-1 block text-[14px] leading-snug font-semibold', !medal.unlocked && 'text-foreground/85')}>{medal.name}</strong>
-          <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-muted-foreground">{medal.desc}</span>
+        <MedalBadge icon={medal.icon} tier={medal.tier} locked={!medal.unlocked} hidden={medal.masked} className="size-[72px]" />
+        <span className="mt-3 flex flex-wrap items-center justify-center gap-x-2 text-[11px] text-muted-foreground">
+          <Status medal={medal} />
+          <span aria-hidden="true">·</span>
+          <span>{medal.masked ? 'Secreta' : categoryNames[medal.category]}</span>
+        </span>
+        <strong className={cn('mt-1.5 block font-display text-[15px] leading-snug font-semibold', !medal.unlocked && 'text-foreground/85')}>{medal.name}</strong>
+        <span className="mt-1 line-clamp-3 block text-[12.5px] leading-relaxed text-muted-foreground">{medal.desc}</span>
+        <span className="mt-auto w-full pt-3 text-[11.5px]">
           {medal.unlocked ? (
-            <span className="mt-2 block text-[11px] text-primary">
-              {medal.date ? `Obtida em ${formatDay(medal.date)}` : 'Obtida'} · {tierNames[medal.tier]} · +{medal.xp} XP
+            <span className="block">
+              <Rarity tier={medal.tier} /> · <span className="text-primary">{medal.date ? `obtida em ${formatDay(medal.date)}` : 'obtida'}</span> · +{medal.xp} XP
             </span>
           ) : medal.masked ? (
-            <span className="mt-2 block text-[11px] text-muted-foreground">Progresso oculto até o desbloqueio</span>
+            <span className="block text-muted-foreground">Requisito oculto até o desbloqueio</span>
           ) : (
-            <span className="mt-2 block">
-              <span role="progressbar" aria-label={`Progresso de ${medal.name}`} aria-valuemin={0} aria-valuemax={medal.target} aria-valuenow={medal.value} className="block h-1.5 overflow-hidden rounded-full bg-border">
-                <span className="block h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
+            <span className="block">
+              <span role="progressbar" aria-label={`Progresso de ${medal.name}`} aria-valuemin={0} aria-valuemax={medal.target} aria-valuenow={medal.value} className="gx-gauge block h-1.5">
+                <span className="gx-gauge-fill block" style={{ transform: `translateX(-${100 - pct}%)` }} />
               </span>
-              <span className="mt-1 block text-[11px] text-muted-foreground">
-                {medal.value} de {medal.target} · {tierNames[medal.tier]} · +{medal.xp} XP
+              <span className="mt-1 block text-muted-foreground">
+                {medal.value} de {medal.target} · <Rarity tier={medal.tier} /> · +{medal.xp} XP
               </span>
             </span>
           )}

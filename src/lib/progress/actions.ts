@@ -1,7 +1,7 @@
 import { RELICS, ROOMS, DISPLAY_LIMIT, SWAP_PRICE, roomOwned } from './relics'
 import { questReplacement } from './quests'
 import { medals } from './medals'
-import { isThemeId, DEFAULT_THEME, moduleUnlockPrice, REVIEW, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
+import { isFreeTheme, isThemeId, moduleUnlockPrice, REVIEW, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
 import { findChallenge, gradeBoss, gradeFix, gradeLines, hintsUsed, isRunDone } from './challenges'
 import {
   BOSS_QUESTIONS,
@@ -221,6 +221,7 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
       if (!spend(s, ctx, theme.price)) return reject('coins')
       s.shop.owned.push(theme.id)
       s.shop.theme = theme.id
+      s.shop.themeChosen = true
       return { changed: true, events: [{ kind: 'purchase', item: 'theme', name: `Tema ${theme.name}` }] }
     }
 
@@ -241,9 +242,10 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
 
     case 'setTheme':
       if (!isThemeId(action.theme)) return reject('invalid')
-      if (action.theme !== DEFAULT_THEME && !s.shop.owned.includes(action.theme)) return reject('locked')
+      if (!isFreeTheme(action.theme) && !s.shop.owned.includes(action.theme)) return reject('locked')
       if (s.shop.theme === action.theme) return nothing
       s.shop.theme = action.theme
+      s.shop.themeChosen = true
       return { changed: true }
 
     case 'addReward': {
