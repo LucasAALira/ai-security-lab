@@ -13,7 +13,7 @@ import { areaTitleOf } from '@/data/curriculum'
 import { modules } from '@/data/modules'
 import { eventsToText, rejectText } from '@/lib/events-text'
 import { letters } from '@/lib/format'
-import { canOpenContent, CHALLENGE_XP, emptyChallenge, findChallenge, gradeLines, hintsUsed, HINT_PHASES, isRunDone, type ApplyResult } from '@/lib/progress'
+import { canOpenContent, CHALLENGE_XP, emptyChallenge, findChallenge, gradeLines, hintsUsed, HINT_PHASES, isChallengeOpen, isRunDone, type ApplyResult } from '@/lib/progress'
 import { EarlyAccessPreview } from '@/components/shop/EarlyAccessPreview'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
@@ -41,7 +41,7 @@ interface Props {
 export function CodeChallenge({ id, nextTo, nested = false }: Props) {
   const Title = nested ? 'h4' : 'h2'
   const Sub = nested ? 'h5' : 'h3'
-  const { state, ctx, dispatch, derived } = useProgress()
+  const { state, ctx, dispatch } = useProgress()
   const challenge = challengeById(id)
   const spec = findChallenge(ctx, id)
   const uid = useId()
@@ -54,12 +54,12 @@ export function CodeChallenge({ id, nextTo, nested = false }: Props) {
   // O registro do desafio só existe depois da primeira ação; antes disso vale o estado vazio.
   const run = state.challenges[id] ?? emptyChallenge()
   const moduleIndex = challenge?.module ?? null
-  const trailModule = moduleIndex === null ? undefined : derived.trail[moduleIndex]
   if (!challenge || !spec) return <p className="text-sm text-muted-foreground">Desafio não encontrado.</p>
   // Desafios de um módulo de acesso antecipado só abrem depois da liberação: antes disso, a prévia do módulo.
   if (moduleIndex !== null && !canOpenContent(state, ctx, moduleIndex)) return <EarlyAccessPreview module={moduleIndex} headingLevel={2} />
 
-  const locked = moduleIndex !== null && !trailModule?.unlocked
+  // Aberto pela trilha ou porque uma missão usa este desafio como atividade.
+  const locked = !isChallengeOpen(state, ctx, spec)
   const phase: Phase = isRunDone(run) ? 'done' : run.run.identified ? 'fix' : 'identify'
   const used = hintsUsed(run)
   const m = moduleIndex === null ? undefined : modules[moduleIndex]

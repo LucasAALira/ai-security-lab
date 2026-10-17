@@ -30,7 +30,7 @@ function OtherOptions({ options, chosen }: { options: Decide['options']; chosen:
   return (
     <details className="mt-3 rounded-lg border border-border bg-background/40 p-3 text-[13px]">
       <summary className="cursor-pointer font-medium focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">Comparar com as outras alternativas</summary>
-      <ul className="mt-2 grid gap-2.5 pl-0">
+      <ul className="mt-2 grid grid-cols-[minmax(0,1fr)] gap-2.5 pl-0">
         {options.map((o, k) =>
           k === chosen ? null : (
             <li key={k} className="list-none">

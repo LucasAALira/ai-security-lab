@@ -51,7 +51,7 @@ export function DiagramView({ title, nodes, edges, selected, onSelect, marks = {
   const zones = [...new Set(nodes.map((n) => n.zone).filter((z): z is string => Boolean(z)))]
 
   return (
-    <section aria-label={title} className="grid gap-3">
+    <section aria-label={title} className="grid grid-cols-[minmax(0,1fr)] gap-3">
       <div className="relative">
         <svg aria-hidden="true" className="pointer-events-none absolute inset-0 hidden h-full w-full text-muted-foreground sm:block">
           <defs>

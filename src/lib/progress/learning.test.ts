@@ -13,6 +13,7 @@ import {
   gameXp,
   gradeFix,
   gradeLines,
+  isChallengeOpen,
   isModuleUnlocked,
   levelFor,
   medals,
@@ -28,6 +29,8 @@ import {
 } from '.'
 
 const real = progressContext
+/** Desafios que alguma missão usa como atividade de encontrar a falha. */
+const spotIds = new Set(real.missions.flatMap((m) => m.activities.filter((a) => a.kind === 'spot').map((a) => a.challenge)))
 /** Sem pré-requisitos entre módulos: para testar desafios, chefes e conquistas em qualquer ordem. */
 const open: ProgressContext = { ...real, prereqs: real.prereqs.map(() => []) }
 const D = (y: number, m: number, d: number) => new Date(y, m - 1, d, 12)
@@ -407,9 +410,22 @@ describe('trilha, fogueiras e pré-requisitos', () => {
     expect(applyAction(s, { type: 'read', module: 1, index: 0 }, real, NOW)).toMatchObject({ changed: false, rejected: 'prereq' })
     expect(applyAction(s, { type: 'answer', module: 1, index: 0 }, real, NOW).rejected).toBe('prereq')
     expect(applyAction(s, { type: 'miss', module: 1, index: 0 }, real, NOW).rejected).toBe('prereq')
-    const blocked = challengeSpecs.find((c) => c.module === 1)!
+    const blocked = challengeSpecs.find((c) => c.module === 1 && !spotIds.has(c.id))!
     expect(applyAction(s, { type: 'identify', challenge: blocked.id, lines: blocked.vulnerable }, real, NOW).rejected).toBe('prereq')
     expect(applyAction(s, { type: 'hint', challenge: blocked.id, index: 0 }, real, NOW).rejected).toBe('prereq')
+  })
+
+  it('um desafio clássico usado como atividade de missão abre pela missão, sem exigir o módulo da trilha', () => {
+    const s = emptyState()
+    const used = challengeSpecs.filter((c) => c.module !== null && !isModuleUnlocked(s, real, c.module) && spotIds.has(c.id))
+    expect(used.length).toBeGreaterThan(0)
+    for (const c of used) {
+      expect(isChallengeOpen(s, real, c), c.id).toBe(true)
+      expect(applyAction(s, { type: 'hint', challenge: c.id, index: 0 }, real, NOW).rejected, c.id).toBeUndefined()
+    }
+    // e o contrário: sem missão, o desafio de módulo bloqueado continua fechado
+    const other = challengeSpecs.find((c) => c.module !== null && !isModuleUnlocked(s, real, c.module) && !spotIds.has(c.id))!
+    expect(isChallengeOpen(s, real, other)).toBe(false)
   })
 
   it('anotações continuam livres em qualquer módulo', () => {

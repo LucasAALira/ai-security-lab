@@ -45,7 +45,7 @@ export function EvidencePanel({ items, step = 0, label = 'Evidências' }: Props)
           ))}
         </TabsList>
         {items.map((e) => (
-          <TabsContent key={e.id} value={e.id} className="mt-2 grid gap-2.5">
+          <TabsContent key={e.id} value={e.id} className="mt-2 grid grid-cols-[minmax(0,1fr)] gap-2.5">
             {e.kind === 'code' && e.lines ? <CodeBlock lines={e.lines} language={e.language ?? 'text'} title={e.title} /> : null}
             {e.kind === 'table' && e.head && e.rows ? (
               <div className="overflow-x-auto rounded-lg border border-border" tabIndex={0} role="region" aria-label={`${e.title}, tabela rolável`}>

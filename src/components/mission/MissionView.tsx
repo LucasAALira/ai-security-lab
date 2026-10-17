@@ -116,7 +116,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
   const decisionList = content.activities.map((a, i) => ({ a, i, result: m.run.results[a.id] ?? null }))
 
   return (
-    <div className="grid gap-5">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-5">
       <header>
         <p className="text-[10px] font-semibold tracking-[0.2em] text-primary uppercase">
           {dossier ? `Simulação fictícia · inspirada em ${dossier.title}` : `Campanha ${campaign?.title ?? ''} · Missão ${content.order} de ${campaign?.missions.length ?? '?'}`}
@@ -176,7 +176,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
       ) : null}
 
       {stage === 1 ? (
-        <section aria-labelledby="etapa-titulo" className="grid gap-4">
+        <section aria-labelledby="etapa-titulo" className="grid grid-cols-[minmax(0,1fr)] gap-4">
           <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
             <h2 id="etapa-titulo" ref={headingRef} tabIndex={-1} className="text-lg font-medium outline-none">
               2. Evidências
@@ -195,7 +195,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
       ) : null}
 
       {stage === 2 ? (
-        <section aria-labelledby="etapa-titulo" className="grid gap-4">
+        <section aria-labelledby="etapa-titulo" className="grid grid-cols-[minmax(0,1fr)] gap-4">
           <h2 id="etapa-titulo" ref={headingRef} tabIndex={-1} className="text-lg font-medium outline-none">
             3. Decisão · {content.activities[step].title}
           </h2>
@@ -311,7 +311,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
       ) : null}
 
       {stage === 4 ? (
-        <section aria-labelledby="etapa-titulo" className="grid gap-4">
+        <section aria-labelledby="etapa-titulo" className="grid grid-cols-[minmax(0,1fr)] gap-4">
           <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
             <h2 id="etapa-titulo" ref={headingRef} tabIndex={-1} className="text-lg font-medium outline-none">
               5. Revisão
@@ -407,7 +407,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
                 </Link>
               </Button>
             ) : next ? (
-              <Button asChild>
+              <Button asChild className="h-auto max-w-full whitespace-normal py-2 text-left">
                 <Link to={`/campanhas/${content.campaign}/${next.id}`}>
                   Próxima missão: {next.title} <ArrowRight aria-hidden="true" />
                 </Link>

@@ -50,9 +50,22 @@ export function isModuleUnlocked(s: StudyState, ctx: ProgressContext, module: nu
   return missingPrereqs(s, ctx, module).length === 0 || s.shop.unlocked.includes(module) || moduleSteps(m) > 0
 }
 
-/** Desafios das áreas novas (`module: null`) estão sempre abertos; os dos módulos clássicos seguem a trilha. */
-export const isChallengeOpen = (s: StudyState, ctx: ProgressContext, spec: Pick<ChallengeSpec, 'module'>): boolean =>
-  spec.module === null || isModuleUnlocked(s, ctx, spec.module)
+const spotCache = new WeakMap<ProgressContext, ReadonlySet<string>>()
+
+/** Desafios que alguma missão usa como atividade de “encontrar a falha”. A missão é quem decide a ordem, não a trilha. */
+function missionSpots(ctx: ProgressContext): ReadonlySet<string> {
+  let spots = spotCache.get(ctx)
+  if (!spots) {
+    spots = new Set(ctx.missions.flatMap((m) => m.activities.filter((a) => a.kind === 'spot').map((a) => a.challenge)))
+    spotCache.set(ctx, spots)
+  }
+  return spots
+}
+
+/** Desafios das áreas novas (`module: null`) estão sempre abertos; os dos módulos clássicos seguem a trilha,
+ *  a não ser que uma missão os use como atividade (aí abrem pela missão, sem exigir o módulo da trilha). */
+export const isChallengeOpen = (s: StudyState, ctx: ProgressContext, spec: Pick<ChallengeSpec, 'id' | 'module'>): boolean =>
+  spec.module === null || isModuleUnlocked(s, ctx, spec.module) || missionSpots(ctx).has(spec.id)
 
 /** O conteúdo (textos, quiz, cartões, desafios) abre? Módulos comuns sempre abrem para leitura;
  *  os de acesso antecipado só depois de liberados. */
