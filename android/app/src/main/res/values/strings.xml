@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AI Security Lab</string>
+    <string name="share_backup">Salvar ou enviar o backup</string>
+    <string name="no_browser">Nenhum navegador encontrado para abrir o link.</string>
+</resources>

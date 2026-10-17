@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pacote, versão e SDKs vêm do app/build.gradle (Gradle) ou do scripts/build-apk.sh (build sem Gradle). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- O conteúdo é todo local; a permissão só existe porque o WebView a exige para endereços https,
+         mesmo os servidos de dentro do app. Links externos abrem no navegador do aparelho. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="false">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|density|fontScale|locale"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Entrega o arquivo de backup ao app escolhido no compartilhamento, só para leitura. -->
+        <provider
+            android:name=".BackupProvider"
+            android:authorities="io.github.lucasaalira.aisecuritylab.backups"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+    </application>
+</manifest>

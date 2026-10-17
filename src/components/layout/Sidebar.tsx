@@ -23,7 +23,7 @@ function ItemText({ item }: { item: NavItem }) {
 export function Sidebar() {
   const location = useLocation()
   return (
-    <aside className="z-20 flex flex-col overflow-y-auto border-[var(--stone-line)] bg-[linear-gradient(180deg,color-mix(in_oklab,var(--background)_88%,var(--card)),var(--background))] max-md:border-b max-md:px-4 max-md:py-3 md:fixed md:inset-y-0 md:left-0 md:w-[205px] md:border-r md:px-3 md:py-6 min-[1151px]:w-[245px] min-[1151px]:px-5 min-[1151px]:py-8">
+    <aside className="z-20 flex flex-col overflow-y-auto border-[var(--stone-line)] bg-[linear-gradient(180deg,color-mix(in_oklab,var(--background)_88%,var(--card)),var(--background))] max-md:border-b max-md:px-4 max-md:py-3 md:fixed md:top-[var(--sat)] md:bottom-[var(--sab)] md:left-[var(--sal)] md:w-[205px] md:border-r md:px-3 md:py-6 min-[1151px]:w-[245px] min-[1151px]:px-5 min-[1151px]:py-8">
       <Link to="/?secao=inicio" className="flex min-h-11 shrink-0 items-center gap-2.5 rounded-[2px] focus-visible:outline-2">
         <LogoMark className="!size-11 shrink-0 !animate-none max-md:!size-9" />
         <span className="min-w-0 leading-none">

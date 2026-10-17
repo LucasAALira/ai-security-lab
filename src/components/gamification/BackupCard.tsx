@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { formatNumber } from '@/lib/format'
 import { backupFileName, exportProgress, parseBackup, summary, type StudyState } from '@/lib/progress'
+import { isNativeApp, shareBackupFile } from '@/lib/native'
 import { useProgress } from '@/state/ProgressProvider'
 
 interface Pending {
@@ -23,7 +24,17 @@ export function BackupCard() {
   const [message, setMessage] = useState<{ tone: 'ok' | 'error'; text: string } | null>(null)
   const [pending, setPending] = useState<Pending | null>(null)
 
-  const doExport = () => {
+  const doExport = async () => {
+    // No app Android não há "Downloads" do navegador: o arquivo vai para o compartilhamento do sistema.
+    if (isNativeApp()) {
+      try {
+        const name = await shareBackupFile(backupFileName(), exportProgress(state))
+        setMessage({ tone: 'ok', text: `Arquivo ${name} pronto. Escolha onde guardar (Drive, Arquivos, e-mail): ele é a única cópia fora deste aparelho.` })
+      } catch {
+        setMessage({ tone: 'error', text: 'O compartilhamento foi cancelado ou não abriu. Nada mudou no seu progresso; tente de novo.' })
+      }
+      return
+    }
     const blob = new Blob([exportProgress(state)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
