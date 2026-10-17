@@ -8,14 +8,24 @@ interface Props {
   /** Elemento do bloco (parágrafo por padrão). */
   as?: ElementType
   className?: string
+  /** Reconhece citações `[n]` e as transforma em botões que levam à fonte `fonte-n` da página. */
+  cites?: boolean
+}
+
+/** Leva o foco ao item de uma lista de fontes (sem mexer no endereço, que no roteador em hash é a rota). */
+export function goToSource(n: number) {
+  const el = document.getElementById(`fonte-${n}`)
+  if (!el) return
+  el.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+  el.focus({ preventScroll: true })
 }
 
 /** Texto com negrito, código e termos do glossário. Os termos viram botões que abrem a definição
  *  logo abaixo do parágrafo (funciona com teclado e toque, sem depender de hover). */
-export function RichText({ text, as: Tag = 'p', className }: Props) {
+export function RichText({ text, as: Tag = 'p', className, cites }: Props) {
   const uid = useId()
   const [open, setOpen] = useState<string[]>([])
-  const tokens = parseRich(text)
+  const tokens = parseRich(text, { cites })
   const toggle = (id: string) => setOpen((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
 
   return (
@@ -23,6 +33,18 @@ export function RichText({ text, as: Tag = 'p', className }: Props) {
       <Tag className={className}>
         {tokens.map((t, i) => {
           if (t.kind === 'bold') return <strong key={i}>{t.text}</strong>
+          if (t.kind === 'cite')
+            return (
+              <button
+                key={i}
+                type="button"
+                onClick={() => goToSource(t.n)}
+                aria-label={`Ir à fonte ${t.n}`}
+                className="mx-px rounded-sm px-0.5 align-baseline font-mono text-[0.8em] text-primary underline underline-offset-2 hover:bg-tint-strong focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+              >
+                [{t.n}]
+              </button>
+            )
           if (t.kind === 'code') return <code key={i} className="rounded border border-border bg-tint px-1 py-px font-mono text-[0.88em] break-words">{t.text}</code>
           if (t.kind === 'term') {
             const entry = glossaryById(t.id)
@@ -57,11 +79,11 @@ export function RichText({ text, as: Tag = 'p', className }: Props) {
 }
 
 /** Vários parágrafos em sequência. */
-export function RichParagraphs({ texts, className }: { texts: string[]; className?: string }) {
+export function RichParagraphs({ texts, className, cites }: { texts: string[]; className?: string; cites?: boolean }) {
   return (
     <div className="grid gap-2.5">
       {texts.map((t, i) => (
-        <RichText key={i} text={t} className={className} />
+        <RichText key={i} text={t} className={className} cites={cites} />
       ))}
     </div>
   )

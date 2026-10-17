@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { RichParagraphs, RichText } from '@/components/rich/RichText'
-import { campaignById, missionContentById, type Evidence, type MissionContent } from '@/data/campaigns'
+import { campaignById, dossierById, missionContentById, type Evidence, type MissionContent } from '@/data/campaigns'
 import { isGood, MISSION_STAGES, firstPending, isCleanRun, missionLock, missionPassed, missionState, missionXp, runFlags, type ActivityResult, type MissionSpec } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
@@ -67,6 +67,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
   const m = missionState(state, spec.id)
   const lock = missionLock(state, ctx, spec.id)
   const campaign = campaignById(content.campaign)
+  const dossier = spec.kind === 'dossier' ? dossierById(spec.id) : undefined
   const total = spec.activities.length
   const pending = firstPending(state, spec, m)
   const flags = useMemo(() => runFlags(spec, m), [spec, m])
@@ -118,7 +119,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
     <div className="grid gap-5">
       <header>
         <p className="text-[10px] font-semibold tracking-[0.2em] text-primary uppercase">
-          Campanha {campaign?.title ?? ''} · Missão {content.order} de {campaign?.missions.length ?? '?'}
+          {dossier ? `Simulação fictícia · inspirada em ${dossier.title}` : `Campanha ${campaign?.title ?? ''} · Missão ${content.order} de ${campaign?.missions.length ?? '?'}`}
         </p>
         <h1 className="mt-2 text-2xl leading-tight font-medium tracking-tight sm:text-3xl">{content.title}</h1>
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -128,7 +129,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
           <span className="inline-flex items-center gap-1">
             <Clock className="size-3.5" aria-hidden="true" /> cerca de {content.minutes} min
           </span>
-          <span>{campaign?.company ? `Empresa fictícia: ${campaign.company}` : ''}</span>
+          <span>{campaign?.company ? `Empresa fictícia: ${campaign.company}` : dossier ? 'Empresa, nomes e dados inventados' : ''}</span>
           {started ? (
             <span>
               Atividades: {pending} de {total}
@@ -254,7 +255,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
           <p className="text-[13px] text-muted-foreground">
             Esta é uma <strong>simulação educacional</strong>: cada decisão leva a um desfecho coerente com as evidências, sem porcentagens de “chance de sucesso” inventadas. O objetivo é ver o encadeamento, e não prever números.
           </p>
-          <ol className="m-0 grid list-none gap-3 p-0">
+          <ol className="m-0 grid list-none grid-cols-[minmax(0,1fr)] gap-3 p-0">
             {content.activities.map((a, i) => {
               const result = m.run.results[a.id] ?? null
               if (a.kind === 'decide' || a.kind === 'adr') {
@@ -388,13 +389,24 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
                 ) : null
               })}
             </ul>
+            {dossier && !state.dossiers[dossier.id] ? (
+              <p className="mt-2 text-xs">
+                Falta marcar o dossiê como lido para contar nas conquistas de casos reais. <Link to={`/casos/${dossier.id}`} className="text-primary underline underline-offset-2">Abrir o dossiê</Link>.
+              </p>
+            ) : null}
             <p className="mt-2 text-xs text-muted-foreground">
               Conquistas só contam atividades corrigidas por regras ou decisões com crédito; abrir telas não conquista nada. <Link to="/conquistas" className="text-primary underline underline-offset-2">Ver todas as conquistas</Link>.
             </p>
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {next ? (
+            {dossier ? (
+              <Button asChild>
+                <Link to={`/casos/${dossier.id}`}>
+                  Voltar ao dossiê <ArrowRight aria-hidden="true" />
+                </Link>
+              </Button>
+            ) : next ? (
               <Button asChild>
                 <Link to={`/campanhas/${content.campaign}/${next.id}`}>
                   Próxima missão: {next.title} <ArrowRight aria-hidden="true" />

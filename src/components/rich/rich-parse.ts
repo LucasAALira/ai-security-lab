@@ -7,13 +7,20 @@ export type RichToken =
   | { kind: 'bold'; text: string }
   | { kind: 'code'; text: string }
   | { kind: 'term'; id: string; label: string }
+  /** Citação de fonte numerada (`[3]`), só reconhecida quando o chamador pede (`cites`). */
+  | { kind: 'cite'; n: number }
 
 const TOKEN = /(\*\*[^*\n]+\*\*|`[^`\n]+`|\{\{[a-z0-9-]+(?:\|[^{}\n]+)?\}\})/g
+const TOKEN_CITES = /(\*\*[^*\n]+\*\*|`[^`\n]+`|\{\{[a-z0-9-]+(?:\|[^{}\n]+)?\}\}|\[\d{1,2}\])/g
 
-export function parseRich(text: string): RichToken[] {
+export function parseRich(text: string, opts: { cites?: boolean } = {}): RichToken[] {
   const out: RichToken[] = []
-  for (const part of text.split(TOKEN)) {
+  for (const part of text.split(opts.cites ? TOKEN_CITES : TOKEN)) {
     if (!part) continue
+    if (opts.cites && /^\[\d{1,2}\]$/.test(part)) {
+      out.push({ kind: 'cite', n: Number(part.slice(1, -1)) })
+      continue
+    }
     if (part.startsWith('**') && part.endsWith('**') && part.length > 4) out.push({ kind: 'bold', text: part.slice(2, -2) })
     else if (part.startsWith('`') && part.endsWith('`') && part.length > 2) out.push({ kind: 'code', text: part.slice(1, -1) })
     else if (part.startsWith('{{') && part.endsWith('}}')) {

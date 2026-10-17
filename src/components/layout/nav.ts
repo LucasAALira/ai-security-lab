@@ -35,6 +35,7 @@ export const navGroups: NavGroup[] = [
     label: 'PRÁTICA',
     items: [
       { label: 'Campanhas', to: '/campanhas' },
+      { label: 'Casos reais', to: '/casos' },
       { label: 'Laboratório de código', to: '/desafios' },
       { label: 'Laboratório de prompt', to: home('laboratorio') },
       { label: 'Cenários por porte', to: home('cenarios') },

@@ -64,7 +64,7 @@ export function OrderActivity({ missionId, index, total, content, spec }: Common
   return (
     <ActivityFrame content={content} view={view} index={index} total={total} status={announce || (bad.length ? 'Há passos fora de ordem.' : undefined)}>
       <p className="mb-2 text-xs text-muted-foreground">Use os botões “Subir” e “Descer” para mover cada passo (não é preciso arrastar).</p>
-      <ol className="m-0 grid list-none gap-1.5 p-0" aria-label="Passos, na ordem atual">
+      <ol className="m-0 grid list-none grid-cols-[minmax(0,1fr)] gap-1.5 p-0" aria-label="Passos, na ordem atual">
         {shown.map((item, pos) => (
           <li key={item} className={cn('flex items-start gap-2.5 rounded-lg border bg-background/40 px-3 py-2.5 text-[13px] leading-relaxed', bad.includes(item) ? 'border-destructive' : 'border-border')}>
             <span aria-hidden="true" className="mt-0.5 w-5 shrink-0 font-mono text-muted-foreground">
@@ -122,9 +122,9 @@ export function AssignActivity({ missionId, index, total, content, spec }: Commo
 
   return (
     <ActivityFrame content={content} view={view} index={index} total={total} status={bad.length ? `${bad.length} linha(s) a rever.` : undefined}>
-      <ul className="m-0 grid list-none gap-2 p-0">
+      <ul className="m-0 grid list-none grid-cols-[minmax(0,1fr)] gap-2 p-0">
         {content.rows.map((row, k) => (
-          <li key={k} className={cn('rounded-lg border bg-background/40 px-3 py-2.5 text-[13px] leading-relaxed', bad.includes(k) ? 'border-destructive' : 'border-border')}>
+          <li key={k} className={cn('min-w-0 rounded-lg border bg-background/40 px-3 py-2.5 text-[13px] leading-relaxed', bad.includes(k) ? 'border-destructive' : 'border-border')}>
             <div className="flex flex-wrap items-start gap-x-3 gap-y-2">
               <Label htmlFor={`${uid}-${k}`} className="min-w-0 flex-1 basis-64 items-start font-normal leading-relaxed">
                 <span className="font-mono text-muted-foreground">{k + 1}.</span> <RichText as="span" text={row.text} />
@@ -137,7 +137,7 @@ export function AssignActivity({ missionId, index, total, content, spec }: Commo
                   setValues((prev) => prev.map((x, i) => (i === k ? e.target.value : x)))
                   setBad((prev) => prev.filter((x) => x !== k))
                 }}
-                className="h-8 w-full max-w-full min-w-44 rounded-md border border-input sm:w-auto bg-background px-2 text-xs focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-80"
+                className="h-8 w-full max-w-full min-w-0 rounded-md border border-input bg-background sm:w-auto sm:min-w-44 px-2 text-xs focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-80"
               >
                 <option value="">Escolha…</option>
                 {content.choices.map((c, i) => (
