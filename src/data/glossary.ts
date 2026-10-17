@@ -34,6 +34,8 @@ export const glossary: GlossaryTerm[] = [
   { id: 'agencia-excessiva', term: 'Agência excessiva', definition: 'Quando o agente tem mais ferramentas, permissões ou autonomia do que a tarefa exige. Um erro do modelo ou uma injeção de prompt passa a causar um dano muito maior.' },
   { id: 'aprovacao-humana', term: 'Aprovação humana', definition: 'Etapa em que uma pessoa confirma uma ação antes de ela acontecer. Só protege quando a pessoa vê o que de fato vai ocorrer, tem tempo de ler e pode recusar.' },
   { id: 'delegacao', term: 'Delegação de identidade', definition: 'Agir em nome de um usuário com as permissões dele, em vez de usar uma conta própria e mais ampla. Assim o agente nunca pode mais do que a pessoa que o chamou.' },
+  { id: 'deep-link', term: 'Deep link', definition: 'Endereço que abre uma tela específica de um aplicativo. Esquemas próprios (como `app://`) podem ser registrados por qualquer aplicativo; App Links (Android) e Universal Links (iOS) ligam o link a um domínio verificado.' },
+  { id: 'webview', term: 'WebView', definition: 'Componente que mostra páginas web dentro de um aplicativo. Se a página puder chamar funções do aplicativo, quem controla a página passa a controlar essas funções.' },
 ]
 
 export const glossaryById = (id: string): GlossaryTerm | undefined => glossary.find((g) => g.id === id)
