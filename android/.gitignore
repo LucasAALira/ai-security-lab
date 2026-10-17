@@ -1,0 +1,8 @@
+.gradle/
+build/
+local.properties
+*.keystore
+*.jks
+app/build/
+# Cópia do site gerada a cada build (fonte: ../dist)
+app/src/main/assets/public/

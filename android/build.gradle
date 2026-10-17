@@ -1,0 +1,5 @@
+// Projeto Android do AI Security Lab: um app nativo mínimo (WebView) que empacota o site de dist/.
+// Sem bibliotecas além do próprio Android. Também pode ser gerado sem Gradle: ../scripts/build-apk.sh
+plugins {
+    id 'com.android.application' version '8.13.0' apply false
+}

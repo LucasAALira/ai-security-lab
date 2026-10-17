@@ -19,6 +19,7 @@ const libraries: Lib[] = [
   { name: 'Rive', url: 'https://rive.app', license: 'MIT (runtime)', use: 'Espaço para animações interativas em arquivos .riv (src/assets/rive). Sem o arquivo, a interface mostra uma ilustração estática.' },
   { name: 'React Bits', url: 'https://reactbits.dev', license: 'MIT + Commons Clause', use: 'Dois componentes copiados: contador animado e cartão com destaque. A Commons Clause permite usar dentro do app, mas não revender os componentes separados.' },
   { name: 'Tailwind CSS', url: 'https://tailwindcss.com', license: 'MIT', use: 'Estilos utilitários e tokens de tema.' },
+  { name: 'Android SDK Build Tools (aapt2, d8, apksigner, android.jar)', url: 'https://developer.android.com/tools', license: 'Apache 2.0', use: 'Só para gerar o APK (scripts/build-apk.sh). O app Android é um WebView em Java puro, sem bibliotecas de terceiros, que empacota este site.' },
   { name: 'Lucide, Sonner, React Router', url: 'https://lucide.dev', license: 'ISC / MIT', use: 'Ícones, avisos em tela e navegação entre páginas.' },
   { name: 'Cinzel (Natanael Gama), via Fontsource', url: 'https://fontsource.org/fonts/cinzel', license: 'SIL OFL 1.1', use: 'Títulos e inscrições. Empacotada com o site (só os subconjuntos latinos), sem carregar nada da internet.' },
   { name: 'Literata (TypeTogether), via Fontsource', url: 'https://fontsource.org/fonts/literata', license: 'SIL OFL 1.1', use: 'Texto das aulas, formulários e controles: uma serifa feita para leitura em tela.' },

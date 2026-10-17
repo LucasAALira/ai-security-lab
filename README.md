@@ -185,6 +185,26 @@ python3 iniciar.py --sem-navegador     # não abre o navegador sozinho
 
 No Windows, substitua `python3` por `py -3`. O servidor escuta apenas em `127.0.0.1`. Depois de instalar Python e baixar os arquivos, tudo funciona sem internet (a fonte e o motor das animações vão junto do site).
 
+## App Android (APK)
+
+O site também vira um app Android: um WebView em Java puro, sem bibliotecas de terceiros, que leva o site inteiro dentro do APK. Funciona sem internet e guarda o progresso no próprio aparelho. O projeto fica em `android/`.
+
+**Instalar.** Copie o APK para o celular e abra. O Android pede para permitir "instalar apps desconhecidos" para o app que abriu o arquivo (Arquivos, Chrome...). O APK é assinado com uma chave de depuração: serve para uso pessoal e testes, não para a Play Store, que exige uma versão assinada com uma chave sua. Para atualizar, instale o APK novo por cima; se a chave mudar, o Android pede para desinstalar antes (exporte o progresso primeiro).
+
+| No app | Como funciona |
+| --- | --- |
+| Abertura | Brasão sobre carvão e, em seguida, a tela de abertura com o nome e a linha de carregamento (2 s no total; um toque pula). |
+| Botão Voltar | Fecha o diálogo aberto; senão volta uma página; na página inicial, sai do app. |
+| Barras do sistema | Ficam fora da área do app, em carvão com ícones claros. |
+| Backup | "Exportar progresso" abre o compartilhamento do Android (Drive, Arquivos, e-mail). "Importar progresso" abre o seletor de arquivos. |
+| Progresso | Fica no armazenamento do app, separado do navegador. Para levar o progresso do site para o app (ou o contrário), exporte de um lado e importe do outro. |
+| Links externos | Abrem no navegador do aparelho; o app só mostra o conteúdo empacotado. |
+
+**Gerar o APK.**
+
+- Com Android Studio ou Gradle: `npm run build`, depois `cd android && ./gradlew assembleDebug` (a tarefa `copyWeb` copia `dist/` para dentro do app). O APK sai em `android/app/build/outputs/apk/debug/`.
+- Sem Gradle: `npm run build && sh scripts/build-apk.sh`, com as variáveis `ANDROID_JAR`, `AAPT2`, `D8_JAR`, `APKSIGNER_JAR` e `KEYSTORE` apontando para as ferramentas do Android SDK (veja o cabeçalho do script).
+
 ## Desenvolvimento
 
 Requer **Node.js 20.19+ ou 22.12+**.

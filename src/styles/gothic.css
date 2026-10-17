@@ -34,6 +34,13 @@
   --radius-frame: 3px;
   --frame-gap: 5px;
 
+  /* Áreas seguras (entalhes e barras do sistema em telas de ponta a ponta). No navegador valem as
+     variáveis env(); um app que as injete como --safe-area-inset-* também é atendido. */
+  --sat: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --sar: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
+  --sab: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --sal: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
+
   /* Tempo: curto, solene, nunca obrigatório. */
   --dur-fast: 140ms;
   --dur: 220ms;
@@ -57,6 +64,7 @@
 
 @layer base {
   body {
+    padding: var(--sat) var(--sar) var(--sab) var(--sal);
     font-size: 15.5px;
     line-height: 1.65;
     font-optical-sizing: auto;
@@ -421,6 +429,40 @@
     animation: gx-line var(--veil-ms, 720ms) var(--ease-out) both;
   }
 
+  /* --- Tela de abertura do app (2 s) ------------------------------------------ */
+  .gx-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: grid;
+    place-items: center;
+    padding: var(--sat) var(--sar) var(--sab) var(--sal);
+    cursor: pointer;
+    outline: none;
+    background:
+      radial-gradient(ellipse 55% 40% at 50% 42%, color-mix(in oklab, var(--primary) 14%, transparent), transparent 70%),
+      var(--background);
+  }
+  .gx-splash[data-phase='fade'] {
+    animation: gx-fade-out var(--fade-ms, 260ms) ease forwards;
+  }
+  .gx-splash-track {
+    position: relative;
+    display: block;
+    width: 180px;
+    height: 3px;
+    overflow: hidden;
+    border-radius: 1px;
+    background: color-mix(in oklab, var(--border) 70%, transparent);
+  }
+  .gx-splash-fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--ember-deep), var(--ember) 40%, var(--candle));
+    transform-origin: left center;
+    animation: gx-fill var(--splash-ms, 2000ms) linear both;
+  }
+
   /* --- Recompensas ---------------------------------------------------------- */
   /* Brasas que sobem de um ponto (XP recebido). Poucas, curtas, uma vez só. */
   .gx-ember {
@@ -498,6 +540,20 @@
   }
 }
 
+@keyframes gx-fade-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes gx-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
 @keyframes gx-page-in {
   from {
     opacity: 0;
@@ -604,6 +660,8 @@
 /* Menos movimento: nada se move. A tela de carregamento e a faixa não aparecem; o conteúdo surge direto. */
 @media (prefers-reduced-motion: reduce) {
   .gx-page-enter,
+  .gx-splash[data-phase='fade'],
+  .gx-splash-fill,
   .gx-veil-mark,
   .gx-veil-line,
   .gx-reveal,

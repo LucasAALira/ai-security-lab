@@ -12,7 +12,7 @@ export function Providers({ children, store }: { children: ReactNode; store?: Pr
       <ProgressProvider store={store}>
         {children}
         <ProgressFeedback />
-        <Toaster position="bottom-right" />
+        <Toaster position="bottom-right" offset={{ bottom: 'calc(24px + var(--sab))', right: 'calc(24px + var(--sar))' }} mobileOffset={{ bottom: 'calc(16px + var(--sab))' }} />
       </ProgressProvider>
     </MotionConfig>
   )
