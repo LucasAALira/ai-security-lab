@@ -6,6 +6,10 @@
 export const XP_PER_COIN = 5
 
 export const THEMES = [
+  { id: 'ashes', name: 'Fortaleza de Cinzas', description: 'Pedra escura, cobre e brasas vermelhas.', price: 60 },
+  { id: 'eclipse', name: 'Catedral do Eclipse', description: 'Obsidiana, ouro envelhecido e marfim.', price: 80 },
+  { id: 'abyss', name: 'Arquivo Abissal', description: 'Azul profundo, prata e luz fria.', price: 80 },
+  { id: 'sanctuary', name: 'Santuário Arcano', description: 'Ametista, bronze e inscrições antigas.', price: 100 },
   { id: 'dragon', name: 'Dragão', description: 'Coral sobre grafite — o tema original.', price: 0 },
   { id: 'cyber', name: 'Ciano', description: 'Ciano elétrico sobre azul-noite.', price: 40 },
   { id: 'arcane', name: 'Arcano', description: 'Violeta suave sobre roxo profundo.', price: 40 },
@@ -17,6 +21,13 @@ export const THEME_IDS: readonly string[] = THEMES.map((t) => t.id)
 export const isThemeId = (v: unknown): v is ThemeId => typeof v === 'string' && THEME_IDS.includes(v)
 
 export const SHIELD = { price: 20, max: 2 } as const
+
+/** Preço, em moedas, do desbloqueio imediato de cada módulo de acesso antecipado (id do módulo -> preço).
+ *  O módulo também se libera de graça ao acender a fogueira dos pré-requisitos; pagar só pula essa espera.
+ *  Comprar gasta moedas e nunca reduz XP, nível nem medalhas. */
+export const MODULE_UNLOCKS: Readonly<Record<number, number>> = { 8: 5000 }
+export const isEarlyAccess = (module: number): boolean => Object.hasOwn(MODULE_UNLOCKS, module)
+export const moduleUnlockPrice = (module: number): number | null => (isEarlyAccess(module) ? MODULE_UNLOCKS[module] : null)
 
 export const REWARD_LIMITS = { max: 8, title: 60, price: 999 } as const
 

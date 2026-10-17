@@ -70,7 +70,7 @@ describe('missões diárias', () => {
     for (let i = 1; i <= 28; i++) expect(pickQuests(empty, ctx, `2026-11-${String(i).padStart(2, '0')}`)).not.toContain('review-1')
 
     let done = emptyState()
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 9; i++) {
       for (const a of [0, 1, 2].map((index): Action => ({ type: 'read', module: i, index }))) done = run(done, NOW, a)
       done = run(done, NOW, { type: 'practice', module: i }, { type: 'answer', module: i, index: 0 }, { type: 'answer', module: i, index: 1 })
     }

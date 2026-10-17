@@ -1,3 +1,4 @@
+import type { ActivitySpec } from './activities'
 import type { EVENT_KINDS } from './constants'
 
 /** Estado salvo no navegador. Campos novos são opcionais no armazenamento e preenchidos por `cleanState`. */
@@ -36,6 +37,11 @@ export interface Shop {
   owned: string[]
   theme: string
   rewards: PersonalReward[]
+  /** Módulos de acesso antecipado desbloqueados com moedas (ids). */
+  unlocked: number[]
+  relics: string[]
+  display: string[]
+  room: string
 }
 
 /** Contadores do dia local atual; zeram na virada do dia. */
@@ -50,6 +56,8 @@ export interface Daily {
 }
 
 export interface Quests {
+  swaps?: number
+  retired?: string[]
   day: string
   ids: string[]
   done: string[]
@@ -136,7 +144,7 @@ export interface Prefs {
 }
 
 export interface StudyState {
-  version: 3
+  version: 4
   modules: Record<number, ModuleState>
   lab: boolean
   migrated: boolean
@@ -163,6 +171,87 @@ export interface StudyState {
   events: LearningEvent[]
   prefs: Prefs
   learner: Learner
+  /** Campanhas: missões (e exercícios de dossiês), por id. */
+  missions: Record<string, MissionState>
+  /** Dossiês de casos reais lidos: id -> dia da leitura. O exercício do dossiê fica em `missions`. */
+  dossiers: Record<string, string>
+  /** Revisões de arquitetura, por id do projeto. */
+  architect: Record<string, ArchitectState>
+  /** Aulas dos submódulos marcadas como lidas: id do submódulo -> dia. */
+  lessons: Record<string, string>
+}
+
+/* Campanhas, missões e atividades */
+
+/** Qualidade de uma decisão ou de uma resposta. Só `best` e `good` creditam a atividade. */
+export type Quality = 'best' | 'good' | 'partial' | 'poor'
+/** Resultado de uma atividade na tentativa atual: a qualidade, ou `revealed` (solução vista sem crédito). */
+export type ActivityResult = Quality | 'revealed'
+
+/** Resposta confirmada de uma atividade: `v` guarda números (opção, ordem, seleção...) e `t` os textos livres. */
+export interface Answer {
+  v: number[]
+  t?: string[]
+}
+
+/** Tentativa em andamento de uma missão. As chaves são ids de atividade. */
+export interface MissionRun {
+  answers: Record<string, Answer>
+  results: Record<string, ActivityResult>
+  /** Envios errados por atividade (liberam "mostrar a solução" a partir de 2). */
+  misses: Record<string, number>
+  /** Dicas já abertas por atividade (0 a 3). Só afetam a conquista de "sem dicas". */
+  hints: Record<string, number>
+}
+
+/** Uma decisão registrada no histórico da missão (as mais recentes ficam guardadas). */
+export interface DecisionEntry {
+  attempt: number
+  activity: string
+  /** Opção escolhida (posição). */
+  pick: number
+  quality: Quality
+  day: string
+}
+
+export interface MissionState {
+  /** Dia em que a missão foi iniciada ('' se nunca). */
+  started: string
+  /** Etapa salva: 0 contexto, 1 evidências, 2 decisão, 3 consequências, 4 revisão. */
+  stage: number
+  /** Atividade atual dentro da etapa de decisão. */
+  step: number
+  run: MissionRun
+  /** Tentativas iniciadas, contando a primeira. */
+  attempts: number
+  /** Atividades já creditadas (rendem XP uma única vez, mesmo em outra tentativa). */
+  credited: string[]
+  /** Dia em que a missão foi concluída pela primeira vez ('' se nunca). */
+  done: string
+  /** Já concluiu uma tentativa que cumpre os critérios da missão (contenção e preservação, por exemplo). */
+  clean: boolean
+  /** Já concluiu uma tentativa aprovada sem abrir nenhuma dica. */
+  noHints: boolean
+  history: DecisionEntry[]
+}
+
+/** Revisão de arquitetura: o que o aluno marcou e aplicou, e a ADR escrita. */
+export interface ArchitectState {
+  started: string
+  /** Componente -> ameaças que o aluno identificou (posições). */
+  found: Record<string, number[]>
+  /** Componente -> controles aplicados (posições no catálogo do projeto). */
+  applied: Record<string, number[]>
+  /** Campos da ADR (texto livre, não corrigido automaticamente). */
+  adr: string[]
+  /** Autoavaliação da ADR contra a rubrica (0 ou 1 por critério). */
+  self: number[]
+  /** Dia em que a arquitetura passou nos critérios obrigatórios pela primeira vez. */
+  evaluated: string
+  /** Dia em que a autoavaliação da ADR foi registrada pela primeira vez. */
+  adrDone: string
+  /** Avaliações feitas. */
+  runs: number
 }
 
 export type Tier = 'bronze' | 'prata' | 'ouro' | 'dragao'
@@ -200,11 +289,24 @@ export type MedalIcon =
   | 'file-lock'
   | 'lightbulb-off'
   | 'calendar-check'
+  | 'lock-open'
   | 'swords'
   | 'eye'
   | 'circle-help'
+  | 'link'
+  | 'map'
+  | 'microscope'
+  | 'scale'
+  | 'network'
+  | 'smartphone'
+  | 'globe'
+  | 'server'
+  | 'package-check'
+  | 'git-branch'
+  | 'radar'
+  | 'blocks'
 
-export type AchievementCategory = 'aprendizado' | 'desafios' | 'trilha' | 'constancia' | 'extras'
+export type AchievementCategory = 'aprendizado' | 'desafios' | 'trilha' | 'campanhas' | 'arquitetura' | 'constancia' | 'extras'
 
 export interface Medal {
   id: string
@@ -242,7 +344,8 @@ export interface TrackInfo {
 /** Gabarito e metadados de um desafio de código (sem textos): o suficiente para validar e contar. */
 export interface ChallengeSpec {
   id: string
-  module: number
+  /** Módulo clássico que libera o desafio; `null` nos desafios das áreas novas, sempre abertos. */
+  module: number | null
   kind: ChallengeKind
   /** Quantidade de linhas do código. */
   lines: number
@@ -255,6 +358,8 @@ export interface ChallengeSpec {
   /** Quantidade de alternativas de correção e índice da correta. */
   options: number
   fix: number
+  /** Áreas e plataformas do desafio (`web`, `api`, `mobile`, `android`, `ios`...), para contagens por conquista. */
+  tags: string[]
 }
 
 /** Dados estáticos de que o progresso depende (derivados dos módulos, cenários e desafios). */
@@ -266,6 +371,85 @@ export interface ProgressContext {
   challenges: ChallengeSpec[]
   /** Alternativa correta de cada cenário do chefe, por módulo (lista vazia: módulo sem chefe). */
   bosses: number[][]
+  /** Missões das campanhas e exercícios dos dossiês (gabarito, sem os textos). */
+  missions: MissionSpec[]
+  campaigns: CampaignSpec[]
+  /** Ids dos submódulos que têm aula (marcar como lida rende XP uma vez). */
+  lessons: string[]
+  /** Projetos do modo Arquiteto: ameaças, controles e restrições (gabarito, sem os textos). */
+  architect: ArchitectSpec[]
+  /** Hierarquia Área -> Módulo -> Submódulo com o que é obrigatório em cada um. */
+  curriculum: CurriculumSpec
+}
+
+
+export interface MissionSpec {
+  id: string
+  /** `dossier`: exercício de um dossiê de caso real. Fica fora da contagem de missões das campanhas. */
+  kind: 'mission' | 'dossier'
+  campaign: string | null
+  /** Posição na campanha, a partir de 1. */
+  order: number
+  activities: ActivitySpec[]
+  /** Marcas que a tentativa precisa ter (e não ter) para valer como "limpa". */
+  clean: { require: string[]; forbid: string[] }
+  tags: string[]
+}
+
+/** Projeto do modo Arquiteto, como o motor o enxerga. Posições de ameaça são relativas ao componente. */
+export interface ArchitectSpec {
+  id: string
+  components: { id: string; threats: { real: boolean; critical: boolean }[] }[]
+  controls: {
+    /** Componentes em que o controle faz sentido. Aplicado em outro lugar, conta como mal posicionado. */
+    places: string[]
+    /** Ameaças que o controle trata, quando bem posicionado. */
+    mitigates: { component: string; threat: number }[]
+    /** Controle exigido em qualquer solução, independentemente do contexto. */
+    mandatory: boolean
+    cost: number
+    complexity: number
+  }[]
+  /** Teto de custo e de complexidade operacional da solução. */
+  budget: number
+  complexity: number
+  /** Critérios da rubrica de autoavaliação da ADR. */
+  rubric: number
+  /** Campos da ADR. */
+  fields: number
+}
+
+export interface CampaignSpec {
+  id: string
+  /** Campanhas que precisam estar concluídas antes. */
+  requires: string[]
+  missions: string[]
+}
+
+export interface SubSpec {
+  id: string
+  module: string
+  area: string
+  /** Tem conteúdo publicado. Submódulo planejado não entra em nenhum cálculo de progresso. */
+  available: boolean
+  /** Índice do módulo clássico cujo progresso este submódulo usa (nunca interpretado como posição na hierarquia). */
+  legacy: number | null
+  /** A aula pode ser marcada como lida (rende XP uma vez) e conta como obrigatória. */
+  lesson: boolean
+  /** Desafios obrigatórios para concluir o submódulo. */
+  challenges: string[]
+}
+
+export interface ModuleSpec {
+  id: string
+  area: string
+  subs: string[]
+}
+
+export interface CurriculumSpec {
+  areas: { id: string; modules: string[] }[]
+  modules: ModuleSpec[]
+  subs: SubSpec[]
 }
 
 export interface TrackProgress {

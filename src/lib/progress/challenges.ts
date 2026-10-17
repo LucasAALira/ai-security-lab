@@ -79,17 +79,22 @@ export interface ChallengeStats {
   /** Desafios com a falha opcional encontrada. */
   extra: number
   hints: number
+  /** Desafios concluídos por marca (`web`, `api`, `mobile`...). */
+  byTag: Record<string, number>
 }
 
 export function challengeStats(s: StudyState, ctx: ProgressContext): ChallengeStats {
-  const out: ChallengeStats = { vulnIdentified: 0, authDone: 0, fixed: 0, done: 0, helpless: 0, extra: 0, hints: 0 }
+  const out: ChallengeStats = { vulnIdentified: 0, authDone: 0, fixed: 0, done: 0, helpless: 0, extra: 0, hints: 0, byTag: {} }
   for (const spec of ctx.challenges) {
     const c = s.challenges[spec.id]
     if (!c) continue
     if (spec.kind === 'vuln' && c.identified) out.vulnIdentified += 1
     if (spec.kind === 'auth' && isChallengeDone(c)) out.authDone += 1
     if (c.fixed) out.fixed += 1
-    if (isChallengeDone(c)) out.done += 1
+    if (isChallengeDone(c)) {
+      out.done += 1
+      for (const tag of spec.tags) out.byTag[tag] = (out.byTag[tag] ?? 0) + 1
+    }
     if (c.helpless) out.helpless += 1
     if (c.extra) out.extra += 1
     out.hints += c.hints

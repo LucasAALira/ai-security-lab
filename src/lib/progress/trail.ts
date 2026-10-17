@@ -1,7 +1,8 @@
+import { isEarlyAccess, moduleUnlockPrice } from './catalog'
 import { challengesOf, isBossWon, isChallengeDone } from './challenges'
 import { BOSS_QUESTIONS, BOSS_XP, CHALLENGE_XP, QUESTIONS_PER_MODULE, READS_PER_MODULE, XP } from './constants'
 import { countDone, isModuleComplete, moduleSteps } from './core'
-import type { ProgressContext, StudyState } from './types'
+import type { ChallengeSpec, ProgressContext, StudyState } from './types'
 
 /* Trilha de módulos: etapas, fogueiras (checkpoints de conclusão) e chefes. Tudo é derivado do
    progresso salvo, então não há um segundo estado para ficar fora de sincronia. */
@@ -23,6 +24,12 @@ export interface TrailStep {
 export interface TrailModule {
   module: number
   unlocked: boolean
+  /** Módulo de acesso antecipado: o conteúdo só abre depois da liberação. */
+  earlyAccess: boolean
+  /** Preço do desbloqueio imediato com moedas (`null` se o módulo não é vendido). */
+  price: number | null
+  /** Já foi desbloqueado com moedas. */
+  purchased: boolean
   /** Módulos pré-requisito cuja fogueira ainda não está acesa. */
   missing: number[]
   complete: boolean
@@ -35,12 +42,35 @@ export function missingPrereqs(s: StudyState, ctx: ProgressContext, module: numb
   return (ctx.prereqs[module] ?? []).filter((p) => !(s.modules[p] && isModuleComplete(s.modules[p])))
 }
 
-/** Um módulo está liberado quando todos os pré-requisitos têm a fogueira acesa. Quem já tinha
- *  começado o módulo antes dessa regra existir continua com acesso. */
+/** Um módulo está liberado quando todos os pré-requisitos têm a fogueira acesa, quando foi
+ *  desbloqueado com moedas, ou quando o aluno já tinha começado o módulo antes dessa regra existir. */
 export function isModuleUnlocked(s: StudyState, ctx: ProgressContext, module: number): boolean {
   const m = s.modules[module]
   if (!m) return false
-  return missingPrereqs(s, ctx, module).length === 0 || moduleSteps(m) > 0
+  return missingPrereqs(s, ctx, module).length === 0 || s.shop.unlocked.includes(module) || moduleSteps(m) > 0
+}
+
+const spotCache = new WeakMap<ProgressContext, ReadonlySet<string>>()
+
+/** Desafios que alguma missão usa como atividade de “encontrar a falha”. A missão é quem decide a ordem, não a trilha. */
+function missionSpots(ctx: ProgressContext): ReadonlySet<string> {
+  let spots = spotCache.get(ctx)
+  if (!spots) {
+    spots = new Set(ctx.missions.flatMap((m) => m.activities.filter((a) => a.kind === 'spot').map((a) => a.challenge)))
+    spotCache.set(ctx, spots)
+  }
+  return spots
+}
+
+/** Desafios das áreas novas (`module: null`) estão sempre abertos; os dos módulos clássicos seguem a trilha,
+ *  a não ser que uma missão os use como atividade (aí abrem pela missão, sem exigir o módulo da trilha). */
+export const isChallengeOpen = (s: StudyState, ctx: ProgressContext, spec: Pick<ChallengeSpec, 'id' | 'module'>): boolean =>
+  spec.module === null || isModuleUnlocked(s, ctx, spec.module) || missionSpots(ctx).has(spec.id)
+
+/** O conteúdo (textos, quiz, cartões, desafios) abre? Módulos comuns sempre abrem para leitura;
+ *  os de acesso antecipado só depois de liberados. */
+export function canOpenContent(s: StudyState, ctx: ProgressContext, module: number): boolean {
+  return !isEarlyAccess(module) || isModuleUnlocked(s, ctx, module)
 }
 
 export function trail(s: StudyState, ctx: ProgressContext): TrailModule[] {
@@ -90,6 +120,9 @@ export function trail(s: StudyState, ctx: ProgressContext): TrailModule[] {
     return {
       module: i,
       unlocked,
+      earlyAccess: isEarlyAccess(i),
+      price: moduleUnlockPrice(i),
+      purchased: s.shop.unlocked.includes(i),
       missing: missingPrereqs(s, ctx, i),
       complete,
       steps,
@@ -112,7 +145,7 @@ export type Objective =
   | { kind: 'boss'; module: number; xp: number }
   | { kind: 'lab'; xp: number }
   | { kind: 'cases'; left: number; xp: number }
-  | { kind: 'challenge'; id: string; module: number; xp: number }
+  | { kind: 'challenge'; id: string; module: number | null; xp: number }
   | { kind: 'done' }
 
 /** O próximo objetivo real: terminar o módulo em andamento, enfrentar um chefe liberado pela
@@ -153,7 +186,7 @@ export function nextObjective(s: StudyState, ctx: ProgressContext): Objective {
   if (!s.lab) return { kind: 'lab', xp: XP.lab }
   const pending = s.cases.filter((c) => !c).length
   if (pending) return { kind: 'cases', left: pending, xp: XP.fix }
-  const challenge = ctx.challenges.find((c) => !isChallengeDone(s.challenges[c.id]) && isModuleUnlocked(s, ctx, c.module))
+  const challenge = ctx.challenges.find((c) => !isChallengeDone(s.challenges[c.id]) && isChallengeOpen(s, ctx, c))
   if (challenge) {
     const c = s.challenges[challenge.id]
     return { kind: 'challenge', id: challenge.id, module: challenge.module, xp: (c?.identified ? 0 : CHALLENGE_XP.identify) + (c?.fixed ? 0 : CHALLENGE_XP.fix) }

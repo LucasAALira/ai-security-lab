@@ -1,6 +1,7 @@
 import { modules } from '@/data/modules'
 import { remediationCases } from '@/data/scenarios'
 import { pad2 } from '@/lib/format'
+import { CORE_MODULE_COUNT } from '@/lib/progress'
 import { useProgress } from '@/state/ProgressProvider'
 
 export function StatsRow() {
@@ -9,7 +10,7 @@ export function StatsRow() {
   const items = [
     { value: pad2(modules.length), label: 'Módulos de estudo' },
     { value: pad2(questions), label: 'Questões de múltipla escolha' },
-    { value: `${pad2(derived.summary.complete)} / ${pad2(modules.length)}`, label: 'Módulos concluídos', live: true },
+    { value: `${pad2(derived.summary.complete)} / ${pad2(CORE_MODULE_COUNT)}`, label: 'Módulos concluídos da trilha principal', live: true },
     { value: pad2(remediationCases.length), label: 'Cenários de correção' },
   ]
   return (

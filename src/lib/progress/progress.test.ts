@@ -26,7 +26,17 @@ import {
 import { touchStreak } from './streak'
 
 const ctx = progressContext
-const emptyCtx: ProgressContext = { tracks: [], prereqs: [], sizes: [], challenges: [], bosses: [] }
+/** O sistema clássico (9 módulos, desafios e chefes), sem as campanhas e a hierarquia: as contagens deste arquivo valem para ele. */
+const legacy: ProgressContext = {
+  ...ctx,
+  challenges: ctx.challenges.filter((c) => c.module !== null),
+  missions: [],
+  campaigns: [],
+  lessons: [],
+  architect: [],
+  curriculum: { areas: [], modules: [], subs: [] },
+}
+const emptyCtx: ProgressContext = { tracks: [], prereqs: [], sizes: [], challenges: [], bosses: [], missions: [], campaigns: [], lessons: [], architect: [], curriculum: { areas: [], modules: [], subs: [] } }
 /** Meio-dia local, para a data não depender do fuso do computador de testes. */
 const D = (y: number, m: number, d: number) => new Date(y, m - 1, d, 12)
 const NOW = D(2026, 10, 16)
@@ -52,7 +62,7 @@ const finishModule = (i: number): Action[] => [
 ]
 
 /** Medalhas que dependem de revisão, missões, loja e dia de muito XP — não de concluir o conteúdo. */
-const MECHANIC_MEDALS = ['first-review', 'reviewer-10', 'flawless-review', 'quest-1', 'quest-15', 'shield-up', 'first-reward', 'big-day']
+const MECHANIC_MEDALS = ['first-review', 'reviewer-10', 'flawless-review', 'quest-1', 'quest-15', 'shield-up', 'first-reward', 'big-day', 'acesso-antecipado']
 
 /** As oito conquistas do aprendizado interativo (desafios de código, trilha e chefes). */
 const INTERACTIVE_MEDALS = [
@@ -77,12 +87,13 @@ function quiet(): StudyState {
 const unlockedIds = (s: StudyState, c = ctx) => medals(s, c).filter((m) => m.unlocked).map((m) => m.id)
 
 describe('contexto', () => {
-  it('deriva 4 trilhas, 8 módulos e 6 cenários dos dados', () => {
+  it('deriva 5 trilhas, 9 módulos (8 da trilha principal e 1 de acesso antecipado) e 6 cenários dos dados', () => {
     expect(ctx.tracks.map((t) => [t.name, t.modules.length])).toEqual([
       ['Fundamentos', 1],
       ['Ataques e defesa', 3],
       ['Governança', 2],
       ['Regulação', 2],
+      ['Engenharia reversa', 1],
     ])
     expect(ctx.sizes).toHaveLength(6)
     expect([...new Set(ctx.sizes)].sort()).toEqual(['Grande', 'Média', 'Pequena'])
@@ -90,44 +101,44 @@ describe('contexto', () => {
 })
 
 describe('totais', () => {
-  it('estado vazio: 0 XP, nenhuma medalha, catálogo de 42 (26 de estudo + 8 das mecânicas + 8 do aprendizado interativo)', () => {
-    const sm = summary(emptyState(), ctx)
+  it('estado vazio: 0 XP, nenhuma medalha, catálogo de 44 (27 de estudo + 9 das mecânicas + 8 do aprendizado interativo)', () => {
+    const sm = summary(emptyState(), legacy)
     expect(sm.xp).toBe(0)
     expect(sm.medals).toBe(0)
-    expect(sm.medalTotal).toBe(42)
-    expect(medals(emptyState(), ctx).filter((m) => !STUDY_ONLY.includes(m.id))).toHaveLength(26)
-    expect(medals(emptyState(), ctx).filter((m) => INTERACTIVE_MEDALS.includes(m.id))).toHaveLength(8)
+    expect(sm.medalTotal).toBe(44)
+    expect(medals(emptyState(), legacy).filter((m) => !STUDY_ONLY.includes(m.id))).toHaveLength(27)
+    expect(medals(emptyState(), legacy).filter((m) => INTERACTIVE_MEDALS.includes(m.id))).toHaveLength(8)
   })
 
-  it('máximos: 1940 XP em tarefas (1070 + 13 desafios x 30 + 8 chefes x 60) + 920 de bônus de medalhas', () => {
-    expect(maxXp(ctx)).toEqual({ tasks: 1070 + 13 * 30 + 8 * 60, medals: 710 + 210 })
-    const study = medals(emptyState(), ctx).filter((m) => !STUDY_ONLY.includes(m.id))
-    expect(study.reduce((n, m) => n + m.xp, 0)).toBe(590)
+  it('máximos: 2190 XP em tarefas (1170 + 16 desafios x 30 + 9 chefes x 60) + 960 de bônus de medalhas', () => {
+    expect(maxXp(legacy)).toEqual({ tasks: 1170 + 16 * 30 + 9 * 60, medals: 750 + 210 })
+    const study = medals(emptyState(), legacy).filter((m) => !STUDY_ONLY.includes(m.id))
+    expect(study.reduce((n, m) => n + m.xp, 0)).toBe(610)
   })
 
-  it('conclusão total: 1070 em tarefas, todas as medalhas, 1660 XP e nível máximo', () => {
+  it('conclusão total dos nove módulos: 1170 em tarefas, todas as medalhas de estudo e nível Mestre Dragão', () => {
     let s = run(emptyState(), NOW, { type: 'miss', module: 0, index: 0 }) // 'Aprendeu com o erro' e 'Precisão de elite' coexistem
-    for (let i = 0; i < 8; i++) s = run(s, NOW, ...finishModule(i))
+    for (let i = 0; i < 9; i++) s = run(s, NOW, ...finishModule(i))
     s = run(s, NOW, { type: 'completeLab' }, ...[0, 1, 2, 3, 4, 5].map((index): Action => ({ type: 'solveCase', index })))
 
-    const sm = summary(s, ctx)
-    expect(sm.taskXp).toBe(1070)
-    expect(sm.steps).toBe(63)
+    const sm = summary(s, legacy)
+    expect(sm.taskXp).toBe(1170) // o módulo de acesso antecipado também rende XP
+    expect(sm.steps).toBe(63) // mas as tarefas "totais" são as da trilha principal
     expect(sm.complete).toBe(8)
-    const missing = medals(s, ctx).filter((m) => !m.unlocked && !MECHANIC_MEDALS.includes(m.id)).map((m) => m.id)
+    const missing = medals(s, legacy).filter((m) => !m.unlocked && !MECHANIC_MEDALS.includes(m.id)).map((m) => m.id)
     // Concluir os módulos não conquista o que depende de desafios de código, chefes ou dias reais de estudo.
     expect(missing).toEqual(['explorador-de-falhas', 'guardiao-das-apis', 'codigo-protegido', 'sem-ajuda', 'persistencia', 'mestre-do-modulo', 'alem-do-obvio', 'streak-3', 'streak-7'])
 
     for (let k = 0; k < 7; k++) touchStreak(s, D(2026, 11, 1 + k))
-    const all = summary(s, ctx)
-    const study = medals(s, ctx).filter((m) => m.unlocked && !STUDY_ONLY.includes(m.id))
-    expect(study).toHaveLength(26)
-    expect(study.reduce((n, m) => n + m.xp, 0)).toBe(590)
-    expect(all.taskXp).toBe(1070)
-    expect(all.xp).toBeGreaterThanOrEqual(1070 + 590)
+    const all = summary(s, legacy)
+    const study = medals(s, legacy).filter((m) => m.unlocked && !STUDY_ONLY.includes(m.id))
+    expect(study).toHaveLength(27)
+    expect(study.reduce((n, m) => n + m.xp, 0)).toBe(610)
+    expect(all.taskXp).toBe(1170)
+    expect(all.xp).toBeGreaterThanOrEqual(1170 + 610)
     expect(levelFor(all.xp).name).toBe('Mestre Dragão')
     expect(levelFor(all.xp).next).toBe(1900) // os desafios de código e os chefes abrem mais dois níveis
-    expect(improvements(s, ctx)).toEqual([])
+    expect(improvements(s, legacy)).toEqual([])
   })
 })
 
@@ -145,8 +156,8 @@ describe('saneamento e armazenamento', () => {
     expect(s.modules[0].firstTry).toEqual([false, false])
     expect(s.modules[0].notes).toBe('abc')
     expect(summary(s, ctx).taskXp).toBe(55 + 30 + 40)
-    expect(s.shop).toEqual({ shields: 0, owned: [], theme: 'dragon', rewards: [] })
-    expect(s.quests).toEqual({ day: '', ids: [], done: [], chest: false })
+    expect(s.shop).toEqual({ shields: 0, owned: [], unlocked: [], theme: 'dragon', rewards: [], relics: [], display: [], room: 'stone' })
+    expect(s.quests).toEqual({ day: '', ids: [], done: [], chest: false, swaps: 0, retired: [] })
   })
 
   it('estado legado v1 migra', () => {
@@ -221,8 +232,8 @@ describe('saneamento e armazenamento', () => {
 
   it('missões: ids desconhecidos, dia inválido e baú sem missões concluídas são descartados', () => {
     const q = cleanState({ quests: { day: '2026-10-16', ids: ['read-2', 'nada', 'read-2', 'xp-50'], done: ['xp-50', 'case-1'], chest: true } }).quests
-    expect(q).toEqual({ day: '2026-10-16', ids: ['read-2', 'xp-50'], done: ['xp-50'], chest: false })
-    expect(cleanState({ quests: { day: 'ontem', ids: ['read-2'], done: ['read-2'], chest: true } }).quests).toEqual({ day: '', ids: [], done: [], chest: false })
+    expect(q).toEqual({ day: '2026-10-16', ids: ['read-2', 'xp-50'], done: ['xp-50'], chest: false, swaps: 0, retired: [] })
+    expect(cleanState({ quests: { day: 'ontem', ids: ['read-2'], done: ['read-2'], chest: true } }).quests).toEqual({ day: '', ids: [], done: [], chest: false, swaps: 0, retired: [] })
   })
 
   it('serialização ida e volta preserva tudo', () => {
@@ -402,7 +413,8 @@ describe('níveis, faixas e melhorias', () => {
     expect(levelFor(1250).name).toBe('Guardião de IA')
     expect(levelFor(1500).number).toBe(8)
     expect(levelFor(1900).name).toBe('Sentinela da Brasa')
-    expect(levelFor(2400)).toMatchObject({ number: 10, name: 'Lenda do AppSec', next: null })
+    expect(levelFor(2400)).toMatchObject({ number: 10, name: 'Lenda do AppSec', next: 3200 })
+    expect(levelFor(6800)).toMatchObject({ name: 'Lenda da segurança completa', next: null })
   })
 
   it('medalha de módulo/trilha: 40% / 70% / 100%', () => {

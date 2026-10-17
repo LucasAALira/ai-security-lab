@@ -1,4 +1,5 @@
 import {
+  CORE_MODULE_COUNT,
   LEVELS,
   MODULE_COUNT,
   MODULE_XP,
@@ -53,13 +54,18 @@ export interface Totals {
   total: number
 }
 
+/** Módulos da trilha principal. Os de acesso antecipado ficam de fora das contagens de "tudo concluído". */
+export const coreModules = (s: StudyState): ModuleState[] => Object.keys(s.modules).filter((i) => Number(i) < CORE_MODULE_COUNT).map((i) => s.modules[Number(i)])
+
 export function baseTotals(s: StudyState): Totals {
   const modules = Object.values(s.modules)
+  const core = coreModules(s)
   const cases = countDone(s.cases)
   return {
+    // O XP conta todos os módulos; as tarefas totais e concluídas, só os da trilha principal.
     xp: modules.reduce((n, m) => n + moduleXp(m), 0) + (s.lab ? XP.lab : 0) + cases * XP.fix,
-    complete: modules.filter(isModuleComplete).length,
-    steps: modules.reduce((n, m) => n + moduleSteps(m), 0) + (s.lab ? 1 : 0) + cases,
+    complete: core.filter(isModuleComplete).length,
+    steps: core.reduce((n, m) => n + moduleSteps(m), 0) + (s.lab ? 1 : 0) + cases,
     total: TOTAL_TASKS,
   }
 }
@@ -138,7 +144,7 @@ export function improvements(s: StudyState, ctx: ProgressContext, limit = 4): Im
     }
   }
   for (let i = 0; i < MODULE_COUNT; i++) {
-    const ready = (ctx.prereqs[i] ?? []).every((p) => s.modules[p] && isModuleComplete(s.modules[p]))
+    const ready = (ctx.prereqs[i] ?? []).every((p) => s.modules[p] && isModuleComplete(s.modules[p])) || s.shop.unlocked.includes(i)
     if (moduleSteps(s.modules[i]) === 0 && ready) {
       out.push({ kind: 'start', module: i, xp: MODULE_XP, priority: 3 })
       break

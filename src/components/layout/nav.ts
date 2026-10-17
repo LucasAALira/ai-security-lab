@@ -16,6 +16,7 @@ export const navGroups: NavGroup[] = [
     label: 'SEU ESPAÇO DE ESTUDO',
     items: [
       { label: 'Visão geral', to: home('inicio') },
+      { label: 'Áreas de estudo', to: '/areas' },
       { label: 'Trilha de módulos', to: '/trilha' },
       { label: 'Conquistas', to: '/conquistas' },
       { label: 'Trilhas de aprendizado', to: home('trilhas') },
@@ -28,12 +29,16 @@ export const navGroups: NavGroup[] = [
     items: [
       { label: 'Missões do dia', to: home('hoje') },
       { label: 'Revisão com vidas', to: '/revisao' },
+      { label: 'Sala de troféus', to: '/sala-de-trofeus' },
       { label: 'Loja de moedas', to: '/loja' },
     ],
   },
   {
     label: 'PRÁTICA',
     items: [
+      { label: 'Campanhas', to: '/campanhas' },
+      { label: 'Casos reais', to: '/casos' },
+      { label: 'Modo Arquiteto', to: '/arquiteto' },
       { label: 'Laboratório de código', to: '/desafios' },
       { label: 'Laboratório de prompt', to: home('laboratorio') },
       { label: 'Cenários por porte', to: home('cenarios') },
@@ -41,10 +46,16 @@ export const navGroups: NavGroup[] = [
     ],
   },
   {
+    label: 'NOVIDADES',
+    items: [{ label: 'Em breve', to: '/em-breve' }],
+  },
+  {
     label: 'BIBLIOTECA',
     items: [
       { label: 'Biblioteca de matérias', to: home('fontes') },
       { label: 'Referências', to: '/referencias' },
+      { label: 'Explorar o conteúdo', to: '/explorar' },
+      { label: 'Cobertura de frameworks', to: '/cobertura' },
     ],
   },
 ]

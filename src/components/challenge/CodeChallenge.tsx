@@ -3,13 +3,18 @@ import { useId, useState } from 'react'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { refLabel, resolveRef } from '@/data/frameworks'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { RichText } from '@/components/rich/RichText'
+import { CodeBlock } from '@/components/mission/CodeBlock'
 import { challengeById } from '@/data/challenges'
+import { areaTitleOf } from '@/data/curriculum'
 import { modules } from '@/data/modules'
 import { eventsToText, rejectText } from '@/lib/events-text'
 import { letters } from '@/lib/format'
-import { CHALLENGE_XP, emptyChallenge, findChallenge, gradeLines, hintsUsed, HINT_PHASES, isRunDone, type ApplyResult } from '@/lib/progress'
+import { canOpenContent, CHALLENGE_XP, emptyChallenge, findChallenge, gradeLines, hintsUsed, HINT_PHASES, isChallengeOpen, isRunDone, type ApplyResult } from '@/lib/progress'
+import { EarlyAccessPreview } from '@/components/shop/EarlyAccessPreview'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
 import { CodeLines, type LineMark } from './CodeLines'
@@ -26,13 +31,17 @@ interface Props {
   id: string
   /** Próximo desafio sugerido, para o botão do resultado. */
   nextTo?: string
+  /** Dentro de uma missão, o título entra como subtítulo da atividade (h4) em vez de título de página (h2). */
+  nested?: boolean
 }
 
 /** Um desafio de código: 1) marcar as linhas vulneráveis, 2) escolher a correção, 3) ver o resultado.
  *  Dicas ajudam, mas qualquer uma delas tira o "Sem Ajuda" desta tentativa. Errar mostra o motivo
  *  e permite tentar de novo; repetir um desafio concluído nunca soma XP outra vez. */
-export function CodeChallenge({ id, nextTo }: Props) {
-  const { state, ctx, dispatch, derived } = useProgress()
+export function CodeChallenge({ id, nextTo, nested = false }: Props) {
+  const Title = nested ? 'h4' : 'h2'
+  const Sub = nested ? 'h5' : 'h3'
+  const { state, ctx, dispatch } = useProgress()
   const challenge = challengeById(id)
   const spec = findChallenge(ctx, id)
   const uid = useId()
@@ -44,13 +53,16 @@ export function CodeChallenge({ id, nextTo }: Props) {
 
   // O registro do desafio só existe depois da primeira ação; antes disso vale o estado vazio.
   const run = state.challenges[id] ?? emptyChallenge()
-  const trailModule = derived.trail[challenge?.module ?? 0]
+  const moduleIndex = challenge?.module ?? null
   if (!challenge || !spec) return <p className="text-sm text-muted-foreground">Desafio não encontrado.</p>
+  // Desafios de um módulo de acesso antecipado só abrem depois da liberação: antes disso, a prévia do módulo.
+  if (moduleIndex !== null && !canOpenContent(state, ctx, moduleIndex)) return <EarlyAccessPreview module={moduleIndex} headingLevel={2} />
 
-  const locked = !trailModule?.unlocked
+  // Aberto pela trilha ou porque uma missão usa este desafio como atividade.
+  const locked = !isChallengeOpen(state, ctx, spec)
   const phase: Phase = isRunDone(run) ? 'done' : run.run.identified ? 'fix' : 'identify'
   const used = hintsUsed(run)
-  const m = modules[challenge.module]
+  const m = moduleIndex === null ? undefined : modules[moduleIndex]
 
   const lineMarks = new Map<number, LineMark>()
   if (phase === 'identify') {
@@ -118,10 +130,10 @@ export function CodeChallenge({ id, nextTo }: Props) {
   const xpLeft = (run.identified ? 0 : CHALLENGE_XP.identify) + (run.fixed ? 0 : CHALLENGE_XP.fix)
 
   return (
-    <article aria-labelledby={`${uid}-title`} className="rounded-xl border border-border bg-card p-4 sm:p-6">
+    <article aria-labelledby={`${uid}-title`} className="rounded-xl border border-border bg-card p-4 [overflow-wrap:anywhere] sm:p-6">
       <header>
         <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold tracking-[0.16em] text-primary uppercase">
-          <span>Módulo {m.number}</span>
+          <span>{m ? `Módulo ${m.number}` : areaTitleOf(challenge.submodule)}</span>
           <Badge variant="outline" className="rounded text-[10px] tracking-normal">
             {challenge.kind === 'auth' ? 'Autorização' : 'Identificar falha'}
           </Badge>
@@ -131,10 +143,30 @@ export function CodeChallenge({ id, nextTo }: Props) {
             </span>
           ) : null}
         </div>
-        <h2 id={`${uid}-title`} className="mt-2 text-xl leading-snug font-medium">
+        <Title id={`${uid}-title`} className="mt-2 text-xl leading-snug font-medium">
           {challenge.title}
-        </h2>
-        <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{challenge.scenario}</p>
+        </Title>
+        <RichText className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground" text={challenge.scenario} />
+        {challenge.purpose || challenge.boundary ? (
+          <dl className="mt-3 grid gap-2 rounded-lg border border-border bg-muted/30 p-3 text-xs leading-relaxed sm:grid-cols-2">
+            {challenge.purpose ? (
+              <div>
+                <dt className="font-semibold text-foreground">O que você vai praticar</dt>
+                <dd className="mt-0.5 text-muted-foreground">
+                  <RichText as="span" text={challenge.purpose} />
+                </dd>
+              </div>
+            ) : null}
+            {challenge.boundary ? (
+              <div>
+                <dt className="font-semibold text-foreground">Fronteira de confiança</dt>
+                <dd className="mt-0.5 text-muted-foreground">
+                  <RichText as="span" text={challenge.boundary} />
+                </dd>
+              </div>
+            ) : null}
+          </dl>
+        ) : null}
       </header>
 
       <ol aria-label="Etapas do desafio" className="mt-4 flex flex-wrap gap-2 text-xs">
@@ -154,7 +186,7 @@ export function CodeChallenge({ id, nextTo }: Props) {
         <p className="mt-4 flex items-start gap-2 rounded-lg border border-dashed border-border p-3 text-[13px]">
           <Lock className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
           <span>
-            Este desafio faz parte do módulo {m.number}, ainda bloqueado na trilha. Acenda a fogueira dos pré-requisitos para pontuar.{' '}
+            Este desafio faz parte do módulo {m?.number}, ainda bloqueado na trilha. Acenda a fogueira dos pré-requisitos para pontuar.{' '}
             <Link to="/trilha" className="text-primary underline underline-offset-2">
               Ver a trilha
             </Link>
@@ -170,7 +202,7 @@ export function CodeChallenge({ id, nextTo }: Props) {
         <p className="mb-2 text-[13px] font-medium">
           {phase === 'identify' ? 'Marque as linhas vulneráveis e confira.' : phase === 'fix' ? 'Falha identificada. Agora escolha a correção.' : 'Código analisado.'}
         </p>
-        <CodeLines code={challenge.code} file={challenge.file} selectable={phase === 'identify' && !locked} marks={lineMarks} onToggle={toggle} />
+        <CodeLines code={challenge.code} file={challenge.file} language={challenge.language} selectable={phase === 'identify' && !locked} marks={lineMarks} onToggle={toggle} />
       </div>
 
       {phase === 'identify' ? (
@@ -210,15 +242,15 @@ export function CodeChallenge({ id, nextTo }: Props) {
           <p className="flex items-center gap-2 text-sm font-semibold">
             <ShieldCheck className="size-4 text-primary" aria-hidden="true" /> Por que é uma falha
           </p>
-          <p className="mt-1.5 text-[13px] leading-relaxed">{challenge.why}</p>
-          {run.extra && challenge.extraNote ? <p className="mt-2 text-[13px] leading-relaxed text-primary">Você também notou uma falha extra: {challenge.extraNote}</p> : null}
+          <RichText className="mt-1.5 text-[13px] leading-relaxed" text={challenge.why} />
+          {run.extra && challenge.extraNote ? <RichText className="mt-2 text-[13px] leading-relaxed text-primary" text={`Você também notou uma falha extra: ${challenge.extraNote}`} /> : null}
         </section>
       ) : null}
 
       {phase === 'fix' || (phase === 'done' && fixResult) ? (
         <fieldset disabled={phase === 'done' || locked} className="m-0 mt-4 min-w-0 border-0 p-0">
           <legend className="mb-2 text-[13px] font-medium">Qual é a melhor correção?</legend>
-          <RadioGroup value={phase === 'done' ? String(challenge.fix) : fixChoice} onValueChange={(v) => { setFixChoice(v); setFixResult(null) }} className="gap-0">
+          <RadioGroup value={phase === 'done' ? String(challenge.fix) : fixChoice} onValueChange={(v) => { setFixChoice(v); setFixResult(null) }} className="grid-cols-[minmax(0,1fr)] gap-0">
             {challenge.fixes.map((f, k) => (
               <Label
                 key={f.text}
@@ -233,7 +265,7 @@ export function CodeChallenge({ id, nextTo }: Props) {
               >
                 <RadioGroupItem id={`${uid}-fix-${k}`} value={String(k)} className="mt-0.5" />
                 <span className="min-w-0 flex-1">
-                  <span className="font-mono text-muted-foreground">{letters[k]}.</span> {f.text}
+                  <span className="font-mono text-muted-foreground">{letters[k]}.</span> <RichText as="span" text={f.text} />
                 </span>
                 {phase === 'done' && k === challenge.fix ? (
                   <span className="inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-primary">
@@ -266,7 +298,7 @@ export function CodeChallenge({ id, nextTo }: Props) {
         <p role="alert" className="mt-3 flex items-start gap-2 rounded-lg border border-destructive/50 bg-destructive/8 p-3 text-[13px] leading-relaxed">
           <XCircle className="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden="true" />
           <span>
-            <strong>Ainda não.</strong> {challenge.fixes[fixResult.choice].feedback} Escolha outra alternativa e confira de novo.
+            <strong>Ainda não.</strong> <RichText as="span" text={challenge.fixes[fixResult.choice].feedback} /> Escolha outra alternativa e confira de novo.
           </span>
         </p>
       ) : null}
@@ -276,7 +308,8 @@ export function CodeChallenge({ id, nextTo }: Props) {
           <p className="flex items-center gap-2 text-base font-semibold">
             <CheckCircle2 className="size-5 text-primary" aria-hidden="true" /> Desafio concluído
           </p>
-          <p className="mt-1.5 text-[13px] leading-relaxed">{challenge.fixes[challenge.fix].feedback}</p>
+          <RichText className="mt-1.5 text-[13px] leading-relaxed" text={challenge.fixes[challenge.fix].feedback} />
+          <Complement challenge={challenge} Sub={Sub} />
           <p className="mt-2 text-xs text-muted-foreground">
             {used === 0 ? 'Você concluiu esta tentativa sem nenhuma dica.' : `Você usou ${used} ${used === 1 ? 'dica' : 'dicas'} nesta tentativa, então ela não conta para o "Sem Ajuda". Repita o desafio e tente sem dicas.`}
           </p>
@@ -302,7 +335,9 @@ export function CodeChallenge({ id, nextTo }: Props) {
           </p>
           <ul className="mt-1.5 grid list-disc gap-1 pl-5 text-xs leading-relaxed text-muted-foreground">
             {shownHints.map((h) => (
-              <li key={h.i}>{h.text}</li>
+              <li key={h.i}>
+                <RichText as="span" text={h.text} />
+              </li>
             ))}
           </ul>
         </section>
@@ -317,5 +352,65 @@ export function CodeChallenge({ id, nextTo }: Props) {
         {message}
       </p>
     </article>
+  )
+}
+
+/** Material extra do resultado: por que as outras alternativas não bastam, código corrigido, comportamento da API e validação. */
+function Complement({ challenge, Sub }: { challenge: NonNullable<ReturnType<typeof challengeById>>; Sub: 'h3' | 'h5' }) {
+  const others = challenge.fixes.map((f, k) => ({ ...f, k })).filter((f) => f.k !== challenge.fix)
+  return (
+    <div className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-3">
+      <div className="min-w-0">
+        <Sub className="text-[13px] font-semibold">Por que as outras alternativas não bastam</Sub>
+        <ul className="mt-1 grid gap-1.5 pl-0 text-xs leading-relaxed text-muted-foreground">
+          {others.map((f) => (
+            <li key={f.k} className="list-none">
+              <span className="font-mono">{letters[f.k]}.</span> <RichText as="span" text={f.feedback} />
+            </li>
+          ))}
+        </ul>
+      </div>
+      {challenge.fixedCode ? <CodeBlock lines={challenge.fixedCode} language={challenge.language} title={`${challenge.file} (versão corrigida, exemplo)`} /> : null}
+      {challenge.behaviors ? (
+        <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-2 sm:grid-cols-[repeat(3,minmax(0,1fr))]">
+          {(
+            [
+              ['Esperado', challenge.behaviors.expected],
+              ['Vulnerável', challenge.behaviors.vulnerable],
+              ['Corrigido', challenge.behaviors.fixed],
+            ] as const
+          ).map(([title, lines]) => (
+            <CodeBlock key={title} lines={lines} language="http" title={title} />
+          ))}
+        </div>
+      ) : null}
+      {challenge.validation ? (
+        <div className="min-w-0">
+          <Sub className="text-[13px] font-semibold">Como validar a correção</Sub>
+          <RichText className="mt-1 text-xs leading-relaxed text-muted-foreground" text={challenge.validation} />
+        </div>
+      ) : null}
+      {challenge.frameworks?.length ? (
+        <div className="min-w-0 text-[11px] leading-relaxed text-muted-foreground">
+          <p>Referências (edição e título conferidos no registro do site):</p>
+          <ul className="mt-0.5 grid gap-0.5 pl-0">
+            {challenge.frameworks.map((f) => {
+              const r = resolveRef(f)
+              return (
+                <li key={`${f.framework}-${f.id}`} className="list-none">
+                  {r ? (
+                    <a href={r.url} target="_blank" rel="noreferrer noopener" className="underline underline-offset-2 hover:text-foreground">
+                      {refLabel(f)}
+                    </a>
+                  ) : (
+                    refLabel(f)
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      ) : null}
+    </div>
   )
 }

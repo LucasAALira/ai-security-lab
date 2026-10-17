@@ -1,3 +1,4 @@
+import { QuestSwapButton } from './QuestSwapButton'
 import { Check, Circle, Coins, Flame, Gift, RotateCw, Shield } from 'lucide-react'
 import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
@@ -74,6 +75,7 @@ export function DailyPanel() {
                   <span className="col-start-2 col-end-4">
                     <Progress value={(q.progress / q.target) * 100} aria-label={`${q.title}: ${q.progress} de ${q.target}`} className="h-1" />
                   </span>
+                  {!q.done && <QuestSwapButton id={q.id} title={q.title} />}
                 </li>
               ))}
             </ul>

@@ -1,13 +1,15 @@
-import { Check, Coins, Gift, Palette, Shield, Trash2 } from 'lucide-react'
+import { RelicArt } from '@/components/gamification/RelicArt'
+import { Check, Coins, Gift, LockOpen, Palette, Shield, Trash2 } from 'lucide-react'
 import { useId, useState } from 'react'
 import { Link } from 'react-router'
 import { SectionHeading } from '@/components/common/SectionHeading'
+import { UnlockModuleCard } from '@/components/shop/UnlockModuleCard'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { formatNumber, plural } from '@/lib/format'
-import { coinsEarned, REWARD_LIMITS, SHIELD, THEMES, XP_PER_COIN } from '@/lib/progress'
+import { coinsEarned, MODULE_UNLOCKS, REWARD_LIMITS, SHIELD, THEMES, XP_PER_COIN } from '@/lib/progress'
 import { useDocumentTitle } from '@/lib/use-document-title'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
@@ -57,6 +59,24 @@ export function ShopPage() {
         </div>
       </div>
 
+      <section aria-labelledby="loja-modulos" className="mt-10">
+        <h2 id="loja-modulos" className="mb-1 flex items-center gap-2 text-lg font-semibold">
+          <LockOpen className="size-5 text-primary" aria-hidden="true" /> Desbloqueio imediato de módulos
+        </h2>
+        <p className="mb-3 max-w-2xl text-sm text-muted-foreground">
+          Módulos de acesso antecipado também abrem de graça ao concluir os módulos recomendados. Quem prefere pular a espera paga o desbloqueio com moedas. Veja também <Link to="/em-breve" className="text-primary underline underline-offset-2">o que vem por aí</Link>.
+        </p>
+        <div className="grid gap-4">
+          {Object.keys(MODULE_UNLOCKS).map((m) => (
+            <UnlockModuleCard key={m} module={Number(m)} />
+          ))}
+        </div>
+      </section>
+
+      <Link to="/sala-de-trofeus" className="relic-shop-banner mt-8 flex flex-wrap items-center gap-5 rounded-xl border border-tint-line p-6">
+        <RelicArt icon="locked-chest" />
+        <div className="min-w-0 flex-1"><p className="text-[10px] tracking-[.22em] text-primary">O ACERVO DO GUARDIÃO</p><h2 className="mt-2 font-serif text-2xl">Relíquias que contam sua história</h2><p className="mt-2 text-sm text-muted-foreground">Oito colecionáveis, três cenários e seis nichos para suas maiores conquistas.</p><span className="mt-3 inline-block text-sm text-primary">Explorar a sala de troféus →</span></div>
+      </Link>
       <section aria-labelledby="loja-escudo" className="mt-10">
         <h2 id="loja-escudo" className="mb-3 flex items-center gap-2 text-lg font-semibold">
           <Shield className="size-5 text-primary" aria-hidden="true" /> Escudo de sequência
@@ -79,7 +99,7 @@ export function ShopPage() {
 
       <section aria-labelledby="loja-temas" className="mt-10">
         <h2 id="loja-temas" className="mb-3 flex items-center gap-2 text-lg font-semibold">
-          <Palette className="size-5 text-primary" aria-hidden="true" /> Temas de cor
+          <Palette className="size-5 text-primary" aria-hidden="true" /> Temas visuais
         </h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {THEMES.map((t) => {
@@ -89,7 +109,7 @@ export function ShopPage() {
               <Card key={t.id} className="gap-3 p-4">
                 {/* A prévia usa o próprio tema, para mostrar as cores reais antes de comprar. */}
                 <div data-theme={t.id} className="rounded-md border border-border bg-background p-3 text-foreground" aria-hidden="true">
-                  <div className="mb-2 h-1.5 w-2/3 rounded-full bg-primary" />
+                  <div className="flex justify-center py-2"><RelicArt icon="crown" className="!h-16 !w-16" /></div><div className="mb-2 h-1.5 w-2/3 rounded-full bg-primary" />
                   <div className="mb-2 h-1.5 w-1/2 rounded-full bg-border" />
                   <span className="inline-block rounded-md bg-primary px-2.5 py-1 text-[11px] font-semibold text-primary-foreground">Botão</span>
                 </div>

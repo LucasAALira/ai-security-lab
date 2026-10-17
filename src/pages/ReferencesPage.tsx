@@ -12,6 +12,7 @@ interface Lib {
 }
 
 const libraries: Lib[] = [
+  { name: 'Game-icons.net — Lorc e Delapouite', url: 'https://game-icons.net', license: 'CC BY 3.0 · https://creativecommons.org/licenses/by/3.0/', use: 'Ícones de relíquias e conquistas. Lorc: dragon-head, burning-embers, chained-heart, crystal-ball, key, locked-chest, trophy e crown. Delapouite: ring e spell-book. Adaptação: fundo removido e acabamento em CSS. Nomes, histórias, molduras e cenários são originais deste projeto.' },
   { name: 'shadcn/ui', url: 'https://ui.shadcn.com', license: 'MIT', use: 'Botões, diálogos, formulários, abas e avisos. Os componentes são copiados para src/components/ui e ajustados ao tema, sobre o Radix UI (MIT).' },
   { name: 'daisyUI', url: 'https://daisyui.com', license: 'MIT', use: 'Os temas Dragão, Ciano e Arcano e componentes de exibição: estatísticas, progresso radial e etapas. As cores do shadcn derivam do mesmo tema.' },
   { name: 'Motion', url: 'https://motion.dev', license: 'MIT', use: 'Animações de entrada, de medalhas e de vidas. Respeita a preferência do sistema por menos movimento.' },

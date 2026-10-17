@@ -1,0 +1,236 @@
+import type { DossierContent } from '../types'
+
+/* Dossiê: SolarWinds Orion (2020). Fatos com fonte numerada; análise e simulação rotuladas à parte. */
+
+export const solarwinds: DossierContent = {
+  id: 'solarwinds-orion-2020',
+  title: 'SolarWinds Orion (2020): a atualização assinada que carregava um intruso',
+  subtitle: 'Um sistema de monitoramento recebeu, por meio de atualizações legítimas e assinadas, um componente que abria caminho para o acesso às redes dos clientes.',
+  incidentDate: '2020-03 (builds afetados lançados entre março e junho de 2020)',
+  publishedDate: '2020-12-13 (diretiva de emergência da CISA e análise da FireEye; 8-K da SolarWinds em 2020-12-14)',
+  reviewed: '2026-10-17',
+  summary: [
+    'A SolarWinds informou que um ataque inseriu uma vulnerabilidade na plataforma **Orion** por meio do comprometimento do **sistema de build** da empresa, e não do repositório de código-fonte. [3]',
+    'Segundo a empresa, as atualizações lançadas **entre março e junho de 2020** continham a vulnerabilidade. [3][4]',
+    'A análise da FireEye (hoje Mandiant) mostrou que o componente `SolarWinds.Orion.Core.BusinessLayer.dll` foi alterado, distribuído em atualizações legítimas e **assinado digitalmente pela SolarWinds**. A assinatura do exemplo analisado é de 2020-03-24, e várias atualizações alteradas foram assinadas entre março e maio de 2020. [2]',
+    'Depois de instalado, o código ficava dormente por até cerca de duas semanas, consultava nomes de domínio gerados por algoritmo e disfarçava a comunicação como tráfego normal do próprio Orion. [2]',
+    'Em 2020-12-13, a CISA emitiu a **Diretiva de Emergência 21-01**, que mandou as agências federais dos EUA desconectarem ou desligarem as instâncias afetadas do Orion. [1]',
+    'A SolarWinds enviou um comunicado a cerca de **33.000 clientes** ativos do Orion e estimou que **menos de 18.000** poderiam ter instalado uma versão afetada. [3][4]',
+    'Em 2021, a orientação suplementar da CISA listou as versões afetadas (Orion Platform 2019.4 HF5, 2020.2 RC1, 2020.2 RC2, 2020.2 e 2020.2 HF1) e, em abril de 2021, o governo dos EUA atribuiu a atividade ao serviço de inteligência exterior russo (SVR). [1]',
+  ],
+  timeline: [
+    { when: '2020-03', what: 'Início do período em que foram lançados os builds afetados.', source: 3 },
+    { when: '2020-03-24', what: 'Data de assinatura do componente alterado analisado pela FireEye.', source: 2 },
+    { when: '2020-06', what: 'Fim do período de lançamento dos builds afetados, segundo a SolarWinds.', source: 3 },
+    { when: '2020-12-13', what: 'A CISA emite a Diretiva de Emergência 21-01; a FireEye publica a análise do código alterado (SUNBURST); a SolarWinds avisa os clientes.', source: 1 },
+    { when: '2020-12-14', what: 'A SolarWinds arquiva o Formulário 8-K na SEC descrevendo o ataque.', source: 3 },
+    { when: '2021-01-06', what: 'A CISA publica a orientação suplementar v3, com as versões afetadas.', source: 1 },
+    { when: '2021-04', what: 'Atualização da CISA informa a atribuição da atividade ao SVR pelo governo dos EUA.', source: 1 },
+  ],
+  component: {
+    name: 'SolarWinds.Orion.Core.BusinessLayer.dll, dentro de atualizações oficiais do Orion Platform',
+    trust:
+      'Quem instala uma atualização assinada pelo fornecedor confia que ela contém apenas o que o fornecedor construiu a partir do seu código. O ponto comprometido foi o sistema de build, que fica entre o código-fonte e a assinatura: o que saiu dele foi assinado como legítimo.',
+  },
+  impact: [
+    'As atualizações lançadas entre março e junho de 2020 continham a vulnerabilidade. [3][4]',
+    'A SolarWinds estimou que menos de 18.000 clientes poderiam ter instalado uma versão afetada, e que o número de organizações efetivamente exploradas foi "substancialmente menor". [4]',
+    'A FireEye descreveu vítimas em vários setores (governo, consultoria, tecnologia, telecomunicações e extração) na América do Norte, Europa, Ásia e Oriente Médio. [2]',
+    'A SolarWinds informou não ter encontrado o código alterado em nenhum dos seus mais de setenta produtos que não são Orion. [4]',
+  ],
+  uncertainties: [
+    'O número exato de clientes que instalaram uma versão afetada é uma estimativa da SolarWinds, porque o Orion é instalado nos servidores dos clientes. [4]',
+    'Nenhuma fonte consultada informa um número de organizações efetivamente exploradas. [2][4]',
+    'Os documentos da SolarWinds consultados não informam quando a empresa tomou conhecimento do ataque; a data de 2020-12-14 é a do anúncio. [3][4]',
+    'A lista de versões afetadas mudou: a diretiva original citava um intervalo mais amplo (2019.4 a 2020.2.1 HF1) e a orientação suplementar trouxe uma lista mais restrita. [1]',
+    'A atribuição varia por fonte: o governo dos EUA a atribuiu ao SVR em 2021, a FireEye acompanhou o grupo como UNC2452 (mais tarde reunido ao APT29), e a SolarWinds declarou, no relatório anual, que não havia atribuído o ataque de forma independente. [1][2][4]',
+    'O modo como o intruso entrou, no início, no ambiente de build da SolarWinds não é detalhado nas fontes consultadas.',
+  ],
+  analysis: [
+    'A assinatura digital respondeu à pergunta "este arquivo foi alterado depois de assinado?", e não à pergunta "este arquivo foi produzido pelo processo íntegro do fornecedor?". Quando o ponto comprometido é o próprio build, os dois conceitos se separam.',
+    'O componente alterado rodava dentro de uma ferramenta de monitoramento, que costuma ter permissão ampla de leitura e acesso a credenciais. O valor do alvo vinha do que a ferramenta alcançava.',
+    'A dormência de cerca de duas semanas e o disfarce do tráfego tornam a detecção por observação de comportamento mais difícil: sem uma linha de base de rede, o tráfego parecia rotina.',
+    'Para o consumidor, a lição é decidir de antemão quanto de confiança uma atualização automática merece e o que a ferramenta pode alcançar caso a confiança seja traída.',
+  ],
+  lessons: [
+    'Dê à ferramenta de monitoramento o menor acesso possível e segmente a rede dela: o que ela alcança é o que um comprometimento dela alcança.',
+    'Observe o que as ferramentas de gestão fazem na rede (destinos novos, consultas de nomes incomuns), e não só o que elas deveriam fazer.',
+    'Em quem produz software: proteja o ambiente de build como a joia da coroa, com isolamento, mínimo privilégio, builds reprodutíveis e verificação independente do que é assinado.',
+    'Tenha um inventário que diga onde cada produto está instalado e em qual versão: sem ele, a primeira pergunta de um incidente (quem usa isso?) demora dias.',
+    'Treine a resposta: isolar, preservar evidências, redefinir credenciais acessíveis à ferramenta e reconstruir a partir de fontes confiáveis.',
+  ],
+  exercise: {
+    title: 'Simulação: a atualização do Observa',
+    context: [
+      'Esta é uma **simulação fictícia** inspirada no caso. A empresa **Aurora** usa o **Observa**, uma ferramenta de monitoramento do fornecedor fictício **Vigia Sistemas**, instalada no servidor `mon-01.aurora.example`. A ferramenta tem permissão de leitura nos servidores e acesso ao diretório de identidades. Todos os nomes, datas e números abaixo são inventados.',
+      'Duas semanas depois de instalar a atualização **7.2.1**, a equipe de rede nota consultas de nomes incomuns partindo do servidor de monitoramento. A atualização estava com assinatura válida.',
+    ],
+    objective: 'Entender o que uma assinatura válida prova e o que não prova, ordenar a resposta de modo que cada passo respeite o anterior e decidir como aplicar uma versão corrigida sem agravar o problema.',
+    criteria: [
+      'Você distingue integridade do arquivo de integridade do processo de build.',
+      'Você ordena a resposta respeitando dependências (preservar antes de mexer, redefinir credenciais antes de reimplantar).',
+      'Você aplica a versão corrigida sem confiar cegamente em um único canal.',
+    ],
+    evidence: [
+      {
+        id: 'atualizacoes',
+        title: 'Histórico de atualizações do Observa em mon-01',
+        kind: 'table',
+        from: 0,
+        head: ['Versão', 'Instalada em', 'Assinatura', 'Tamanho', 'Observação'],
+        rows: [
+          ['7.1.9', '2026-02-03', 'válida', '41,2 MB', '—'],
+          ['7.2.0', '2026-03-10', 'válida', '41,6 MB', '—'],
+          ['7.2.1', '2026-04-07', 'válida', '41,9 MB', 'pacote 0,3 MB maior que o anterior; sem notas de versão sobre o aumento'],
+        ],
+        note: 'Pergunte o que a coluna "Assinatura" afirma e o que ela deixa de afirmar.',
+      },
+      {
+        id: 'dns',
+        title: 'Consultas DNS originadas em mon-01 (amostra)',
+        kind: 'table',
+        from: 1,
+        head: ['Data', 'Nome consultado', 'Tipo', 'Comentário'],
+        rows: [
+          ['2026-04-08', 'atualizacoes.vigia.example', 'A', 'domínio habitual do fornecedor'],
+          ['2026-04-14', 'atualizacoes.vigia.example', 'A', 'domínio habitual do fornecedor'],
+          ['2026-04-21', 'k3m9q.metricas-nuvem.example', 'CNAME', 'nome nunca visto antes; subdomínio aparentemente aleatório'],
+          ['2026-04-21', 'p7w2x.metricas-nuvem.example', 'CNAME', 'segundo subdomínio diferente no mesmo dia'],
+          ['2026-04-22', 'j5d8c.metricas-nuvem.example', 'CNAME', 'terceiro subdomínio diferente'],
+        ],
+        note: 'Compare a data da atualização com a data em que os nomes novos aparecem.',
+      },
+      {
+        id: 'alcance',
+        title: 'O que o Observa alcança',
+        kind: 'diagram',
+        from: 2,
+        nodes: [
+          { id: 'fornecedor', label: 'Vigia Sistemas', x: 0, y: 1, kind: 'terceiro', zone: 'Fora da Aurora', detail: 'Fornecedor do Observa. Publica atualizações assinadas no seu site.' },
+          { id: 'mon', label: 'mon-01 (Observa)', x: 1, y: 1, kind: 'servico', zone: 'Aurora', detail: 'Servidor de monitoramento. Instala as atualizações do fornecedor.' },
+          { id: 'servidores', label: 'Servidores monitorados', x: 2, y: 0, kind: 'servico', zone: 'Aurora', detail: 'Cerca de 200 servidores onde o Observa lê métricas e executa verificações.' },
+          { id: 'diretorio', label: 'Diretório de identidades', x: 2, y: 2, kind: 'identidade', zone: 'Aurora', detail: 'O Observa usa uma conta de serviço com permissão de leitura ampla neste diretório.' },
+          { id: 'saida', label: 'Saída para a internet', x: 3, y: 1, kind: 'borda', zone: 'Aurora', detail: 'O servidor de monitoramento pode abrir conexões para fora, sem lista de destinos permitidos.' },
+        ],
+        edges: [
+          { from: 'fornecedor', to: 'mon', label: 'atualização assinada' },
+          { from: 'mon', to: 'servidores', label: 'lê e verifica' },
+          { from: 'mon', to: 'diretorio', label: 'consulta com conta de serviço' },
+          { from: 'mon', to: 'saida', label: 'conexões de saída' },
+        ],
+        note: 'Se o servidor de monitoramento estiver comprometido, o que ele alcança?',
+      },
+    ],
+    activities: [
+      {
+        id: 'o-que-a-assinatura-prova',
+        kind: 'multi',
+        variant: 'multi',
+        title: 'O que a assinatura válida prova',
+        prompt: 'A atualização 7.2.1 tem assinatura válida. Marque **todas** as afirmações que a assinatura válida **sustenta**.',
+        options: [
+          { text: 'O arquivo não foi alterado depois de ser assinado.', feedback: 'Sim: é para isso que serve a assinatura.' },
+          { text: 'O arquivo foi produzido pelo processo normal e íntegro do fornecedor.', feedback: 'Não: a assinatura não diz nada sobre o que aconteceu antes dela, e o problema pode estar no build.' },
+          { text: 'Quem assinou tinha acesso à chave de assinatura do fornecedor.', feedback: 'Sim: a assinatura mostra que a chave foi usada, mas não por quem nem em qual contexto.' },
+          { text: 'O código do arquivo não contém comportamento malicioso.', feedback: 'Não: uma assinatura não analisa o conteúdo.' },
+          { text: 'O ambiente de build do fornecedor não estava comprometido na hora da assinatura.', feedback: 'Não: um build comprometido produz arquivos que são assinados normalmente.' },
+        ],
+        correct: [0, 2],
+        hints: [
+          'Pergunte: a assinatura olha para o arquivo ou para o processo que o gerou?',
+          'Ela confirma o que aconteceu depois da assinatura, e não o que veio antes.',
+          'São duas afirmações verdadeiras: uma sobre o arquivo e outra sobre o uso da chave.',
+        ],
+        explain: 'A assinatura prova integridade do arquivo desde o momento da assinatura e o uso da chave. Não prova a integridade do processo de build nem do conteúdo, por isso um build comprometido gera arquivos legítimos aos olhos de quem verifica a assinatura.',
+      },
+      {
+        id: 'ordem-da-resposta',
+        kind: 'order',
+        title: 'A resposta na ordem certa',
+        prompt: 'Coloque os passos de resposta em uma ordem que respeite as dependências. Use os botões para subir e descer cada passo. Em alguns casos, mais de uma ordem é defensável.',
+        items: [
+          { text: 'Isolar o servidor `mon-01` da rede, sem desligá-lo, para impedir novas conexões de saída.', why: 'Contém o problema primeiro. Manter ligado preserva a memória para análise.' },
+          { text: 'Capturar a memória e o disco e preservar os registros de rede e de DNS.', why: 'Depende do isolamento e vem antes de qualquer reconstrução, que apagaria a evidência.' },
+          { text: 'Levantar quais credenciais e quais sistemas o Observa alcançava, usando o inventário.', why: 'Define o escopo da rotação de credenciais.' },
+          { text: 'Redefinir as credenciais acessíveis ao Observa e revogar os tokens da conta de serviço.', why: 'Precisa vir antes de colocar qualquer ferramenta nova no ar, ou ela já nasce com segredos expostos.' },
+          { text: 'Reconstruir o monitoramento em uma máquina nova e limpa, a partir de uma versão verificada por um canal independente.', why: 'Só depois do escopo conhecido e das credenciais trocadas.' },
+          { text: 'Monitorar saída de rede e uso das credenciais novas por algumas semanas e registrar a linha do tempo.', why: 'Só faz sentido depois do retorno ao ar: verifica se algo reaparece.' },
+        ],
+        before: [[0, 1], [1, 4], [2, 3], [3, 4], [4, 5], [0, 2]],
+        hints: [
+          'Primeiro conter, depois preservar: o que mudaria se você reconstruísse antes de guardar o disco?',
+          'Antes de ligar algo novo, é preciso saber o que foi exposto e trocar o que foi exposto.',
+          'O levantamento de escopo pode andar em paralelo com a captura de evidências, mas ambos vêm antes da reconstrução.',
+        ],
+        explain: 'Cada passo depende de uma pergunta respondida antes: o ambiente foi contido? a evidência foi guardada? o que ele alcançava? as credenciais foram trocadas? Reconstruir cedo demais apaga a evidência ou reimplanta com segredos expostos.',
+      },
+      {
+        id: 'versao-corrigida',
+        kind: 'decide',
+        title: 'A versão corrigida',
+        prompt: 'O fornecedor publica a versão **7.2.2** como correção e pede que todos atualizem no mesmo dia. O que a Aurora deve fazer?',
+        options: [
+          {
+            text: 'Não atualizar o servidor suspeito no lugar. Instalar a 7.2.2 em uma instância nova, em rede isolada e sem acesso ao diretório, depois de conferir o comunicado e o hash do pacote por um canal independente (não o mesmo site de download) e de observar o comportamento de rede antes de liberar acessos.',
+            quality: 'best',
+            flags: ['canalIndependente', 'instanciaNova'],
+            feedback: 'Evita instalar sobre um ambiente possivelmente comprometido, não confia em um único canal para validar o pacote e libera acessos só depois de observar o comportamento.',
+            consequence: 'A instância nova funciona isolada por alguns dias. O comportamento de rede é o esperado, e os acessos são liberados em etapas.',
+          },
+          {
+            text: 'Instalar a 7.2.2 em uma instância nova com os mesmos acessos de antes, depois de conferir a assinatura do pacote.',
+            quality: 'good',
+            flags: ['instanciaNova'],
+            feedback: 'A instância nova é um bom passo. Mas a assinatura já se mostrou insuficiente neste caso, e acessos amplos liberados de imediato repetem a exposição.',
+            consequence: 'A ferramenta volta ao ar rápido, com o mesmo alcance de antes. Se a nova versão tiver o mesmo problema, o estrago potencial é idêntico.',
+          },
+          {
+            text: 'Aplicar a 7.2.2 sobre o servidor atual, por ser a correção oficial do fornecedor.',
+            quality: 'partial',
+            feedback: 'Atualizar sobre o ambiente suspeito pode manter o intruso e persistências que a atualização não remove, além de sobrescrever evidências.',
+            consequence: 'O comportamento visível melhora, mas o servidor continua tendo sido comprometido por duas semanas. Evidências são perdidas.',
+          },
+          {
+            text: 'Desativar o monitoramento até o fornecedor divulgar uma análise completa.',
+            quality: 'poor',
+            feedback: 'Abrir mão do monitoramento por tempo indeterminado deixa a Aurora sem visibilidade justamente quando mais precisa dela, e não resolve o servidor comprometido.',
+            consequence: 'A empresa fica semanas sem alertas. O servidor suspeito continua ligado, sem ninguém olhando para ele.',
+          },
+        ],
+        hints: [
+          'Pergunte: o que a versão nova resolve e o que ela não resolve sobre o servidor atual?',
+          'Quanto você confia em um pacote validado só pelo mesmo canal que o entregou?',
+          'A resposta mais completa tem instância nova, isolamento, verificação por outro canal e acessos liberados aos poucos.',
+        ],
+        explain: 'Uma versão corrigida não limpa um ambiente já comprometido. Instalar em ambiente novo, validar por mais de um canal e liberar acessos aos poucos reduz a chance de repetir o problema e mantém a visibilidade.',
+      },
+    ],
+    closing:
+      'A Aurora tratou a assinatura como uma prova limitada, respondeu em uma ordem que preservou as evidências e reinstalou a ferramenta com cautela. O ponto central: o valor do alvo era o que a ferramenta alcançava, e por isso o acesso mínimo e o monitoramento de rede da própria ferramenta contam tanto quanto a verificação da atualização.',
+    review: {
+      solution: [
+        'A assinatura sustenta duas coisas: que o arquivo não mudou depois de assinado e que a chave foi usada. Ela não diz nada sobre o processo que gerou o arquivo, por isso uma atualização maior sem explicação e um comportamento novo de rede merecem atenção mesmo com a assinatura válida.',
+        'A ordem da resposta é: isolar, preservar, levantar o escopo, redefinir credenciais, reconstruir e monitorar. A rotação precisa vir antes de reconstruir, e a preservação, antes de qualquer mudança no servidor.',
+        'A versão corrigida entra em uma instância nova e isolada, validada por um canal independente, com acessos liberados só depois de observar o comportamento.',
+      ],
+      residual:
+        'Mesmo com o procedimento, restam a possibilidade de credenciais que o levantamento de escopo não identificou e a dependência de um fornecedor único para uma ferramenta de acesso amplo. A segmentação de rede e o acesso mínimo reduzem, mas não eliminam, esse risco.',
+      validation:
+        'Verifique que a conta de serviço da nova instância só lê o que precisa, que a saída de rede do servidor de monitoramento tem lista de destinos permitidos e que consultas de nomes novos geram alerta. Simule a descoberta de um destino inesperado e meça quanto tempo a equipe leva para isolar o servidor.',
+    },
+  },
+  sources: [
+    { label: 'CISA, Diretiva de Emergência 21-01: Mitigate SolarWinds Orion Code Compromise (2020-12-13, com orientações suplementares)', url: 'https://www.cisa.gov/emergency-directive-21-01', kind: 'primária' },
+    { label: 'FireEye, "Highly Evasive Attacker Leverages SolarWinds Supply Chain to Compromise Multiple Global Victims With SUNBURST Backdoor" (2020-12-13)', url: 'https://cloud.google.com/blog/topics/threat-intelligence/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor', kind: 'primária' },
+    { label: 'SolarWinds, Formulário 8-K arquivado na SEC em 2020-12-14', url: 'https://www.sec.gov/Archives/edgar/data/1739942/000162828020017451/swi-20201214.htm', kind: 'primária' },
+    { label: 'SolarWinds, Formulário 10-K do exercício de 2020', url: 'https://www.sec.gov/Archives/edgar/data/1739942/000173994221000043/swi-20201231.htm', kind: 'primária' },
+  ],
+  frameworks: [
+    { framework: 'owasp-top10', id: 'A03' },
+    { framework: 'nist-ssdf', id: 'PO.5' },
+    { framework: 'nist-ssdf', id: 'PS.2' },
+    { framework: 'slsa', id: 'build' },
+  ],
+  tags: ['supply', 'sem-ia'],
+  notice: 'Este caso não envolve inteligência artificial: o dossiê trata de cadeia de suprimentos de software.',
+}

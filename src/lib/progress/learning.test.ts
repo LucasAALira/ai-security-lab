@@ -13,6 +13,7 @@ import {
   gameXp,
   gradeFix,
   gradeLines,
+  isChallengeOpen,
   isModuleUnlocked,
   levelFor,
   medals,
@@ -28,6 +29,8 @@ import {
 } from '.'
 
 const real = progressContext
+/** Desafios que alguma missão usa como atividade de encontrar a falha. */
+const spotIds = new Set(real.missions.flatMap((m) => m.activities.filter((a) => a.kind === 'spot').map((a) => a.challenge)))
 /** Sem pré-requisitos entre módulos: para testar desafios, chefes e conquistas em qualquer ordem. */
 const open: ProgressContext = { ...real, prereqs: real.prereqs.map(() => []) }
 const D = (y: number, m: number, d: number) => new Date(y, m - 1, d, 12)
@@ -76,7 +79,7 @@ describe('conteúdo do aprendizado interativo', () => {
     expect(challengeSpecs.length).toBeGreaterThanOrEqual(3) // Código Protegido
     expect(challengeSpecs.some((c) => c.extra.length > 0)).toBe(true) // Além do Óbvio
     expect(real.bosses.every((a) => a.length === 3)).toBe(true) // Mestre do Módulo, em qualquer módulo
-    expect(bossAnswers).toHaveLength(8)
+    expect(bossAnswers).toHaveLength(9)
   })
 })
 
@@ -407,9 +410,23 @@ describe('trilha, fogueiras e pré-requisitos', () => {
     expect(applyAction(s, { type: 'read', module: 1, index: 0 }, real, NOW)).toMatchObject({ changed: false, rejected: 'prereq' })
     expect(applyAction(s, { type: 'answer', module: 1, index: 0 }, real, NOW).rejected).toBe('prereq')
     expect(applyAction(s, { type: 'miss', module: 1, index: 0 }, real, NOW).rejected).toBe('prereq')
-    const blocked = challengeSpecs.find((c) => c.module === 1)!
+    // um desafio de módulo bloqueado que nenhuma missão usa (os usados por missões abrem pela missão)
+    const blocked = challengeSpecs.find((c) => c.module !== null && c.module !== 8 && !isModuleUnlocked(s, real, c.module) && !spotIds.has(c.id))!
     expect(applyAction(s, { type: 'identify', challenge: blocked.id, lines: blocked.vulnerable }, real, NOW).rejected).toBe('prereq')
     expect(applyAction(s, { type: 'hint', challenge: blocked.id, index: 0 }, real, NOW).rejected).toBe('prereq')
+  })
+
+  it('um desafio clássico usado como atividade de missão abre pela missão, sem exigir o módulo da trilha', () => {
+    const s = emptyState()
+    const used = challengeSpecs.filter((c) => c.module !== null && !isModuleUnlocked(s, real, c.module) && spotIds.has(c.id))
+    expect(used.length).toBeGreaterThan(0)
+    for (const c of used) {
+      expect(isChallengeOpen(s, real, c), c.id).toBe(true)
+      expect(applyAction(s, { type: 'hint', challenge: c.id, index: 0 }, real, NOW).rejected, c.id).toBeUndefined()
+    }
+    // e o contrário: sem missão, o desafio de módulo bloqueado continua fechado
+    const other = challengeSpecs.find((c) => c.module !== null && !isModuleUnlocked(s, real, c.module) && !spotIds.has(c.id))!
+    expect(isChallengeOpen(s, real, other)).toBe(false)
   })
 
   it('anotações continuam livres em qualquer módulo', () => {
@@ -551,16 +568,17 @@ describe('próximo objetivo', () => {
 
   it('com tudo feito, avisa que a trilha terminou', () => {
     let s = quiet()
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 9; i++) {
       s = run(s, real, NOW, ...finishModule(i))
       for (let j = 0; j < 3; j++) s = run(s, real, NOW, { type: 'bossAnswer', module: i, index: j, option: bossAnswers[i][j] })
     }
     s = run(s, real, NOW, { type: 'completeLab' }, ...[0, 1, 2, 3, 4, 5].map((index): Action => ({ type: 'solveCase', index })))
     for (const c of challengeSpecs) s = run(s, real, NOW, ...solve(c.id))
     expect(nextObjective(s, real)).toEqual({ kind: 'done' })
-    expect(summary(s, real).xp).toBeGreaterThan(2400) // o último nível exige concluir tudo
-    expect(levelFor(summary(s, real).xp).name).toBe('Lenda do AppSec')
-    expect(medals(s, real).filter((m) => m.unlocked && !m.secret)).toHaveLength(30) // faltam só as de mecânicas e de dias reais
+    expect(summary(s, real).xp).toBeGreaterThan(2400) // concluir a trilha clássica passa da Lenda do AppSec
+    expect(levelFor(summary(s, real).xp).number).toBeGreaterThanOrEqual(10)
+    expect(levelFor(summary(s, real).xp).name).not.toBe('Lenda da segurança completa') // o último nível exige também as campanhas e os dossiês
+    expect(medals(s, real).filter((m) => m.unlocked && !m.secret)).toHaveLength(35) // faltam as de mecânicas, de dias reais e as das campanhas (nenhuma missão foi feita aqui)
     expect(unlockedIds(s, real)).toEqual(expect.arrayContaining(['primeira-chama', 'explorador-de-falhas', 'guardiao-das-apis', 'codigo-protegido', 'sem-ajuda', 'mestre-do-modulo']))
   })
 })
@@ -629,9 +647,9 @@ describe('migração e saneamento do estado', () => {
     coins: { bonus: 12, spent: 3 },
   }
 
-  it('um estado da versão 2 vira versão 3 sem perder nada', () => {
+  it('um estado da versão 2 vira versão 4 sem perder nada', () => {
     const s = cleanState(JSON.parse(JSON.stringify(v2)))
-    expect(s.version).toBe(3)
+    expect(s.version).toBe(4)
     expect(s.lab).toBe(true)
     expect(s.cases[0]).toBe(true)
     expect(s.modules[0]).toMatchObject({ reads: [true, true, true], research: true, practice: true, solved: [true, true], notes: 'minhas notas' })
@@ -682,7 +700,7 @@ describe('migração e saneamento do estado', () => {
   })
 
   it('ignora o armazenamento que não é objeto', () => {
-    for (const bad of [null, 42, 'x', [], undefined]) expect(cleanState(bad).version).toBe(3)
+    for (const bad of [null, 42, 'x', [], undefined]) expect(cleanState(bad).version).toBe(4)
   })
 
   it('o aluno recebe um identificador local na primeira ação', () => {
@@ -701,7 +719,7 @@ describe('exportação e importação do progresso', () => {
     const s = sample()
     const text = exportProgress(s, NOW, 'America/Sao_Paulo')
     const parsed = JSON.parse(text)
-    expect(parsed).toMatchObject({ app: BACKUP_APP, format: 'progress', version: 3, timezone: 'America/Sao_Paulo' })
+    expect(parsed).toMatchObject({ app: BACKUP_APP, format: 'progress', version: 4, timezone: 'America/Sao_Paulo' })
     const result = parseBackup(text)
     expect(result.ok).toBe(true)
     if (result.ok) {

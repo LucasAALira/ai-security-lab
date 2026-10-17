@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef, type RefObject } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import { NextObjective } from '@/components/gamification/NextObjective'
 import { useProgress } from '@/state/ProgressProvider'
@@ -18,8 +18,8 @@ function useApplyTheme() {
 /** A página (inicial ou trilha) e o módulo aberto sobre ela contam como uma só. */
 const pageOf = (pathname: string) => (pathname.startsWith('/modulo/') ? '/' : pathname.startsWith('/trilha') ? '/trilha' : pathname)
 
-/** Entre páginas volta ao topo. */
-function useScrollToTopOnPageChange() {
+/** Entre páginas volta ao topo e leva o foco ao conteúdo, para o teclado e o leitor de tela recomeçarem pela página nova. */
+function usePageChange(main: RefObject<HTMLElement | null>) {
   const { pathname, search } = useLocation()
   const page = pageOf(pathname)
   const hasSection = new URLSearchParams(search).has('secao')
@@ -29,7 +29,10 @@ function useScrollToTopOnPageChange() {
       first.current = false
       return
     }
-    if (!hasSection) window.scrollTo(0, 0)
+    if (!hasSection) {
+      window.scrollTo(0, 0)
+      main.current?.focus({ preventScroll: true })
+    }
     // só a troca de página importa; o parâmetro `secao` é tratado por quem rola até a seção
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
@@ -37,11 +40,11 @@ function useScrollToTopOnPageChange() {
 
 export function Shell() {
   useApplyTheme()
-  useScrollToTopOnPageChange()
   const main = useRef<HTMLElement>(null)
+  usePageChange(main)
   const page = pageOf(useLocation().pathname)
   // Estas páginas já mostram o objetivo em destaque no próprio conteúdo.
-  const showObjective = !['/conquistas', '/trilha'].includes(page)
+  const showObjective = !['/conquistas', '/trilha', '/sala-de-trofeus'].includes(page)
   return (
     <div className="min-h-screen">
       <button

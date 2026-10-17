@@ -1,39 +1,16 @@
 import type { ChallengeSpec } from '@/lib/progress'
+import { defineChallenge } from './define-challenge'
+import { apiChallenges } from './challenge-packs/api'
+import { generalChallenges } from './challenge-packs/general'
+import { mobileChallenges } from './challenge-packs/mobile'
+import { supplyChallenges } from './challenge-packs/supply'
+import { webChallenges } from './challenge-packs/web'
 import type { CodeChallenge } from './types'
 
-/* Desafios de código do laboratório. O gabarito é escrito no próprio código, com marcas no fim da
-   linha, para que nenhum número de linha precise ser contado à mão:
+/* Desafios de código do laboratório. O formato do gabarito (marcas ⟦v⟧, ⟦a⟧, ⟦x⟧, ⟦n=...⟧) está em `define-challenge.ts`;
+   os desafios novos ficam em `challenge-packs/*`, um arquivo por tema. */
 
-     ⟦v⟧       linha da falha principal (todas as marcadas assim precisam ser escolhidas)
-     ⟦a⟧       linha relacionada, também aceita como correta, mas não obrigatória
-     ⟦x⟧       linha de uma falha opcional (não é pedida no enunciado; acertá-la libera a conquista secreta)
-     ⟦n=...⟧   linha parecida com a falha, mas que não é o problema: o texto explica por quê
-
-   `defineChallenge` tira as marcas e calcula os índices. O código mostrado ao aluno não tem marcas. */
-
-type Draft = Omit<CodeChallenge, 'vulnerable' | 'also' | 'extra' | 'notes' | 'extraNote'> & { extraNote?: string }
-
-const MARK = /\s*⟦(v|a|x|n=[^⟧]*)⟧\s*$/
-
-function defineChallenge(draft: Draft): CodeChallenge {
-  const vulnerable: number[] = []
-  const also: number[] = []
-  const extra: number[] = []
-  const notes: Record<number, string> = {}
-  const code = draft.code.map((line, i) => {
-    const m = MARK.exec(line)
-    if (!m) return line
-    const tag = m[1]
-    if (tag === 'v') vulnerable.push(i)
-    else if (tag === 'a') also.push(i)
-    else if (tag === 'x') extra.push(i)
-    else notes[i] = tag.slice(2)
-    return line.replace(MARK, '')
-  })
-  return { ...draft, code, vulnerable, also, extra, notes, extraNote: draft.extraNote ?? '' }
-}
-
-export const challenges: CodeChallenge[] = [
+const classic: CodeChallenge[] = [
   /* Módulo 1 — OWASP Top 10 para LLM */
   defineChallenge({
     id: 'saida-no-dom',
@@ -473,15 +450,133 @@ export const challenges: CodeChallenge[] = [
       'Quem pede só pode acessar os próprios dados: a identidade vem da sessão, não do corpo.',
     ],
   }),
+  /* Módulo 9 — Engenharia reversa para defensores */
+  defineChallenge({
+    id: 'modelo-pickle',
+    module: 8,
+    kind: 'vuln',
+    title: 'Modelo baixado e carregado com pickle',
+    scenario: 'Um serviço baixa de um parceiro um modelo de classificação de sentimentos e o carrega na inicialização.',
+    file: 'modelo.py',
+    language: 'py',
+    code: [
+      'import pickle',
+      'import requests',
+      '',
+      'MODELO_URL = "https://modelos-parceiros.exemplo/sentimento-v3.pkl"',
+      '',
+      'def carregar_modelo():',
+      '    resposta = requests.get(MODELO_URL, timeout=10) ⟦a⟧',
+      '    caminho = "/tmp/sentimento.pkl" ⟦x⟧',
+      '    with open(caminho, "wb") as arquivo: ⟦n=Gravar o arquivo baixado é normal. O risco está em como ele é carregado depois.⟧',
+      '        arquivo.write(resposta.content)',
+      '    with open(caminho, "rb") as arquivo:',
+      '        return pickle.load(arquivo) ⟦v⟧',
+    ],
+    why: 'O formato pickle pode executar código arbitrário no momento em que o arquivo é carregado. Ao chamar pickle.load em um modelo baixado de terceiros, o serviço roda o que estiver dentro do arquivo, com as permissões do próprio serviço. É o mesmo problema de executar um programa desconhecido (LLM03, cadeia de suprimentos).',
+    extraNote:
+      'Você também achou uma falha secundária: o arquivo é gravado em um caminho fixo e previsível dentro de /tmp, onde outro processo ou usuário local poderia trocá-lo antes da carga. Use um diretório temporário privado, com nome aleatório e permissões restritas.',
+    fixes: [
+      { text: 'Trocar a biblioteca requests por urllib para baixar o arquivo.', feedback: 'A biblioteca de download não importa: o arquivo continua sendo carregado com pickle e pode executar código.' },
+      { text: 'Envolver pickle.load em um bloco try/except para capturar erros de carga.', feedback: 'Capturar exceções não impede a execução do código durante a carga. Quando o erro aparece, o código já rodou.' },
+      { text: 'Conferir o hash esperado, vindo de uma fonte confiável, usar um formato que guarda só pesos (como safetensors) e carregar em um ambiente isolado e com poucas permissões.', feedback: 'Correto. O hash confirma o que foi recebido, o formato só de pesos não carrega código e o isolamento limita o estrago se algo escapar.' },
+      { text: 'Renomear o arquivo para .bin antes de carregar.', feedback: 'A extensão não muda como o conteúdo é interpretado: o conteúdo continua sendo um pickle.' },
+    ],
+    fix: 2,
+    hints: [
+      'Pergunte-se o que acontece, ao carregar o arquivo, com qualquer código que esteja dentro dele.',
+      'Procure a linha que transforma o conteúdo baixado em um objeto do programa.',
+      'A correção precisa verificar o que foi recebido e usar um formato que não carregue código.',
+    ],
+  }),
+  defineChallenge({
+    id: 'plano-no-corpo',
+    module: 8,
+    kind: 'auth',
+    title: 'Plano Pro decidido pelo aplicativo',
+    scenario: 'Um aplicativo móvel envia, junto de cada pedido, o plano do usuário. O servidor usa esse valor para liberar o relatório avançado.',
+    file: 'api/relatorios.ts',
+    language: 'ts',
+    code: [
+      '// api/relatorios.ts — executa no servidor',
+      'export async function POST(req: Request) {',
+      '  const sessao = await exigirLogin(req) ⟦n=Confirma quem é o usuário (autenticação). Falta decidir o que ele pode fazer, e essa decisão não pode vir do pedido.⟧',
+      '  const corpo = await req.json()',
+      '  const plano = corpo.plano // enviado pelo aplicativo ⟦v⟧',
+      "  if (plano !== 'pro') { ⟦a⟧",
+      "    return new Response('Recurso exclusivo do plano Pro', { status: 403 })",
+      '  }',
+      '  const relatorio = await gerarRelatorio(sessao.userId, corpo.dados)',
+      '  return Response.json(relatorio)',
+      '}',
+    ],
+    why: 'O plano vem do corpo do pedido, e o corpo é controlado por quem envia a requisição. Quem examina o aplicativo ou intercepta o tráfego vê o campo plano, troca o valor para "pro" e passa pelo bloqueio. A decisão de autorização precisa usar um dado que o servidor guarda e controla.',
+    fixes: [
+      { text: 'Ofuscar o aplicativo para que ninguém descubra que existe um campo "plano".', feedback: 'Ofuscar atrasa quem lê o aplicativo, mas o campo continua sendo enviado e qualquer cliente, mesmo sem usar o aplicativo, pode inventar o valor.' },
+      { text: 'Cifrar o valor de "plano" dentro do aplicativo, com uma chave embutida no pacote.', feedback: 'A chave estaria no pacote, junto do código: quem examina o aplicativo a encontra e produz valores válidos.' },
+      { text: 'Validar apenas que "plano" é "gratis" ou "pro".', feedback: 'Isso confere o formato, não a autoridade: "pro" é um valor válido que qualquer pessoa pode enviar.' },
+      { text: 'Buscar o plano no cadastro do servidor, usando o identificador da sessão, e ignorar qualquer plano enviado no corpo do pedido.', feedback: 'Correto. A autorização usa um dado que o servidor controla e associa à identidade autenticada.' },
+    ],
+    fix: 3,
+    hints: [
+      'Pergunte-se: quem controla o valor que decide se o recurso é liberado?',
+      'Procure a linha que lê do pedido uma informação que deveria vir do cadastro.',
+      'A decisão de permissão precisa vir de um dado do servidor ligado à sessão, não do que o cliente diz.',
+    ],
+  }),
+  defineChallenge({
+    id: 'tls-desligado',
+    module: 8,
+    kind: 'vuln',
+    title: 'Cliente que ignora o certificado',
+    scenario: 'Um cliente em Python envia perguntas de atendimento a uma API interna. Durante os testes, alguém desligou um erro de certificado.',
+    file: 'cliente.py',
+    language: 'py',
+    code: [
+      'import requests',
+      '',
+      'API = "https://api.aurora.exemplo/v1/atendimento"',
+      '',
+      'def perguntar(token: str, texto: str) -> str:',
+      '    print("enviando pergunta", token, texto) ⟦x⟧',
+      '    resposta = requests.post(',
+      '        API,',
+      '        headers={"Authorization": f"Bearer {token}"}, ⟦n=Enviar o token no cabeçalho é o formato esperado. O problema é o canal por onde ele viaja.⟧',
+      '        json={"pergunta": texto},',
+      '        verify=False, ⟦v⟧',
+      '        timeout=10,',
+      '    )',
+      '    return resposta.json()["resposta"]',
+    ],
+    why: 'verify=False desliga a verificação do certificado do servidor. Qualquer ponto no caminho da rede (um Wi-Fi público, um proxy hostil) pode se passar pelo servidor, ler o token e as perguntas e alterar as respostas. Quem estuda o tráfego do aplicativo vê exatamente isso.',
+    extraNote:
+      'Você também achou a segunda falha: o token é impresso no log junto da pergunta. Tokens e conteúdo de usuários não devem ir para logs, que costumam ser copiados, retidos e lidos por muita gente.',
+    fixes: [
+      { text: 'Trocar https por http, que é mais rápido e evita erros de certificado.', feedback: 'HTTP simples tira toda a proteção do canal: o token e as perguntas passam em texto aberto.' },
+      { text: 'Remover verify=False para usar a verificação padrão e, se o servidor usa uma autoridade certificadora interna, apontar verify para o certificado dessa autoridade.', feedback: 'Correto. O cliente volta a confirmar com quem está falando, e a autoridade interna é tratada como confiável sem abrir mão da verificação.' },
+      { text: 'Codificar o token em Base64 antes de enviá-lo.', feedback: 'Base64 é só codificação, não proteção. E sem a verificação do certificado, o token codificado também seria interceptado.' },
+      { text: 'Aumentar o timeout para que as falhas de certificado deixem de aparecer.', feedback: 'O timeout não tem relação com o certificado, e esconder o erro não corrige o canal inseguro.' },
+    ],
+    fix: 1,
+    hints: [
+      'Pense em quem pode estar entre o cliente e o servidor e no que impede essa pessoa de se passar por ele.',
+      'Procure o argumento que desliga uma verificação de segurança da conexão.',
+      'A correção precisa devolver ao cliente a verificação do certificado, sem trocar o canal por um sem proteção.',
+    ],
+  }),
 ]
+
+export const challenges: CodeChallenge[] = [...classic, ...supplyChallenges, ...generalChallenges, ...webChallenges, ...apiChallenges, ...mobileChallenges]
 
 export const challengeById = (id: string) => challenges.find((c) => c.id === id)
 export const challengesOfModule = (module: number) => challenges.filter((c) => c.module === module)
+export const challengesOfSubmodule = (submodule: string) => challenges.filter((c) => c.submodule === submodule)
 
 /** O que o motor de progresso precisa de cada desafio: gabarito e contagens, sem os textos. */
 export const challengeSpecs: ChallengeSpec[] = challenges.map((c) => ({
   id: c.id,
   module: c.module,
+  tags: c.tags,
   kind: c.kind,
   lines: c.code.length,
   vulnerable: c.vulnerable,

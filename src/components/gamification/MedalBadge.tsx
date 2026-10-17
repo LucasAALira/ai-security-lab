@@ -46,6 +46,8 @@ function Ornament({ tier }: { tier: Tier }) {
  *  Bloqueado vira um contorno tracejado e apagado, com cadeado (ou interrogação, se oculta). */
 export function MedalBadge({ icon, tier, locked = false, hidden = false, className }: Props) {
   const Icon = medalIcons[icon]
+  const art: Partial<Record<MedalIcon, string>> = { crown:'crown', 'key-round':'key', 'flame-kindling':'burning-embers', flame:'burning-embers', eye:'crystal-ball', 'book-open':'spell-book', library:'spell-book', gift:'locked-chest', 'shield-check':'chained-heart' }
+  const symbol = art[icon] ?? (tier === 'dragao' ? 'dragon-head' : null)
   const gradient = useId().replace(/:/g, '')
   return (
     <span
@@ -86,7 +88,7 @@ export function MedalBadge({ icon, tier, locked = false, hidden = false, classNa
           <Lock className="relative -mt-[6%] size-[36%] text-muted-foreground" strokeWidth={2.2} />
         )
       ) : (
-        <Icon className="relative -mt-[6%] size-[44%] text-tier drop-shadow-[0_0_5px_color-mix(in_oklab,var(--tier)_60%,transparent)]" strokeWidth={2.2} />
+        symbol ? <img src={`assets/relics/${symbol}.svg`} alt="" className="relative -mt-[6%] size-[46%] opacity-90" /> : <Icon className="relative -mt-[6%] size-[44%] text-tier" strokeWidth={2.2} />
       )}
     </span>
   )
