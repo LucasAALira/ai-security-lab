@@ -4,6 +4,7 @@
 
 /* Só o código-fonte alimenta o Tailwind: o site gerado (dist) e o site antigo ficam de fora. */
 @source not "../dist";
+@source not "../android";
 @source not "../site";
 
 /* daisyUI: temas próprios, sem os temas prontos da biblioteca, e só os componentes usados

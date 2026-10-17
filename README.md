@@ -271,3 +271,9 @@ Acesse `#/sala-de-trofeus` pelo menu Jogo ou pela loja.
 - As figuras usam símbolos de Lorc e Delapouite, Game-icons.net, CC BY 3.0; detalhes em `public/assets/relics/CREDITS.md` e na página Referências. Molduras, sala, nomes e histórias são originais.
 
 O progresso de localhost não aparece automaticamente em outro endereço. Exporte em Conquistas e importe no novo endereço para transferi-lo.
+
+## Aplicativo Android
+
+Versão Android com conteúdo offline, progresso local e compartilhamento nativo de backups. O GitHub Actions gera um APK de teste em cada PR/push para `Dev` e `main`.
+
+Veja [como baixar, compilar e instalar o APK](docs/ANDROID.md).

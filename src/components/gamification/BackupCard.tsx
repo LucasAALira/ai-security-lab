@@ -1,3 +1,4 @@
+import { exportFile } from '@/lib/platform/export-file'
 import { Download, HardDrive, Upload } from 'lucide-react'
 import { useId, useRef, useState } from 'react'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
@@ -23,17 +24,16 @@ export function BackupCard() {
   const [message, setMessage] = useState<{ tone: 'ok' | 'error'; text: string } | null>(null)
   const [pending, setPending] = useState<Pending | null>(null)
 
-  const doExport = () => {
-    const blob = new Blob([exportProgress(state)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = backupFileName()
-    document.body.append(a)
-    a.click()
-    a.remove()
-    URL.revokeObjectURL(url)
-    setMessage({ tone: 'ok', text: `Arquivo ${a.download} gerado. Guarde-o: ele é a única cópia fora deste navegador.` })
+  const doExport = async () => {
+    try {
+      const name = backupFileName()
+      const result = await exportFile(name, exportProgress(state))
+      setMessage({ tone: 'ok', text: result === 'shared'
+        ? 'Compartilhamento concluído. Confira se salvou o arquivo no destino escolhido.'
+        : `Arquivo ${name} gerado. Guarde uma cópia fora deste dispositivo.` })
+    } catch {
+      setMessage({ tone: 'error', text: 'Exportação não concluída. Tente novamente e escolha onde salvar o backup.' })
+    }
   }
 
   const onFile = async (file: File | undefined) => {
@@ -53,7 +53,7 @@ export function BackupCard() {
   const confirm = () => {
     if (!pending) return
     store.replace(pending.state)
-    setMessage({ tone: 'ok', text: 'Progresso importado. Os dados anteriores deste navegador foram substituídos.' })
+    setMessage({ tone: 'ok', text: 'Progresso importado. Os dados anteriores deste dispositivo foram substituídos.' })
     setPending(null)
   }
 
@@ -66,7 +66,7 @@ export function BackupCard() {
         <div>
           <h3 className="text-base font-semibold">Backup do progresso</h3>
           <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-            Seu progresso fica salvo neste navegador (armazenamento local), sem conta e sem servidor. Ele <strong className="text-foreground">não é sincronizado entre dispositivos</strong>: para levar
+            Seu progresso fica salvo neste dispositivo (armazenamento local), sem conta e sem servidor. Ele <strong className="text-foreground">não é sincronizado entre dispositivos</strong>: para levar
             o progresso a outro aparelho, exporte o arquivo aqui e importe lá.
           </p>
         </div>
@@ -98,7 +98,7 @@ export function BackupCard() {
       <AlertDialog open={pending !== null} onOpenChange={(open) => !open && setPending(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Substituir o progresso deste navegador?</AlertDialogTitle>
+            <AlertDialogTitle>Substituir o progresso deste dispositivo?</AlertDialogTitle>
             <AlertDialogDescription>
               O arquivo{pending?.exportedAt ? ` exportado em ${new Date(pending.exportedAt).toLocaleDateString('pt-BR')}` : ''} tem {pending ? formatNumber(pending.xp) : 0} XP e {pending?.medals ?? 0} conquistas. O progresso atual tem {formatNumber(current.xp)} XP e {current.medals}{' '}
               conquistas e será substituído. Isso não pode ser desfeito; exporte antes se quiser manter uma cópia.
