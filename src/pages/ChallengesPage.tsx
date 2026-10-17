@@ -176,7 +176,7 @@ export function ChallengesPage() {
         ) : null}
       </p>
 
-      <div className="mt-4 grid gap-5 min-[1000px]:grid-cols-[300px_minmax(0,1fr)]">
+      <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-5 min-[1000px]:grid-cols-[300px_minmax(0,1fr)]">
         <aside aria-label="Lista de desafios" className="min-[1000px]:sticky min-[1000px]:top-4 min-[1000px]:self-start">
           <div className="min-[1000px]:hidden">
             <Label htmlFor="escolher-desafio" className="mb-1.5 text-xs">

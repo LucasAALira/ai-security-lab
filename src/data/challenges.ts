@@ -1,6 +1,10 @@
 import type { ChallengeSpec } from '@/lib/progress'
 import { defineChallenge } from './define-challenge'
+import { apiChallenges } from './challenge-packs/api'
+import { generalChallenges } from './challenge-packs/general'
+import { mobileChallenges } from './challenge-packs/mobile'
 import { supplyChallenges } from './challenge-packs/supply'
+import { webChallenges } from './challenge-packs/web'
 import type { CodeChallenge } from './types'
 
 /* Desafios de código do laboratório. O formato do gabarito (marcas ⟦v⟧, ⟦a⟧, ⟦x⟧, ⟦n=...⟧) está em `define-challenge.ts`;
@@ -562,7 +566,7 @@ const classic: CodeChallenge[] = [
   }),
 ]
 
-export const challenges: CodeChallenge[] = [...classic, ...supplyChallenges]
+export const challenges: CodeChallenge[] = [...classic, ...supplyChallenges, ...generalChallenges, ...webChallenges, ...apiChallenges, ...mobileChallenges]
 
 export const challengeById = (id: string) => challenges.find((c) => c.id === id)
 export const challengesOfModule = (module: number) => challenges.filter((c) => c.module === module)

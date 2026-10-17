@@ -157,6 +157,8 @@ export interface DossierContent {
   /** Simulação fictícia inspirada no caso. */
   exercise: { intro: string; evidence: Evidence[]; activities: ActivityContent[] }
   sources: { label: string; url: string; kind: 'primária' | 'secundária' }[]
+  /** Itens de frameworks que o caso ilustra (só correspondências reais, conferidas em `data/frameworks.ts`). */
+  frameworks?: FrameworkRef[]
   tags: string[]
   /** Aviso, quando o caso não envolve IA ou quando faltam dados. */
   notice?: string

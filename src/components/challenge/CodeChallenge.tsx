@@ -3,6 +3,7 @@ import { useId, useState } from 'react'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { refLabel, resolveRef } from '@/data/frameworks'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { RichText } from '@/components/rich/RichText'
@@ -129,7 +130,7 @@ export function CodeChallenge({ id, nextTo, nested = false }: Props) {
   const xpLeft = (run.identified ? 0 : CHALLENGE_XP.identify) + (run.fixed ? 0 : CHALLENGE_XP.fix)
 
   return (
-    <article aria-labelledby={`${uid}-title`} className="rounded-xl border border-border bg-card p-4 sm:p-6">
+    <article aria-labelledby={`${uid}-title`} className="rounded-xl border border-border bg-card p-4 [overflow-wrap:anywhere] sm:p-6">
       <header>
         <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold tracking-[0.16em] text-primary uppercase">
           <span>{m ? `Módulo ${m.number}` : areaTitleOf(challenge.submodule)}</span>
@@ -249,7 +250,7 @@ export function CodeChallenge({ id, nextTo, nested = false }: Props) {
       {phase === 'fix' || (phase === 'done' && fixResult) ? (
         <fieldset disabled={phase === 'done' || locked} className="m-0 mt-4 min-w-0 border-0 p-0">
           <legend className="mb-2 text-[13px] font-medium">Qual é a melhor correção?</legend>
-          <RadioGroup value={phase === 'done' ? String(challenge.fix) : fixChoice} onValueChange={(v) => { setFixChoice(v); setFixResult(null) }} className="gap-0">
+          <RadioGroup value={phase === 'done' ? String(challenge.fix) : fixChoice} onValueChange={(v) => { setFixChoice(v); setFixResult(null) }} className="grid-cols-[minmax(0,1fr)] gap-0">
             {challenge.fixes.map((f, k) => (
               <Label
                 key={f.text}
@@ -358,8 +359,8 @@ export function CodeChallenge({ id, nextTo, nested = false }: Props) {
 function Complement({ challenge, Sub }: { challenge: NonNullable<ReturnType<typeof challengeById>>; Sub: 'h3' | 'h5' }) {
   const others = challenge.fixes.map((f, k) => ({ ...f, k })).filter((f) => f.k !== challenge.fix)
   return (
-    <div className="mt-3 grid gap-3">
-      <div>
+    <div className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-3">
+      <div className="min-w-0">
         <Sub className="text-[13px] font-semibold">Por que as outras alternativas não bastam</Sub>
         <ul className="mt-1 grid gap-1.5 pl-0 text-xs leading-relaxed text-muted-foreground">
           {others.map((f) => (
@@ -371,7 +372,7 @@ function Complement({ challenge, Sub }: { challenge: NonNullable<ReturnType<type
       </div>
       {challenge.fixedCode ? <CodeBlock lines={challenge.fixedCode} language={challenge.language} title={`${challenge.file} (versão corrigida, exemplo)`} /> : null}
       {challenge.behaviors ? (
-        <div className="grid gap-2 sm:grid-cols-3">
+        <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-2 sm:grid-cols-[repeat(3,minmax(0,1fr))]">
           {(
             [
               ['Esperado', challenge.behaviors.expected],
@@ -384,15 +385,31 @@ function Complement({ challenge, Sub }: { challenge: NonNullable<ReturnType<type
         </div>
       ) : null}
       {challenge.validation ? (
-        <div>
+        <div className="min-w-0">
           <Sub className="text-[13px] font-semibold">Como validar a correção</Sub>
           <RichText className="mt-1 text-xs leading-relaxed text-muted-foreground" text={challenge.validation} />
         </div>
       ) : null}
       {challenge.frameworks?.length ? (
-        <p className="text-[11px] text-muted-foreground">
-          Referências: {challenge.frameworks.map((f) => `${f.framework} ${f.id}`).join(' · ')}
-        </p>
+        <div className="min-w-0 text-[11px] leading-relaxed text-muted-foreground">
+          <p>Referências (edição e título conferidos no registro do site):</p>
+          <ul className="mt-0.5 grid gap-0.5 pl-0">
+            {challenge.frameworks.map((f) => {
+              const r = resolveRef(f)
+              return (
+                <li key={`${f.framework}-${f.id}`} className="list-none">
+                  {r ? (
+                    <a href={r.url} target="_blank" rel="noreferrer noopener" className="underline underline-offset-2 hover:text-foreground">
+                      {refLabel(f)}
+                    </a>
+                  ) : (
+                    refLabel(f)
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        </div>
       ) : null}
     </div>
   )

@@ -558,9 +558,10 @@ describe('próximo objetivo', () => {
     s = run(s, real, NOW, { type: 'completeLab' }, ...[0, 1, 2, 3, 4, 5].map((index): Action => ({ type: 'solveCase', index })))
     for (const c of challengeSpecs) s = run(s, real, NOW, ...solve(c.id))
     expect(nextObjective(s, real)).toEqual({ kind: 'done' })
-    expect(summary(s, real).xp).toBeGreaterThan(2400) // o último nível exige concluir tudo
-    expect(levelFor(summary(s, real).xp).name).toBe('Lenda do AppSec')
-    expect(medals(s, real).filter((m) => m.unlocked && !m.secret)).toHaveLength(32) // faltam as de mecânicas, de dias reais e as das campanhas (nenhuma missão foi feita aqui)
+    expect(summary(s, real).xp).toBeGreaterThan(2400) // concluir a trilha clássica passa da Lenda do AppSec
+    expect(levelFor(summary(s, real).xp).number).toBeGreaterThanOrEqual(10)
+    expect(levelFor(summary(s, real).xp).name).not.toBe('Lenda da segurança completa') // o último nível exige também as campanhas e os dossiês
+    expect(medals(s, real).filter((m) => m.unlocked && !m.secret)).toHaveLength(35) // faltam as de mecânicas, de dias reais e as das campanhas (nenhuma missão foi feita aqui)
     expect(unlockedIds(s, real)).toEqual(expect.arrayContaining(['primeira-chama', 'explorador-de-falhas', 'guardiao-das-apis', 'codigo-protegido', 'sem-ajuda', 'mestre-do-modulo']))
   })
 })

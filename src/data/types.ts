@@ -83,7 +83,7 @@ export interface Materia {
 }
 
 /** Linguagens e formatos exibidos nos exemplos e desafios (rótulo e destaque simples; nada é executado). */
-export type CodeLanguage = 'ts' | 'py' | 'yaml' | 'json' | 'http' | 'kt' | 'swift' | 'xml' | 'plist' | 'sql' | 'diff' | 'text'
+export type CodeLanguage = 'ts' | 'py' | 'yaml' | 'json' | 'http' | 'kt' | 'swift' | 'xml' | 'plist' | 'sql' | 'diff' | 'dockerfile' | 'text'
 
 /** Referência a um item de um framework, com a edição confirmada em `data/frameworks.ts`. */
 export interface FrameworkRef {

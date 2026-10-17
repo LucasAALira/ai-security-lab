@@ -13,6 +13,7 @@ const languageNames: Record<CodeLanguage, string> = {
   plist: 'plist',
   sql: 'SQL',
   diff: 'diff',
+  dockerfile: 'Dockerfile',
   text: 'texto',
 }
 

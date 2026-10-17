@@ -264,9 +264,15 @@ describe('dados sintéticos', () => {
   })
 
   it('os desafios de código só usam endereços .example ou de documentação', () => {
+    // identificadores de espaço de nomes XML não são endereços contactados
+    const NAMESPACES = /^(schemas\.android\.com|www\.apple\.com)$/
     for (const c of challenges.filter((x) => x.submodule && x.tags.length > 0 && x.module === null)) {
-      for (const line of c.code) {
-        for (const match of line.matchAll(/https?:\/\/([^/\s"'`)]+)/g)) expect(match[1], `${c.id}: ${line}`).toMatch(/\.example(:\d+)?$/)
+      const lines = [...c.code, ...(c.fixedCode ?? []), ...Object.values(c.behaviors ?? {}).flat()]
+      for (const line of lines) {
+        for (const match of line.matchAll(/https?:\/\/([^/\s"'`)<>]+)/g)) {
+          if (NAMESPACES.test(match[1])) continue
+          expect(match[1], `${c.id}: ${line}`).toMatch(/\.example(:\d+)?$/)
+        }
         for (const match of line.matchAll(IP)) expect(RESERVED_IP.test(match[1]), `${c.id}: ${match[1]}`).toBe(true)
       }
     }
