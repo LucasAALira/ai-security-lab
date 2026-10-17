@@ -19,6 +19,7 @@ const MissionPage = lazy(() => import('@/pages/MissionPage').then((m) => ({ defa
 const DossiersPage = lazy(() => import('@/pages/DossiersPage').then((m) => ({ default: m.DossiersPage })))
 const DossierPage = lazy(() => import('@/pages/DossierPage').then((m) => ({ default: m.DossierPage })))
 const DossierSimulationPage = lazy(() => import('@/pages/DossierSimulationPage').then((m) => ({ default: m.DossierSimulationPage })))
+const CoveragePage = lazy(() => import('@/pages/CoveragePage').then((m) => ({ default: m.CoveragePage })))
 const ShopPage = lazy(() => import('@/pages/ShopPage').then((m) => ({ default: m.ShopPage })))
 
 /** Rotas em hash (`#/materias/...`): o site funciona aberto de qualquer pasta ou servidor estático. */
@@ -45,6 +46,7 @@ export function App() {
           <Route path="revisao" element={<ReviewPage />} />
           <Route path="loja" element={<ShopPage />} />
           <Route path="em-breve" element={<UpcomingPage />} />
+          <Route path="cobertura" element={<CoveragePage />} />
           <Route path="referencias" element={<ReferencesPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>

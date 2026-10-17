@@ -51,6 +51,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { label: 'Biblioteca de matérias', to: home('fontes') },
       { label: 'Referências', to: '/referencias' },
+      { label: 'Cobertura de frameworks', to: '/cobertura' },
     ],
   },
 ]

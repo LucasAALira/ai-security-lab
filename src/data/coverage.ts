@@ -33,12 +33,12 @@ function declared(): { ref: FrameworkRef; source: CoverageSource }[] {
   }
   for (const campaign of campaigns) {
     for (const m of campaign.missions) {
-      const source: CoverageSource = { kind: 'missão', id: m.id, title: m.title, area: null, href: `/campanhas/${campaign.id}/${m.id}` }
+      const source: CoverageSource = { kind: 'missão', id: m.id, title: m.title, area: campaign.area, href: `/campanhas/${campaign.id}/${m.id}` }
       for (const r of m.refs) if (r.framework) out.push({ ref: r.framework, source })
     }
   }
   for (const d of dossiers) {
-    const source: CoverageSource = { kind: 'dossiê', id: d.id, title: d.title, area: null, href: `/casos/${d.id}` }
+    const source: CoverageSource = { kind: 'dossiê', id: d.id, title: d.title, area: 'supply', href: `/casos/${d.id}` }
     for (const ref of d.frameworks ?? []) out.push({ ref, source })
   }
   return out
