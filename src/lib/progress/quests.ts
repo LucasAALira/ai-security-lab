@@ -1,21 +1,18 @@
+import { SWAP_LIMIT } from './relics'
 import { CHEST_COINS, QUESTS, QUESTS_PER_DAY, REVIEW, type QuestDef } from './catalog'
 import { countDone } from './core'
-import { CORE_MODULE_COUNT, LIMITS, QUESTIONS_PER_MODULE, READS_PER_MODULE, CASE_COUNT } from './constants'
+import { LIMITS, QUESTIONS_PER_MODULE, READS_PER_MODULE, CASE_COUNT } from './constants'
 import { dayKey } from './dates'
+import { isModuleUnlocked } from './trail'
 import { maxXp, summary } from './medals'
 import { seededRandom, shuffled } from './random'
-import { isModuleUnlocked } from './trail'
 import type { Daily, ProgressContext, StudyState } from './types'
 
 const zeroDaily = (day: string): Daily => ({ day, reads: 0, answers: 0, practices: 0, cases: 0, reviews: 0, xp: 0 })
 
 /** Uma missão só entra no dia se ainda for possível cumpri-la com o que falta estudar. */
 function feasible(q: QuestDef, s: StudyState, ctx: ProgressContext): boolean {
-  // Contam os módulos da trilha principal e os de acesso antecipado que já estão liberados.
-  const modules = Object.keys(s.modules)
-    .map(Number)
-    .filter((i) => i < CORE_MODULE_COUNT || isModuleUnlocked(s, ctx, i))
-    .map((i) => s.modules[i])
+  const modules = Object.entries(s.modules).filter(([id]) => isModuleUnlocked(s, ctx, Number(id))).map(([, m]) => m)
   const count = (f: (m: StudyState['modules'][number]) => number) => modules.reduce((n, m) => n + f(m), 0)
   switch (q.counter) {
     case 'reads':
@@ -50,7 +47,7 @@ export function pickQuests(s: StudyState, ctx: ProgressContext, day: string): st
 export function rollDay(s: StudyState, ctx: ProgressContext, now: Date): void {
   const today = dayKey(now)
   if (s.daily.day !== today) s.daily = zeroDaily(today)
-  if (s.quests.day !== today) s.quests = { day: today, ids: pickQuests(s, ctx, today), done: [], chest: false }
+  if (s.quests.day !== today) s.quests = { day: today, ids: pickQuests(s, ctx, today), done: [], chest: false, swaps: 0, retired: [] }
 }
 
 export interface QuestEvent {
@@ -118,4 +115,18 @@ export function dailyView(s: StudyState, ctx: ProgressContext, now: Date): Daily
     xpToday: view.daily.xp,
     reviewsToday: view.daily.reviews,
   }
+}
+
+/** Replacement must be achievable after the swap and have equivalent reward difficulty. */
+export function questReplacement(s: StudyState, ctx: ProgressContext, id: string): QuestDef | undefined {
+  const old = QUESTS.find(q => q.id === id)
+  if (!old || !s.quests.ids.includes(id) || s.quests.done.includes(id) || s.daily[old.counter] >= old.target || (s.quests.swaps ?? 0) >= SWAP_LIMIT) return undefined
+  return QUESTS.find(q => q.id !== id && q.coins === old.coins && !s.quests.ids.includes(q.id) && !(s.quests.retired ?? []).includes(q.id)
+    && s.daily[q.counter] < q.target && feasible(q, s, ctx)
+    && (!q.group || !s.quests.ids.filter(x => x !== id).some(x => QUESTS.find(p => p.id === x)?.group === q.group)))
+}
+export function canSwapQuest(state: StudyState, ctx: ProgressContext, id: string, now = new Date()): boolean {
+  const s = JSON.parse(JSON.stringify(state)) as StudyState
+  rollDay(s, ctx, now)
+  return Boolean(questReplacement(s, ctx, id))
 }

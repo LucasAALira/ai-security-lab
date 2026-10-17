@@ -156,8 +156,8 @@ describe('saneamento e armazenamento', () => {
     expect(s.modules[0].firstTry).toEqual([false, false])
     expect(s.modules[0].notes).toBe('abc')
     expect(summary(s, ctx).taskXp).toBe(55 + 30 + 40)
-    expect(s.shop).toEqual({ shields: 0, owned: [], unlocked: [], theme: 'dragon', rewards: [] })
-    expect(s.quests).toEqual({ day: '', ids: [], done: [], chest: false })
+    expect(s.shop).toEqual({ shields: 0, owned: [], unlocked: [], theme: 'dragon', rewards: [], relics: [], display: [], room: 'stone' })
+    expect(s.quests).toEqual({ day: '', ids: [], done: [], chest: false, swaps: 0, retired: [] })
   })
 
   it('estado legado v1 migra', () => {
@@ -232,8 +232,8 @@ describe('saneamento e armazenamento', () => {
 
   it('missões: ids desconhecidos, dia inválido e baú sem missões concluídas são descartados', () => {
     const q = cleanState({ quests: { day: '2026-10-16', ids: ['read-2', 'nada', 'read-2', 'xp-50'], done: ['xp-50', 'case-1'], chest: true } }).quests
-    expect(q).toEqual({ day: '2026-10-16', ids: ['read-2', 'xp-50'], done: ['xp-50'], chest: false })
-    expect(cleanState({ quests: { day: 'ontem', ids: ['read-2'], done: ['read-2'], chest: true } }).quests).toEqual({ day: '', ids: [], done: [], chest: false })
+    expect(q).toEqual({ day: '2026-10-16', ids: ['read-2', 'xp-50'], done: ['xp-50'], chest: false, swaps: 0, retired: [] })
+    expect(cleanState({ quests: { day: 'ontem', ids: ['read-2'], done: ['read-2'], chest: true } }).quests).toEqual({ day: '', ids: [], done: [], chest: false, swaps: 0, retired: [] })
   })
 
   it('serialização ida e volta preserva tudo', () => {

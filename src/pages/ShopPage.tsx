@@ -1,3 +1,4 @@
+import { RelicArt } from '@/components/gamification/RelicArt'
 import { Check, Coins, Gift, LockOpen, Palette, Shield, Trash2 } from 'lucide-react'
 import { useId, useState } from 'react'
 import { Link } from 'react-router'
@@ -72,6 +73,10 @@ export function ShopPage() {
         </div>
       </section>
 
+      <Link to="/sala-de-trofeus" className="relic-shop-banner mt-8 flex flex-wrap items-center gap-5 rounded-xl border border-tint-line p-6">
+        <RelicArt icon="locked-chest" />
+        <div className="min-w-0 flex-1"><p className="text-[10px] tracking-[.22em] text-primary">O ACERVO DO GUARDIÃO</p><h2 className="mt-2 font-serif text-2xl">Relíquias que contam sua história</h2><p className="mt-2 text-sm text-muted-foreground">Oito colecionáveis, três cenários e seis nichos para suas maiores conquistas.</p><span className="mt-3 inline-block text-sm text-primary">Explorar a sala de troféus →</span></div>
+      </Link>
       <section aria-labelledby="loja-escudo" className="mt-10">
         <h2 id="loja-escudo" className="mb-3 flex items-center gap-2 text-lg font-semibold">
           <Shield className="size-5 text-primary" aria-hidden="true" /> Escudo de sequência
@@ -94,7 +99,7 @@ export function ShopPage() {
 
       <section aria-labelledby="loja-temas" className="mt-10">
         <h2 id="loja-temas" className="mb-3 flex items-center gap-2 text-lg font-semibold">
-          <Palette className="size-5 text-primary" aria-hidden="true" /> Temas de cor
+          <Palette className="size-5 text-primary" aria-hidden="true" /> Temas visuais
         </h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {THEMES.map((t) => {
@@ -104,7 +109,7 @@ export function ShopPage() {
               <Card key={t.id} className="gap-3 p-4">
                 {/* A prévia usa o próprio tema, para mostrar as cores reais antes de comprar. */}
                 <div data-theme={t.id} className="rounded-md border border-border bg-background p-3 text-foreground" aria-hidden="true">
-                  <div className="mb-2 h-1.5 w-2/3 rounded-full bg-primary" />
+                  <div className="flex justify-center py-2"><RelicArt icon="crown" className="!h-16 !w-16" /></div><div className="mb-2 h-1.5 w-2/3 rounded-full bg-primary" />
                   <div className="mb-2 h-1.5 w-1/2 rounded-full bg-border" />
                   <span className="inline-block rounded-md bg-primary px-2.5 py-1 text-[11px] font-semibold text-primary-foreground">Botão</span>
                 </div>

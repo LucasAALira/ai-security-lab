@@ -39,6 +39,9 @@ export interface Shop {
   rewards: PersonalReward[]
   /** Módulos de acesso antecipado desbloqueados com moedas (ids). */
   unlocked: number[]
+  relics: string[]
+  display: string[]
+  room: string
 }
 
 /** Contadores do dia local atual; zeram na virada do dia. */
@@ -53,6 +56,8 @@ export interface Daily {
 }
 
 export interface Quests {
+  swaps?: number
+  retired?: string[]
   day: string
   ids: string[]
   done: string[]

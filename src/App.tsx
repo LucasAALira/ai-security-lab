@@ -27,6 +27,7 @@ const SubmodulePage = lazy(() => import('@/pages/SubmodulePage').then((m) => ({ 
 const ExplorePage = lazy(() => import('@/pages/ExplorePage').then((m) => ({ default: m.ExplorePage })))
 const ArchitectListPage = lazy(() => import('@/pages/ArchitectListPage').then((m) => ({ default: m.ArchitectListPage })))
 const ArchitectProjectPage = lazy(() => import('@/pages/ArchitectProjectPage').then((m) => ({ default: m.ArchitectProjectPage })))
+const TrophyRoomPage = lazy(() => import('@/pages/TrophyRoomPage').then(m => ({ default: m.TrophyRoomPage })))
 const ShopPage = lazy(() => import('@/pages/ShopPage').then((m) => ({ default: m.ShopPage })))
 
 /** Rotas em hash (`#/materias/...`): o site funciona aberto de qualquer pasta ou servidor estático. */
@@ -58,6 +59,7 @@ export function App() {
           <Route path="conquistas" element={<AchievementsPage />} />
           <Route path="materias/:slug" element={<MateriaPage />} />
           <Route path="revisao" element={<ReviewPage />} />
+          <Route path="sala-de-trofeus" element={<TrophyRoomPage />} />
           <Route path="loja" element={<ShopPage />} />
           <Route path="em-breve" element={<UpcomingPage />} />
           <Route path="cobertura" element={<CoveragePage />} />

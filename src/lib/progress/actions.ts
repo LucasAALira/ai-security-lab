@@ -1,3 +1,6 @@
+import { RELICS, ROOMS, DISPLAY_LIMIT, SWAP_PRICE, roomOwned } from './relics'
+import { questReplacement } from './quests'
+import { medals } from './medals'
 import { isThemeId, DEFAULT_THEME, moduleUnlockPrice, REVIEW, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
 import { findChallenge, gradeBoss, gradeFix, gradeLines, hintsUsed, isRunDone } from './challenges'
 import {
@@ -26,6 +29,12 @@ import { nothing, reject, type Outcome } from './outcome'
 import type { LevelInfo, Medal, ProgressContext, Quality, StudyState, Tier } from './types'
 
 export type Action =
+  | { type: 'buyRelic'; id: string }
+  | { type: 'buyRoom'; id: string }
+  | { type: 'setRoom'; id: string }
+  | { type: 'toggleDisplay'; id: string }
+  | { type: 'swapQuest'; id: string; day: string }
+
   | { type: 'read'; module: number; index: number }
   | { type: 'research'; module: number }
   | { type: 'practice'; module: number }
@@ -72,7 +81,7 @@ export type ProgressEvent =
   | { kind: 'streak'; current: number }
   | { kind: 'shield-used'; count: number }
   | { kind: 'coins'; amount: number }
-  | { kind: 'purchase'; item: 'shield' | 'theme' | 'module'; name: string }
+  | { kind: 'purchase'; item: 'shield' | 'theme' | 'module' | 'relic' | 'room' | 'swap'; name: string }
   | { kind: 'redeem'; title: string; price: number }
   | { kind: 'hint'; challenge: string }
   /** `identify`: falha identificada; `done`: tentativa concluída. `first`: foi a primeira vez (rende XP). */
@@ -155,6 +164,48 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
       return { changed: true, study: true, events, log: [['review', `revisao-${total}`]] }
     }
 
+    case 'buyRelic': {
+      const item = RELICS.find(r => r.id === action.id)
+      if (!item) return reject('invalid')
+      if (s.shop.relics.includes(item.id)) return reject('owned')
+      if (!spend(s, ctx, item.price)) return reject('coins')
+      s.shop.relics.push(item.id)
+      return { changed: true, events: [{ kind: 'purchase', item: 'relic', name: item.name }] }
+    }
+    case 'buyRoom': {
+      const room = ROOMS.find(r => r.id === action.id && r.price > 0)
+      if (!room) return reject('invalid')
+      if (roomOwned(room.id, s.shop.relics)) return reject('owned')
+      if (!spend(s, ctx, room.price)) return reject('coins')
+      s.shop.relics.push('room:' + room.id)
+      s.shop.room = room.id
+      return { changed: true, events: [{ kind: 'purchase', item: 'room', name: room.name }] }
+    }
+    case 'setRoom':
+      if (!ROOMS.some(r => r.id === action.id) || !roomOwned(action.id, s.shop.relics)) return reject('locked')
+      if (s.shop.room === action.id) return nothing
+      s.shop.room = action.id
+      return { changed: true }
+    case 'toggleDisplay': {
+      const has = s.shop.display.includes(action.id)
+      if (has) { s.shop.display = s.shop.display.filter(x => x !== action.id); return { changed: true } }
+      const valid = RELICS.some(r => r.id === action.id) && s.shop.relics.includes(action.id)
+        || medals(s, ctx).some(m => 'medal:' + m.id === action.id && m.unlocked)
+      if (!valid) return reject('locked')
+      if (s.shop.display.length >= DISPLAY_LIMIT) return reject('limit')
+      s.shop.display.push(action.id)
+      return { changed: true }
+    }
+    case 'swapQuest': {
+      if (action.day !== s.quests.day) return reject('invalid')
+      const replacement = questReplacement(s, ctx, action.id)
+      if (!replacement) return reject('limit')
+      if (!spend(s, ctx, SWAP_PRICE)) return reject('coins')
+      s.quests.ids = s.quests.ids.map(id => id === action.id ? replacement.id : id)
+      s.quests.retired = [...(s.quests.retired ?? []), action.id]
+      s.quests.swaps = (s.quests.swaps ?? 0) + 1
+      return { changed: true, events: [{ kind: 'purchase', item: 'swap', name: 'Nova missão: ' + replacement.title }] }
+    }
     case 'buyShield': {
       if (s.shop.shields >= SHIELD.max) return reject('limit')
       if (!spend(s, ctx, SHIELD.price)) return reject('coins')

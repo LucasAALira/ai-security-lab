@@ -6,6 +6,10 @@
 export const XP_PER_COIN = 5
 
 export const THEMES = [
+  { id: 'ashes', name: 'Fortaleza de Cinzas', description: 'Pedra escura, cobre e brasas vermelhas.', price: 60 },
+  { id: 'eclipse', name: 'Catedral do Eclipse', description: 'Obsidiana, ouro envelhecido e marfim.', price: 80 },
+  { id: 'abyss', name: 'Arquivo Abissal', description: 'Azul profundo, prata e luz fria.', price: 80 },
+  { id: 'sanctuary', name: 'Santuário Arcano', description: 'Ametista, bronze e inscrições antigas.', price: 100 },
   { id: 'dragon', name: 'Dragão', description: 'Coral sobre grafite — o tema original.', price: 0 },
   { id: 'cyber', name: 'Ciano', description: 'Ciano elétrico sobre azul-noite.', price: 40 },
   { id: 'arcane', name: 'Arcano', description: 'Violeta suave sobre roxo profundo.', price: 40 },
