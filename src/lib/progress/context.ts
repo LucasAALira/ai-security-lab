@@ -1,5 +1,5 @@
 import type { RemediationCase, StudyModule } from '@/data/types'
-import type { CampaignSpec, ChallengeSpec, CurriculumSpec, MissionSpec, ProgressContext } from './types'
+import type { ArchitectSpec, CampaignSpec, ChallengeSpec, CurriculumSpec, MissionSpec, ProgressContext } from './types'
 
 /** Deriva o contexto do progresso a partir dos módulos e cenários: trilhas = categorias, na ordem
  *  em que aparecem; pré-requisitos por módulo; porte de cada cenário. */
@@ -12,7 +12,7 @@ export function buildContext(
     missions?: readonly MissionSpec[]
     campaigns?: readonly CampaignSpec[]
     lessons?: readonly string[]
-    architect?: readonly string[]
+    architect?: readonly ArchitectSpec[]
     curriculum?: CurriculumSpec
   } = {},
 ): ProgressContext {

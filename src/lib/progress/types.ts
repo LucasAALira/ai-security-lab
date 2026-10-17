@@ -371,8 +371,8 @@ export interface ProgressContext {
   campaigns: CampaignSpec[]
   /** Ids dos submódulos que têm aula (marcar como lida rende XP uma vez). */
   lessons: string[]
-  /** Projetos de revisão de arquitetura (somente o necessário para o XP). */
-  architect: string[]
+  /** Projetos do modo Arquiteto: ameaças, controles e restrições (gabarito, sem os textos). */
+  architect: ArchitectSpec[]
   /** Hierarquia Área -> Módulo -> Submódulo com o que é obrigatório em cada um. */
   curriculum: CurriculumSpec
 }
@@ -389,6 +389,29 @@ export interface MissionSpec {
   /** Marcas que a tentativa precisa ter (e não ter) para valer como "limpa". */
   clean: { require: string[]; forbid: string[] }
   tags: string[]
+}
+
+/** Projeto do modo Arquiteto, como o motor o enxerga. Posições de ameaça são relativas ao componente. */
+export interface ArchitectSpec {
+  id: string
+  components: { id: string; threats: { real: boolean; critical: boolean }[] }[]
+  controls: {
+    /** Componentes em que o controle faz sentido. Aplicado em outro lugar, conta como mal posicionado. */
+    places: string[]
+    /** Ameaças que o controle trata, quando bem posicionado. */
+    mitigates: { component: string; threat: number }[]
+    /** Controle exigido em qualquer solução, independentemente do contexto. */
+    mandatory: boolean
+    cost: number
+    complexity: number
+  }[]
+  /** Teto de custo e de complexidade operacional da solução. */
+  budget: number
+  complexity: number
+  /** Critérios da rubrica de autoavaliação da ADR. */
+  rubric: number
+  /** Campos da ADR. */
+  fields: number
 }
 
 export interface CampaignSpec {

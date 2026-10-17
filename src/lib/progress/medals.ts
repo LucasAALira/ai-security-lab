@@ -102,7 +102,7 @@ export function computeStats(s: StudyState, ctx: ProgressContext): ProgressStats
     done: ch.byTag,
     campaignPassed: Object.fromEntries(ctx.campaigns.map((c) => [c.id, lr.byCampaign[c.id] === c.missions.length])),
     missionPassed: Object.fromEntries(ctx.missions.map((m) => [m.id, missionPassed(s, m)])),
-    architectDone: Object.fromEntries(ctx.architect.map((id) => [id, Boolean(s.architect[id]?.evaluated)])),
+    architectDone: Object.fromEntries(ctx.architect.map(({ id }) => [id, Boolean(s.architect[id]?.evaluated)])),
   }
 }
 
@@ -221,8 +221,8 @@ export function medalDefinitions(ctx: ProgressContext): MedalDef[] {
     { id: 'arquivo-completo', category: 'campanhas', name: 'Arquivo Completo', tier: 'ouro', icon: 'microscope', desc: 'Leia os quatro dossiês e conclua o exercício de cada um.', goal: (st) => [st.dossiersPassed, dossierTotal], when: dossierTotal > 0 },
     { id: 'autorizacao-entre-canais', category: 'campanhas', name: 'Mesma Regra em Todo Canal', tier: 'prata', icon: 'network', desc: 'Conclua a missão em que um controle existe no site e falta no aplicativo e na API, e corrija a autorização entre os canais.', goal: (st) => [Number(Boolean(st.missionPassed['controle-so-no-site'])), 1], when: ctx.missions.some((m) => m.id === 'controle-so-no-site') },
     { id: 'fronteiras-definidas', category: 'arquitetura', name: 'Fronteiras Definidas', tier: 'prata', icon: 'blocks', desc: 'Conclua uma revisão de arquitetura: ameaças identificadas e controles obrigatórios aplicados dentro das restrições.', goal: (st) => [st.architectEvaluated, 1], when: ctx.architect.length > 0 },
-    { id: 'revisao-web', category: 'arquitetura', name: 'Revisão Web Concluída', tier: 'prata', icon: 'globe', desc: 'Conclua a revisão de arquitetura da loja com site, API e pagamentos.', goal: (st) => [Number(Boolean(st.architectDone['loja-web-api'])), 1], when: ctx.architect.includes('loja-web-api') },
-    { id: 'revisao-mobile', category: 'arquitetura', name: 'Revisão Mobile Concluída', tier: 'prata', icon: 'smartphone', desc: 'Conclua a revisão de arquitetura do aplicativo e do backend.', goal: (st) => [Number(Boolean(st.architectDone['app-e-backend'])), 1], when: ctx.architect.includes('app-e-backend') },
+    { id: 'revisao-web', category: 'arquitetura', name: 'Revisão Web Concluída', tier: 'prata', icon: 'globe', desc: 'Conclua a revisão de arquitetura da loja com site, API e pagamentos.', goal: (st) => [Number(Boolean(st.architectDone['loja-web-api'])), 1], when: ctx.architect.some((a) => a.id === 'loja-web-api') },
+    { id: 'revisao-mobile', category: 'arquitetura', name: 'Revisão Mobile Concluída', tier: 'prata', icon: 'smartphone', desc: 'Conclua a revisão de arquitetura do aplicativo e do backend.', goal: (st) => [Number(Boolean(st.architectDone['app-e-backend'])), 1], when: ctx.architect.some((a) => a.id === 'app-e-backend') },
     { id: 'revisao-completa', category: 'arquitetura', name: 'Arquitetura Completa', tier: 'ouro', icon: 'server', desc: 'Conclua as três revisões de arquitetura, incluindo a plataforma com site, aplicativo, API e assistente de IA.', goal: (st) => [Object.values(st.architectDone).filter(Boolean).length, 3], when: ctx.architect.length >= 3 },
     { id: 'defensor-web', category: 'desafios', name: 'Defensor Web', tier: 'prata', icon: 'globe', desc: 'Conclua 10 desafios de segurança Web: identifique a falha e escolha a correção.', goal: (st) => [st.done.web ?? 0, 10], when: tagged('web') >= 10 },
     { id: 'defensor-de-apis', category: 'desafios', name: 'Defensor de APIs', tier: 'prata', icon: 'server', desc: 'Conclua 10 desafios de segurança de APIs: identifique a falha e escolha a correção.', goal: (st) => [st.done.api ?? 0, 10], when: tagged('api') >= 10 },

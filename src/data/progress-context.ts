@@ -1,4 +1,5 @@
 import { buildContext, type ProgressContext } from '@/lib/progress'
+import { architectSpecs } from './architect'
 import { bossAnswers } from './bosses'
 import { campaignSpecs, missionSpecs } from './campaigns'
 import { challengeSpecs } from './challenges'
@@ -13,5 +14,6 @@ export const progressContext: ProgressContext = buildContext(modules, remediatio
   missions: missionSpecs,
   campaigns: campaignSpecs,
   lessons: lessonIds,
+  architect: architectSpecs,
   curriculum: curriculumSpec,
 })

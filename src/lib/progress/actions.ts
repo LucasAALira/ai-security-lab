@@ -21,6 +21,7 @@ import { touchStreak, touchStudy } from './streak'
 import { emptyBoss, emptyChallenge } from './state'
 import { isChallengeOpen, isModuleUnlocked } from './trail'
 import { mutateMission, type MissionAction } from './mission-actions'
+import { mutateArchitect, type ArchitectAction } from './architect'
 import { nothing, reject, type Outcome } from './outcome'
 import type { LevelInfo, Medal, ProgressContext, Quality, StudyState, Tier } from './types'
 
@@ -60,6 +61,7 @@ export type Action =
   | { type: 'card'; id: string; known: boolean }
   | { type: 'setSound'; on: boolean }
   | MissionAction
+  | ArchitectAction
 
 export type ProgressEvent =
   | { kind: 'xp'; amount: number }
@@ -86,6 +88,9 @@ export type ProgressEvent =
   | { kind: 'mission'; mission: string; passed: boolean }
   | { kind: 'lesson'; sub: string }
   | { kind: 'dossier'; dossier: string }
+  /** Revisão de arquitetura avaliada: `first` quando aprovou pela primeira vez (rende XP). */
+  | { kind: 'architect'; project: string; passed: boolean; first: boolean }
+  | { kind: 'architect-adr'; project: string; first: boolean }
   | QuestEvent
   | ChestEvent
 
@@ -322,6 +327,13 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
     case 'dossierRead':
     case 'lessonRead':
       return mutateMission(s, action, ctx, now)
+
+    case 'architectFind':
+    case 'architectApply':
+    case 'architectEvaluate':
+    case 'architectAdr':
+    case 'architectReset':
+      return mutateArchitect(s, action, ctx, now)
 
     case 'setSound':
       if (typeof action.on !== 'boolean' || s.prefs.sound === action.on) return nothing

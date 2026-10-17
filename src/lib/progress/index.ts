@@ -1,5 +1,6 @@
 export * from './actions'
 export * from './activities'
+export * from './architect'
 export * from './backup'
 export * from './catalog'
 export * from './challenges'

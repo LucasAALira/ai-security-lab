@@ -124,7 +124,7 @@ export function learningXp(s: StudyState, ctx: ProgressContext): number {
     if (mission.kind === 'dossier' && s.dossiers[mission.id]) xp += DOSSIER_XP.read
   }
   xp += ctx.lessons.filter((id) => s.lessons[id]).length * LESSON_XP
-  for (const id of ctx.architect) {
+  for (const { id } of ctx.architect) {
     const a = s.architect[id]
     if (a?.evaluated) xp += ARCHITECT_XP.review
     if (a?.adrDone) xp += ARCHITECT_XP.adr
@@ -204,7 +204,7 @@ export function learningStats(s: StudyState, ctx: ProgressContext): LearningStat
     }
   }
   out.campaignsPassed = ctx.campaigns.filter((c) => campaignPassed(s, ctx, c.id)).length
-  for (const id of ctx.architect) {
+  for (const { id } of ctx.architect) {
     if (s.architect[id]?.evaluated) out.architectEvaluated += 1
     if (s.architect[id]?.adrDone) out.adrDone += 1
   }
