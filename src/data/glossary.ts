@@ -29,6 +29,11 @@ export const glossary: GlossaryTerm[] = [
   { id: 'idempotencia', term: 'Idempotência', definition: 'Propriedade de uma operação que, repetida várias vezes com o mesmo pedido, produz o mesmo efeito de uma execução só.' },
   { id: 'adr', term: 'ADR', definition: 'Registro de decisão arquitetural: documento curto com o contexto, as alternativas, a decisão, as consequências e como validar.' },
   { id: 'stride', term: 'STRIDE', definition: 'Roteiro de seis tipos de ameaça (falsificação, adulteração, repúdio, vazamento, negação de serviço, elevação de privilégio) para examinar cada componente e fluxo.' },
+  { id: 'agente', term: 'Agente', definition: 'Sistema em que o modelo decide quais ferramentas chamar, e em que ordem, para cumprir um objetivo, em vez de apenas devolver um texto.' },
+  { id: 'ferramenta-do-agente', term: 'Ferramenta do agente', definition: 'Função que o agente pode chamar: ler um arquivo, enviar um e-mail, executar um comando. Cada ferramenta é uma capacidade concedida, com o seu próprio risco.' },
+  { id: 'agencia-excessiva', term: 'Agência excessiva', definition: 'Quando o agente tem mais ferramentas, permissões ou autonomia do que a tarefa exige. Um erro do modelo ou uma injeção de prompt passa a causar um dano muito maior.' },
+  { id: 'aprovacao-humana', term: 'Aprovação humana', definition: 'Etapa em que uma pessoa confirma uma ação antes de ela acontecer. Só protege quando a pessoa vê o que de fato vai ocorrer, tem tempo de ler e pode recusar.' },
+  { id: 'delegacao', term: 'Delegação de identidade', definition: 'Agir em nome de um usuário com as permissões dele, em vez de usar uma conta própria e mais ampla. Assim o agente nunca pode mais do que a pessoa que o chamou.' },
 ]
 
 export const glossaryById = (id: string): GlossaryTerm | undefined => glossary.find((g) => g.id === id)

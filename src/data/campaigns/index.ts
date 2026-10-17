@@ -2,6 +2,7 @@ import type { ActivitySpec, CampaignSpec, MissionSpec } from '@/lib/progress'
 import type { ActivityContent, CampaignContent, DossierContent, MissionContent } from './types'
 import { campaign1 } from './c1'
 import { campaign2 } from './c2'
+import { campaign3 } from './c3'
 import { dossiers } from './dossiers'
 
 export * from './types'
@@ -11,7 +12,7 @@ export { dossiers } from './dossiers'
    texto e correção não têm como divergir: a opção que o texto diz ser a melhor é a que o motor
    corrige como a melhor. */
 
-export const campaigns: CampaignContent[] = [campaign1, campaign2]
+export const campaigns: CampaignContent[] = [campaign1, campaign2, campaign3]
 
 export const campaignById = (id: string): CampaignContent | undefined => campaigns.find((c) => c.id === id)
 export const missionContents: MissionContent[] = campaigns.flatMap((c) => c.missions)

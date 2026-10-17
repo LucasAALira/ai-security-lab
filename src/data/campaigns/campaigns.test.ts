@@ -259,7 +259,7 @@ describe('dados sintéticos', () => {
         for (const match of text.matchAll(HOST)) {
           const host = match[1].toLowerCase()
           if (/^\d+(\.\d+)+$/.test(host)) continue // versões e endereços IP são tratados acima
-          if (/\.(ts|js|json|yml|yaml|sh|md|txt|tgz|css|html|py|pdf)$/.test(host)) continue // nomes de arquivo
+          if (/\.(ts|js|json|yml|yaml|sh|md|txt|tgz|css|html|py|pdf|xlsx|csv|log|zip)$/.test(host)) continue // nomes de arquivo
           if (/^(package-lock|package|release|deploy|prep|preparar|deploy)\./.test(host)) continue
           expect(host, `${m.id}: ${host}`).toMatch(/\.example$/)
         }
