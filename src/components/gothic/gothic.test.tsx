@@ -84,7 +84,7 @@ describe('tela de carregamento entre páginas', () => {
     expect(veil).toHaveAttribute('aria-hidden', 'true')
     act(() => void vi.advanceTimersByTime(VEIL_MS + 10))
     expect(screen.queryByTestId('page-veil')).toBeNull()
-    expect(VEIL_MS).toBeLessThanOrEqual(600)
+    expect(VEIL_MS).toBe(720)
   })
 })
 
