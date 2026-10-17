@@ -25,9 +25,22 @@ export function eventsToText(events: readonly ProgressEvent[]): string[] {
       case 'boss':
         lines.push(e.first ? (e.flawless ? 'Chefe derrotado sem erros!' : 'Chefe derrotado!') : 'Chefe vencido de novo (sem XP extra)')
         break
+      case 'activity':
+        if (e.first) lines.push(`Atividade concluída (+XP)`)
+        break
+      case 'mission':
+        lines.push(e.passed ? 'Missão concluída com todas as atividades' : 'Missão encerrada: revise as atividades sem crédito')
+        break
+      case 'lesson':
+        lines.push('Aula lida')
+        break
+      case 'dossier':
+        lines.push('Dossiê lido')
+        break
       case 'hint':
       case 'challenge-miss':
       case 'boss-miss':
+      case 'activity-miss':
         break
       case 'track':
         lines.push(`Trilha ${e.name}: medalha ${tierNames[e.tier]}`)
@@ -80,6 +93,7 @@ export const rejectText: Record<RejectReason, string> = {
   fogueira: 'Acenda a fogueira do módulo, concluindo todas as tarefas, para enfrentar o chefe.',
   order: 'Faça a etapa anterior antes desta.',
   open: 'Este módulo já está liberado pelos pré-requisitos: não é preciso gastar moedas.',
+  missionLocked: 'Conclua a missão anterior (ou as campanhas exigidas) para abrir esta.',
 }
 
 /** Linha do histórico de estudo ("Aula 2 do módulo 03 concluída"). `ref` é o identificador salvo no evento. */
@@ -128,5 +142,24 @@ export function describeLogEvent(kind: LearningEventKind, ref: string, medalName
       return 'Laboratório de prompt concluído'
     case 'unlock':
       return mod ? `Módulo ${mod.number} (${mod.title}) desbloqueado com moedas` : 'Módulo desbloqueado com moedas'
+    case 'mission': {
+      const [id, activity, step] = ref.split(':')
+      if (!activity) return `Missão ${id} aberta`
+      if (activity === 'nova') return `Nova tentativa da missão ${id}`
+      if (step === 'dica') return `Dica usada em ${id}`
+      if (step === 'solucao') return `Solução revelada em ${id} (sem crédito)`
+      if (step === 'refazer') return `Decisão refeita em ${id}`
+      return `Atividade concluída em ${id}`
+    }
+    case 'mission-miss':
+      return `Resposta a revisar em ${ref.split(':')[0]} (sem perda de progresso)`
+    case 'mission-done':
+      return `Missão encerrada: ${ref}`
+    case 'lesson':
+      return `Aula lida: ${ref}`
+    case 'dossier':
+      return `Dossiê lido: ${ref}`
+    case 'architect':
+      return `Revisão de arquitetura: ${ref}`
   }
 }

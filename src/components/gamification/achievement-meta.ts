@@ -4,6 +4,8 @@ export const categoryNames: Record<AchievementCategory, string> = {
   aprendizado: 'Aprendizado',
   desafios: 'Desafios',
   trilha: 'Trilha',
+  campanhas: 'Campanhas',
+  arquitetura: 'Arquitetura',
   constancia: 'Constância',
   extras: 'Extras',
 }
@@ -26,6 +28,10 @@ export function whereToEarn(medal: Medal): { to: string; label: string } | null 
   switch (medal.category) {
     case 'desafios':
       return { to: '/?secao=cenarios', label: 'Ver os cenários' }
+    case 'campanhas':
+      return { to: '/campanhas', label: 'Abrir as campanhas' }
+    case 'arquitetura':
+      return { to: '/arquiteto', label: 'Abrir o modo Arquiteto' }
     case 'trilha':
     case 'aprendizado':
       return { to: '/trilha', label: 'Abrir a trilha' }

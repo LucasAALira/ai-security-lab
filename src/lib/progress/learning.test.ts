@@ -629,9 +629,9 @@ describe('migração e saneamento do estado', () => {
     coins: { bonus: 12, spent: 3 },
   }
 
-  it('um estado da versão 2 vira versão 3 sem perder nada', () => {
+  it('um estado da versão 2 vira versão 4 sem perder nada', () => {
     const s = cleanState(JSON.parse(JSON.stringify(v2)))
-    expect(s.version).toBe(3)
+    expect(s.version).toBe(4)
     expect(s.lab).toBe(true)
     expect(s.cases[0]).toBe(true)
     expect(s.modules[0]).toMatchObject({ reads: [true, true, true], research: true, practice: true, solved: [true, true], notes: 'minhas notas' })
@@ -682,7 +682,7 @@ describe('migração e saneamento do estado', () => {
   })
 
   it('ignora o armazenamento que não é objeto', () => {
-    for (const bad of [null, 42, 'x', [], undefined]) expect(cleanState(bad).version).toBe(3)
+    for (const bad of [null, 42, 'x', [], undefined]) expect(cleanState(bad).version).toBe(4)
   })
 
   it('o aluno recebe um identificador local na primeira ação', () => {
@@ -701,7 +701,7 @@ describe('exportação e importação do progresso', () => {
     const s = sample()
     const text = exportProgress(s, NOW, 'America/Sao_Paulo')
     const parsed = JSON.parse(text)
-    expect(parsed).toMatchObject({ app: BACKUP_APP, format: 'progress', version: 3, timezone: 'America/Sao_Paulo' })
+    expect(parsed).toMatchObject({ app: BACKUP_APP, format: 'progress', version: 4, timezone: 'America/Sao_Paulo' })
     const result = parseBackup(text)
     expect(result.ok).toBe(true)
     if (result.ok) {

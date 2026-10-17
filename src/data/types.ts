@@ -82,19 +82,49 @@ export interface Materia {
   bibliography: { heading: string; html: string }
 }
 
+/** Linguagens e formatos exibidos nos exemplos e desafios (rótulo e destaque simples; nada é executado). */
+export type CodeLanguage = 'ts' | 'py' | 'yaml' | 'json' | 'http' | 'kt' | 'swift' | 'xml' | 'plist' | 'sql' | 'diff' | 'text'
+
+/** Referência a um item de um framework, com a edição confirmada em `data/frameworks.ts`. */
+export interface FrameworkRef {
+  /** Chave em `frameworks` (por exemplo `owasp-top10`). */
+  framework: string
+  /** Identificador do item naquela edição (por exemplo `A01`, `API1`, `M9`, `MASVS-STORAGE-1`, `CWE-639`). */
+  id: string
+}
+
+/** Comportamento de uma API em três momentos, com requisições e respostas sintéticas (nada aponta para sistemas reais). */
+export interface ApiBehavior {
+  /** Como a API deve se comportar. */
+  expected: string[]
+  /** Como a versão vulnerável se comporta diante do mesmo pedido. */
+  vulnerable: string[]
+  /** Como a versão corrigida responde. */
+  fixed: string[]
+}
+
 /** Desafio de código: identificar a(s) linha(s) vulnerável(is) e escolher a correção. */
 export interface CodeChallenge {
   /** Identificador estável, usado no progresso salvo. Nunca renomeie um desafio já publicado. */
   id: string
-  /** Módulo a que o desafio pertence; ele só abre quando o módulo está liberado na trilha. */
-  module: number
+  /** Módulo clássico a que o desafio pertence; ele só abre quando o módulo está liberado na trilha. `null` nos desafios das áreas novas (sempre abertos). */
+  module: number | null
+  /** Submódulo do currículo (`data/curriculum/tree.ts`) em que o desafio aparece. */
+  submodule: string
   /** `vuln`: identificação de falhas em geral. `auth`: falhas de autorização. */
   kind: 'vuln' | 'auth'
+  level: Level
+  /** Áreas e plataformas (`web`, `api`, `mobile`, `android`, `ios`, `ia`, `supply`...), para filtros e conquistas. */
+  tags: string[]
   title: string
   /** Contexto curto: o que o código faz. */
   scenario: string
+  /** Objetivo de aprendizagem em uma frase. */
+  purpose?: string
+  /** Fronteira de confiança: de onde vem o dado não confiável e onde ele é usado. */
+  boundary?: string
   file: string
-  language: 'ts' | 'py'
+  language: CodeLanguage
   code: string[]
   /** Linhas (a partir de 0) que formam a falha principal: todas precisam ser marcadas. */
   vulnerable: number[]
@@ -107,8 +137,18 @@ export interface CodeChallenge {
   notes: Record<number, string>
   /** Explicação mostrada depois de identificar a falha. */
   why: string
+  /** Alternativas de correção. O feedback de cada alternativa errada explica por que ela não basta. */
   fixes: { text: string; feedback: string }[]
   fix: number
+  /** Código com a correção aplicada (mostrado depois da escolha certa). */
+  fixedCode?: string[]
+  /** Como verificar a correção: teste automatizado ou procedimento. */
+  validation?: string
+  /** Comportamento esperado, vulnerável e corrigido (desafios de API). */
+  behaviors?: ApiBehavior
+  frameworks?: FrameworkRef[]
+  /** Desafio integrador do submódulo ou módulo. */
+  integrator?: boolean
   /** Duas dicas para identificar e uma para escolher a correção, em ordem crescente de ajuda. */
   hints: [string, string, string]
 }

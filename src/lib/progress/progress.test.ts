@@ -26,7 +26,7 @@ import {
 import { touchStreak } from './streak'
 
 const ctx = progressContext
-const emptyCtx: ProgressContext = { tracks: [], prereqs: [], sizes: [], challenges: [], bosses: [] }
+const emptyCtx: ProgressContext = { tracks: [], prereqs: [], sizes: [], challenges: [], bosses: [], missions: [], campaigns: [], lessons: [], architect: [], curriculum: { areas: [], modules: [], subs: [] } }
 /** Meio-dia local, para a data não depender do fuso do computador de testes. */
 const D = (y: number, m: number, d: number) => new Date(y, m - 1, d, 12)
 const NOW = D(2026, 10, 16)
@@ -403,7 +403,8 @@ describe('níveis, faixas e melhorias', () => {
     expect(levelFor(1250).name).toBe('Guardião de IA')
     expect(levelFor(1500).number).toBe(8)
     expect(levelFor(1900).name).toBe('Sentinela da Brasa')
-    expect(levelFor(2400)).toMatchObject({ number: 10, name: 'Lenda do AppSec', next: null })
+    expect(levelFor(2400)).toMatchObject({ number: 10, name: 'Lenda do AppSec', next: 3200 })
+    expect(levelFor(6800)).toMatchObject({ name: 'Lenda da segurança completa', next: null })
   })
 
   it('medalha de módulo/trilha: 40% / 70% / 100%', () => {

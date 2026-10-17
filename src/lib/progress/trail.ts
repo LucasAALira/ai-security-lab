@@ -2,7 +2,7 @@ import { isEarlyAccess, moduleUnlockPrice } from './catalog'
 import { challengesOf, isBossWon, isChallengeDone } from './challenges'
 import { BOSS_QUESTIONS, BOSS_XP, CHALLENGE_XP, QUESTIONS_PER_MODULE, READS_PER_MODULE, XP } from './constants'
 import { countDone, isModuleComplete, moduleSteps } from './core'
-import type { ProgressContext, StudyState } from './types'
+import type { ChallengeSpec, ProgressContext, StudyState } from './types'
 
 /* Trilha de módulos: etapas, fogueiras (checkpoints de conclusão) e chefes. Tudo é derivado do
    progresso salvo, então não há um segundo estado para ficar fora de sincronia. */
@@ -49,6 +49,10 @@ export function isModuleUnlocked(s: StudyState, ctx: ProgressContext, module: nu
   if (!m) return false
   return missingPrereqs(s, ctx, module).length === 0 || s.shop.unlocked.includes(module) || moduleSteps(m) > 0
 }
+
+/** Desafios das áreas novas (`module: null`) estão sempre abertos; os dos módulos clássicos seguem a trilha. */
+export const isChallengeOpen = (s: StudyState, ctx: ProgressContext, spec: Pick<ChallengeSpec, 'module'>): boolean =>
+  spec.module === null || isModuleUnlocked(s, ctx, spec.module)
 
 /** O conteúdo (textos, quiz, cartões, desafios) abre? Módulos comuns sempre abrem para leitura;
  *  os de acesso antecipado só depois de liberados. */
@@ -128,7 +132,7 @@ export type Objective =
   | { kind: 'boss'; module: number; xp: number }
   | { kind: 'lab'; xp: number }
   | { kind: 'cases'; left: number; xp: number }
-  | { kind: 'challenge'; id: string; module: number; xp: number }
+  | { kind: 'challenge'; id: string; module: number | null; xp: number }
   | { kind: 'done' }
 
 /** O próximo objetivo real: terminar o módulo em andamento, enfrentar um chefe liberado pela
@@ -169,7 +173,7 @@ export function nextObjective(s: StudyState, ctx: ProgressContext): Objective {
   if (!s.lab) return { kind: 'lab', xp: XP.lab }
   const pending = s.cases.filter((c) => !c).length
   if (pending) return { kind: 'cases', left: pending, xp: XP.fix }
-  const challenge = ctx.challenges.find((c) => !isChallengeDone(s.challenges[c.id]) && isModuleUnlocked(s, ctx, c.module))
+  const challenge = ctx.challenges.find((c) => !isChallengeDone(s.challenges[c.id]) && isChallengeOpen(s, ctx, c))
   if (challenge) {
     const c = s.challenges[challenge.id]
     return { kind: 'challenge', id: challenge.id, module: challenge.module, xp: (c?.identified ? 0 : CHALLENGE_XP.identify) + (c?.fixed ? 0 : CHALLENGE_XP.fix) }

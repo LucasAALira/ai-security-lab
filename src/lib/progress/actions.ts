@@ -19,8 +19,10 @@ import { rollDay, settleQuests, type ChestEvent, type QuestEvent } from './quest
 import { canReview } from './review'
 import { touchStreak, touchStudy } from './streak'
 import { emptyBoss, emptyChallenge } from './state'
-import { isModuleUnlocked } from './trail'
-import type { LearningEventKind, LevelInfo, Medal, ProgressContext, StudyState, Tier } from './types'
+import { isChallengeOpen, isModuleUnlocked } from './trail'
+import { mutateMission, type MissionAction } from './mission-actions'
+import { nothing, reject, type Outcome } from './outcome'
+import type { LevelInfo, Medal, ProgressContext, Quality, StudyState, Tier } from './types'
 
 export type Action =
   | { type: 'read'; module: number; index: number }
@@ -57,6 +59,7 @@ export type Action =
   /** Marca um flashcard como sabido ou para revisar. Não rende XP. */
   | { type: 'card'; id: string; known: boolean }
   | { type: 'setSound'; on: boolean }
+  | MissionAction
 
 export type ProgressEvent =
   | { kind: 'xp'; amount: number }
@@ -77,11 +80,17 @@ export type ProgressEvent =
   | { kind: 'boss-miss'; module: number }
   /** Um módulo foi liberado porque os pré-requisitos ganharam fogueira. */
   | { kind: 'unlock'; module: number }
+  /** Atividade de missão: `first` quando creditou (e rendeu XP) pela primeira vez. */
+  | { kind: 'activity'; mission: string; activity: string; quality: Quality; first: boolean }
+  | { kind: 'activity-miss'; mission: string; activity: string }
+  | { kind: 'mission'; mission: string; passed: boolean }
+  | { kind: 'lesson'; sub: string }
+  | { kind: 'dossier'; dossier: string }
   | QuestEvent
   | ChestEvent
 
 /** Por que uma ação foi recusada (quando não foi só repetida). */
-export type RejectReason = 'invalid' | 'coins' | 'limit' | 'owned' | 'locked' | 'missing' | 'prereq' | 'fogueira' | 'order' | 'open'
+export type RejectReason = 'invalid' | 'coins' | 'limit' | 'owned' | 'locked' | 'missing' | 'prereq' | 'fogueira' | 'order' | 'open' | 'missionLocked'
 
 export interface ApplyResult {
   /** O mesmo objeto recebido quando nada mudou, para a interface não renderizar de novo. */
@@ -91,20 +100,8 @@ export interface ApplyResult {
   rejected?: RejectReason
 }
 
-interface Outcome {
-  changed: boolean
-  /** A ação conta como dia de estudo (sequência). */
-  study?: boolean
-  rejected?: RejectReason
-  events?: ProgressEvent[]
-  /** Entradas do histórico de aprendizagem: [tipo, referência]. */
-  log?: [LearningEventKind, string][]
-}
-
 const clone = <T,>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 const inRange = (n: unknown, size: number): n is number => Number.isInteger(n) && (n as number) >= 0 && (n as number) < size
-const nothing: Outcome = { changed: false }
-const reject = (rejected: RejectReason): Outcome => ({ changed: false, rejected })
 const bump = (n: number) => Math.min(LIMITS.small, n + 1)
 const challengeOf = (s: StudyState, id: string) => (s.challenges[id] ??= emptyChallenge())
 const bossOf = (s: StudyState, module: number) => (s.bosses[module] ??= emptyBoss())
@@ -221,7 +218,7 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
       const spec = findChallenge(ctx, action.challenge)
       if (!spec) return reject('missing')
       if (!Number.isInteger(action.index) || action.index < 0 || action.index >= HINTS_PER_CHALLENGE) return reject('invalid')
-      if (!isModuleUnlocked(s, ctx, spec.module)) return reject('prereq')
+      if (!isChallengeOpen(s, ctx, spec)) return reject('prereq')
       const c = challengeOf(s, spec.id)
       if (isRunDone(c) || c.run.hints[action.index]) return nothing
       c.run.hints[action.index] = true
@@ -232,7 +229,7 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
     case 'identify': {
       const spec = findChallenge(ctx, action.challenge)
       if (!spec) return reject('missing')
-      if (!isModuleUnlocked(s, ctx, spec.module)) return reject('prereq')
+      if (!isChallengeOpen(s, ctx, spec)) return reject('prereq')
       const grade = gradeLines(spec, action.lines)
       if (!grade.valid) return reject('invalid')
       const c = challengeOf(s, spec.id)
@@ -262,7 +259,7 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
     case 'fix': {
       const spec = findChallenge(ctx, action.challenge)
       if (!spec) return reject('missing')
-      if (!isModuleUnlocked(s, ctx, spec.module)) return reject('prereq')
+      if (!isChallengeOpen(s, ctx, spec)) return reject('prereq')
       const grade = gradeFix(spec, action.option)
       if (!grade.valid) return reject('invalid')
       const c = challengeOf(s, spec.id)
@@ -298,7 +295,7 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
     case 'retry': {
       const spec = findChallenge(ctx, action.challenge)
       if (!spec) return reject('missing')
-      if (!isModuleUnlocked(s, ctx, spec.module)) return reject('prereq')
+      if (!isChallengeOpen(s, ctx, spec)) return reject('prereq')
       const c = challengeOf(s, spec.id)
       if (!isRunDone(c)) return reject('order')
       c.run = emptyChallenge().run
@@ -307,12 +304,24 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
 
     case 'card': {
       if (typeof action.id !== 'string' || !FLASHCARD_ID.test(action.id) || typeof action.known !== 'boolean') return reject('invalid')
-      if (Number(action.id[1]) >= MODULE_COUNT) return reject('invalid')
+      if (/^m\d/.test(action.id) && Number(action.id[1]) >= MODULE_COUNT) return reject('invalid')
       if (s.cards[action.id] === action.known) return nothing
       if (!(action.id in s.cards) && Object.keys(s.cards).length >= LIMITS.cards) return reject('limit')
       s.cards[action.id] = action.known
       return { changed: true, study: true, log: [['card', action.id]] }
     }
+
+    case 'missionStart':
+    case 'missionGo':
+    case 'missionHint':
+    case 'missionAnswer':
+    case 'missionReveal':
+    case 'missionRewind':
+    case 'missionFinish':
+    case 'missionRestart':
+    case 'dossierRead':
+    case 'lessonRead':
+      return mutateMission(s, action, ctx, now)
 
     case 'setSound':
       if (typeof action.on !== 'boolean' || s.prefs.sound === action.on) return nothing

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { challengeById } from '@/data/challenges'
+import { areaTitleOf } from '@/data/curriculum'
 import { modules } from '@/data/modules'
 import { eventsToText, rejectText } from '@/lib/events-text'
 import { letters } from '@/lib/format'
@@ -45,15 +46,16 @@ export function CodeChallenge({ id, nextTo }: Props) {
 
   // O registro do desafio só existe depois da primeira ação; antes disso vale o estado vazio.
   const run = state.challenges[id] ?? emptyChallenge()
-  const trailModule = derived.trail[challenge?.module ?? 0]
+  const moduleIndex = challenge?.module ?? null
+  const trailModule = moduleIndex === null ? undefined : derived.trail[moduleIndex]
   if (!challenge || !spec) return <p className="text-sm text-muted-foreground">Desafio não encontrado.</p>
   // Desafios de um módulo de acesso antecipado só abrem depois da liberação: antes disso, a prévia do módulo.
-  if (!canOpenContent(state, ctx, challenge.module)) return <EarlyAccessPreview module={challenge.module} headingLevel={2} />
+  if (moduleIndex !== null && !canOpenContent(state, ctx, moduleIndex)) return <EarlyAccessPreview module={moduleIndex} headingLevel={2} />
 
-  const locked = !trailModule?.unlocked
+  const locked = moduleIndex !== null && !trailModule?.unlocked
   const phase: Phase = isRunDone(run) ? 'done' : run.run.identified ? 'fix' : 'identify'
   const used = hintsUsed(run)
-  const m = modules[challenge.module]
+  const m = moduleIndex === null ? undefined : modules[moduleIndex]
 
   const lineMarks = new Map<number, LineMark>()
   if (phase === 'identify') {
@@ -124,7 +126,7 @@ export function CodeChallenge({ id, nextTo }: Props) {
     <article aria-labelledby={`${uid}-title`} className="rounded-xl border border-border bg-card p-4 sm:p-6">
       <header>
         <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold tracking-[0.16em] text-primary uppercase">
-          <span>Módulo {m.number}</span>
+          <span>{m ? `Módulo ${m.number}` : areaTitleOf(challenge.submodule)}</span>
           <Badge variant="outline" className="rounded text-[10px] tracking-normal">
             {challenge.kind === 'auth' ? 'Autorização' : 'Identificar falha'}
           </Badge>
@@ -157,7 +159,7 @@ export function CodeChallenge({ id, nextTo }: Props) {
         <p className="mt-4 flex items-start gap-2 rounded-lg border border-dashed border-border p-3 text-[13px]">
           <Lock className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
           <span>
-            Este desafio faz parte do módulo {m.number}, ainda bloqueado na trilha. Acenda a fogueira dos pré-requisitos para pontuar.{' '}
+            Este desafio faz parte do módulo {m?.number}, ainda bloqueado na trilha. Acenda a fogueira dos pré-requisitos para pontuar.{' '}
             <Link to="/trilha" className="text-primary underline underline-offset-2">
               Ver a trilha
             </Link>

@@ -2,6 +2,7 @@ import { DEFAULT_THEME, isEarlyAccess, isThemeId, QUEST_IDS, QUESTS_PER_DAY, REW
 import {
   BOSS_QUESTIONS,
   CASE_COUNT,
+  MISSION_STAGES,
   EVENT_KINDS,
   FLASHCARD_ID,
   HINTS_PER_CHALLENGE,
@@ -14,7 +15,7 @@ import {
   STORAGE_KEY,
 } from './constants'
 import { isDayKey } from './dates'
-import type { BossState, ChallengeState, LearningEvent, ModuleState, PersonalReward, StudyState } from './types'
+import type { ActivityResult, Answer, ArchitectState, BossState, ChallengeState, DecisionEntry, LearningEvent, MissionRun, MissionState, ModuleState, PersonalReward, Quality, StudyState } from './types'
 
 type Loose = Record<string | number, unknown>
 
@@ -60,6 +61,119 @@ export function emptyChallenge(): ChallengeState {
 
 export function emptyBoss(): BossState {
   return { done: range(BOSS_QUESTIONS).map(() => false), mistakes: 0, wins: 0, won: '', flawless: false }
+}
+
+export function emptyRun(): MissionRun {
+  return { answers: {}, results: {}, misses: {}, hints: {} }
+}
+
+export function emptyMission(): MissionState {
+  return { started: '', stage: 0, step: 0, run: emptyRun(), attempts: 0, credited: [], done: '', clean: false, noHints: false, history: [] }
+}
+
+export function emptyArchitect(): ArchitectState {
+  return { started: '', found: {}, applied: {}, adr: [], self: [], evaluated: '', adrDone: '', runs: 0 }
+}
+
+const QUALITIES: readonly string[] = ['best', 'good', 'partial', 'poor']
+const RESULTS: readonly string[] = [...QUALITIES, 'revealed']
+const clampInt = (v: unknown, min: number, max: number): number =>
+  typeof v === 'number' && Number.isInteger(v) ? Math.min(max, Math.max(min, v)) : min
+
+function cleanAnswer(raw: unknown): Answer | null {
+  const v = at(raw, 'v')
+  if (!Array.isArray(v) || v.length > LIMITS.answerNumbers || !v.every((n) => typeof n === 'number' && Number.isInteger(n) && n >= 0 && n <= 999)) return null
+  const t = at(raw, 't')
+  const answer: Answer = { v: [...v] }
+  if (Array.isArray(t)) answer.t = t.slice(0, LIMITS.answerTexts).map((x) => text(x, LIMITS.answerText))
+  return answer
+}
+
+/** Mapa `id da atividade -> valor`, com ids válidos e no máximo `LIMITS.activities` entradas. */
+function cleanById<T>(raw: unknown, pick: (value: unknown) => T | null): Record<string, T> {
+  const out: Record<string, T> = {}
+  if (!isObject(raw)) return out
+  for (const [id, value] of Object.entries(raw).slice(0, LIMITS.activities)) {
+    if (!ID_PATTERN.test(id)) continue
+    const clean = pick(value)
+    if (clean !== null) out[id] = clean
+  }
+  return out
+}
+
+function cleanMission(raw: unknown): MissionState {
+  const done = day(at(raw, 'done'))
+  const started = day(at(raw, 'started')) || done
+  const run = at(raw, 'run')
+  const rawCredited = at(raw, 'credited')
+  const credited = Array.isArray(rawCredited)
+    ? [...new Set(rawCredited.filter((id): id is string => typeof id === 'string' && ID_PATTERN.test(id)))].slice(0, LIMITS.activities)
+    : []
+  const history: DecisionEntry[] = []
+  const rawHistory = at(raw, 'history')
+  if (Array.isArray(rawHistory)) {
+    for (const e of rawHistory.slice(-LIMITS.history)) {
+      const activity = at(e, 'activity')
+      const quality = at(e, 'quality')
+      const d = at(e, 'day')
+      if (typeof activity === 'string' && ID_PATTERN.test(activity) && typeof quality === 'string' && QUALITIES.includes(quality) && isDayKey(d)) {
+        history.push({ attempt: Math.max(1, small(at(e, 'attempt'))), activity, pick: clampInt(at(e, 'pick'), 0, 99), quality: quality as Quality, day: d })
+      }
+    }
+  }
+  return {
+    started,
+    stage: started ? clampInt(at(raw, 'stage'), 0, MISSION_STAGES - 1) : 0,
+    step: started ? clampInt(at(raw, 'step'), 0, LIMITS.activities - 1) : 0,
+    run: {
+      answers: cleanById(at(run, 'answers'), cleanAnswer),
+      results: cleanById(at(run, 'results'), (r) => (typeof r === 'string' && RESULTS.includes(r) ? (r as ActivityResult) : null)),
+      misses: cleanById(at(run, 'misses'), (n) => small(n)),
+      hints: cleanById(at(run, 'hints'), (n) => clampInt(n, 0, 3)),
+    },
+    attempts: started ? Math.max(1, small(at(raw, 'attempts'))) : 0,
+    credited,
+    done,
+    clean: Boolean(done) && at(raw, 'clean') === true,
+    noHints: Boolean(done) && at(raw, 'noHints') === true,
+    history,
+  }
+}
+
+function cleanIndexMap(raw: unknown, size: number): Record<string, number[]> {
+  const out: Record<string, number[]> = {}
+  if (!isObject(raw)) return out
+  for (const [id, list] of Object.entries(raw).slice(0, LIMITS.components)) {
+    if (!ID_PATTERN.test(id) || !Array.isArray(list)) continue
+    out[id] = [...new Set(list.filter((n): n is number => typeof n === 'number' && Number.isInteger(n) && n >= 0 && n < size))].sort((a, b) => a - b)
+  }
+  return out
+}
+
+function cleanArchitect(raw: unknown): ArchitectState {
+  const adr = at(raw, 'adr')
+  const self = at(raw, 'self')
+  const evaluated = day(at(raw, 'evaluated'))
+  return {
+    started: day(at(raw, 'started')) || evaluated,
+    found: cleanIndexMap(at(raw, 'found'), 100),
+    applied: cleanIndexMap(at(raw, 'applied'), 100),
+    adr: Array.isArray(adr) ? adr.slice(0, 7).map((x) => text(x, LIMITS.answerText)) : [],
+    self: Array.isArray(self) ? self.slice(0, 16).map((x) => (x === 1 ? 1 : 0)) : [],
+    evaluated,
+    adrDone: day(at(raw, 'adrDone')),
+    runs: small(at(raw, 'runs')),
+  }
+}
+
+/** Mapa `id -> dia`, com ids válidos, dias reais e um limite de entradas. */
+function cleanDays(raw: unknown, max: number): Record<string, string> {
+  const out: Record<string, string> = {}
+  if (!isObject(raw)) return out
+  for (const [id, d] of Object.entries(raw).slice(0, max)) {
+    if (ID_PATTERN.test(id) && isDayKey(d)) out[id] = d
+  }
+  return out
 }
 
 function cleanChallenge(raw: unknown): ChallengeState {
@@ -235,12 +349,30 @@ export function cleanState(raw: unknown): StudyState {
       if (FLASHCARD_ID.test(id) && typeof known === 'boolean') cards[id] = known
     }
   }
+  const missions: StudyState['missions'] = {}
+  const rawMissions = at(raw, 'missions')
+  if (isObject(rawMissions)) {
+    for (const [id, m] of Object.entries(rawMissions).slice(0, LIMITS.missions)) {
+      if (!ID_PATTERN.test(id) || !isObject(m)) continue
+      const clean = cleanMission(m)
+      if (clean.started || clean.credited.length) missions[id] = clean
+    }
+  }
+  const architect: StudyState['architect'] = {}
+  const rawArchitect = at(raw, 'architect')
+  if (isObject(rawArchitect)) {
+    for (const [id, a] of Object.entries(rawArchitect).slice(0, LIMITS.architect)) {
+      if (!ID_PATTERN.test(id) || !isObject(a)) continue
+      const clean = cleanArchitect(a)
+      if (clean.started) architect[id] = clean
+    }
+  }
   const rawLearner = at(raw, 'learner')
   const learnerId = at(rawLearner, 'id')
 
   const l = at(raw, 'lifetime')
   return {
-    version: 3,
+    version: 4,
     modules,
     lab: at(raw, 'lab') === true,
     migrated: at(raw, 'migrated') === true,
@@ -275,6 +407,10 @@ export function cleanState(raw: unknown): StudyState {
     events: cleanEvents(at(raw, 'events')),
     prefs: { sound: at(at(raw, 'prefs'), 'sound') === true },
     learner: { id: typeof learnerId === 'string' && ID_PATTERN.test(learnerId) ? learnerId : '', since: day(at(rawLearner, 'since')) },
+    missions,
+    dossiers: cleanDays(at(raw, 'dossiers'), LIMITS.dossiers),
+    architect,
+    lessons: cleanDays(at(raw, 'lessons'), LIMITS.lessons),
   }
 }
 
