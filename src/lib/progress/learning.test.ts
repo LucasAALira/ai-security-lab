@@ -410,7 +410,8 @@ describe('trilha, fogueiras e pré-requisitos', () => {
     expect(applyAction(s, { type: 'read', module: 1, index: 0 }, real, NOW)).toMatchObject({ changed: false, rejected: 'prereq' })
     expect(applyAction(s, { type: 'answer', module: 1, index: 0 }, real, NOW).rejected).toBe('prereq')
     expect(applyAction(s, { type: 'miss', module: 1, index: 0 }, real, NOW).rejected).toBe('prereq')
-    const blocked = challengeSpecs.find((c) => c.module === 1 && !spotIds.has(c.id))!
+    // um desafio de módulo bloqueado que nenhuma missão usa (os usados por missões abrem pela missão)
+    const blocked = challengeSpecs.find((c) => c.module !== null && c.module !== 8 && !isModuleUnlocked(s, real, c.module) && !spotIds.has(c.id))!
     expect(applyAction(s, { type: 'identify', challenge: blocked.id, lines: blocked.vulnerable }, real, NOW).rejected).toBe('prereq')
     expect(applyAction(s, { type: 'hint', challenge: blocked.id, index: 0 }, real, NOW).rejected).toBe('prereq')
   })
