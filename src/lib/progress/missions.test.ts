@@ -243,6 +243,8 @@ describe('fluxo da missão', () => {
     expect(act(s, { type: 'missionGo', mission: 'a1', stage: 3 }).rejected).toBe('order')
     s = run(s, { type: 'missionGo', mission: 'a1', stage: 2, step: 0 }, answer('a1', 'decidir', [0]))
     expect(s.missions.a1.stage).toBe(2)
+    expect(s.missions.a1.step).toBe(0) // responder não avança sozinho: a pessoa lê o retorno antes de seguir
+    s = run(s, { type: 'missionGo', mission: 'a1', stage: 2, step: 1 })
     expect(s.missions.a1.step).toBe(1)
     expect(act(s, { type: 'missionGo', mission: 'a1', stage: 2, step: 3 }).rejected).toBe('order') // não pula atividades
     expect(act(s, { type: 'missionGo', mission: 'a1', stage: 9 }).rejected).toBe('invalid')
@@ -393,7 +395,7 @@ describe('migração, saneamento e cópia de segurança', () => {
   })
 
   it('exportar e importar devolve o progresso das missões sem alterações', () => {
-    const s = run(emptyState(), { type: 'lessonRead', sub: 'sub-aula' }, { type: 'dossierRead', dossier: 'dossie-x' }, ...goodA1.slice(0, 3))
+    const s = run(emptyState(), { type: 'lessonRead', sub: 'sub-aula' }, { type: 'dossierRead', dossier: 'dossie-x' }, ...goodA1.slice(0, 3), { type: 'missionGo', mission: 'a1', stage: 2, step: 3 })
     const text = exportProgress(s, NOW, 'America/Sao_Paulo')
     const result = parseBackup(text)
     expect(result.ok).toBe(true)

@@ -155,8 +155,11 @@ describe('desafios de código', () => {
     expect(new Set(challenges.map((c) => c.id)).size).toBe(challenges.length)
     for (const c of challenges) {
       expect(ID_PATTERN.test(c.id)).toBe(true)
-      expect(c.module).toBeGreaterThanOrEqual(0)
-      expect(c.module).toBeLessThan(MODULE_COUNT)
+      // Desafios dos módulos clássicos apontam para um módulo existente; os das áreas novas (module: null) ficam sempre abertos.
+      if (c.module !== null) {
+        expect(c.module).toBeGreaterThanOrEqual(0)
+        expect(c.module).toBeLessThan(MODULE_COUNT)
+      }
       expect(['vuln', 'auth']).toContain(c.kind)
     }
   })

@@ -154,7 +154,6 @@ export function mutateMission(s: StudyState, action: MissionAction, ctx: Progres
         m.credited.push(spec.id)
         s.daily.practices = small(s.daily.practices)
       }
-      m.step = Math.min(index + 1, Math.max(0, total - 1))
       events.push({ kind: 'activity', mission: id, activity: spec.id, quality, first })
       return { changed: true, study: true, events, log: [['mission', `${id}:${spec.id}`]] }
     }
@@ -167,7 +166,6 @@ export function mutateMission(s: StudyState, action: MissionAction, ctx: Progres
       if (resultOf(s, target.spec, m) !== null) return nothing
       if (target.index > firstPending(s, mission, m) || (m.run.misses[target.spec.id] ?? 0) < REVEAL_AFTER) return reject('order')
       m.run.results[target.spec.id] = 'revealed'
-      m.step = Math.min(target.index + 1, Math.max(0, total - 1))
       return { changed: true, study: true, log: [['mission', `${id}:${target.spec.id}:solucao`]] }
     }
 

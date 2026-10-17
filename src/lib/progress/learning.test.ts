@@ -560,7 +560,7 @@ describe('próximo objetivo', () => {
     expect(nextObjective(s, real)).toEqual({ kind: 'done' })
     expect(summary(s, real).xp).toBeGreaterThan(2400) // o último nível exige concluir tudo
     expect(levelFor(summary(s, real).xp).name).toBe('Lenda do AppSec')
-    expect(medals(s, real).filter((m) => m.unlocked && !m.secret)).toHaveLength(31) // faltam só as de mecânicas e de dias reais
+    expect(medals(s, real).filter((m) => m.unlocked && !m.secret)).toHaveLength(32) // faltam as de mecânicas, de dias reais e as das campanhas (nenhuma missão foi feita aqui)
     expect(unlockedIds(s, real)).toEqual(expect.arrayContaining(['primeira-chama', 'explorador-de-falhas', 'guardiao-das-apis', 'codigo-protegido', 'sem-ajuda', 'mestre-do-modulo']))
   })
 })

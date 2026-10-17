@@ -13,6 +13,9 @@ const MateriaPage = lazy(() => import('@/pages/MateriaPage').then((m) => ({ defa
 const ReferencesPage = lazy(() => import('@/pages/ReferencesPage').then((m) => ({ default: m.ReferencesPage })))
 const ReviewPage = lazy(() => import('@/pages/ReviewPage').then((m) => ({ default: m.ReviewPage })))
 const UpcomingPage = lazy(() => import('@/pages/UpcomingPage').then((m) => ({ default: m.UpcomingPage })))
+const CampaignsPage = lazy(() => import('@/pages/CampaignsPage').then((m) => ({ default: m.CampaignsPage })))
+const CampaignPage = lazy(() => import('@/pages/CampaignPage').then((m) => ({ default: m.CampaignPage })))
+const MissionPage = lazy(() => import('@/pages/MissionPage').then((m) => ({ default: m.MissionPage })))
 const ShopPage = lazy(() => import('@/pages/ShopPage').then((m) => ({ default: m.ShopPage })))
 
 /** Rotas em hash (`#/materias/...`): o site funciona aberto de qualquer pasta ou servidor estático. */
@@ -28,6 +31,9 @@ export function App() {
             <Route path="modulo/:n" element={<LessonRoute />} />
           </Route>
           <Route path="desafios" element={<ChallengesPage />} />
+          <Route path="campanhas" element={<CampaignsPage />} />
+          <Route path="campanhas/:campaign" element={<CampaignPage />} />
+          <Route path="campanhas/:campaign/:mission" element={<MissionPage />} />
           <Route path="conquistas" element={<AchievementsPage />} />
           <Route path="materias/:slug" element={<MateriaPage />} />
           <Route path="revisao" element={<ReviewPage />} />

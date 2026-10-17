@@ -1,0 +1,28 @@
+/* Formato leve dos textos de estudo novos. Só quatro marcas, nenhuma delas gera HTML:
+     **negrito**   `código`   {{termo-do-glossário}}   {{termo|rótulo}}
+   Tudo o mais é texto puro (o React escapa). Isso substitui o uso de HTML nos conteúdos novos. */
+
+export type RichToken =
+  | { kind: 'text'; text: string }
+  | { kind: 'bold'; text: string }
+  | { kind: 'code'; text: string }
+  | { kind: 'term'; id: string; label: string }
+
+const TOKEN = /(\*\*[^*\n]+\*\*|`[^`\n]+`|\{\{[a-z0-9-]+(?:\|[^{}\n]+)?\}\})/g
+
+export function parseRich(text: string): RichToken[] {
+  const out: RichToken[] = []
+  for (const part of text.split(TOKEN)) {
+    if (!part) continue
+    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) out.push({ kind: 'bold', text: part.slice(2, -2) })
+    else if (part.startsWith('`') && part.endsWith('`') && part.length > 2) out.push({ kind: 'code', text: part.slice(1, -1) })
+    else if (part.startsWith('{{') && part.endsWith('}}')) {
+      const [id, label] = part.slice(2, -2).split('|')
+      out.push({ kind: 'term', id, label: label ?? id })
+    } else out.push({ kind: 'text', text: part })
+  }
+  return out
+}
+
+/** Termos do glossário citados no texto, sem repetição. */
+export const termsIn = (text: string): string[] => [...new Set(parseRich(text).flatMap((t) => (t.kind === 'term' ? [t.id] : [])))]

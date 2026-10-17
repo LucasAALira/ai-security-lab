@@ -26,6 +26,16 @@ import {
 import { touchStreak } from './streak'
 
 const ctx = progressContext
+/** O sistema clássico (9 módulos, desafios e chefes), sem as campanhas e a hierarquia: as contagens deste arquivo valem para ele. */
+const legacy: ProgressContext = {
+  ...ctx,
+  challenges: ctx.challenges.filter((c) => c.module !== null),
+  missions: [],
+  campaigns: [],
+  lessons: [],
+  architect: [],
+  curriculum: { areas: [], modules: [], subs: [] },
+}
 const emptyCtx: ProgressContext = { tracks: [], prereqs: [], sizes: [], challenges: [], bosses: [], missions: [], campaigns: [], lessons: [], architect: [], curriculum: { areas: [], modules: [], subs: [] } }
 /** Meio-dia local, para a data não depender do fuso do computador de testes. */
 const D = (y: number, m: number, d: number) => new Date(y, m - 1, d, 12)
@@ -92,17 +102,17 @@ describe('contexto', () => {
 
 describe('totais', () => {
   it('estado vazio: 0 XP, nenhuma medalha, catálogo de 44 (27 de estudo + 9 das mecânicas + 8 do aprendizado interativo)', () => {
-    const sm = summary(emptyState(), ctx)
+    const sm = summary(emptyState(), legacy)
     expect(sm.xp).toBe(0)
     expect(sm.medals).toBe(0)
     expect(sm.medalTotal).toBe(44)
-    expect(medals(emptyState(), ctx).filter((m) => !STUDY_ONLY.includes(m.id))).toHaveLength(27)
-    expect(medals(emptyState(), ctx).filter((m) => INTERACTIVE_MEDALS.includes(m.id))).toHaveLength(8)
+    expect(medals(emptyState(), legacy).filter((m) => !STUDY_ONLY.includes(m.id))).toHaveLength(27)
+    expect(medals(emptyState(), legacy).filter((m) => INTERACTIVE_MEDALS.includes(m.id))).toHaveLength(8)
   })
 
   it('máximos: 2190 XP em tarefas (1170 + 16 desafios x 30 + 9 chefes x 60) + 960 de bônus de medalhas', () => {
-    expect(maxXp(ctx)).toEqual({ tasks: 1170 + 16 * 30 + 9 * 60, medals: 750 + 210 })
-    const study = medals(emptyState(), ctx).filter((m) => !STUDY_ONLY.includes(m.id))
+    expect(maxXp(legacy)).toEqual({ tasks: 1170 + 16 * 30 + 9 * 60, medals: 750 + 210 })
+    const study = medals(emptyState(), legacy).filter((m) => !STUDY_ONLY.includes(m.id))
     expect(study.reduce((n, m) => n + m.xp, 0)).toBe(610)
   })
 
@@ -111,24 +121,24 @@ describe('totais', () => {
     for (let i = 0; i < 9; i++) s = run(s, NOW, ...finishModule(i))
     s = run(s, NOW, { type: 'completeLab' }, ...[0, 1, 2, 3, 4, 5].map((index): Action => ({ type: 'solveCase', index })))
 
-    const sm = summary(s, ctx)
+    const sm = summary(s, legacy)
     expect(sm.taskXp).toBe(1170) // o módulo de acesso antecipado também rende XP
     expect(sm.steps).toBe(63) // mas as tarefas "totais" são as da trilha principal
     expect(sm.complete).toBe(8)
-    const missing = medals(s, ctx).filter((m) => !m.unlocked && !MECHANIC_MEDALS.includes(m.id)).map((m) => m.id)
+    const missing = medals(s, legacy).filter((m) => !m.unlocked && !MECHANIC_MEDALS.includes(m.id)).map((m) => m.id)
     // Concluir os módulos não conquista o que depende de desafios de código, chefes ou dias reais de estudo.
     expect(missing).toEqual(['explorador-de-falhas', 'guardiao-das-apis', 'codigo-protegido', 'sem-ajuda', 'persistencia', 'mestre-do-modulo', 'alem-do-obvio', 'streak-3', 'streak-7'])
 
     for (let k = 0; k < 7; k++) touchStreak(s, D(2026, 11, 1 + k))
-    const all = summary(s, ctx)
-    const study = medals(s, ctx).filter((m) => m.unlocked && !STUDY_ONLY.includes(m.id))
+    const all = summary(s, legacy)
+    const study = medals(s, legacy).filter((m) => m.unlocked && !STUDY_ONLY.includes(m.id))
     expect(study).toHaveLength(27)
     expect(study.reduce((n, m) => n + m.xp, 0)).toBe(610)
     expect(all.taskXp).toBe(1170)
     expect(all.xp).toBeGreaterThanOrEqual(1170 + 610)
     expect(levelFor(all.xp).name).toBe('Mestre Dragão')
     expect(levelFor(all.xp).next).toBe(1900) // os desafios de código e os chefes abrem mais dois níveis
-    expect(improvements(s, ctx)).toEqual([])
+    expect(improvements(s, legacy)).toEqual([])
   })
 })
 

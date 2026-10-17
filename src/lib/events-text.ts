@@ -26,7 +26,7 @@ export function eventsToText(events: readonly ProgressEvent[]): string[] {
         lines.push(e.first ? (e.flawless ? 'Chefe derrotado sem erros!' : 'Chefe derrotado!') : 'Chefe vencido de novo (sem XP extra)')
         break
       case 'activity':
-        if (e.first) lines.push(`Atividade concluída (+XP)`)
+        if (e.first) lines.push('Atividade concluída')
         break
       case 'mission':
         lines.push(e.passed ? 'Missão concluída com todas as atividades' : 'Missão encerrada: revise as atividades sem crédito')

@@ -135,3 +135,43 @@ export function gradeActivity(spec: ActivitySpec, answer: unknown): Grade {
 export const isAnswerable = (spec: ActivitySpec): boolean => spec.kind !== 'spot'
 /** Decisões são confirmadas de uma vez (sem "tentar de novo"); as demais repetem até acertar. */
 export const isDecision = (spec: ActivitySpec): boolean => spec.kind === 'decide' || spec.kind === 'adr'
+
+/** Uma resposta que a correção aceita, para "mostrar a solução" (e para os testes provarem que todo
+ *  exercício tem solução). `null` nas decisões, que não têm uma única resposta, e no código. */
+export function solveActivity(spec: ActivitySpec): Answer | null {
+  switch (spec.kind) {
+    case 'multi':
+      return { v: [...spec.correct] }
+    case 'order': {
+      // Ordenação topológica pelas restrições de precedência.
+      const left = new Set(Array.from({ length: spec.items }, (_, i) => i))
+      const out: number[] = []
+      while (left.size) {
+        const next = [...left].find((n) => spec.before.every(([a, b]) => b !== n || !left.has(a)))
+        if (next === undefined) return null
+        out.push(next)
+        left.delete(next)
+      }
+      return { v: out }
+    }
+    case 'assign':
+      return { v: spec.accept.map((a) => a[0]) }
+    case 'budget': {
+      // Menor custo entre os conjuntos que satisfazem a correção (poucos controles: força bruta).
+      let best: number[] | null = null
+      let bestCost = Infinity
+      for (let mask = 1; mask < 1 << spec.costs.length; mask++) {
+        const pick = spec.costs.flatMap((_, i) => (mask & (1 << i) ? [i] : []))
+        const g = gradeActivity(spec, { v: pick })
+        const cost = pick.reduce((n, c) => n + spec.costs[c], 0)
+        if (g.ok && g.quality === 'best' && cost < bestCost) {
+          best = pick
+          bestCost = cost
+        }
+      }
+      return best ? { v: best } : null
+    }
+    default:
+      return null
+  }
+}
