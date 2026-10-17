@@ -1,7 +1,8 @@
-import { ArrowLeft, ArrowRight, BookOpenCheck, CheckCircle2, Circle, Clock, Compass, Lock, RotateCcw, ScrollText, Trophy } from 'lucide-react'
+import { ArrowLeft, ArrowRight, BookOpenCheck, CheckCircle2, Circle, Clock, Compass, RotateCcw, ScrollText, Trophy } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
+import { Seal } from '@/components/gothic/Seal'
 import { Button } from '@/components/ui/button'
 import { RichParagraphs, RichText } from '@/components/rich/RichText'
 import { campaignById, dossierById, missionContentById, type Evidence, type MissionContent } from '@/data/campaigns'
@@ -92,19 +93,16 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
   if (lock.locked) {
     const previous = lock.previous ? missionContentById(lock.previous) : undefined
     return (
-      <div className="rounded-xl border border-dashed border-border p-5 text-sm">
-        <h1 className="text-2xl leading-tight font-medium tracking-tight">{content.title}</h1>
-        <p className="mt-2 flex items-center gap-2 font-medium">
-          <Lock className="size-4" aria-hidden="true" /> Missão bloqueada
-        </p>
-        <p className="mt-2 text-muted-foreground">
+      <div className="gx-panel border p-5 text-sm">
+        <h1 className="text-2xl leading-tight">{content.title}</h1>
+        <Seal className="mt-4" title="Missão selada">
           {lock.reason === 'previous' ? (
             <>Conclua antes a missão anterior{previous ? <>: <Link to={`/campanhas/${previous.campaign}/${previous.id}`} className="text-primary underline underline-offset-2">{previous.title}</Link></> : ''}.</>
           ) : (
             <>Conclua antes {lock.campaigns.length === 1 ? 'a campanha' : 'as campanhas'}: {lock.campaigns.map((c) => campaignById(c)?.title ?? c).join(', ')}.</>
           )}
-        </p>
-        <Button asChild variant="outline" size="sm" className="mt-3">
+        </Seal>
+        <Button asChild variant="outline" size="sm" className="mt-4">
           <Link to="/campanhas">Ver as campanhas</Link>
         </Button>
       </div>

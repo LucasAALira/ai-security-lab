@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Circle, Coins, Lock, LockOpen } from 'lucide-react'
+import { ArrowRight, Check, Circle, Coins, LockOpen } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
@@ -12,6 +12,7 @@ import { formatNumber, plural } from '@/lib/format'
 import { isModuleComplete } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
+import { SealMark } from '@/components/gothic/Seal'
 
 interface Props {
   module: number
@@ -84,7 +85,7 @@ export function UnlockModuleCard({ module, className, onUnlocked }: Props) {
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="flex items-center gap-2 text-sm font-medium">
-            <Lock className="size-4 text-muted-foreground" aria-hidden="true" /> {title}
+            <SealMark className="!size-8" /> {title}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">Acesso antecipado: o conteúdo abre por um destes dois caminhos.</p>
         </div>

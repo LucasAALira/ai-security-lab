@@ -1,4 +1,4 @@
-import { ArrowRight, Bug, CheckCircle2, Lightbulb, Lock, RotateCcw, ShieldCheck, XCircle } from 'lucide-react'
+import { ArrowRight, Bug, CheckCircle2, Lightbulb, RotateCcw, ShieldCheck, XCircle } from 'lucide-react'
 import { useId, useState } from 'react'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
@@ -18,6 +18,7 @@ import { EarlyAccessPreview } from '@/components/shop/EarlyAccessPreview'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
 import { CodeLines, type LineMark } from './CodeLines'
+import { SealMark } from '@/components/gothic/Seal'
 
 type Phase = 'identify' | 'fix' | 'done'
 
@@ -184,7 +185,7 @@ export function CodeChallenge({ id, nextTo, nested = false }: Props) {
 
       {locked ? (
         <p className="mt-4 flex items-start gap-2 rounded-lg border border-dashed border-border p-3 text-[13px]">
-          <Lock className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+          <SealMark className="!size-8" />
           <span>
             Este desafio faz parte do módulo {m?.number}, ainda bloqueado na trilha. Acenda a fogueira dos pré-requisitos para pontuar.{' '}
             <Link to="/trilha" className="text-primary underline underline-offset-2">

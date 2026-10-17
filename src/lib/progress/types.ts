@@ -42,6 +42,8 @@ export interface Shop {
   relics: string[]
   display: string[]
   room: string
+  /** A pessoa escolheu um tema (na loja ou ao comprar). Sem isso, o tema padrão acompanha o padrão do site. */
+  themeChosen?: boolean
 }
 
 /** Contadores do dia local atual; zeram na virada do dia. */

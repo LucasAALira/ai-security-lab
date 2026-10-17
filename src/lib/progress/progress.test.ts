@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { progressContext } from '@/data/progress-context'
 import {
+  DEFAULT_THEME,
   activeStreak,
   applyAction,
   cleanState,
@@ -156,7 +157,7 @@ describe('saneamento e armazenamento', () => {
     expect(s.modules[0].firstTry).toEqual([false, false])
     expect(s.modules[0].notes).toBe('abc')
     expect(summary(s, ctx).taskXp).toBe(55 + 30 + 40)
-    expect(s.shop).toEqual({ shields: 0, owned: [], unlocked: [], theme: 'dragon', rewards: [], relics: [], display: [], room: 'stone' })
+    expect(s.shop).toEqual({ shields: 0, owned: [], unlocked: [], theme: DEFAULT_THEME, themeChosen: false, rewards: [], relics: [], display: [], room: 'stone' })
     expect(s.quests).toEqual({ day: '', ids: [], done: [], chest: false, swaps: 0, retired: [] })
   })
 
@@ -222,7 +223,7 @@ describe('saneamento e armazenamento', () => {
     })
     expect(s.shop.shields).toBe(2)
     expect(s.shop.owned).toEqual(['cyber'])
-    expect(s.shop.theme).toBe('dragon')
+    expect(s.shop.theme).toBe(DEFAULT_THEME)
     expect(s.shop.rewards).toEqual([
       { id: 'cafe', title: 'Café', price: 10, redeemed: 2 },
       { id: 'caro', title: 'Caro', price: 999, redeemed: 0 },

@@ -1,7 +1,8 @@
-import { motion } from 'motion/react'
 import { Suspense, useEffect, useRef, type RefObject } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import { NextObjective } from '@/components/gamification/NextObjective'
+import { LoadingSigil, PageVeil } from '@/components/gothic/PageVeil'
+import { TrialBanner } from '@/components/gothic/TrialBanner'
 import { useProgress } from '@/state/ProgressProvider'
 import { Footer } from './Footer'
 import { Sidebar } from './Sidebar'
@@ -44,12 +45,12 @@ export function Shell() {
   usePageChange(main)
   const page = pageOf(useLocation().pathname)
   // Estas páginas já mostram o objetivo em destaque no próprio conteúdo.
-  const showObjective = !['/conquistas', '/trilha', '/sala-de-trofeus'].includes(page)
+  const showObjective = !['/', '/conquistas', '/trilha', '/sala-de-trofeus'].includes(page)
   return (
     <div className="min-h-screen">
       <button
         type="button"
-        className="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+        className="gx-btn gx-btn-plate sr-only z-[80] px-4 py-2 focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
         onClick={() => main.current?.focus()}
       >
         Ir para o conteúdo
@@ -59,14 +60,16 @@ export function Shell() {
         <TopBar />
         {showObjective ? <NextObjective className="mx-auto max-w-[1400px]" /> : null}
         <main id="conteudo" ref={main} tabIndex={-1} className="mx-auto max-w-[1400px] pt-0 outline-none">
-          <motion.div key={page} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, ease: 'easeOut' }}>
-            <Suspense fallback={<p role="status" className="py-24 text-center text-sm text-muted-foreground">Carregando…</p>}>
+          <div key={page} className="gx-page-enter">
+            <Suspense fallback={<LoadingSigil />}>
               <Outlet />
             </Suspense>
-          </motion.div>
+          </div>
         </main>
         <Footer />
       </div>
+      <PageVeil page={page} />
+      <TrialBanner />
     </div>
   )
 }

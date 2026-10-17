@@ -124,7 +124,7 @@ export function ChallengesPage() {
   return (
     <div className="py-8 md:py-10">
       <SectionHeading
-        eyebrow="PRÁTICA"
+        eyebrow="Provações · prática"
         level="h1"
         title="Laboratório de código"
         description="Leia o código, marque as linhas vulneráveis e escolha a correção. Dicas ajudam, mas tiram o “Sem Ajuda” da tentativa. Dá para repetir qualquer desafio. Todo o código é fictício e inerte."

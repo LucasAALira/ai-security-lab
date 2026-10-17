@@ -20,7 +20,7 @@ export function XpBar({ className, compact = false }: { className?: string; comp
           <strong className="text-sm font-semibold">
             Nível {level.number} · {level.name}
           </strong>
-          <span data-testid="xp-total" className="font-mono text-xs text-muted-foreground">{formatNumber(summary.xp)} XP</span>
+          <span data-testid="xp-total" className="text-xs text-muted-foreground tabular-nums">{formatNumber(summary.xp)} XP</span>
         </div>
         <div
           role="progressbar"
@@ -29,9 +29,9 @@ export function XpBar({ className, compact = false }: { className?: string; comp
           aria-valuemax={100}
           aria-valuenow={pct}
           aria-valuetext={next ? `${pct}% do caminho até ${next.name}` : 'Nível máximo'}
-          className="mt-1.5 h-2 overflow-hidden rounded-full bg-border"
+          className="gx-gauge mt-1.5 h-2.5"
         >
-          <div className="h-full rounded-full bg-[linear-gradient(90deg,color-mix(in_oklab,var(--primary)_70%,#7a1b24),var(--primary))] transition-[width] duration-500 motion-reduce:transition-none" style={{ width: `${pct}%` }} />
+          <div className="gx-gauge-fill" style={{ transform: `translateX(-${100 - pct}%)` }} />
         </div>
         <p className="mt-1 text-[11px] text-muted-foreground">
           {next && level.next !== null ? `Faltam ${formatNumber(level.next - summary.xp)} XP para o título "${next.name}"` : 'Título máximo alcançado'}
