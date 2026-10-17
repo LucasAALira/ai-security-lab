@@ -24,8 +24,8 @@ export interface CurriculumModule {
   /** Módulos recomendados antes deste. Só recomendam: o conteúdo nunca fica bloqueado por eles. */
   recommends: string[]
   subs: string[]
-  /** Desafio integrador do módulo: um desafio ou missão que reúne os submódulos. `null` enquanto o módulo não tem conteúdo. */
-  integrator: { kind: 'challenge' | 'mission'; id: string } | null
+  /** Desafio integrador do módulo: missão, desafio ou projeto do modo Arquiteto que reúne os submódulos. `null` enquanto não há um. */
+  integrator: { kind: 'challenge' | 'mission' | 'architect'; id: string } | null
 }
 
 export interface LessonExample {

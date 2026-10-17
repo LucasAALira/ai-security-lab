@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import { architectById } from '../architect'
+import { campaigns } from '../campaigns'
 import { challenges } from '../challenges'
 import { modules as classicModules } from '../modules'
 import { progressContext } from '../progress-context'
 import { ID_PATTERN } from '@/lib/progress'
+import { integrators } from './integrators'
 import { areas, curriculumModuleList, curriculumSpec, lessonOf, lessons, subById, submodules } from '.'
 
 const unique = (list: string[]) => new Set(list).size === list.length
@@ -100,5 +103,30 @@ describe('hierarquia Área > Módulo > Submódulo', () => {
   it('o contexto do progresso usa a mesma hierarquia', () => {
     expect(progressContext.curriculum).toBe(curriculumSpec)
     expect(progressContext.curriculum.subs).toHaveLength(submodules.length)
+  })
+})
+
+describe('integradores', () => {
+  it('todo módulo com conteúdo tem um integrador que existe', () => {
+    for (const m of curriculumModuleList) {
+      const i = m.integrator
+      expect(i, m.id).not.toBeNull()
+      if (!i) continue
+      if (i.kind === 'challenge') expect(challenges.some((c) => c.id === i.id), `${m.id} → ${i.id}`).toBe(true)
+      if (i.kind === 'mission') expect(campaigns.some((c) => c.missions.some((x) => x.id === i.id)), `${m.id} → ${i.id}`).toBe(true)
+      if (i.kind === 'architect') expect(architectById(i.id), `${m.id} → ${i.id}`).toBeDefined()
+    }
+  })
+
+  it('não há integrador para módulo que não existe', () => {
+    const ids = new Set(curriculumModuleList.map((m) => m.id))
+    for (const id of Object.keys(integrators)) expect(ids.has(id), id).toBe(true)
+  })
+
+  it('cada módulo tem ao menos uma aula escrita ou um submódulo clássico', () => {
+    for (const m of curriculumModuleList) {
+      const subs = submodules.filter((s) => s.module === m.id)
+      expect(subs.some((s) => s.legacy !== null || lessonOf(s.id)), m.id).toBe(true)
+    }
   })
 })

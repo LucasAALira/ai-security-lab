@@ -6,18 +6,30 @@ import { SectionHeading } from '@/components/common/SectionHeading'
 import { platformLabel, rollupPercent, subStatus, subStatusText, type SubStatus } from '@/components/curriculum/curriculum-ui'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { architectById } from '@/data/architect'
 import { missionContentById } from '@/data/campaigns'
+import { challengeById } from '@/data/challenges'
 import { areaById, challengeIdsOf, lessonOf, moduleById, subsOfModule } from '@/data/curriculum'
 import { plural } from '@/lib/format'
-import { isModuleCurriculumDone, moduleRollup } from '@/lib/progress'
+import { isChallengeDone, isModuleCurriculumDone, missionDone, moduleRollup, type StudyState } from '@/lib/progress'
+import type { CurriculumModule } from '@/data/curriculum/types'
 import { useDocumentTitle } from '@/lib/use-document-title'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
 
-function integratorHref(i: { kind: 'challenge' | 'mission'; id: string }): string {
-  if (i.kind === 'challenge') return `/desafios?desafio=${i.id}`
+type IntegratorRef = NonNullable<CurriculumModule['integrator']>
+
+function integratorInfo(i: IntegratorRef): { href: string; kind: string; title: string } {
+  if (i.kind === 'challenge') return { href: `/desafios?desafio=${i.id}`, kind: 'Desafio de código', title: challengeById(i.id)?.title ?? i.id }
+  if (i.kind === 'architect') return { href: `/arquiteto/${i.id}`, kind: 'Projeto do modo Arquiteto', title: architectById(i.id)?.title ?? i.id }
   const m = missionContentById(i.id)
-  return m ? `/campanhas/${m.campaign}/${m.id}` : '/campanhas'
+  return { href: m ? `/campanhas/${m.campaign}/${m.id}` : '/campanhas', kind: 'Missão', title: m?.title ?? i.id }
+}
+
+function integratorDone(s: StudyState, i: IntegratorRef): boolean {
+  if (i.kind === 'challenge') return isChallengeDone(s.challenges[i.id])
+  if (i.kind === 'architect') return Boolean(s.architect[i.id]?.evaluated)
+  return missionDone(s, i.id)
 }
 
 const statusIcon: Record<SubStatus, typeof Circle> = { planned: CircleDashed, new: Circle, progress: Loader, done: CheckCircle2 }
@@ -37,6 +49,8 @@ export function ModulePage() {
   const done = isModuleCurriculumDone(state, ctx, mod.id)
   const before = mod.recommends.map((id) => moduleById(id)).filter((m) => m !== undefined)
   const missing = roll.subsAvailable - roll.subsComplete
+  const integrator = mod.integrator ? integratorInfo(mod.integrator) : null
+  const integratorIsDone = mod.integrator ? integratorDone(state, mod.integrator) : false
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-5 py-8 md:py-10">
@@ -128,15 +142,24 @@ export function ModulePage() {
           <h2 id="integrador-titulo" className="flex items-center gap-2 text-base font-medium">
             <Flag className="size-4 text-primary" aria-hidden="true" /> Desafio integrador
           </h2>
-          {mod.integrator ? (
-            <p className="mt-2 text-[13px]">
-              <Link
-                to={integratorHref(mod.integrator)}
-                className="inline-flex items-center gap-1.5 font-medium text-primary underline underline-offset-2"
-              >
-                Abrir o integrador <ArrowRight className="size-4" aria-hidden="true" />
-              </Link>
-            </p>
+          {integrator ? (
+            <>
+              <p className="mt-1 text-xs text-muted-foreground">Um cenário que junta o que os submódulos ensinam. É a prática recomendada para fechar o módulo; a porcentagem do módulo continua medida pelos submódulos.</p>
+              <p className="mt-2 text-[13px]">
+                <span className="text-muted-foreground">{integrator.kind}: </span>
+                <span className="font-medium">{integrator.title}</span>
+                {integratorIsDone ? (
+                  <Badge variant="outline" className="ml-2 rounded border-primary text-primary">
+                    <CheckCircle2 aria-hidden="true" /> Concluído
+                  </Badge>
+                ) : null}
+              </p>
+              <p className="mt-2 text-[13px]">
+                <Link to={integrator.href} className="inline-flex items-center gap-1.5 font-medium text-primary underline underline-offset-2">
+                  {integratorIsDone ? 'Rever o integrador' : 'Abrir o integrador'} <ArrowRight className="size-4" aria-hidden="true" />
+                </Link>
+              </p>
+            </>
           ) : (
             <p className="mt-2 text-[13px] text-muted-foreground">Planejado. Ainda não há um desafio que reúna os submódulos deste módulo, então ele não conta como etapa concluída.</p>
           )}

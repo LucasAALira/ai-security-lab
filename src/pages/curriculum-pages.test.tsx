@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router'
 import { describe, expect, it } from 'vitest'
@@ -33,13 +33,12 @@ function open(path: string, store = createProgressStore({ storage: null, ctx: pr
 }
 
 describe('áreas', () => {
-  it('mostra as sete áreas, e uma área sem conteúdo não finge progresso', () => {
+  it('mostra as sete áreas, cada uma com progresso medido pelo conteúdo que existe', () => {
     open('/areas')
     expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(7)
     const arq = screen.getByRole('link', { name: 'Arquitetura de Segurança' }).closest('li')!
-    expect(within(arq).getByText(/Nenhuma atividade obrigatória ainda/)).toBeInTheDocument()
-    expect(within(arq).queryByRole('progressbar')).toBeNull()
-    expect(within(arq).getByText(/0 de 24 submódulos com conteúdo, 24 planejados/)).toBeInTheDocument()
+    expect(within(arq).getByRole('progressbar')).toBeInTheDocument()
+    expect(within(arq).getByText(/24 de 24 submódulos com conteúdo/)).toBeInTheDocument()
   })
 
   it('a página inicial traz os cards das áreas', () => {
@@ -54,8 +53,6 @@ describe('áreas', () => {
     const nav = screen.getByRole('navigation', { name: 'Você está em' })
     expect(within(nav).getByRole('link', { name: 'Áreas' })).toHaveAttribute('href', '/areas')
     expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(6)
-    // módulo sem nenhum submódulo com conteúdo aparece como planejado
-    expect(screen.getAllByText(/Planejado: nenhum submódulo tem conteúdo ainda/).length).toBeGreaterThan(0)
   })
 
   it('área inexistente mostra erro com caminho de volta', () => {
@@ -71,7 +68,17 @@ describe('módulo', () => {
     expect(screen.getByRole('heading', { level: 1, name: /Autenticação/ })).toBeInTheDocument()
     expect(screen.getAllByRole('listitem').length).toBeGreaterThan(5)
     expect(screen.getByText(/Nada aqui fica bloqueado/)).toBeInTheDocument()
-    expect(screen.getByText(/Planejado\. Ainda não há um desafio que reúna/)).toBeInTheDocument()
+  })
+
+  it('o integrador do módulo leva à missão, ao desafio ou ao projeto do Arquiteto', () => {
+    open('/areas/web/web-autenticacao')
+    expect(screen.getByRole('link', { name: /Abrir o integrador/ })).toHaveAttribute('href', '/campanhas/checkout-outro-cliente/link-de-recuperacao')
+    cleanup()
+    open('/areas/arq/arq-oficina')
+    expect(screen.getByRole('link', { name: /Abrir o integrador/ })).toHaveAttribute('href', '/arquiteto/loja-web-api')
+    cleanup()
+    open('/areas/api/api-integracoes')
+    expect(screen.getByRole('link', { name: /Abrir o integrador/ })).toHaveAttribute('href', '/desafios?desafio=webhook-destino-livre')
   })
 
   it('módulo de outra área (endereço trocado) não abre', () => {
@@ -79,25 +86,12 @@ describe('módulo', () => {
     expect(screen.getByRole('heading', { name: 'Módulo não encontrado' })).toBeInTheDocument()
   })
 
-  it('módulo sem submódulo com conteúdo não aparece como concluído', () => {
-    open('/areas/arq/arq-modelagem')
-    expect(screen.getByText(/Sem conteúdo ainda: o checkpoint abre/)).toBeInTheDocument()
-    expect(screen.queryByText(/Concluído: todos os submódulos/)).toBeNull()
-  })
 })
 
 describe('submódulo', () => {
-  const planned = submodules.find((s) => s.legacy === null && !lessons[s.id] && challengeIdsOf(s.id).length === 0)!
+  const sample = submodules.find((s) => s.legacy === null && lessons[s.id])!
   const withChallenges = submodules.find((s) => s.legacy === null && !lessons[s.id] && challengeIdsOf(s.id).length > 0)
   const legacy = submodules.find((s) => s.legacy !== null)!
-
-  it('submódulo planejado diz que não conta no progresso e não oferece "marcar como lida"', () => {
-    open(`/areas/${planned.area}/${planned.module}/${planned.id}`)
-    expect(screen.getByRole('heading', { level: 1, name: planned.title })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Planejado' })).toBeInTheDocument()
-    expect(screen.getByText(/não conta em nenhuma porcentagem/)).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /Marcar a aula/ })).toBeNull()
-  })
 
   it('submódulo com desafios lista as atividades e liga para o laboratório', () => {
     if (!withChallenges) return
@@ -115,7 +109,7 @@ describe('submódulo', () => {
   })
 
   it('endereço com submódulo de outro módulo não abre', () => {
-    open(`/areas/${planned.area}/outro-modulo/${planned.id}`)
+    open(`/areas/${sample.area}/outro-modulo/${sample.id}`)
     expect(screen.getByRole('heading', { name: 'Submódulo não encontrado' })).toBeInTheDocument()
   })
 
