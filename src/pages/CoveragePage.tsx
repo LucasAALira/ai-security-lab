@@ -17,6 +17,7 @@ const kinds: { id: SourceKind; label: string }[] = [
   { id: 'desafio', label: 'Desafios' },
   { id: 'missão', label: 'Missões' },
   { id: 'dossiê', label: 'Casos reais' },
+  { id: 'arquiteto', label: 'Modo Arquiteto' },
 ]
 
 /** Matriz de cobertura: onde cada item de cada framework registrado é trabalhado pelo conteúdo do site. */

@@ -1,3 +1,4 @@
+import { architectProjects } from './architect'
 import { campaigns, dossiers } from './campaigns'
 import { challenges } from './challenges'
 import { areaIdOfSub } from './curriculum'
@@ -6,9 +7,9 @@ import type { FrameworkRef } from './types'
 
 /* Matriz de cobertura: para cada item de cada framework registrado, onde o conteúdo do site o trabalha.
    Só entram correspondências declaradas no próprio conteúdo (`frameworks` do desafio, `framework` das referências
-   da missão, `frameworks` do dossiê). Nenhuma correspondência é inferida por nome ou por palavra-chave. */
+   da missão, `frameworks` do dossiê, `refs` das ameaças e do projeto do modo Arquiteto). Nenhuma correspondência é inferida por nome ou por palavra-chave. */
 
-export type SourceKind = 'desafio' | 'missão' | 'dossiê'
+export type SourceKind = 'desafio' | 'missão' | 'dossiê' | 'arquiteto'
 
 export interface CoverageSource {
   kind: SourceKind
@@ -40,6 +41,17 @@ function declared(): { ref: FrameworkRef; source: CoverageSource }[] {
   for (const d of dossiers) {
     const source: CoverageSource = { kind: 'dossiê', id: d.id, title: d.title, area: 'supply', href: `/casos/${d.id}` }
     for (const ref of d.frameworks ?? []) out.push({ ref, source })
+  }
+  for (const p of architectProjects) {
+    const source: CoverageSource = { kind: 'arquiteto', id: p.id, title: p.title, area: 'arq', href: `/arquiteto/${p.id}` }
+    const refs = [...p.components.flatMap((c) => c.threats.flatMap((t) => t.refs ?? [])), ...p.refs.flatMap((r) => (r.framework ? [r.framework] : []))]
+    const seen = new Set<string>()
+    for (const ref of refs) {
+      const key = `${ref.framework}:${ref.id}`
+      if (seen.has(key)) continue
+      seen.add(key)
+      out.push({ ref, source })
+    }
   }
   return out
 }

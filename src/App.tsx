@@ -25,6 +25,8 @@ const AreaPage = lazy(() => import('@/pages/AreaPage').then((m) => ({ default: m
 const ModulePage = lazy(() => import('@/pages/ModulePage').then((m) => ({ default: m.ModulePage })))
 const SubmodulePage = lazy(() => import('@/pages/SubmodulePage').then((m) => ({ default: m.SubmodulePage })))
 const ExplorePage = lazy(() => import('@/pages/ExplorePage').then((m) => ({ default: m.ExplorePage })))
+const ArchitectListPage = lazy(() => import('@/pages/ArchitectListPage').then((m) => ({ default: m.ArchitectListPage })))
+const ArchitectProjectPage = lazy(() => import('@/pages/ArchitectProjectPage').then((m) => ({ default: m.ArchitectProjectPage })))
 const ShopPage = lazy(() => import('@/pages/ShopPage').then((m) => ({ default: m.ShopPage })))
 
 /** Rotas em hash (`#/materias/...`): o site funciona aberto de qualquer pasta ou servidor estático. */
@@ -48,6 +50,8 @@ export function App() {
           <Route path="campanhas" element={<CampaignsPage />} />
           <Route path="campanhas/:campaign" element={<CampaignPage />} />
           <Route path="campanhas/:campaign/:mission" element={<MissionPage />} />
+          <Route path="arquiteto" element={<ArchitectListPage />} />
+          <Route path="arquiteto/:project" element={<ArchitectProjectPage />} />
           <Route path="casos" element={<DossiersPage />} />
           <Route path="casos/:dossier" element={<DossierPage />} />
           <Route path="casos/:dossier/simulacao" element={<DossierSimulationPage />} />

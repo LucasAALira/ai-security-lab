@@ -1,3 +1,4 @@
+import { architectProjects } from './architect'
 import { campaigns, dossiers } from './campaigns'
 import { challenges } from './challenges'
 import { areas, areaById, curriculumModuleList, lessons, submodules, subById, moduleById } from './curriculum'
@@ -7,9 +8,9 @@ import type { Level } from './types'
 /* Índice da busca global. Tudo é montado a partir dos próprios dados do site, em memória e sem rede:
    a busca funciona offline e não depende de nenhum serviço. */
 
-export type SearchKind = 'área' | 'módulo' | 'submódulo' | 'aula' | 'desafio' | 'missão' | 'caso real'
+export type SearchKind = 'área' | 'módulo' | 'submódulo' | 'aula' | 'desafio' | 'missão' | 'caso real' | 'arquitetura'
 
-export const searchKinds: SearchKind[] = ['área', 'módulo', 'submódulo', 'aula', 'desafio', 'missão', 'caso real']
+export const searchKinds: SearchKind[] = ['área', 'módulo', 'submódulo', 'aula', 'desafio', 'missão', 'caso real', 'arquitetura']
 
 export interface SearchEntry {
   kind: SearchKind
@@ -73,6 +74,10 @@ function build(): SearchEntry[] {
   }
   for (const d of dossiers) {
     out.push(entry({ kind: 'caso real', id: d.id, title: d.title, where: 'Casos reais', area: 'supply', level: null, platforms: platformsOfTags(d.tags), href: `/casos/${d.id}` }, `${d.subtitle} ${d.tags.join(' ')} ${d.summary.join(' ')}`))
+  }
+  for (const p of architectProjects) {
+    const text = `${p.summary} ${p.context.join(' ')} ${p.components.map((c) => `${c.label} ${c.threats.map((t) => t.title).join(' ')}`).join(' ')}`
+    out.push(entry({ kind: 'arquitetura', id: p.id, title: p.title, where: 'Modo Arquiteto', area: 'arq', level: p.level, platforms: platformsOfTags(p.areas), href: `/arquiteto/${p.id}` }, text))
   }
   return out
 }
