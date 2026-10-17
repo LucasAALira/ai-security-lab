@@ -20,6 +20,11 @@ const DossiersPage = lazy(() => import('@/pages/DossiersPage').then((m) => ({ de
 const DossierPage = lazy(() => import('@/pages/DossierPage').then((m) => ({ default: m.DossierPage })))
 const DossierSimulationPage = lazy(() => import('@/pages/DossierSimulationPage').then((m) => ({ default: m.DossierSimulationPage })))
 const CoveragePage = lazy(() => import('@/pages/CoveragePage').then((m) => ({ default: m.CoveragePage })))
+const AreasPage = lazy(() => import('@/pages/AreasPage').then((m) => ({ default: m.AreasPage })))
+const AreaPage = lazy(() => import('@/pages/AreaPage').then((m) => ({ default: m.AreaPage })))
+const ModulePage = lazy(() => import('@/pages/ModulePage').then((m) => ({ default: m.ModulePage })))
+const SubmodulePage = lazy(() => import('@/pages/SubmodulePage').then((m) => ({ default: m.SubmodulePage })))
+const ExplorePage = lazy(() => import('@/pages/ExplorePage').then((m) => ({ default: m.ExplorePage })))
 const ShopPage = lazy(() => import('@/pages/ShopPage').then((m) => ({ default: m.ShopPage })))
 
 /** Rotas em hash (`#/materias/...`): o site funciona aberto de qualquer pasta ou servidor estático. */
@@ -34,6 +39,11 @@ export function App() {
           <Route path="trilha" element={<TrailPage />}>
             <Route path="modulo/:n" element={<LessonRoute />} />
           </Route>
+          <Route path="areas" element={<AreasPage />} />
+          <Route path="areas/:area" element={<AreaPage />} />
+          <Route path="areas/:area/:module" element={<ModulePage />} />
+          <Route path="areas/:area/:module/:sub" element={<SubmodulePage />} />
+          <Route path="explorar" element={<ExplorePage />} />
           <Route path="desafios" element={<ChallengesPage />} />
           <Route path="campanhas" element={<CampaignsPage />} />
           <Route path="campanhas/:campaign" element={<CampaignPage />} />

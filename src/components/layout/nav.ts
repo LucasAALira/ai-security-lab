@@ -16,6 +16,7 @@ export const navGroups: NavGroup[] = [
     label: 'SEU ESPAÇO DE ESTUDO',
     items: [
       { label: 'Visão geral', to: home('inicio') },
+      { label: 'Áreas de estudo', to: '/areas' },
       { label: 'Trilha de módulos', to: '/trilha' },
       { label: 'Conquistas', to: '/conquistas' },
       { label: 'Trilhas de aprendizado', to: home('trilhas') },
@@ -51,6 +52,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { label: 'Biblioteca de matérias', to: home('fontes') },
       { label: 'Referências', to: '/referencias' },
+      { label: 'Explorar o conteúdo', to: '/explorar' },
       { label: 'Cobertura de frameworks', to: '/cobertura' },
     ],
   },

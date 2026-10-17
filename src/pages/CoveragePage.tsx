@@ -1,18 +1,18 @@
 import { ExternalLink } from 'lucide-react'
 import { useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router'
+import { FILTER_ALL, FilterSelect } from '@/components/common/FilterSelect'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { formatDay } from '@/components/mission/dossier-layers'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { coverageRows, type SourceKind } from '@/data/coverage'
 import { areaById, areas } from '@/data/curriculum'
 import { frameworks } from '@/data/frameworks'
 import { useDocumentTitle } from '@/lib/use-document-title'
 
-const ALL = 'todos'
+const ALL = FILTER_ALL
 const kinds: { id: SourceKind; label: string }[] = [
   { id: 'desafio', label: 'Desafios' },
   { id: 'missão', label: 'Missões' },
@@ -52,27 +52,6 @@ export function CoveragePage() {
   )
   const shownFrameworks = frameworks.filter((f) => rows.some((r) => r.framework.id === f.id))
   const filtered = framework !== ALL || filtersOnSources || onlyGaps
-
-  const select = (id: string, label: string, value: string, set: (v: string) => void, options: { id: string; label: string }[]) => (
-    <div className="min-w-0">
-      <Label htmlFor={id} className="mb-1 text-[11px] text-muted-foreground">
-        {label}
-      </Label>
-      <Select value={value} onValueChange={set}>
-        <SelectTrigger id={id} className="h-8 w-full text-xs">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value={ALL}>Todos</SelectItem>
-          {options.map((o) => (
-            <SelectItem key={o.id} value={o.id}>
-              {o.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  )
 
   return (
     <div className="py-8 md:py-10">
@@ -126,9 +105,9 @@ export function CoveragePage() {
           Matriz de cobertura
         </h2>
         <div className="mt-3 grid grid-cols-[minmax(0,1fr)] items-end gap-3 sm:grid-cols-2 min-[1000px]:grid-cols-4">
-          {select('cov-framework', 'Framework', framework, (v) => setParam('framework', v), frameworks.filter((f) => f.items.length > 0).map((f) => ({ id: f.id, label: f.short })))}
-          {select('cov-area', 'Área do currículo', area, (v) => setParam('area', v), areas.map((a) => ({ id: a.id, label: a.title })))}
-          {select('cov-tipo', 'Tipo de conteúdo', kind, (v) => setParam('tipo', v), kinds)}
+          <FilterSelect id="cov-framework" label="Framework" value={framework} onChange={(v) => setParam('framework', v)} options={frameworks.filter((f) => f.items.length > 0).map((f) => ({ id: f.id, label: f.short }))} />
+          <FilterSelect id="cov-area" label="Área do currículo" value={area} onChange={(v) => setParam('area', v)} options={areas.map((a) => ({ id: a.id, label: a.title }))} />
+          <FilterSelect id="cov-tipo" label="Tipo de conteúdo" value={kind} onChange={(v) => setParam('tipo', v)} options={kinds} />
           <div className="flex items-center gap-2 pb-1">
             <Checkbox id="cov-lacunas" checked={onlyGaps} onCheckedChange={(v) => setParam('lacunas', v === true ? '1' : '')} />
             <Label htmlFor="cov-lacunas" className="text-xs font-normal">
