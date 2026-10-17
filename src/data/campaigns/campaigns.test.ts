@@ -10,6 +10,7 @@ import {
   findMission,
   gradeActivity,
   isGood,
+  medals,
   missionPassed,
   solveActivity,
   type Action,
@@ -19,9 +20,12 @@ import {
 import { challenges } from '../challenges'
 import { glossaryById } from '../glossary'
 import { progressContext as ctx } from '../progress-context'
-import { campaigns, dossiers, missionContents, toActivitySpec, type ActivityContent, type DecisionOption, type MissionContent } from '.'
+import { resolveRef } from '../frameworks'
+import { campaigns, dossierAsMission, dossiers, missionContents, toActivitySpec, type ActivityContent, type DecisionOption, type MissionContent } from '.'
 
 const NOW = new Date(2026, 9, 17, 12)
+const IP_ANY = /\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/g
+const RESERVED_IP_ANY = /^(198\.51\.100|203\.0\.113|192\.0\.2)\./
 const act = (s: StudyState, a: Action) => applyAction(s, a, ctx, NOW).state
 const run = (s: StudyState, ...actions: Action[]) => actions.reduce(act, s)
 
@@ -283,5 +287,92 @@ describe('casos reais', () => {
   it('os identificadores dos dossiês são únicos e não colidem com os das missões', () => {
     const ids = [...dossiers.map((d) => d.id), ...missionContents.map((m) => m.id)]
     expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  it('há quatro dossiês, e ao menos um é de um incidente em pacote público (npm ou PyPI)', () => {
+    expect(dossiers).toHaveLength(4)
+    expect(dossiers.some((d) => /npm|pypi/i.test(d.title))).toBe(true)
+  })
+})
+
+describe.each(dossiers.map((d) => [d.id, d] as const))('dossiê %s', (_id, d) => {
+  const DATE = /^\d{4}-\d{2}(-\d{2})?/
+
+  it('informa a data do incidente, a data da divulgação e a data da revisão', () => {
+    expect(d.incidentDate).toMatch(DATE)
+    expect(d.publishedDate).toMatch(DATE)
+    expect(d.reviewed).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    expect(d.incidentDate.slice(0, 7) <= d.publishedDate.slice(0, 7)).toBe(true)
+  })
+
+  it('lista as fontes primárias antes das secundárias, todas com endereço https', () => {
+    expect(d.sources.length).toBeGreaterThanOrEqual(3)
+    expect(d.sources[0].kind).toBe('primária')
+    const firstSecondary = d.sources.findIndex((x) => x.kind === 'secundária')
+    if (firstSecondary >= 0) expect(d.sources.slice(firstSecondary).every((x) => x.kind === 'secundária')).toBe(true)
+    for (const x of d.sources) expect(x.url, x.label).toMatch(/^https:\/\//)
+  })
+
+  it('os fatos citam fontes numeradas que existem, e a linha do tempo aponta para fontes válidas', () => {
+    const cited = new Set<number>()
+    for (const t of [...d.summary, ...d.impact, ...d.uncertainties]) for (const m of t.matchAll(/\[(\d+)\]/g)) cited.add(Number(m[1]))
+    for (const n of cited) expect(n >= 1 && n <= d.sources.length, `fonte [${n}]`).toBe(true)
+    for (const item of d.summary) expect(item, 'todo fato do resumo cita uma fonte').toMatch(/\[\d+\]/)
+    for (const t of d.timeline) expect(t.source >= 1 && t.source <= d.sources.length, t.what).toBe(true)
+    expect(d.timeline.length).toBeGreaterThanOrEqual(4)
+  })
+
+  it('separa fatos, incertezas, análise educacional e lições, cada um com conteúdo', () => {
+    expect(d.summary.length).toBeGreaterThanOrEqual(5)
+    expect(d.uncertainties.length).toBeGreaterThanOrEqual(3)
+    expect(d.analysis.length).toBeGreaterThanOrEqual(3)
+    expect(d.lessons.length).toBeGreaterThanOrEqual(4)
+    expect(d.component.name.length).toBeGreaterThan(10)
+    expect(d.component.trust.length).toBeGreaterThan(60)
+  })
+
+  it('não atribui mecanismos de IA a um incidente que não os tem', () => {
+    expect(d.notice ?? '').toMatch(/não envolve inteligência artificial/i)
+    const text = [...strings({ ...d, notice: '' })].join(' ')
+    expect(text).not.toMatch(/\b(LLM|IA generativa|modelo de linguagem|prompt injection|aprendizado de máquina)\b/i)
+  })
+
+  it('a simulação é identificada como fictícia e usa só endereços de exemplo', () => {
+    expect(d.exercise.context.join(' ')).toMatch(/simulação fictícia/i)
+    for (const text of strings(d.exercise)) {
+      for (const match of text.matchAll(/https?:\/\/([^/\s"'`)<>]+)/g)) expect(match[1], text.slice(0, 50)).toMatch(/\.example(:\d+)?$/)
+      for (const match of text.matchAll(IP_ANY)) expect(RESERVED_IP_ANY.test(match[1]), match[1]).toBe(true)
+    }
+  })
+
+  it('o exercício tem ao menos três formatos de atividade, identificadores únicos e dicas distintas', () => {
+    const m = dossierAsMission(d)
+    expect(new Set(m.activities.map((a) => a.kind)).size).toBeGreaterThanOrEqual(3)
+    const ids = [...m.activities.map((a) => a.id), ...m.evidence.map((e) => e.id)]
+    expect(new Set(ids).size).toBe(ids.length)
+    for (const a of m.activities) if ('hints' in a) expect(new Set(a.hints).size, a.id).toBe(3)
+    for (const o of m.activities.flatMap(options)) {
+      expect(o.feedback.length).toBeGreaterThan(40)
+      expect(o.consequence.length).toBeGreaterThan(30)
+    }
+    for (const a of m.activities) if (a.kind === 'decide') expect(a.options.filter((o) => o.quality === 'best')).toHaveLength(1)
+  })
+
+  it('cada referência a framework do dossiê existe no registro verificado', () => {
+    expect((d.frameworks ?? []).length).toBeGreaterThanOrEqual(2)
+    for (const ref of d.frameworks ?? []) expect(resolveRef(ref), `${ref.framework} ${ref.id}`).toBeDefined()
+  })
+
+  it('o exercício é concluível, rende crédito uma vez só e libera a conquista do dossiê', () => {
+    const m = dossierAsMission(d)
+    expect(findMission(ctx, d.id)?.kind).toBe('dossier')
+    let st = act(emptyState(), { type: 'dossierRead', dossier: d.id })
+    st = act(st, { type: 'missionStart', mission: d.id })
+    for (const a of m.activities) st = run(st, ...answerOf(m, a))
+    st = act(st, { type: 'missionFinish', mission: d.id })
+    expect(missionPassed(st, findMission(ctx, d.id)!)).toBe(true)
+    expect(medals(st, ctx).find((x) => x.id === 'investigador')?.unlocked).toBe(true)
+    const again = run(st, { type: 'dossierRead', dossier: d.id })
+    expect(again.dossiers).toEqual(st.dossiers) // ler de novo não duplica nada
   })
 })

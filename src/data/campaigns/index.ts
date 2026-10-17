@@ -17,6 +17,30 @@ export const missionContents: MissionContent[] = campaigns.flatMap((c) => c.miss
 export const missionContentById = (id: string): MissionContent | undefined => missionContents.find((m) => m.id === id)
 export const dossierById = (id: string): DossierContent | undefined => dossiers.find((d) => d.id === id)
 
+/** O exercício de um dossiê roda no mesmo motor das missões; este adaptador o apresenta como conteúdo de missão. */
+export function dossierAsMission(d: DossierContent): MissionContent {
+  const ex = d.exercise
+  return {
+    id: d.id,
+    campaign: '',
+    order: 1,
+    title: ex.title,
+    level: 'Intermediário',
+    minutes: 15,
+    prereqs: 'Leia antes os fatos documentados e a análise do dossiê; a simulação aplica o que eles mostram.',
+    objective: ex.objective,
+    context: ex.context,
+    criteria: ex.criteria,
+    evidence: ex.evidence,
+    activities: ex.activities,
+    closing: [{ text: ex.closing }],
+    review: ex.review,
+    refs: d.sources.map((s) => ({ label: s.label, url: s.url })),
+    medals: ['investigador', 'arquivo-completo'],
+    tags: d.tags,
+  }
+}
+
 export function toActivitySpec(a: ActivityContent): ActivitySpec {
   switch (a.kind) {
     case 'decide':

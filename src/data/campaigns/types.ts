@@ -154,8 +154,17 @@ export interface DossierContent {
   /** Análise educacional (interpretação nossa, rotulada como tal). */
   analysis: string[]
   lessons: string[]
-  /** Simulação fictícia inspirada no caso. */
-  exercise: { intro: string; evidence: Evidence[]; activities: ActivityContent[] }
+  /** Simulação fictícia inspirada no caso (empresa e dados inventados). Usa o mesmo motor das missões. */
+  exercise: {
+    title: string
+    context: string[]
+    objective: string
+    criteria: string[]
+    evidence: Evidence[]
+    activities: ActivityContent[]
+    closing: string
+    review: { solution: string[]; residual: string; validation: string }
+  }
   sources: { label: string; url: string; kind: 'primária' | 'secundária' }[]
   /** Itens de frameworks que o caso ilustra (só correspondências reais, conferidas em `data/frameworks.ts`). */
   frameworks?: FrameworkRef[]
