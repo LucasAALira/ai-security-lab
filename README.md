@@ -258,3 +258,16 @@ Ao propor uma alteração, descreva o problema, a solução e como verificar o r
 - **Projetos de estudo:** [Lingo — Duolingo Clone](https://github.com/sanidhyy/duolingo-clone) (MIT), [Duolingo Next.js](https://github.com/RikhiSingh/Duolingo-Clone) (MIT) e [Habitica](https://github.com/HabitRPG/habitica) (código GPL v3, arte CC BY-NC-SA 3.0) serviram só de inspiração para as ideias de jogo; nenhum código ou imagem foi copiado, e as mecânicas foram reescritas.
 - **Frameworks citados:** as edições e os itens estão em `src/data/frameworks.ts`, cada um com o endereço oficial e a data da conferência. O MITRE ATLAS foi conferido na versão 2026.09 (dados publicados em [mitre-atlas/atlas-data](https://github.com/mitre-atlas/atlas-data)).
 - OWASP, MITRE ATLAS, NIST, ISO/IEC e Kali Linux são referências ou marcas de seus respectivos responsáveis. Este é um projeto educacional independente, sem indicação de afiliação ou endosso dessas organizações.
+
+## Sala de troféus e relíquias
+
+Acesse `#/sala-de-trofeus` pelo menu Jogo ou pela loja.
+- Oito relíquias cosméticas, com compra única, história e prévia. Não concedem XP.
+- Seis nichos para expor relíquias compradas e medalhas conquistadas; retirar uma peça não a remove da coleção.
+- Salão de Pedra incluído; Galeria das Brasas (50 moedas) e Observatório Lunar (70 moedas).
+- Quatro temas adicionais: Fortaleza de Cinzas (60), Catedral do Eclipse (80), Arquivo Abissal (80) e Santuário Arcano (100).
+- Uma troca de missão pendente por dia, por 10 moedas. Só troca se houver alternativa possível de recompensa equivalente; sem alternativa, não há cobrança. Missões concluídas não podem ser trocadas.
+- Compras e exposição fazem parte do progresso e do backup. Estados anteriores recebem os campos novos vazios, sem perder o conteúdo existente.
+- As figuras usam símbolos de Lorc e Delapouite, Game-icons.net, CC BY 3.0; detalhes em `public/assets/relics/CREDITS.md` e na página Referências. Molduras, sala, nomes e histórias são originais.
+
+O progresso de localhost não aparece automaticamente em outro endereço. Exporte em Conquistas e importe no novo endereço para transferi-lo.

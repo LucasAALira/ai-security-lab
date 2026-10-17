@@ -1,3 +1,4 @@
+import { RELICS, ROOMS, DISPLAY_LIMIT, roomOwned } from './relics'
 import { DEFAULT_THEME, isEarlyAccess, isThemeId, QUEST_IDS, QUESTS_PER_DAY, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
 import {
   BOSS_QUESTIONS,
@@ -292,7 +293,13 @@ export function cleanState(raw: unknown): StudyState {
       }
     }
   }
+  const rawRelics = at(at(raw, 'shop'), 'relics')
+  const relics = [...RELICS.map(r => r.id as string), ...ROOMS.filter(r => r.price).map(r => 'room:' + r.id)].filter(id => Array.isArray(rawRelics) && rawRelics.includes(id))
+  const rawDisplay = at(at(raw, 'shop'), 'display')
+  const display = Array.isArray(rawDisplay) ? [...new Set(rawDisplay.filter((id): id is string => typeof id === 'string' && (relics.includes(id) || (id.startsWith('medal:') && id.slice(6) in badges))))].slice(0, DISPLAY_LIMIT) : []
+  const room = str(at(at(raw, 'shop'), 'room'))
   const shop: StudyState['shop'] = {
+    relics, display, room: ROOMS.some(r => r.id === room) && roomOwned(room, relics) ? room : 'stone',
     shields: Math.min(SHIELD.max, small(at(at(raw, 'shop'), 'shields'))),
     owned,
     theme: isThemeId(theme) && (theme === DEFAULT_THEME || owned.includes(theme)) ? theme : DEFAULT_THEME,
@@ -312,6 +319,8 @@ export function cleanState(raw: unknown): StudyState {
   const done = ids.filter((id) => Array.isArray(rawDone) && rawDone.includes(id))
   const quests: StudyState['quests'] = {
     day: questDay,
+    swaps: Math.min(1, small(at(q, 'swaps'))),
+    retired: QUEST_IDS.filter(id => Array.isArray(at(q, 'retired')) && (at(q, 'retired') as unknown[]).includes(id)),
     ids,
     done,
     chest: at(q, 'chest') === true && ids.length > 0 && done.length === ids.length,

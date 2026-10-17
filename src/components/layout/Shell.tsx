@@ -44,7 +44,7 @@ export function Shell() {
   usePageChange(main)
   const page = pageOf(useLocation().pathname)
   // Estas páginas já mostram o objetivo em destaque no próprio conteúdo.
-  const showObjective = !['/conquistas', '/trilha'].includes(page)
+  const showObjective = !['/conquistas', '/trilha', '/sala-de-trofeus'].includes(page)
   return (
     <div className="min-h-screen">
       <button

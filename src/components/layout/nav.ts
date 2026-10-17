@@ -29,6 +29,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { label: 'Missões do dia', to: home('hoje') },
       { label: 'Revisão com vidas', to: '/revisao' },
+      { label: 'Sala de troféus', to: '/sala-de-trofeus' },
       { label: 'Loja de moedas', to: '/loja' },
     ],
   },
