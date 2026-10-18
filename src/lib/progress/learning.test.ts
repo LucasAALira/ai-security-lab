@@ -3,6 +3,7 @@ import { bossAnswers } from '@/data/bosses'
 import { challengeSpecs } from '@/data/challenges'
 import { progressContext } from '@/data/progress-context'
 import {
+  DEFAULT_THEME,
   activeStudyDays,
   applyAction,
   backupFileName,
@@ -747,7 +748,7 @@ describe('exportação e importação do progresso', () => {
     if (result.ok) {
       expect(result.state.lab).toBe(false)
       expect(result.state.modules[0].reads).toEqual([true, false, false])
-      expect(result.state.shop.theme).toBe('dragon')
+      expect(result.state.shop.theme).toBe(DEFAULT_THEME)
       expect(result.state.shop.shields).toBeLessThanOrEqual(5)
     }
   })

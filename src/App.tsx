@@ -1,7 +1,9 @@
-import { lazy } from 'react'
+import { lazy, useEffect } from 'react'
 import { HashRouter, Route, Routes } from 'react-router'
 import { LessonRoute } from '@/components/lesson/LessonRoute'
+import { AppSplash } from '@/components/gothic/AppSplash'
 import { Shell } from '@/components/layout/Shell'
+import { setupBackButton } from '@/lib/native'
 import { HomePage } from '@/pages/HomePage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 
@@ -32,8 +34,11 @@ const ShopPage = lazy(() => import('@/pages/ShopPage').then((m) => ({ default: m
 
 /** Rotas em hash (`#/materias/...`): o site funciona aberto de qualquer pasta ou servidor estático. */
 export function App() {
+  // No app Android, o botão Voltar fecha diálogos e volta páginas (no navegador, não faz nada).
+  useEffect(() => setupBackButton(), [])
   return (
     <HashRouter>
+      <AppSplash />
       <Routes>
         <Route element={<Shell />}>
           <Route path="/" element={<HomePage />}>

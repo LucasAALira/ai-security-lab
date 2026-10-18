@@ -11,7 +11,7 @@ export function QuestSwapButton({ id, title }: { id: string; title: string }) {
   const possible = canSwapQuest(state, ctx, id)
   const disabled = !possible || derived.balance < SWAP_PRICE
   return <div className="col-start-2 col-end-4">
-    <Button size="sm" variant="ghost" className="h-7 px-0 text-xs" disabled={disabled} onClick={()=>setOpen(true)} aria-label={`Trocar missão: ${title}, por ${SWAP_PRICE} moedas`}><Shuffle className="size-3"/>Trocar · {SWAP_PRICE} moedas</Button>
+    <Button size="sm" variant="ghost" className="h-7 px-0 text-xs" disabled={disabled} onClick={()=>setOpen(true)} aria-label={`Trocar · ${SWAP_PRICE} moedas: missão ${title}`}><Shuffle className="size-3"/>Trocar · {SWAP_PRICE} moedas</Button>
     {!possible && <span className="ml-2 text-[10px] text-muted-foreground">{state.quests.day===today&&(state.quests.swaps??0)>0?'Troca de hoje utilizada':'Sem alternativa equivalente'}</span>}
     {possible&&derived.balance<SWAP_PRICE&&<span className="ml-2 text-[10px] text-muted-foreground">Saldo insuficiente</span>}
     <span role="status" className="text-xs text-primary">{message}</span>

@@ -14,6 +14,7 @@ import { CORE_MODULE_COUNT, type StepId, type TrailModule } from '@/lib/progress
 import { useDocumentTitle } from '@/lib/use-document-title'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
+import { SealMark } from '@/components/gothic/Seal'
 
 const stepLabel: Record<StepId, string> = {
   aulas: 'Aulas: Conceito, Exemplo e Como corrigir',
@@ -73,7 +74,7 @@ function ModuleNode({ t, onBoss }: { t: TrailModule; onBoss: (module: number) =>
         {!t.unlocked && t.earlyAccess ? (
           <div className="rounded-lg border border-dashed border-tint-line bg-tint p-3 text-[13px] leading-relaxed">
             <p className="flex items-start gap-2">
-              <Lock className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+              <SealMark className="!size-8" />
               <span>
                 <strong>Módulo de acesso antecipado.</strong> Abra agora por {formatNumber(t.price ?? 0)} moedas ou, de graça, acendendo a fogueira de{' '}
                 {t.missing.map((p, i) => (
@@ -98,7 +99,7 @@ function ModuleNode({ t, onBoss }: { t: TrailModule; onBoss: (module: number) =>
         {!t.unlocked && !t.earlyAccess ? (
           <div className="rounded-lg border border-dashed border-border p-3 text-[13px] leading-relaxed">
             <p className="flex items-start gap-2">
-              <Lock className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+              <SealMark className="!size-8" />
               <span>
                 Para liberar este módulo, acenda a fogueira de{' '}
                 {t.missing.map((p, i) => (
@@ -121,7 +122,7 @@ function ModuleNode({ t, onBoss }: { t: TrailModule; onBoss: (module: number) =>
           </div>
         ) : null}
 
-        <ul className="grid gap-0.5">
+        <ul className="grid grid-cols-[minmax(0,1fr)] gap-0.5">
           {t.steps.map((s) => {
             if (s.id === 'fogueira') return <Checkpoint key={s.id} lit={t.fire.lit} day={t.fire.day} lessonTo={`/trilha/modulo/${t.module}?aba=conceito`} />
             if (s.id === 'chefe') {
@@ -201,7 +202,7 @@ export function TrailPage() {
       </div>
 
       <h2 className="sr-only">Módulos da trilha</h2>
-      <ol aria-label="Módulos da trilha" className="relative mt-8 grid gap-4 before:absolute before:top-6 before:bottom-6 before:left-[13px] before:w-px before:bg-border max-sm:before:left-[13px]">
+      <ol aria-label="Módulos da trilha" className="relative mt-8 grid grid-cols-[minmax(0,1fr)] gap-4 before:absolute before:top-6 before:bottom-6 before:left-[13px] before:w-px before:bg-border max-sm:before:left-[13px]">
         {trail.map((t) => (
           <ModuleNode key={t.module} t={t} onBoss={openBoss} />
         ))}

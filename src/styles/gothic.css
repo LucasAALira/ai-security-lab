@@ -1,0 +1,686 @@
+/* ==========================================================================
+   Biblioteca dos Condenados — sistema visual
+   Um santuário de conhecimento dentro de uma fortaleza em ruínas: pedra, metal
+   envelhecido, luz de vela e selos. Toda a arte é original (CSS e SVG próprios).
+
+   Regras:
+   - Texturas e ornamentos só em cenários e molduras; a área de leitura fica limpa.
+   - Cinzel em títulos; Grenze Gotisch só em inscrições curtas (marca, faixas);
+     Literata no conteúdo e nos controles; JetBrains Mono no código.
+   - Toda animação é curta, não bloqueia e some com prefers-reduced-motion.
+   ========================================================================== */
+
+/* --- Tokens que valem para todos os temas ----------------------------------- */
+:root {
+  /* Metais e luzes (iguais em todos os temas, como as medalhas). */
+  --bronze: #b48a57;
+  --bronze-deep: #6f5132;
+  --ember: #e0653f;
+  --ember-deep: #8f3218;
+  --candle: #f2c46d;
+  --violet: #a493cf;
+  --ivory: #ece3cf;
+
+  /* Espaçamento em degraus de 4 px. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Bordas: cantos quase retos; a moldura é feita de linhas, não de arredondamento. */
+  --radius-frame: 3px;
+  --frame-gap: 5px;
+
+  /* Áreas seguras (entalhes e barras do sistema em telas de ponta a ponta). No navegador valem as
+     variáveis env(); um app que as injete como --safe-area-inset-* também é atendido. */
+  --sat: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --sar: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
+  --sab: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --sal: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
+
+  /* Tempo: curto, solene, nunca obrigatório. */
+  --dur-fast: 140ms;
+  --dur: 220ms;
+  --dur-slow: 420ms;
+  --ease-solemn: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Derivados do tema ativo: cada tema de cor ganha a mesma moldura, na sua cor. */
+:root,
+[data-theme] {
+  --ornament: color-mix(in oklab, var(--primary) 52%, var(--border));
+  --ornament-soft: color-mix(in oklab, var(--primary) 22%, transparent);
+  --plate-hi: color-mix(in oklab, var(--primary) 82%, white);
+  --plate-lo: color-mix(in oklab, var(--primary) 62%, black);
+  --plate-edge: color-mix(in oklab, var(--primary) 40%, black);
+  --glow: color-mix(in oklab, var(--primary) 38%, transparent);
+  --stone: color-mix(in oklab, var(--background) 82%, var(--card));
+  --stone-line: color-mix(in oklab, var(--border) 70%, black);
+}
+
+@layer base {
+  body {
+    padding: var(--sat) var(--sar) var(--sab) var(--sal);
+    font-size: 15.5px;
+    line-height: 1.65;
+    font-optical-sizing: auto;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Títulos de página e de seção em Cinzel. Os de cartão (h3, h4) seguem em Literata para ler rápido. */
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+  /* Conteúdo das aulas e matérias: títulos internos na fonte de leitura. */
+  .study-prose h2,
+  .pentest-prose h2 {
+    font-family: var(--font-sans);
+    letter-spacing: 0;
+  }
+
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-mono);
+    font-variant-ligatures: none;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 40%, transparent);
+    color: var(--foreground);
+  }
+
+  /* Foco: anel âmbar contínuo e afastado do elemento, visível sobre pedra e sobre metal. */
+  :focus-visible {
+    outline: 2px solid var(--candle);
+    outline-offset: 2px;
+  }
+
+  /* Fundo: pedra escura com luz de vela vinda do alto. Só no corpo, nunca atrás do texto de leitura. */
+  body {
+    background-color: var(--background);
+    background-image:
+      radial-gradient(ellipse 70% 40% at 60% -8%, color-mix(in oklab, var(--primary) 9%, transparent), transparent 70%),
+      radial-gradient(ellipse 50% 60% at 0% 100%, color-mix(in oklab, var(--violet) 5%, transparent), transparent 70%);
+    background-attachment: fixed;
+  }
+}
+
+/* --- Componentes ------------------------------------------------------------ */
+@layer components {
+  /* Inscrição: rótulo curto em Cinzel, entre losangos. Substitui o "eyebrow" genérico. */
+  .gx-inscription {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    font-family: var(--font-display);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--primary);
+  }
+  .gx-inscription::before,
+  .gx-inscription::after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    flex-shrink: 0;
+    transform: rotate(45deg);
+    border: 1px solid var(--ornament);
+  }
+  .gx-gothic {
+    font-family: var(--font-gothic);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  /* Divisor com losango central. */
+  .gx-rule {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--ornament);
+  }
+  .gx-rule::before,
+  .gx-rule::after {
+    content: '';
+    height: 1px;
+    flex: 1;
+    background: linear-gradient(90deg, transparent, var(--ornament), transparent);
+  }
+
+  /* Painel (página de grimório / placa de pedra): borda dupla discreta. É o cartão de todo o site. */
+  .gx-panel {
+    border-radius: var(--radius-frame);
+    border-color: var(--border);
+    background: linear-gradient(180deg, color-mix(in oklab, var(--card) 94%, white) 0, var(--card) 72px);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, black 40%, transparent),
+      inset 0 1px 0 1px color-mix(in oklab, white 4%, transparent),
+      0 12px 24px -18px black;
+  }
+
+  /* Moldura ornamentada: cantoneiras de metal nos quatro cantos. Para destaques, não para leitura longa. */
+  .gx-frame {
+    position: relative;
+    border: 1px solid var(--ornament);
+    border-radius: var(--radius-frame);
+    box-shadow:
+      inset 0 0 0 var(--frame-gap) transparent,
+      inset 0 0 0 calc(var(--frame-gap) + 1px) var(--ornament-soft),
+      0 18px 36px -24px black;
+  }
+  .gx-frame::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+    --c: var(--ornament);
+    --l: 18px;
+    --w: 2px;
+    background:
+      linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
+      linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
+      linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
+      linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat;
+  }
+
+  /* --- Botões ---------------------------------------------------------------- */
+  .gx-btn {
+    position: relative;
+    border-radius: 2px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition:
+      background-color var(--dur-fast) ease,
+      border-color var(--dur-fast) ease,
+      box-shadow var(--dur) ease,
+      color var(--dur-fast) ease,
+      transform var(--dur-fast) ease;
+  }
+  .gx-btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  /* Ação principal: placa de metal envelhecido, com borda dupla e brilho de vela no alto. */
+  .gx-btn-plate {
+    color: var(--primary-foreground);
+    border: 1px solid var(--plate-edge);
+    background: linear-gradient(180deg, var(--plate-hi) 0%, var(--primary) 42%, var(--plate-lo) 100%);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, white 22%, transparent),
+      inset 0 -2px 0 color-mix(in oklab, black 25%, transparent),
+      0 1px 0 color-mix(in oklab, black 60%, transparent),
+      0 6px 16px -10px var(--glow);
+    text-shadow: 0 1px 0 color-mix(in oklab, white 25%, transparent);
+  }
+  .gx-btn-plate:hover {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, white 30%, transparent),
+      inset 0 -2px 0 color-mix(in oklab, black 25%, transparent),
+      0 1px 0 color-mix(in oklab, black 60%, transparent),
+      0 0 22px -4px var(--glow);
+  }
+
+  /* Ação importante ou irreversível: brasa. */
+  .gx-btn-ember {
+    color: #fbefe6;
+    border: 1px solid color-mix(in oklab, var(--ember-deep) 70%, black);
+    background: linear-gradient(180deg, color-mix(in oklab, var(--ember) 80%, var(--ember-deep)), var(--ember-deep));
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, white 14%, transparent),
+      0 6px 16px -10px color-mix(in oklab, var(--ember) 60%, transparent);
+  }
+  .gx-btn-ember:hover {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, white 20%, transparent),
+      0 0 20px -4px color-mix(in oklab, var(--ember) 55%, transparent);
+  }
+
+  /* Secundária: moldura de bronze vazada, com a segunda linha por dentro. */
+  .gx-btn-outline {
+    color: var(--foreground);
+    border: 1px solid var(--ornament);
+    background: color-mix(in oklab, var(--background) 55%, transparent);
+    box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--background) 80%, transparent), inset 0 0 0 3px var(--ornament-soft);
+  }
+  .gx-btn-outline:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+    background: var(--tint);
+  }
+
+  .gx-btn-stone {
+    color: var(--secondary-foreground);
+    border: 1px solid var(--stone-line);
+    background: linear-gradient(180deg, color-mix(in oklab, var(--secondary) 88%, white), var(--secondary));
+    box-shadow: inset 0 1px 0 color-mix(in oklab, white 6%, transparent);
+  }
+  .gx-btn-stone:hover {
+    border-color: var(--ornament);
+  }
+
+  .gx-btn-ghost {
+    color: var(--foreground);
+    border: 1px solid transparent;
+  }
+  .gx-btn-ghost:hover {
+    color: var(--primary);
+    background: var(--tint-strong);
+    border-color: var(--ornament-soft);
+  }
+
+  /* Seleção: luz âmbar, uma linha de ornamento embaixo e o estado em ARIA (nunca só a cor). */
+  .gx-btn[aria-pressed='true'],
+  .gx-btn[aria-current='page'],
+  .gx-btn[data-state='on'],
+  [data-slot='tabs-trigger'][data-state='active'],
+  [data-slot='toggle-group-item'][data-state='on'] {
+    color: var(--primary);
+    border-color: var(--primary);
+    background: var(--tint-strong);
+    box-shadow:
+      inset 0 -2px 0 var(--primary),
+      0 0 18px -6px var(--glow);
+  }
+
+  /* Alvo de toque confortável em telas de toque, sem mudar o desenho no desktop. */
+  @media (pointer: coarse) {
+    .gx-btn {
+      min-height: 44px;
+    }
+    .gx-btn[data-size^='icon'] {
+      min-width: 44px;
+    }
+  }
+
+  /* Balcão do mercador: tampo de madeira escura sob o saldo. */
+  .gx-counter {
+    position: relative;
+    border: 1px solid var(--ornament);
+    border-radius: var(--radius-frame);
+    padding-bottom: 14px;
+    background:
+      linear-gradient(0deg, #2a1c12 0 10px, color-mix(in oklab, var(--bronze) 55%, #2a1c12) 10px 11px, transparent 11px),
+      radial-gradient(ellipse 60% 120% at 12% 0%, var(--tint-strong), transparent 70%),
+      var(--card);
+    box-shadow: inset 0 0 0 4px color-mix(in oklab, var(--background) 60%, transparent), inset 0 0 0 5px var(--ornament-soft), 0 18px 30px -22px black;
+  }
+  /* Etiqueta de preço pendurada. */
+  .gx-price {
+    padding: 1px 8px 1px 6px;
+    border: 1px solid color-mix(in oklab, var(--candle) 35%, var(--border));
+    border-radius: 2px;
+    background: color-mix(in oklab, var(--candle) 8%, var(--card));
+  }
+
+  /* --- Selos (bloqueios) ---------------------------------------------------- */
+  .gx-seal {
+    --seal: var(--ember-deep);
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+  }
+  .gx-seal svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .gx-seal.is-violet {
+    --seal: #4b3d6e;
+  }
+
+  /* --- Medidor (XP e progresso) --------------------------------------------- */
+  .gx-gauge {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1px;
+    border: 1px solid color-mix(in oklab, var(--ornament) 45%, var(--stone-line));
+    background:
+      repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px), color-mix(in oklab, black 40%, transparent) calc(10% - 1px) 10%),
+      linear-gradient(180deg, color-mix(in oklab, black 25%, var(--stone)), color-mix(in oklab, var(--border) 45%, var(--stone)));
+    box-shadow: inset 0 1px 2px color-mix(in oklab, black 70%, transparent);
+  }
+  .gx-gauge-fill {
+    height: 100%;
+    background:
+      linear-gradient(180deg, color-mix(in oklab, white 25%, transparent), transparent 55%),
+      linear-gradient(90deg, var(--ember-deep), var(--ember) 35%, var(--primary));
+    box-shadow: 0 0 10px -2px var(--glow);
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+
+  /* --- Nichos (relicário) ---------------------------------------------------- */
+  .gx-niche {
+    position: relative;
+    border: 1px solid var(--stone-line);
+    border-radius: 50% 50% var(--radius-frame) var(--radius-frame) / 64px 64px var(--radius-frame) var(--radius-frame);
+    background:
+      radial-gradient(ellipse 60% 45% at 50% 100%, var(--tier-soft, var(--ornament-soft)), transparent 70%),
+      linear-gradient(180deg, color-mix(in oklab, black 50%, var(--background)), var(--card));
+    box-shadow:
+      inset 0 0 0 4px color-mix(in oklab, var(--background) 70%, transparent),
+      inset 0 0 0 5px var(--tier-line, var(--ornament-soft)),
+      inset 0 12px 24px -10px black;
+  }
+  .gx-niche.is-locked {
+    --tier-soft: transparent;
+    --tier-line: color-mix(in oklab, var(--border) 60%, transparent);
+  }
+
+  /* Vitral: arco pontiagudo usado como brasão de área e moldura de cena. */
+  .gx-arch {
+    clip-path: polygon(0 100%, 0 38%, 6% 22%, 16% 10%, 30% 3%, 50% 0, 70% 3%, 84% 10%, 94% 22%, 100% 38%, 100% 100%);
+  }
+
+  /* --- Transição de página e tela de carregamento ---------------------------- */
+  .gx-page-enter {
+    animation: gx-page-in var(--dur-slow) var(--ease-out) both;
+  }
+  .gx-veil {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 40% 35% at 50% 46%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 70%),
+      color-mix(in oklab, var(--background) 94%, transparent);
+    animation: gx-veil var(--veil-ms, 720ms) var(--ease-solemn) both;
+  }
+  .gx-veil-mark {
+    width: 104px;
+    height: 104px;
+    background: linear-gradient(170deg, var(--plate-hi), var(--primary) 45%, var(--bronze-deep));
+    -webkit-mask: url('/assets/dragon-lock.png') center / contain no-repeat;
+    mask: url('/assets/dragon-lock.png') center / contain no-repeat;
+    filter: drop-shadow(0 0 18px var(--glow));
+    animation: gx-mark var(--veil-ms, 720ms) var(--ease-solemn) both;
+  }
+  .gx-veil-line {
+    width: 132px;
+    height: 2px;
+    margin-top: 18px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    transform-origin: left center;
+    animation: gx-line var(--veil-ms, 720ms) var(--ease-out) both;
+  }
+
+  /* --- Tela de abertura do app (2 s) ------------------------------------------ */
+  .gx-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: grid;
+    place-items: center;
+    padding: var(--sat) var(--sar) var(--sab) var(--sal);
+    cursor: pointer;
+    outline: none;
+    background:
+      radial-gradient(ellipse 55% 40% at 50% 42%, color-mix(in oklab, var(--primary) 14%, transparent), transparent 70%),
+      var(--background);
+  }
+  .gx-splash[data-phase='fade'] {
+    animation: gx-fade-out var(--fade-ms, 260ms) ease forwards;
+  }
+  .gx-splash-track {
+    position: relative;
+    display: block;
+    width: 180px;
+    height: 3px;
+    overflow: hidden;
+    border-radius: 1px;
+    background: color-mix(in oklab, var(--border) 70%, transparent);
+  }
+  .gx-splash-fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--ember-deep), var(--ember) 40%, var(--candle));
+    transform-origin: left center;
+    animation: gx-fill var(--splash-ms, 2000ms) linear both;
+  }
+
+  /* --- Recompensas ---------------------------------------------------------- */
+  /* Brasas que sobem de um ponto (XP recebido). Poucas, curtas, uma vez só. */
+  .gx-ember {
+    position: absolute;
+    left: 50%;
+    bottom: 40%;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--candle);
+    box-shadow: 0 0 6px 1px var(--ember);
+    opacity: 0;
+    animation: gx-ember 900ms var(--ease-out) forwards;
+    animation-delay: var(--d, 0ms);
+  }
+
+  /* Faixa solene: "PROVAÇÃO SUPERADA". */
+  .gx-banner {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 38%;
+    z-index: 70;
+    display: grid;
+    place-items: center;
+    padding: 26px 16px;
+    pointer-events: none;
+    background: color-mix(in oklab, black 72%, transparent);
+    -webkit-mask-image: linear-gradient(180deg, transparent, black 18%, black 82%, transparent);
+    mask-image: linear-gradient(180deg, transparent, black 18%, black 82%, transparent);
+    animation: gx-banner 2600ms var(--ease-solemn) both;
+  }
+  .gx-banner-text {
+    position: relative;
+    font-family: var(--font-display);
+    font-size: clamp(26px, 5.4vw, 56px);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: 1.1;
+    text-align: center;
+    color: var(--candle);
+    text-shadow:
+      0 0 18px color-mix(in oklab, var(--candle) 45%, transparent),
+      0 2px 6px black;
+  }
+  .gx-banner-ghost {
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    animation: gx-ghost 2600ms var(--ease-out) both;
+  }
+  .gx-banner-sub {
+    margin-top: 6px;
+    font-size: 14px;
+    color: color-mix(in oklab, var(--ivory) 85%, transparent);
+  }
+
+  /* Medalhão revelado: surge da sombra com um halo. */
+  .gx-reveal {
+    animation: gx-reveal 700ms var(--ease-out) both;
+  }
+
+  /* Destaque de vela ao selecionar um item. */
+  .gx-candle {
+    transition:
+      box-shadow var(--dur) ease,
+      border-color var(--dur) ease;
+  }
+  .gx-candle:hover,
+  .gx-candle:focus-within,
+  .gx-candle[aria-selected='true'],
+  .gx-candle[data-selected='true'] {
+    border-color: var(--ornament);
+    box-shadow: 0 0 0 1px var(--ornament-soft), 0 0 24px -10px var(--glow);
+  }
+}
+
+@keyframes gx-fade-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes gx-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes gx-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: brightness(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes gx-veil {
+  0% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes gx-mark {
+  0% {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  30% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+@keyframes gx-line {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes gx-ember {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x, 0), -46px) scale(0.4);
+  }
+}
+@keyframes gx-banner {
+  0% {
+    opacity: 0;
+  }
+  14% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes gx-ghost {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1.12);
+    opacity: 0;
+  }
+}
+@keyframes gx-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.82);
+    filter: brightness(0.2) drop-shadow(0 0 0 transparent);
+  }
+  60% {
+    opacity: 1;
+    filter: brightness(1.15) drop-shadow(0 0 14px var(--tier, var(--primary)));
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+
+/* Menos movimento: nada se move. A tela de carregamento e a faixa não aparecem; o conteúdo surge direto. */
+@media (prefers-reduced-motion: reduce) {
+  .gx-page-enter,
+  .gx-splash[data-phase='fade'],
+  .gx-splash-fill,
+  .gx-veil-mark,
+  .gx-veil-line,
+  .gx-reveal,
+  .gx-banner-ghost {
+    animation: none;
+  }
+  .gx-veil,
+  .gx-ember {
+    display: none;
+  }
+  .gx-banner {
+    animation: gx-banner 2600ms steps(1, end) both;
+  }
+  .gx-btn,
+  .gx-gauge-fill,
+  .gx-candle {
+    transition: none;
+  }
+  .gx-btn:active:not(:disabled) {
+    transform: none;
+  }
+}

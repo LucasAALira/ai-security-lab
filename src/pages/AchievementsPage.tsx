@@ -29,7 +29,7 @@ const filters: { id: Filter; label: string; test: (m: Medal) => boolean; empty: 
 const RECENT = 8
 
 export function AchievementsPage() {
-  useDocumentTitle('Conquistas')
+  useDocumentTitle('Relicário — conquistas')
   const { derived, state } = useProgress()
   const [filter, setFilter] = useState<Filter>('todas')
   const [category, setCategory] = useState<AchievementCategory | 'todas'>('todas')
@@ -50,10 +50,10 @@ export function AchievementsPage() {
   return (
     <div className="py-8 md:py-10">
       <SectionHeading
-        eyebrow="CONQUISTAS"
+        eyebrow="Relicário · conquistas"
         level="h1"
         title="Suas conquistas"
-        description="Cada conquista tem uma regra clara e mostra o seu progresso real. Elas são concedidas uma única vez."
+        description="Cada medalhão guarda uma regra clara e o seu progresso real. É concedido uma única vez; a raridade aparece no desenho, no símbolo e no nome."
       />
 
       <div className="mt-6 grid gap-4 min-[900px]:grid-cols-[1.1fr_1fr]">
@@ -71,9 +71,9 @@ export function AchievementsPage() {
             aria-valuemax={100}
             aria-valuenow={pct}
             aria-valuetext={`${pct}% das conquistas desbloqueadas`}
-            className="h-2.5 overflow-hidden rounded-full bg-border"
+            className="gx-gauge h-2.5"
           >
-            <div className="h-full rounded-full bg-primary transition-[width] duration-500 motion-reduce:transition-none" style={{ width: `${pct}%` }} />
+            <div className="gx-gauge-fill" style={{ transform: `translateX(-${100 - pct}%)` }} />
           </div>
           <p className="text-xs text-muted-foreground">
             {pct}% do total · {formatNumber(derived.summary.medalXp)} XP vieram de conquistas.
@@ -93,7 +93,7 @@ export function AchievementsPage() {
               {filters.map((f) => (
                 <TabsTrigger key={f.id} value={f.id} className="px-3 py-1.5">
                   {f.label}
-                  <span className="rounded bg-background/60 px-1.5 font-mono text-[11px] text-muted-foreground">{count(f)}</span>
+                  <span className="rounded-[2px] bg-background/60 px-1.5 text-[11px] text-muted-foreground tabular-nums">{count(f)}</span>
                 </TabsTrigger>
               ))}
             </TabsList>

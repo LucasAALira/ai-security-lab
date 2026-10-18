@@ -1,4 +1,4 @@
-import { BookOpen, Check, Code2, Flame, HelpCircle, Layers, Lock, PenLine, ShieldCheck, Swords } from 'lucide-react'
+import { BookOpen, Check, Code2, Flame, HelpCircle, Layers, PenLine, ShieldCheck, Swords } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { EarlyAccessPreview } from '@/components/shop/EarlyAccessPreview'
@@ -17,6 +17,7 @@ import { useProgress } from '@/state/ProgressProvider'
 import { LessonPart, PART_TABS } from './LessonPart'
 import { PracticePanel } from './PracticePanel'
 import { QuizPanel } from './QuizPanel'
+import { SealMark } from '@/components/gothic/Seal'
 
 const TABS = ['conceito', 'exemplo', 'corrigir', 'revisar', 'praticar', 'quiz'] as const
 type Tab = (typeof TABS)[number]
@@ -140,7 +141,7 @@ export function LessonDialog({ index, onClose }: { index: number; onClose: () =>
 
             {locked ? (
               <p className="mt-3 flex items-start gap-2 rounded-lg border border-dashed border-border p-3 text-[13px] leading-relaxed">
-                <Lock className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <SealMark className="!size-8" />
                 <span>
                   Módulo ainda bloqueado na trilha: acenda a fogueira de{' '}
                   {info.missing.map((p, i) => (

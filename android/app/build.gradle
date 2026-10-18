@@ -1,0 +1,34 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'io.github.lucasaalira.aisecuritylab'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'io.github.lucasaalira.aisecuritylab'
+        minSdk 24
+        targetSdk 34
+        versionCode 2
+        versionName '2.1.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+// Copia o site gerado (npm run build) para dentro do app antes de empacotar.
+tasks.register('copyWeb', Copy) {
+    from "${rootDir}/../dist"
+    into "${projectDir}/src/main/assets/public"
+}
+preBuild.dependsOn copyWeb

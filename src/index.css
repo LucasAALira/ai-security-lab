@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "@fontsource-variable/inter";
+@import "./styles/fonts.css";
+@import "./styles/gothic.css";
 
 /* Só o código-fonte alimenta o Tailwind: o site gerado (dist) e o site antigo ficam de fora. */
 @source not "../dist";
@@ -14,11 +15,45 @@
   include: stat, radialprogress;
 }
 
-/* Tema padrão "Dragão": azul-escuro quase preto com destaque coral. */
+/* Tema padrão "Biblioteca dos Condenados": carvão, marrom profundo, marfim e ouro envelhecido. */
 @plugin "daisyui/theme" {
-  name: "dragon";
+  name: "library";
   default: true;
   prefersdark: true;
+  color-scheme: dark;
+  --color-base-100: #141110;
+  --color-base-200: #1e1915;
+  --color-base-300: #4a3a2b;
+  --color-base-content: #ece3cf;
+  --color-primary: #d9a54e;
+  --color-primary-content: #1c1307;
+  --color-secondary: #25201c;
+  --color-secondary-content: #ece3cf;
+  --color-accent: #2e2620;
+  --color-accent-content: #ece3cf;
+  --color-neutral: #1a1613;
+  --color-neutral-content: #cfc4ad;
+  --color-info: #93a9c9;
+  --color-info-content: #0d1522;
+  --color-success: #a3c47f;
+  --color-success-content: #152108;
+  --color-warning: #e6b450;
+  --color-warning-content: #2b2005;
+  --color-error: #e0653f;
+  --color-error-content: #240b04;
+  --radius-selector: 0.125rem;
+  --radius-field: 0.125rem;
+  --radius-box: 0.25rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* Tema "Dragão": azul-escuro quase preto com destaque coral. Era o padrão; continua gratuito. */
+@plugin "daisyui/theme" {
+  name: "dragon";
   color-scheme: dark;
   --color-base-100: #0b1013;
   --color-base-200: #11191e;
@@ -271,14 +306,15 @@
   --secondary: var(--color-secondary);
   --secondary-foreground: var(--color-secondary-content);
   --muted: var(--color-neutral);
-  --muted-foreground: #92a2a7;
+  /* Texto secundário derivado do tema: o mesmo contraste (≥ 5,5:1 sobre o cartão) em todos. */
+  --muted-foreground: color-mix(in oklab, var(--color-base-content) 68%, var(--color-base-200));
   --accent: var(--color-accent);
   --accent-foreground: var(--color-accent-content);
   --destructive: var(--color-error);
   --border: var(--color-base-300);
   --input: var(--color-base-300);
   --ring: var(--color-primary);
-  --radius: 0.5rem;
+  --radius: 3px;
 }
 
 /* Superfícies com um toque da cor de destaque, derivadas do tema ativo. */
@@ -296,8 +332,11 @@
   --color-tier: var(--tier);
   --color-tier-soft: var(--tier-soft);
   --color-tier-line: var(--tier-line);
-  --font-sans: "Inter Variable", Inter, "Segoe UI", system-ui, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans: "Literata Variable", Literata, Georgia, "Times New Roman", serif;
+  --font-serif: "Literata Variable", Literata, Georgia, serif;
+  --font-display: "Cinzel Variable", Cinzel, "Trajan Pro", Georgia, serif;
+  --font-gothic: "Grenze Gotisch Variable", "Grenze Gotisch", "UnifrakturMaguntia", Georgia, serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -344,7 +383,7 @@
 
   * { @apply border-border outline-ring/50; }
   html { scroll-behavior: smooth; scroll-padding-top: 30px; color-scheme: dark; }
-  body { @apply bg-background text-foreground font-sans antialiased; font-size: 15px; line-height: 1.6; margin: 0; }
+  body { @apply bg-background text-foreground font-sans antialiased; margin: 0; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 }
 
@@ -421,7 +460,7 @@
 }
 
 /* Trophy hall: original architectural framing, layered stone and warm metal. */
-.trophy-hall { position:relative; overflow:hidden; padding:clamp(18px,4vw,38px); border:1px solid #61503a; border-radius:14px; background:radial-gradient(ellipse at 50% -20%,#67503955,transparent 65%),linear-gradient(120deg,#1a1918,#101214); box-shadow:inset 0 0 60px #0007; color:#f1e7d6; }
+.trophy-hall { position:relative; overflow:hidden; padding:clamp(18px,4vw,38px); border:1px solid #61503a; border-radius:3px; background:radial-gradient(ellipse at 50% -20%,#67503955,transparent 65%),linear-gradient(120deg,#1a1918,#101214); box-shadow:inset 0 0 60px #0007; color:#f1e7d6; }
 .trophy-hall.room-ember-hall {background:radial-gradient(ellipse at 50% 110%,#a13d2355,transparent 70%),linear-gradient(120deg,#271a18,#121011);border-color:#804c36}
 .trophy-hall.room-moon-hall {background:radial-gradient(ellipse at 50% -20%,#6c86b355,transparent 70%),linear-gradient(120deg,#182330,#10121e);border-color:#536b82}
 .hall-arch {position:absolute;top:-100px;left:15%;width:70%;height:600px;border:1px solid #ad91682b;border-radius:50% 50% 0 0;box-shadow:0 0 0 18px #ad916808,0 0 0 19px #ad916815;pointer-events:none}
@@ -432,7 +471,7 @@
 .relic-orbit{position:absolute;inset:13% 8%;border:1px solid var(--tier,#ad9168);opacity:.45;transform:rotate(45deg);border-radius:13%;box-shadow:inset 0 0 0 5px #0004,0 0 0 5px #a78d4410}
 .relic-symbol{position:relative;width:63%;height:63%;object-fit:contain;filter:sepia(.65) drop-shadow(0 3px 5px #000);opacity:.93}
 .relic-gem{position:absolute;bottom:2%;width:5px;height:5px;background:var(--tier,#ad9168);transform:rotate(45deg)}
-.relic-card{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--card);transition:border-color .2s}
+.relic-card{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:3px;overflow:hidden;background:var(--card);transition:border-color .2s}
 .relic-card:hover{border-color:var(--tier)}
 .relic-card-art{display:flex;align-items:center;justify-content:center;min-height:160px;background:radial-gradient(ellipse,var(--tier-soft),transparent 75%),linear-gradient(#0001,#0005);border-bottom:1px solid var(--border)}
 .relic-shop-banner{background:radial-gradient(ellipse at 0 50%,var(--tint-strong),transparent 80%),var(--card)}

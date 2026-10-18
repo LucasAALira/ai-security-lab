@@ -83,12 +83,12 @@ export function eventsToText(events: readonly ProgressEvent[]): string[] {
 }
 
 export const rejectText: Record<RejectReason, string> = {
-  invalid: 'Não foi possível concluir esta ação.',
-  coins: 'Moedas insuficientes.',
-  limit: 'Limite atingido.',
-  owned: 'Você já tem este item.',
-  locked: 'Compre este item antes de usá-lo.',
-  missing: 'Item não encontrado.',
+  invalid: 'Esta ação não pôde ser registrada. Nada do seu progresso foi perdido; tente de novo.',
+  coins: 'Faltam moedas para isto. Nada foi descontado; moedas vêm de aulas, desafios e contratos do dia.',
+  limit: 'Você já chegou ao limite deste item. Nada foi descontado.',
+  owned: 'Este item já é seu. Nada foi descontado.',
+  locked: 'Este item ainda não é seu: adquira com o mercador antes de usá-lo.',
+  missing: 'Não encontramos este item. Recarregue a página e tente de novo.',
   prereq: 'Conclua os pré-requisitos do módulo (acenda a fogueira de cada um) para liberar esta etapa.',
   fogueira: 'Acenda a fogueira do módulo, concluindo todas as tarefas, para enfrentar o chefe.',
   order: 'Faça a etapa anterior antes desta.',

@@ -16,7 +16,7 @@ import { useProgress } from '@/state/ProgressProvider'
 
 function Price({ value, className }: { value: number; className?: string }) {
   return (
-    <span className={cn('inline-flex items-center gap-1 font-mono text-sm text-primary', className)}>
+    <span className={cn('gx-price inline-flex items-center gap-1 text-sm font-semibold text-[var(--candle)] tabular-nums', className)}>
       <Coins className="size-3.5" aria-hidden="true" />
       {value}
       <span className="sr-only">{plural(value, 'moeda', 'moedas')}</span>
@@ -25,16 +25,17 @@ function Price({ value, className }: { value: number; className?: string }) {
 }
 
 export function ShopPage() {
-  useDocumentTitle('Loja de moedas')
+  useDocumentTitle('Mercador — loja de moedas')
   const { state, derived, ctx, dispatch } = useProgress()
   const { balance } = derived
   const earned = coinsEarned(state, ctx)
 
   return (
     <div className="py-8 md:py-10">
-      <SectionHeading eyebrow="LOJA DE MOEDAS" level="h1" title="Gaste o que você ganhou estudando" description="Moedas vêm do estudo e nunca reduzem seu XP, nível ou medalhas." />
+      <SectionHeading eyebrow="Mercador · loja de moedas" level="h1" title="A bancada do mercador" description="Moedas vêm do estudo. Gastar nunca reduz seu XP, nível ou conquistas, e os preços são fixos." />
 
-      <div className="stats stats-vertical mt-6 w-full min-[1000px]:grid min-[1000px]:grid-cols-3 rounded-lg border border-border bg-[linear-gradient(135deg,var(--tint-strong),var(--card))]">
+      {/* O balcão: saldo em destaque, o que entrou e o que saiu. */}
+      <div className="gx-counter stats stats-vertical mt-6 w-full min-[1000px]:grid min-[1000px]:grid-cols-3">
         <div className="stat">
           <div className="stat-title text-xs text-muted-foreground">Saldo</div>
           <div className="stat-value flex items-center gap-2 text-3xl text-primary" aria-live="polite">
@@ -73,9 +74,9 @@ export function ShopPage() {
         </div>
       </section>
 
-      <Link to="/sala-de-trofeus" className="relic-shop-banner mt-8 flex flex-wrap items-center gap-5 rounded-xl border border-tint-line p-6">
+      <Link to="/sala-de-trofeus" className="relic-shop-banner gx-frame gx-candle mt-8 flex flex-wrap items-center gap-5 p-6">
         <RelicArt icon="locked-chest" />
-        <div className="min-w-0 flex-1"><p className="text-[10px] tracking-[.22em] text-primary">O ACERVO DO GUARDIÃO</p><h2 className="mt-2 font-serif text-2xl">Relíquias que contam sua história</h2><p className="mt-2 text-sm text-muted-foreground">Oito colecionáveis, três cenários e seis nichos para suas maiores conquistas.</p><span className="mt-3 inline-block text-sm text-primary">Explorar a sala de troféus →</span></div>
+        <div className="min-w-0 flex-1"><p className="gx-inscription">O acervo do guardião</p><h2 className="mt-2 text-2xl">Relíquias que contam sua história</h2><p className="mt-2 text-sm text-muted-foreground">Oito colecionáveis, três cenários e seis nichos para suas maiores conquistas.</p><span className="mt-3 inline-block text-sm font-semibold text-primary">Explorar a sala de troféus</span></div>
       </Link>
       <section aria-labelledby="loja-escudo" className="mt-10">
         <h2 id="loja-escudo" className="mb-3 flex items-center gap-2 text-lg font-semibold">
@@ -101,26 +102,29 @@ export function ShopPage() {
         <h2 id="loja-temas" className="mb-3 flex items-center gap-2 text-lg font-semibold">
           <Palette className="size-5 text-primary" aria-hidden="true" /> Temas visuais
         </h2>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <p className="mb-3 max-w-2xl text-sm text-muted-foreground">Todos os temas usam a mesma moldura gótica; muda a cor. Temas comprados continuam seus para sempre.</p>
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {THEMES.map((t) => {
             const owned = t.price === 0 || state.shop.owned.includes(t.id)
             const active = state.shop.theme === t.id
+            const missing = Math.max(0, t.price - balance)
             return (
-              <Card key={t.id} className="gap-3 p-4">
+              <Card key={t.id} className={cn('gx-candle gap-3 p-4', active && 'border-[var(--ornament)]')} data-selected={active ? 'true' : undefined}>
                 {/* A prévia usa o próprio tema, para mostrar as cores reais antes de comprar. */}
-                <div data-theme={t.id} className="rounded-md border border-border bg-background p-3 text-foreground" aria-hidden="true">
-                  <div className="flex justify-center py-2"><RelicArt icon="crown" className="!h-16 !w-16" /></div><div className="mb-2 h-1.5 w-2/3 rounded-full bg-primary" />
-                  <div className="mb-2 h-1.5 w-1/2 rounded-full bg-border" />
-                  <span className="inline-block rounded-md bg-primary px-2.5 py-1 text-[11px] font-semibold text-primary-foreground">Botão</span>
+                <div data-theme={t.id} className="rounded-[2px] border border-border bg-background p-3 text-foreground" aria-hidden="true">
+                  <div className="flex justify-center py-2"><RelicArt icon="crown" className="!h-16 !w-16" /></div>
+                  <p className="font-display text-[13px] font-semibold">Título da página</p>
+                  <div className="gx-gauge my-2 h-2"><div className="gx-gauge-fill w-full" style={{ transform: 'translateX(-35%)' }} /></div>
+                  <span className="gx-btn gx-btn-plate inline-block px-2.5 py-1 text-[11px]">Ação principal</span>
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold">Tema {t.name}</h3>
                   <p className="text-xs text-muted-foreground">{t.description}</p>
                 </div>
                 <div className="mt-auto flex items-center justify-between gap-2">
-                  {owned ? <span className="text-xs text-muted-foreground">{t.price === 0 ? 'Incluído' : 'Seu'}</span> : <Price value={t.price} />}
+                  {owned ? <span className="text-xs text-muted-foreground">{t.price === 0 ? 'Gratuito' : 'Na sua coleção'}</span> : <span className="grid"><Price value={t.price} />{missing > 0 ? <span className="text-[11px] text-muted-foreground">Faltam {missing}</span> : null}</span>}
                   {active ? (
-                    <Button size="sm" variant="secondary" disabled>
+                    <Button size="sm" variant="secondary" disabled aria-pressed="true">
                       <Check aria-hidden="true" /> Em uso
                     </Button>
                   ) : owned ? (

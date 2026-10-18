@@ -48,7 +48,7 @@ export function UpcomingPage() {
               <Icon className="size-5 text-primary" aria-hidden="true" /> {title}
             </h2>
             <p className="mb-4 max-w-2xl text-sm text-muted-foreground">{upcomingStatus[status].description}</p>
-            <div className="grid gap-4">
+            <div className="grid grid-cols-[minmax(0,1fr)] gap-4">
               {items.map((item) => (
                 <Card key={item.id} className="gap-3 p-5">
                   <header className="flex flex-wrap items-start justify-between gap-2">

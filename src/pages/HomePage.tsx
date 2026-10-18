@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import { AreasSection } from '@/components/home/AreasSection'
 import { DailyPanel } from '@/components/home/DailyPanel'
-import { Hero } from '@/components/home/Hero'
+import { RecentRelics } from '@/components/home/RecentRelics'
+import { SanctuaryHero } from '@/components/home/SanctuaryHero'
 import { LabSection } from '@/components/home/LabSection'
 import { LibrarySection } from '@/components/home/LibrarySection'
 import { ModulesSection, type ModuleFilter } from '@/components/home/ModulesSection'
@@ -16,7 +17,7 @@ import type { CompanySize } from '@/data/types'
 import { useDocumentTitle } from '@/lib/use-document-title'
 
 /** Seções que os links de navegação (`/?secao=...`) sabem alcançar. */
-export const HOME_SECTIONS = ['inicio', 'areas', 'hoje', 'tarefas', 'medalhas', 'requisitos', 'trilhas', 'laboratorio', 'cenarios', 'pentest', 'fontes'] as const
+export const HOME_SECTIONS = ['inicio', 'areas', 'hoje', 'relicario', 'tarefas', 'medalhas', 'requisitos', 'trilhas', 'laboratorio', 'cenarios', 'pentest', 'fontes'] as const
 
 export function HomePage() {
   useDocumentTitle()
@@ -42,10 +43,11 @@ export function HomePage() {
 
   return (
     <>
-      <Hero />
-      <StatsRow />
+      <SanctuaryHero />
       <AreasSection />
       <DailyPanel />
+      <RecentRelics />
+      <StatsRow />
       <TasksSection onPickTrack={(track) => setFilter(track as ModuleFilter)} onOpenCase={openCase} />
       <RequirementsSection />
       <ModulesSection filter={filter} onFilterChange={setFilter} />
