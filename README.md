@@ -308,3 +308,11 @@ Acesse `#/sala-de-trofeus` pelo menu Jogo ou pela loja.
 - As figuras usam símbolos de Lorc e Delapouite, Game-icons.net, CC BY 3.0; detalhes em `public/assets/relics/CREDITS.md` e na página Referências. Molduras, sala, nomes e histórias são originais.
 
 O progresso de localhost não aparece automaticamente em outro endereço. Exporte em Conquistas e importe no novo endereço para transferi-lo.
+
+## Sons do Santuário e fogueira
+
+O painel abaixo do cabeçalho reúne música pessoal e efeitos originais gerados no aparelho, sem downloads externos. **Ativar efeitos** habilita sons de seleção, XP, compras, vitórias e conquistas; **Ouvir fogueira** liga um ambiente suave de lenha. Os volumes são independentes da música. Os efeitos começam desligados na primeira visita; a preferência fica salva. O ambiente nunca começa automaticamente e pausa ao ocultar a página.
+
+Em **Carregar minha música**, importe um áudio local de até 30 MB (MP3 recomendado). O arquivo é validado antes de substituir a faixa anterior e fica no IndexedDB deste aparelho, separado do progresso e dos backups. Nenhuma música acompanha o projeto. A faixa é restaurada pausada, continua entre páginas e pode ser removida pelo player. Se não houver armazenamento disponível, o player avisa e permite ouvir apenas na sessão.
+
+A fogueira vetorial da página inicial é arte original; a animação respeita movimento reduzido e pausa com a página oculta. Em telas intermediárias sem espaço lateral, ela é ocultada para preservar a leitura. Sons de conquista são emitidos a partir de resultados reais de ações, sem reproduzir conquistas antigas ao carregar um backup. A implementação funciona offline no site empacotado; não oferece áudio em segundo plano. A seleção de arquivos e codecs ainda precisa ser validada em Android físico.

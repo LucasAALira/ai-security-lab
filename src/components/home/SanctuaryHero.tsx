@@ -1,3 +1,4 @@
+import { Bonfire } from '@/components/audio/Bonfire'
 import { ArrowRight, Hourglass, Sparkles } from 'lucide-react'
 import { Link } from 'react-router'
 import { SanctuaryScene } from '@/components/gothic/SanctuaryScene'
@@ -18,6 +19,7 @@ export function SanctuaryHero() {
         {/* Um `hero.riv` em src/assets/rive substitui a cena; sem ele, a cena em SVG. */}
         <RiveSlot src="hero.riv" stateMachine="Hero" className="size-full" fallback={<SanctuaryScene />} />
       </div>
+      <Bonfire />
       {/* véu: escurece a cena atrás do texto (contraste garantido) e a deixa respirar à direita */}
       <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,color-mix(in_oklab,var(--background)_96%,transparent)_0%,color-mix(in_oklab,var(--background)_88%,transparent)_46%,transparent_78%)] md:block" aria-hidden="true" />
       <div className="relative grid gap-4 bg-[var(--background)] p-4 sm:p-6 md:max-w-[620px] md:bg-transparent md:p-9 md:pr-0 lg:py-12 [@media(max-height:520px)]:gap-2 [@media(max-height:520px)]:py-4">
