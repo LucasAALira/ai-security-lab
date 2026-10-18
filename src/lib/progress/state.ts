@@ -1,5 +1,6 @@
 import { RELICS, ROOMS, DISPLAY_LIMIT, roomOwned } from './relics'
-import { DEFAULT_THEME, isEarlyAccess, isFreeTheme, isThemeId, LEGACY_DEFAULT_THEME, QUEST_IDS, QUESTS_PER_DAY, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
+import { cleanEconomy, type EconomyState } from './economy'
+import { DEFAULT_THEME, isEarlyAccess, isFreeTheme, isThemeId, LEGACY_DEFAULT_THEME, PREVIOUS_DEFAULT_THEMES, QUEST_IDS, QUESTS_PER_DAY, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
 import {
   BOSS_QUESTIONS,
   CASE_COUNT,
@@ -242,14 +243,16 @@ function cleanEvents(raw: unknown): LearningEvent[] {
 }
 
 /** Saneia qualquer valor vindo do armazenamento: só o que tem forma e limite válidos é mantido. */
-/** Tema ativo depois de limpar o estado salvo. Um tema pago só vale se foi comprado. Quem estava no padrão
- *  antigo sem nunca ter escolhido tema (e sem tema comprado) passa para o novo padrão; quem escolheu de
- *  propósito, ou tem outro tema, continua onde estava. */
+/** Tema ativo depois de limpar o estado salvo. Um tema pago só vale se foi comprado. Quem estava num padrão
+ *  anterior (Biblioteca ou Dragão) sem nunca ter escolhido tema passa para o padrão atual; quem escolheu de
+ *  propósito, ou tem outro tema, continua onde estava. As compras nunca mudam. */
 export function pickTheme(theme: unknown, owned: string[], chosen: boolean): ThemeId {
   if (!isThemeId(theme)) return DEFAULT_THEME
   if (!isFreeTheme(theme) && !owned.includes(theme)) return DEFAULT_THEME
-  if (theme === LEGACY_DEFAULT_THEME && !chosen && owned.length === 0) return DEFAULT_THEME
-  return theme
+  if (chosen || !PREVIOUS_DEFAULT_THEMES.includes(theme)) return theme
+  // O Dragão vem de antes da marca de escolha: com tema comprado, pode ter sido escolhido de propósito.
+  if (theme === LEGACY_DEFAULT_THEME && owned.length > 0) return theme
+  return DEFAULT_THEME
 }
 
 export function cleanState(raw: unknown): StudyState {
@@ -433,7 +436,14 @@ export function cleanState(raw: unknown): StudyState {
     dossiers: cleanDays(at(raw, 'dossiers'), LIMITS.dossiers),
     architect,
     lessons: cleanDays(at(raw, 'lessons'), LIMITS.lessons),
+    ...economyField(at(raw, 'economy')),
   }
+}
+
+/** A dificuldade só entra no estado quando foge do padrão (estados antigos ficam idênticos). */
+function economyField(raw: unknown): { economy?: EconomyState } {
+  const economy = cleanEconomy(raw)
+  return economy ? { economy } : {}
 }
 
 export function emptyState(): StudyState {

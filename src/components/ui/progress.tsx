@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { useRise } from "@/components/gothic/use-rise"
 import { Progress as ProgressPrimitive } from "radix-ui"
 
 function Progress({
@@ -9,6 +10,7 @@ function Progress({
   value,
   ...props
 }: React.ComponentProps<typeof ProgressPrimitive.Root>) {
+  const charging = useRise(value || 0)
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
@@ -20,7 +22,7 @@ function Progress({
     >
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
-        className="gx-gauge-fill w-full flex-1"
+        className={cn("gx-gauge-fill w-full flex-1", charging && "is-charging")}
         style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
       />
     </ProgressPrimitive.Root>

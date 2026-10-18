@@ -40,7 +40,7 @@ export function ModulesSection({ filter, onFilterChange }: Props) {
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div role="group" aria-label="Filtrar módulos" className="flex flex-wrap gap-1.5">
           {moduleFilters.map((f) => (
-            <Button key={f} size="sm" variant={f === filter ? 'secondary' : 'ghost'} aria-pressed={f === filter} className={cn('h-8 text-[11px]', f === filter ? 'border border-tint-line bg-tint-strong text-primary' : 'text-muted-foreground')} onClick={() => onFilterChange(f)}>
+            <Button key={f} size="sm" variant={f === filter ? 'secondary' : 'ghost'} aria-pressed={f === filter} className={cn('h-8 text-[11px]', f !== filter && 'text-muted-foreground')} onClick={() => onFilterChange(f)}>
               {f}
             </Button>
           ))}

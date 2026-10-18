@@ -103,7 +103,7 @@ export function SanctuaryPlayer() {
         </div>
         <label className="sanctuary-volume"><Volume2 size={18} aria-hidden="true" />Volume <input aria-label="Volume da música" type="range" min="0" max="1" step="0.01" value={settings.volume} onChange={e => setSettings(s => ({ ...s, volume: Number(e.target.value) }))} /><span>{Math.round(settings.volume * 100)}%</span></label>
         <p role="status" className="sanctuary-note">{message}</p>
-        <p className="sanctuary-note">MP3, M4A ou outro áudio compatível · até 150 MB. Não entra no backup de estudos. Ao sair do app, a música pausa.</p>
+        <p className="sanctuary-note">MP3, M4A ou outro áudio compatível · até 170 MB. Não entra no backup de estudos. Ao sair do app, a música pausa.</p>
         <input ref={input} type="file" accept="audio/*,.mp3,.m4a,.ogg,.wav,.flac,.aac,.opus" hidden aria-label="Selecionar música local" onChange={e => { const file = e.target.files?.[0]; e.target.value = ''; void select(file) }} />
         <audio ref={audio} preload="metadata" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onEnded={() => setPlaying(false)} onError={() => { if (track) { setPlaying(false); setMessage('Não foi possível reproduzir este arquivo. Carregue uma versão compatível, como MP3.') } }} />
       </div>

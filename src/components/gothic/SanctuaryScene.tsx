@@ -1,134 +1,147 @@
 import { useId } from 'react'
 import { cn } from '@/lib/utils'
 
-/* Cena original do Santuário do Conhecimento: o salão de uma biblioteca em ruínas, com um vitral
-   ogival, estantes, velas e uma rosácea cujo desenho é um circuito (o toque tecnológico).
-   Tudo em SVG gerado aqui: nenhuma imagem externa, poucos KB, sem animação contínua.
+/* Cena original do Santuário do Conhecimento, versão "catedral digital": uma nave gótica desenhada
+   só com linhas de circuito de 1 px. Arcos ogivais, colunas que são trilhas de placa, piso em grade,
+   um friso de escamas de dragão e o vitral central, cuja rosácea é um circuito com nós de solda.
+   A fogueira digital (Bonfire) é desenhada no mesmo sistema de coordenadas, na base do vitral.
+   Tudo em SVG gerado aqui, nas cores do tema ativo: nenhuma imagem externa, sem animação contínua.
    É decorativa: os controles ficam por cima, sobre um véu escuro que garante o contraste. */
 
-/** Lombadas de livros determinísticas (sem aleatoriedade: o desenho é sempre o mesmo). */
-function books(x0: number, y: number, width: number, seed: number) {
-  const out: { x: number; w: number; h: number; c: string }[] = []
-  const colors = ['#4a2a22', '#2d3a2b', '#3b2f45', '#5a4426', '#2a3442', '#4b3a2a', '#3a2620']
-  let x = x0
-  let i = seed
-  while (x < x0 + width - 6) {
-    const w = 6 + ((i * 7) % 7)
-    const h = 34 + ((i * 13) % 20)
-    out.push({ x, w, h, c: colors[(i * 5) % colors.length] })
-    x += w + 1
-    i += 1
-  }
-  return out.map((b) => ({ ...b, y: y - b.h }))
-}
+/** Centro e largura do vitral, no sistema 1200 × 420 (a fogueira usa os mesmos números). */
+export const SCENE = { width: 1200, height: 420, windowX: 840, rosetteY: 150, altarY: 336 } as const
 
-function Shelf({ x, width, seed }: { x: number; width: number; seed: number }) {
-  const rows = [150, 222, 294, 366]
-  return (
-    <g>
-      <rect x={x - 8} y={86} width={width + 16} height={300} fill="#120d0a" stroke="#2b2018" strokeWidth="2" />
-      {rows.map((y, r) => (
-        <g key={y}>
-          {books(x, y, width, seed + r * 11).map((b, i) => (
-            <rect key={i} x={b.x} y={b.y} width={b.w} height={b.h} fill={b.c} opacity="0.85" />
-          ))}
-          <rect x={x - 8} y={y} width={width + 16} height={6} fill="#3a2a1d" />
-        </g>
-      ))}
-    </g>
-  )
-}
+const line = { stroke: 'currentColor', fill: 'none', vectorEffect: 'non-scaling-stroke' } as const
 
-function Candle({ x, y, h = 30, glow }: { x: number; y: number; h?: number; glow: string }) {
-  return (
-    <g>
-      <circle cx={x} cy={y - h - 8} r={46} fill={`url(#${glow})`} />
-      <rect x={x - 4} y={y - h} width={8} height={h} rx={1.5} fill="#e9dcc0" />
-      <path d={`M${x - 4} ${y - h + 3} q2 6 0 10`} stroke="#cdbb98" strokeWidth="1.2" fill="none" />
-      <path d={`M${x} ${y - h - 15} c4 5 4 9 0 12 c-4 -3 -4 -7 0 -12z`} fill="#f7c76b" />
-      <path d={`M${x} ${y - h - 10} c2 3 2 5 0 7 c-2 -2 -2 -4 0 -7z`} fill="#fff4cf" />
-    </g>
-  )
+/** Arco ogival (pontiagudo) de largura w com o pé em y0 e o ápice em top. */
+function ogive(cx: number, w: number, top: number, y0 = 420) {
+  const h = w / 2
+  const spring = top + w * 0.62
+  return `M${cx - h} ${y0} V${spring} Q${cx - h} ${top + w * 0.12} ${cx} ${top} Q${cx + h} ${top + w * 0.12} ${cx + h} ${spring} V${y0}`
 }
 
 export function SanctuaryScene({ className }: { className?: string }) {
   const id = useId().replace(/:/g, '')
-  const glow = `${id}g`
+  const { windowX: wx, rosetteY: ry, altarY } = SCENE
   return (
     <svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" className={cn('block size-full', className)}>
       <defs>
-        <linearGradient id={`${id}wall`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#1b1613" />
-          <stop offset="1" stopColor="#0d0a09" />
+        <linearGradient id={`${id}void`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style={{ stopColor: 'color-mix(in oklab, var(--card) 70%, var(--background))' }} />
+          <stop offset="1" style={{ stopColor: 'var(--background)' }} />
         </linearGradient>
-        <radialGradient id={glow}>
-          <stop offset="0" stopColor="#f2c46d" stopOpacity="0.32" />
-          <stop offset="1" stopColor="#f2c46d" stopOpacity="0" />
+        <radialGradient id={`${id}halo`} cx="0.7" cy="0.36" r="0.5">
+          <stop offset="0" style={{ stopColor: 'var(--primary)', stopOpacity: 0.16 }} />
+          <stop offset="1" style={{ stopColor: 'var(--primary)', stopOpacity: 0 }} />
         </radialGradient>
-        <radialGradient id={`${id}light`} cx="0.72" cy="0.2" r="0.6">
-          <stop offset="0" stopColor="#d9a54e" stopOpacity="0.22" />
-          <stop offset="1" stopColor="#d9a54e" stopOpacity="0" />
+        <radialGradient id={`${id}glass`} cx="0.5" cy="0.35" r="0.7">
+          <stop offset="0" style={{ stopColor: 'var(--primary)', stopOpacity: 0.12 }} />
+          <stop offset="1" style={{ stopColor: 'var(--primary)', stopOpacity: 0.02 }} />
         </radialGradient>
-        <linearGradient id={`${id}glass`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#3b2f55" />
-          <stop offset="0.5" stopColor="#2a3346" />
-          <stop offset="1" stopColor="#4a3320" />
-        </linearGradient>
-        <pattern id={`${id}stone`} width="80" height="40" patternUnits="userSpaceOnUse">
-          <path d="M0 40 H80 M40 0 V20 M0 20 H80 M20 20 V40 M60 20 V40" stroke="#000" strokeOpacity="0.25" strokeWidth="1" fill="none" />
+        {/* escamas de dragão em trilha de circuito */}
+        <pattern id={`${id}scales`} width="40" height="22" patternUnits="userSpaceOnUse">
+          <path d="M0 22a20 20 0 0 1 40 0M-20 11a20 20 0 0 1 40 0M20 11a20 20 0 0 1 40 0" {...line} strokeWidth="1" />
         </pattern>
+        <linearGradient id={`${id}fade`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#fff" stopOpacity="0" />
+          <stop offset="1" stopColor="#fff" stopOpacity="1" />
+        </linearGradient>
+        <mask id={`${id}floor`}>
+          <rect x="0" y="330" width="1200" height="90" fill={`url(#${id}fade)`} />
+        </mask>
       </defs>
 
-      {/* parede de pedra */}
-      <rect width="1200" height="420" fill={`url(#${id}wall)`} />
-      <rect width="1200" height="420" fill={`url(#${id}stone)`} />
+      {/* vazio da nave */}
+      <rect width="1200" height="420" fill={`url(#${id}void)`} />
+      <rect width="1200" height="420" fill={`url(#${id}halo)`} />
 
-      {/* arcos laterais da nave */}
-      {[120, 1120].map((cx) => (
-        <path key={cx} d={`M${cx - 110} 420 V170 Q${cx - 110} 60 ${cx} 40 Q${cx + 110} 60 ${cx + 110} 170 V420`} fill="none" stroke="#2c2119" strokeWidth="14" />
-      ))}
-
-      {/* estantes */}
-      <Shelf x={40} width={250} seed={3} />
-      <Shelf x={548} width={156} seed={9} />
-      <Shelf x={1024} width={160} seed={17} />
-
-      {/* vitral ogival, deslocado para a direita: à esquerda ficam os controles */}
-      <g transform="translate(262 0)">
-        <path d="M470 420 V190 Q470 70 600 28 Q730 70 730 190 V420 Z" fill="#0c0908" stroke="#3a2a1d" strokeWidth="10" />
-        <path d="M490 400 V194 Q490 88 600 50 Q710 88 710 194 V400 Z" fill={`url(#${id}glass)`} />
-        {/* rosácea em forma de circuito: trilhas e nós */}
-        <g transform="translate(600 150)" stroke="#d9a54e" strokeOpacity="0.55" fill="none" strokeWidth="2">
-          <circle r="54" stroke="#8a6a3c" strokeWidth="5" strokeOpacity="0.9" />
-          <circle r="20" />
-          {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
-            <g key={a} transform={`rotate(${a})`}>
-              <path d="M0 -20 V-34 H10 V-48" />
-              <circle cx="10" cy="-48" r="3" fill="#f2c46d" fillOpacity="0.8" stroke="none" />
-            </g>
-          ))}
-          <rect x="-7" y="-7" width="14" height="14" fill="#f2c46d" fillOpacity="0.5" stroke="none" transform="rotate(45)" />
-        </g>
-        {/* chumbo das vidraças */}
-        <path d="M600 204 V400 M545 230 V400 M655 230 V400 M490 300 H710" stroke="#0c0908" strokeWidth="5" />
-        {[[520, 250, '#5a3d24'], [570, 330, '#3d2f55'], [628, 250, '#2f4430'], [680, 330, '#5a3d24'], [520, 350, '#2a3346'], [630, 350, '#4a2a3a']].map(([x, y, c], i) => (
-          <rect key={i} x={Number(x)} y={Number(y)} width="22" height="34" fill={String(c)} opacity="0.7" />
+      {/* arcada lateral: arcos ogivais em linha fina, cada vez mais apagados para os lados */}
+      <g style={{ color: 'var(--foreground)' }}>
+        {[
+          [120, 200, 70, 0.1],
+          [330, 170, 96, 0.08],
+          [520, 150, 118, 0.07],
+          [1110, 170, 96, 0.1],
+        ].map(([cx, w, top, o]) => (
+          <g key={cx} strokeOpacity={o}>
+            <path d={ogive(cx, w, top)} {...line} strokeWidth="1" />
+            <path d={ogive(cx, w - 26, top + 22)} {...line} strokeWidth="1" strokeOpacity={0.6} />
+          </g>
+        ))}
+        {/* colunas: trilhas verticais com derivações e nós de solda */}
+        {[230, 425, 980, 1010].map((x, i) => (
+          <g key={x} strokeOpacity={0.12}>
+            <path d={`M${x} 420 V${120 + i * 14}`} {...line} strokeWidth="1" />
+            <path d={`M${x} ${240 + i * 9} h${i % 2 ? -14 : 14} v-26`} {...line} strokeWidth="1" />
+            <circle cx={x + (i % 2 ? -14 : 14)} cy={214 + i * 9} r="2" fill="currentColor" fillOpacity={0.18} stroke="none" />
+          </g>
         ))}
       </g>
-      <rect width="1200" height="420" fill={`url(#${id}light)`} />
 
-      {/* parapeito com velas */}
-      <rect x="642" y="372" width="440" height="14" fill="#2b2018" />
-      <rect x="632" y="384" width="460" height="36" fill="#1a130e" />
-      <Candle x={682} y={372} h={34} glow={glow} />
-      <Candle x={708} y={372} h={22} glow={glow} />
-      <Candle x={1022} y={372} h={28} glow={glow} />
-      <Candle x={1046} y={372} h={40} glow={glow} />
-      <Candle x={150} y={410} h={26} glow={glow} />
+      {/* friso de escamas de dragão, sob a cornija */}
+      <g style={{ color: 'var(--primary)' }} opacity="0.12">
+        <rect x="0" y="262" width="1200" height="44" fill={`url(#${id}scales)`} />
+      </g>
+      <path d="M0 262 H1200 M0 306 H1200" style={{ color: 'var(--foreground)' }} {...line} strokeOpacity="0.1" strokeWidth="1" />
 
-      {/* poeira de luz: três feixes estáticos */}
-      <path d="M822 60 L732 420 H782 Z" fill="#f2c46d" opacity="0.035" />
-      <path d="M902 60 L962 420 H1022 Z" fill="#f2c46d" opacity="0.03" />
+      {/* piso em grade, em perspectiva para o vitral */}
+      <g style={{ color: 'var(--foreground)' }} strokeOpacity="0.1" mask={`url(#${id}floor)`}>
+        {Array.from({ length: 15 }, (_, i) => -360 + i * 140).map((x) => (
+          <path key={x} d={`M${wx} ${altarY} L${x} 420`} {...line} strokeWidth="1" />
+        ))}
+        {[352, 372, 396].map((y) => (
+          <path key={y} d={`M0 ${y} H1200`} {...line} strokeWidth="1" />
+        ))}
+      </g>
+
+      {/* vitral central: dupla ogiva, mainéis de circuito e a rosácea */}
+      <g style={{ color: 'var(--primary)' }}>
+        <path d={`${ogive(wx, 232, 30, altarY)} Z`} fill={`url(#${id}glass)`} stroke="none" />
+        <path d={ogive(wx, 232, 30, altarY)} {...line} strokeOpacity="0.75" strokeWidth="1" />
+        <path d={ogive(wx, 206, 52, altarY)} {...line} strokeOpacity="0.4" strokeWidth="1" />
+        {/* mainéis: trilhas com nós e derivações em 45° */}
+        <g strokeOpacity="0.4">
+          <path d={`M${wx} ${ry + 60} V${altarY} M${wx - 52} ${ry + 92} V${altarY} M${wx + 52} ${ry + 92} V${altarY}`} {...line} strokeWidth="1" />
+          <path d={`M${wx - 52} ${ry + 92} l52 -32 l52 32`} {...line} strokeWidth="1" />
+          <path d={`M${wx - 103} 268 H${wx + 103}`} {...line} strokeWidth="1" />
+          <path d={`M${wx - 26} 268 v18 l-10 10 v20 M${wx + 26} 268 v18 l10 10 v20`} {...line} strokeWidth="1" />
+        </g>
+        <g fill="currentColor" fillOpacity="0.7" stroke="none">
+          {[
+            [wx - 52, ry + 92],
+            [wx + 52, ry + 92],
+            [wx, 268],
+            [wx - 36, 316],
+            [wx + 36, 316],
+          ].map(([x, y]) => (
+            <rect key={`${x}-${y}`} x={x - 2.5} y={y - 2.5} width="5" height="5" transform={`rotate(45 ${x} ${y})`} />
+          ))}
+        </g>
+
+        {/* rosácea: o circuito do vitral */}
+        <g transform={`translate(${wx} ${ry})`}>
+          <circle r="58" {...line} strokeOpacity="0.85" strokeWidth="1" />
+          <circle r="50" {...line} strokeOpacity="0.35" strokeWidth="1" strokeDasharray="2 4" />
+          <circle r="20" {...line} strokeOpacity="0.8" strokeWidth="1" />
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+            <g key={a} transform={`rotate(${a})`}>
+              <path d="M0 -20 V-32 L9 -41 V-50" {...line} strokeOpacity="0.7" strokeWidth="1" />
+              <circle cx="9" cy="-50" r="2.6" fill="currentColor" fillOpacity="0.9" stroke="none" />
+            </g>
+          ))}
+          <rect x="-7" y="-7" width="14" height="14" transform="rotate(45)" fill="currentColor" fillOpacity="0.55" stroke="none" />
+          <rect x="-3" y="-3" width="6" height="6" transform="rotate(45)" fill="#fff" fillOpacity="0.85" stroke="none" />
+        </g>
+
+        {/* feixes de luz do vitral, estáticos */}
+        <path d={`M${wx - 30} 90 L${wx - 160} 420 H${wx - 90} Z`} fill="currentColor" opacity="0.03" />
+        <path d={`M${wx + 30} 90 L${wx + 150} 420 H${wx + 230} Z`} fill="currentColor" opacity="0.025" />
+      </g>
+
+      {/* altar: plataforma de dados na base do vitral, onde fica a fogueira */}
+      <g style={{ color: 'var(--foreground)' }}>
+        <path d={`M${wx - 120} ${altarY} H${wx + 120} M${wx - 96} ${altarY + 10} H${wx + 96}`} {...line} strokeOpacity="0.22" strokeWidth="1" />
+      </g>
     </svg>
   )
 }

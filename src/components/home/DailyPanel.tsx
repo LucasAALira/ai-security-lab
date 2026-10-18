@@ -63,18 +63,18 @@ export function DailyPanel() {
                 <li
                   key={q.id}
                   className={cn(
-                    'gx-candle relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 rounded-[2px] border border-[var(--stone-line)] bg-[linear-gradient(180deg,color-mix(in_oklab,#e8d8b0_7%,var(--card)),var(--card))] px-3 py-2.5 text-[13.5px]',
+                    'gx-candle relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 border border-[var(--line)] bg-[linear-gradient(90deg,var(--tint),transparent_70%)] px-3 py-2.5 text-[13.5px]',
                     q.done && 'border-[var(--ornament-soft)]',
                   )}
                 >
                   {q.done ? (
                     <Pop>
-                      <span className="grid size-7 place-items-center rounded-full border border-[var(--ornament)] bg-tint-strong text-primary">
+                      <span className="grid size-7 place-items-center border border-[var(--gold-anodized)] bg-[color-mix(in_oklab,var(--gold-anodized)_12%,transparent)] text-[var(--gold-anodized)]">
                         <Check className="size-4" aria-hidden="true" />
                       </span>
                     </Pop>
                   ) : (
-                    <span className="grid size-7 place-items-center rounded-full border border-dashed border-[var(--stone-line)] text-muted-foreground">
+                    <span className="grid size-7 place-items-center border border-dashed border-[var(--line-strong)] text-muted-foreground">
                       <Circle className="size-3" aria-hidden="true" />
                     </span>
                   )}
@@ -82,7 +82,7 @@ export function DailyPanel() {
                     {q.title}
                     <span className="sr-only">{q.done ? ' (cumprido)' : ` (${q.progress} de ${q.target})`}</span>
                   </span>
-                  <span className="text-[12px] font-semibold text-[var(--candle)] tabular-nums">+{q.coins} moedas</span>
+                  <span className="font-mono text-[12px] font-semibold text-[var(--amber)] tabular-nums">+{q.coins} moedas</span>
                   <span className="col-start-2 col-end-4 flex items-center gap-2">
                     <Progress value={(q.progress / q.target) * 100} aria-label={`${q.title}: ${q.progress} de ${q.target}`} className="h-1.5 flex-1" />
                     <span className="text-[11.5px] text-muted-foreground tabular-nums" aria-hidden="true">

@@ -13,6 +13,7 @@ import { isModuleComplete } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
 import { SealMark } from '@/components/gothic/Seal'
+import { BuyButton } from './BuyButton'
 
 interface Props {
   module: number
@@ -95,9 +96,12 @@ export function UnlockModuleCard({ module, className, onUnlocked }: Props) {
       </header>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <div role="group" aria-labelledby={`imediato-${module}`} className="flex flex-col gap-2.5 rounded-lg border border-border bg-tint p-4">
+        <div role="group" aria-labelledby={`imediato-${module}`} className="flex flex-col gap-2.5 border border-[var(--line)] bg-tint p-4">
           <p id={`imediato-${module}`} className="text-[11px] font-semibold tracking-[0.14em] text-primary uppercase">
-            Desbloqueio imediato
+            Núcleo de LLM Exilado · desbloqueio imediato
+          </p>
+          <p className="text-[12px] leading-relaxed text-muted-foreground italic">
+            Um fragmento geométrico que ainda pulsa, arrancado de um modelo banido. Encaixado na porta selada, abre o módulo antes da hora.
           </p>
           <p className="flex items-center gap-1.5 font-mono text-xl text-primary">
             <Coins className="size-5" aria-hidden="true" />
@@ -114,17 +118,17 @@ export function UnlockModuleCard({ module, className, onUnlocked }: Props) {
               </>
             )}
           </p>
-          <Button className="mt-auto self-start" disabled={!enough} onClick={() => setAsk(true)}>
-            <LockOpen aria-hidden="true" /> {enough ? 'Desbloquear agora' : 'Moedas insuficientes'}
-          </Button>
+          <BuyButton className="mt-auto self-start" price={price} balance={balance} size="default" onBuy={() => setAsk(true)}>
+            <LockOpen aria-hidden="true" /> Desbloquear agora
+          </BuyButton>
           {!enough ? (
             <p className="text-[11px] leading-relaxed text-muted-foreground">
-              Moedas vêm do estudo: 1 a cada 5 XP, mais missões do dia, baús e revisões. <Link to="/?secao=hoje" className="text-primary underline underline-offset-2">Ver missões de hoje</Link>
+              Moedas vêm do estudo: 1 a cada 5 XP (vezes o multiplicador da dificuldade), mais missões do dia, baús e revisões. <Link to="/?secao=hoje" className="text-primary underline underline-offset-2">Ver missões de hoje</Link>
             </p>
           ) : null}
         </div>
 
-        <div role="group" aria-labelledby={`gratis-${module}`} className="flex flex-col gap-2.5 rounded-lg border border-border bg-card p-4">
+        <div role="group" aria-labelledby={`gratis-${module}`} className="flex flex-col gap-2.5 border border-[var(--line)] bg-card/60 p-4">
           <p id={`gratis-${module}`} className="text-[11px] font-semibold tracking-[0.14em] text-primary uppercase">
             Liberação gratuita
           </p>

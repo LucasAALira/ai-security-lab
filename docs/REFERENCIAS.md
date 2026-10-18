@@ -11,8 +11,8 @@ Este documento acompanha a página **Referências** do site. A fonte de verdade 
 | Motion | MIT | `Providers.tsx` (`MotionConfig reducedMotion="user"`), `components/motion/*`, vidas da revisão e a detecção de "reduzir movimento" nas animações da identidade gótica. A transição entre páginas é CSS (`gx-page-enter`). |
 | Rive | MIT (runtime) | `components/rive/RiveSlot.tsx`. O motor WebAssembly vai junto do site (funciona offline) e só é baixado quando existe um `.riv`. |
 | React Bits | MIT + Commons Clause | `components/reactbits/`: CountUp e SpotlightCard, copiados do repositório oficial. (DecryptedText e ShinyText saíram com o novo início.) |
-| Game-icons.net (Lorc e Delapouite) | CC BY 3.0 | `public/assets/relics/`: símbolos de relíquias e de algumas conquistas, com crédito em `CREDITS.md` e na página Referências. |
-| Cinzel, Literata, Grenze Gotisch, JetBrains Mono (Fontsource) | SIL OFL 1.1 | `src/styles/fonts.css`: só os subconjuntos latino e latino estendido, empacotados (sem internet). Acentos do português conferidos nos arquivos. |
+| Relíquias (arte própria) | do projeto | `public/assets/relics/`: SVG originais gerados por `scripts/make-relics.py`. Até a versão anterior eram símbolos de Game-icons.net (CC BY 3.0), todos substituídos. |
+| Cinzel, Inter, JetBrains Mono (Fontsource) | SIL OFL 1.1 | `src/styles/fonts.css`: só os subconjuntos latino e latino estendido, empacotados (sem internet). Acentos do português conferidos nos arquivos. |
 
 ### React Bits e a Commons Clause
 

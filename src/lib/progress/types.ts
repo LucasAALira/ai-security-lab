@@ -1,3 +1,4 @@
+import type { EconomyState } from './economy'
 import type { ActivitySpec } from './activities'
 import type { EVENT_KINDS } from './constants'
 
@@ -173,6 +174,8 @@ export interface StudyState {
   events: LearningEvent[]
   prefs: Prefs
   learner: Learner
+  /** Dificuldade e ajustes do modo deus. Ausente: Soulslike, os valores originais. */
+  economy?: EconomyState
   /** Campanhas: missões (e exercícios de dossiês), por id. */
   missions: Record<string, MissionState>
   /** Dossiês de casos reais lidos: id -> dia da leitura. O exercício do dossiê fica em `missions`. */

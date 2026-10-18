@@ -2,21 +2,36 @@ import { describe, expect, it } from 'vitest'
 import { progressContext as ctx } from '@/data/progress-context'
 import { applyAction, cleanState, DEFAULT_THEME, LEGACY_DEFAULT_THEME, THEMES } from '.'
 
-/* A identidade "Biblioteca dos Condenados" trouxe um novo tema padrão. Compras e escolhas anteriores
-   continuam valendo; só quem nunca escolheu tema acompanha o novo padrão. */
+/* As identidades "Biblioteca dos Condenados" e depois "Forja Dracônica" trouxeram novos temas padrão.
+   Compras e escolhas anteriores continuam valendo; só quem nunca escolheu tema acompanha o novo padrão. */
 
 const now = new Date(2026, 9, 17, 12)
 
 describe('tema padrão e compatibilidade com estados salvos', () => {
   it('o novo padrão é gratuito e o antigo continua gratuito', () => {
-    expect(DEFAULT_THEME).toBe('library')
+    expect(DEFAULT_THEME).toBe('draconic')
     expect(THEMES.find((t) => t.id === DEFAULT_THEME)?.price).toBe(0)
     expect(THEMES.find((t) => t.id === LEGACY_DEFAULT_THEME)?.price).toBe(0)
+    expect(THEMES.find((t) => t.id === 'library')?.price).toBe(0)
   })
 
-  it('quem estava no padrão antigo sem nunca escolher tema passa ao novo padrão', () => {
-    expect(cleanState({ shop: { theme: 'dragon', owned: [] } }).shop.theme).toBe('library')
-    expect(cleanState({}).shop.theme).toBe('library')
+  it('quem estava num padrão anterior sem nunca escolher tema passa ao novo padrão', () => {
+    expect(cleanState({ shop: { theme: 'dragon', owned: [] } }).shop.theme).toBe('draconic')
+    expect(cleanState({ shop: { theme: 'library', owned: [] } }).shop.theme).toBe('draconic')
+    expect(cleanState({ shop: { theme: 'library', owned: ['cyber'] } }).shop.theme).toBe('draconic')
+    expect(cleanState({}).shop.theme).toBe('draconic')
+  })
+
+  it('quem escolheu a Biblioteca de propósito continua nela', () => {
+    expect(cleanState({ shop: { theme: 'library', owned: [], themeChosen: true } }).shop.theme).toBe('library')
+  })
+
+  it('os temas do mercado negro são pagos e exigem compra', () => {
+    for (const id of ['bloodcode', 'silicon'] as const) {
+      expect(THEMES.find((t) => t.id === id)?.price).toBe(90)
+      expect(cleanState({ shop: { theme: id, owned: [] } }).shop.theme).toBe('draconic')
+      expect(cleanState({ shop: { theme: id, owned: [id] } }).shop.theme).toBe(id)
+    }
   })
 
   it('quem tem tema comprado e usa o Dragão continua no Dragão', () => {

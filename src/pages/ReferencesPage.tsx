@@ -12,19 +12,17 @@ interface Lib {
 }
 
 const libraries: Lib[] = [
-  { name: 'Game-icons.net — Lorc e Delapouite', url: 'https://game-icons.net', license: 'CC BY 3.0', use: 'Licença: creativecommons.org/licenses/by/3.0. Ícones de relíquias e conquistas. Lorc: dragon-head, burning-embers, chained-heart, crystal-ball, key, locked-chest, trophy e crown. Delapouite: ring e spell-book. Adaptação: fundo removido e acabamento em CSS. Nomes, histórias, molduras e cenários são originais deste projeto.' },
   { name: 'shadcn/ui', url: 'https://ui.shadcn.com', license: 'MIT', use: 'Botões, diálogos, formulários, abas e avisos. Os componentes são copiados para src/components/ui e ajustados ao tema, sobre o Radix UI (MIT).' },
-  { name: 'daisyUI', url: 'https://daisyui.com', license: 'MIT', use: 'Os temas de cor (Biblioteca dos Condenados, Dragão e os da loja) e componentes de exibição: estatísticas, progresso radial e etapas. As cores do shadcn derivam do mesmo tema.' },
+  { name: 'daisyUI', url: 'https://daisyui.com', license: 'MIT', use: 'Os temas de cor (Forja Dracônica, Biblioteca dos Condenados, Dragão e os da loja) e componentes de exibição: estatísticas, progresso radial e etapas. As cores do shadcn derivam do mesmo tema.' },
   { name: 'Motion', url: 'https://motion.dev', license: 'MIT', use: 'Animações de entrada, de medalhas e de vidas. Respeita a preferência do sistema por menos movimento.' },
   { name: 'Rive', url: 'https://rive.app', license: 'MIT (runtime)', use: 'Espaço para animações interativas em arquivos .riv (src/assets/rive). Sem o arquivo, a interface mostra uma ilustração estática.' },
   { name: 'React Bits', url: 'https://reactbits.dev', license: 'MIT + Commons Clause', use: 'Dois componentes copiados: contador animado e cartão com destaque. A Commons Clause permite usar dentro do app, mas não revender os componentes separados.' },
   { name: 'Tailwind CSS', url: 'https://tailwindcss.com', license: 'MIT', use: 'Estilos utilitários e tokens de tema.' },
   { name: 'Android SDK Build Tools (aapt2, d8, apksigner, android.jar)', url: 'https://developer.android.com/tools', license: 'Apache 2.0', use: 'Só para gerar o APK (scripts/build-apk.sh). O app Android é um WebView em Java puro, sem bibliotecas de terceiros, que empacota este site.' },
   { name: 'Lucide, Sonner, React Router', url: 'https://lucide.dev', license: 'ISC / MIT', use: 'Ícones, avisos em tela e navegação entre páginas.' },
-  { name: 'Cinzel (Natanael Gama), via Fontsource', url: 'https://fontsource.org/fonts/cinzel', license: 'SIL OFL 1.1', use: 'Títulos e inscrições. Empacotada com o site (só os subconjuntos latinos), sem carregar nada da internet.' },
-  { name: 'Literata (TypeTogether), via Fontsource', url: 'https://fontsource.org/fonts/literata', license: 'SIL OFL 1.1', use: 'Texto das aulas, formulários e controles: uma serifa feita para leitura em tela.' },
-  { name: 'Grenze Gotisch (Omnibus-Type), via Fontsource', url: 'https://fontsource.org/fonts/grenze-gotisch', license: 'SIL OFL 1.1', use: 'Só na marca e em inscrições curtas, como "Santuário do Conhecimento". Nunca em parágrafos, formulários ou código.' },
-  { name: 'JetBrains Mono, via Fontsource', url: 'https://fontsource.org/fonts/jetbrains-mono', license: 'SIL OFL 1.1', use: 'Código dos desafios, exemplos e evidências.' },
+  { name: 'Cinzel (Natanael Gama), via Fontsource', url: 'https://fontsource.org/fonts/cinzel', license: 'SIL OFL 1.1', use: 'Títulos (H1 a H3) e a marca, sempre em maiúsculas espaçadas para leitura imediata. Empacotada com o site (só os subconjuntos latinos), sem carregar nada da internet.' },
+  { name: 'Inter (Rasmus Andersson), via Fontsource', url: 'https://fontsource.org/fonts/inter', license: 'SIL OFL 1.1', use: 'Texto das aulas, formulários e controles: uma sans nítida, feita para tela.' },
+  { name: 'JetBrains Mono, via Fontsource', url: 'https://fontsource.org/fonts/jetbrains-mono', license: 'SIL OFL 1.1', use: 'Código dos desafios, exemplos e evidências; também preços, rótulos e dados da interface.' },
 ]
 
 interface Study {
@@ -182,7 +180,7 @@ export function ReferencesPage() {
           Referências da identidade visual
         </h2>
         <p className="mb-3 max-w-2xl text-sm text-muted-foreground">
-          A direção "Biblioteca dos Condenados" foi inspirada na atmosfera de RPGs góticos. Estes projetos foram examinados e as licenças conferidas em 17/10/2026. Cena, selos, brasões, molduras, nomes e textos são originais; nenhum personagem, logotipo, trilha sonora ou arte de franquias foi usado.
+          A direção "Biblioteca dos Condenados" foi inspirada na atmosfera de RPGs góticos. Estes projetos foram examinados e as licenças conferidas em 17/10/2026. A direção atual, "Forja Dracônica" (gótico moderno em linhas de circuito, vidro fumado e chanfros), foi desenhada a partir dela, sem novas referências externas. Cena, circuitos de escamas, fogueira em prisma, pedestais holográficos, selos, brasões, molduras, nomes e textos são originais; nenhum personagem, logotipo, trilha sonora ou arte de franquias foi usado.
         </p>
         <StudyList items={visual} />
       </section>

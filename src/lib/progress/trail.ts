@@ -1,4 +1,5 @@
 import { isEarlyAccess, moduleUnlockPrice } from './catalog'
+import { modulePrice } from './economy'
 import { challengesOf, isBossWon, isChallengeDone } from './challenges'
 import { BOSS_QUESTIONS, BOSS_XP, CHALLENGE_XP, QUESTIONS_PER_MODULE, READS_PER_MODULE, XP } from './constants'
 import { countDone, isModuleComplete, moduleSteps } from './core'
@@ -121,7 +122,7 @@ export function trail(s: StudyState, ctx: ProgressContext): TrailModule[] {
       module: i,
       unlocked,
       earlyAccess: isEarlyAccess(i),
-      price: moduleUnlockPrice(i),
+      price: isEarlyAccess(i) ? modulePrice(s, i, moduleUnlockPrice(i) ?? 0) : null,
       purchased: s.shop.unlocked.includes(i),
       missing: missingPrereqs(s, ctx, i),
       complete,

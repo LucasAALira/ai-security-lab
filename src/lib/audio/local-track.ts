@@ -20,10 +20,10 @@ export async function trackStorage(action: 'read' | 'write' | 'delete', track?: 
   } finally { db.close() }
 }
 
-export const MAX_TRACK_BYTES = 150 * 1024 * 1024
+export const MAX_TRACK_BYTES = 170 * 1024 * 1024
 export function validateTrack(file: File): string | null {
   if (!file.size) return 'O arquivo está vazio.'
-  if (file.size > MAX_TRACK_BYTES) return 'Escolha uma música de até 150 MB.'
+  if (file.size > MAX_TRACK_BYTES) return 'Escolha uma música de até 170 MB.'
   if (!file.type.startsWith('audio/') && !/\.(mp3|m4a|aac|ogg|wav|flac|opus)$/i.test(file.name)) return 'Escolha um arquivo de áudio, como MP3, M4A ou OGG.'
   return null
 }

@@ -5,6 +5,8 @@ export interface NavItem {
   hint?: string
   /** Destino no roteador. Seções da página inicial usam `?secao=`. As rotas não mudaram. */
   to: string
+  /** Só aparece no app Android (as configurações de dificuldade e o modo deus). */
+  nativeOnly?: boolean
 }
 
 export interface NavGroup {
@@ -26,7 +28,8 @@ export const navGroups: NavGroup[] = [
       { label: 'Provações', hint: 'Desafios de código', to: '/desafios' },
       { label: 'Relicário', hint: 'Conquistas', to: '/conquistas' },
       { label: 'Sala de troféus', hint: 'Relíquias expostas', to: '/sala-de-trofeus' },
-      { label: 'Mercador', hint: 'Loja de moedas', to: '/loja' },
+      { label: 'Mercador', hint: 'Mercado negro', to: '/loja' },
+      { label: 'Configurações', hint: 'Dificuldade e modo deus', to: '/configuracoes', nativeOnly: true },
     ],
   },
   {

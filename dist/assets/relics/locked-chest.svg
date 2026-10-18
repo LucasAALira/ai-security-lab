@@ -1,1 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#fff" d="M146.857 20.842c-12.535-.036-24.268 2.86-37.285 9.424h.004C61.356 54.6 19.966 120.734 17.982 175.91l41.848 14.236c4.33-61.89 47.057-128.37 101.527-155.86h.002c4.423-2.23 8.822-4.162 13.185-5.8l-22.26-7.45c-1.83-.123-3.637-.19-5.428-.194zm59.34 20.19c-10.478-.09-22.832 3.093-36.424 9.943l.004-.004c-48.23 24.34-89.625 90.513-91.548 145.436l156.485 53.24c3.865-62.22 46.797-129.372 101.613-157.035h.002l.002-.003c4.303-2.168 8.584-4.056 12.832-5.666l-134.54-45.036c-2.652-.542-5.458-.847-8.427-.873zm174.97 58.323c-10.476-.09-22.83 3.092-36.42 9.94l-.005.002c-48.577 24.518-90.225 91.473-91.586 146.623l46.205 15.72c3.914-62.188 46.825-129.274 101.607-156.92 4.522-2.283 9.04-4.258 13.53-5.91l-26.544-8.884c-2.164-.35-4.423-.55-6.785-.57zm63.554 22.014c-10.267.093-22.094 3.353-35.333 10.034-47.158 23.8-87.777 87.587-91.362 141.75l174.55-73.726c-.404-39.01-10.754-61.304-24.415-71.082-2.347-1.68-4.867-3.057-7.55-4.137l-.01.034-4.735-1.584c-3.48-.887-7.195-1.327-11.144-1.29zM17.9 195.622l-.035 187.484L59.46 397.58V209.764L17.9 195.624zM78.15 216.12v187.962l156.282 54.37V269.288l-29.053-9.886v119.43l-101.054-34.082V225.025L78.15 216.12zm414.22 3.683L318.433 293.27v189.236l173.935-73.504v-189.2zm-369.354 11.582v99.947l63.675 21.477v-99.763l-63.674-21.662zm31.306 28.797c9.705 0 17.573 7.867 17.573 17.572 0 6.34-3.37 11.88-8.407 14.97v28.53h-18.69v-28.746c-4.838-3.13-8.048-8.562-8.048-14.754 0-9.705 7.867-17.572 17.572-17.572zm98.797 15.464v189.307l46.626 16.22V291.51l-46.627-15.864z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><title>Cofre das Memórias</title><defs>
+<linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9a9fa8"/><stop offset=".42" stop-color="#3d4047"/><stop offset="1" stop-color="#111215"/></linearGradient>
+<linearGradient id="iron" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5c6068"/><stop offset="1" stop-color="#17181b"/></linearGradient>
+<linearGradient id="obsidian" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#34363d"/><stop offset=".5" stop-color="#0d0e10"/><stop offset="1" stop-color="#1e2024"/></linearGradient>
+<linearGradient id="rust" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7d8083"/><stop offset=".5" stop-color="#3a3b3c"/><stop offset="1" stop-color="#141515"/></linearGradient>
+<linearGradient id="blood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff5a4a"/><stop offset=".55" stop-color="#b3121a"/><stop offset="1" stop-color="#3a0407"/></linearGradient>
+<linearGradient id="venom" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2ff8a"/><stop offset=".45" stop-color="#78e03f"/><stop offset="1" stop-color="#1f6a1b"/></linearGradient>
+<radialGradient id="ember"><stop offset="0" stop-color="#fff2c4"/><stop offset=".35" stop-color="#ffa040"/><stop offset=".7" stop-color="#ff3333" stop-opacity=".55"/><stop offset="1" stop-color="#ff3333" stop-opacity="0"/></radialGradient>
+<radialGradient id="void" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#4a1420"/><stop offset=".6" stop-color="#14060a"/><stop offset="1" stop-color="#050203"/></radialGradient>
+<filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="haze" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6"/></filter>
+</defs>
+<ellipse cx="64" cy="62" rx="44" ry="10" fill="#ff3333" opacity=".25" filter="url(#haze)"/>
+<path d="M24 62 V50 Q24 28 64 22 Q104 28 104 50 V62 Z" fill="url(#obsidian)" stroke="#d9dce2" stroke-opacity=".5" stroke-width="1" stroke-linejoin="round"/>
+<rect x="24" y="62" width="80" height="44" fill="url(#obsidian)" stroke="#d9dce2" stroke-opacity=".5" stroke-width="1" stroke-linejoin="round"/>
+<path d="M24 62 H104" stroke="#ff3333" stroke-width="1.4" filter="url(#glow)"/>
+<path d="M38 25 V106 M90 25 V106" stroke="url(#steel)" stroke-width="6"/>
+<path d="M24 98 H104" stroke="url(#steel)" stroke-width="4"/>
+<g fill="#b9bdc5"><circle cx="38" cy="40" r="1.6"/><circle cx="90" cy="40" r="1.6"/><circle cx="38" cy="80" r="1.6"/><circle cx="90" cy="80" r="1.6"/></g>
+<path d="M54 56 H74 V82 L64 90 L54 82 Z" fill="url(#steel)" stroke="#d9dce2" stroke-opacity=".5" stroke-width="1" stroke-linejoin="round"/>
+<path d="M64 64 a4 4 0 1 1 0.01 0 Z M62 67 L60.5 78 H67.5 L66 67 Z" fill="#ffb340" filter="url(#glow)"/>
+<path d="M18 106 H110 L104 112 H24 Z" fill="url(#iron)" stroke="#d9dce2" stroke-opacity=".5" stroke-width="1" stroke-linejoin="round"/></svg>

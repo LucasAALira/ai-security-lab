@@ -1,4 +1,4 @@
-/** Original collectible names and lore. SVG symbols: Game-icons.net, CC BY 3.0. */
+/** Relíquias cosméticas: nomes, histórias e arte (SVG) originais, em estilo souls sombrio. */
 export const RELICS = [
   { id: 'ember', name: 'Brasa do Primeiro Passo', icon: 'burning-embers', area: 'Fundamentos', tier: 'bronze', price: 25, lore: 'Uma pequena chama guardada por quem escolheu começar. Nenhuma fortaleza nasce pronta.' },
   { id: 'key', name: 'Chave do Guardião', icon: 'key', area: 'APIs', tier: 'prata', price: 45, lore: 'Abre somente as portas permitidas. Conhecer o nome de uma porta nunca foi suficiente para atravessá-la.' },
@@ -7,6 +7,8 @@ export const RELICS = [
   { id: 'ring', name: 'Anel das Fronteiras', icon: 'ring', area: 'Mobile', tier: 'prata', price: 45, lore: 'Um círculo de prata protege o viajante. O que fica dentro dele também exige cuidado.' },
   { id: 'book', name: 'Códice do Arquiteto', icon: 'spell-book', area: 'Arquitetura', tier: 'ouro', price: 70, lore: 'Registra caminhos escolhidos e caminhos abandonados. Uma boa decisão deixa razões para quem vier depois.' },
   { id: 'chest', name: 'Cofre das Memórias', icon: 'locked-chest', area: 'Proteção de dados', tier: 'ouro', price: 60, lore: 'Seu valor está no que preserva — e no que nunca deveria ter guardado.' },
+  { id: 'black-blade', name: 'Espada Negra da IA', icon: 'black-blade', area: 'Inteligência artificial', tier: 'ouro', price: 90, lore: 'Forjada em obsidiana com trilhas de brasa no sulco. Corta a instrução escondida antes que ela vire ação; o portador nunca confia na lâmina sem verificar o golpe.' },
+  { id: 'venom-greatsword', name: 'Montante Envenenado', icon: 'venom-greatsword', area: 'Envenenamento de dados', tier: 'ouro', price: 80, lore: 'Uma lâmina larga que gotejou veneno nos dados de treino de um reino inteiro. Guardada aqui como aviso: quem não confere a origem dos dados herda a peçonha.' },
   { id: 'dragon', name: 'Relíquia do Dragão', icon: 'dragon-head', area: 'Coleção lendária', tier: 'dragao', price: 120, lore: 'Não concede poder sobre o conhecimento. Apenas acompanha aqueles que continuam a procurá-lo.' },
 ] as const
 export const ROOMS = [

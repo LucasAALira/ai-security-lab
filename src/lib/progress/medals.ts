@@ -1,3 +1,4 @@
+import { economyOf } from './economy'
 import { bossCount, challengeStats, isBossWon, gameXp } from './challenges'
 import { BOSS_XP, CHALLENGE_XP, MAX_TASK_XP, READS_PER_MODULE, STUDY_GOAL, TIER_XP, TOTAL_TASKS } from './constants'
 import { baseTotals, coreModules, countDone, isModuleComplete } from './core'
@@ -253,6 +254,7 @@ export function medalDefinitions(ctx: ProgressContext): MedalDef[] {
 
 export function medals(s: StudyState, ctx: ProgressContext): Medal[] {
   const st = computeStats(s, ctx)
+  const tierXp = economyOf(s).tierXp
   return medalDefinitions(ctx).map((d) => {
     const [value, target] = d.goal(st, s)
     const unlocked = target > 0 && value >= target
@@ -268,7 +270,7 @@ export function medals(s: StudyState, ctx: ProgressContext): Medal[] {
       secret,
       masked,
       hint: d.hint ?? null,
-      xp: TIER_XP[d.tier],
+      xp: tierXp[d.tier],
       value: masked ? 0 : Math.min(value, target),
       target: masked ? 0 : target,
       unlocked,
@@ -293,9 +295,10 @@ export function summary(s: StudyState, ctx: ProgressContext): Summary {
   return { ...base, taskXp, medalXp, xp: taskXp + medalXp, medals: got.length, medalTotal: medalDefinitions(ctx).length }
 }
 
-export function maxXp(ctx: ProgressContext): { tasks: number; medals: number } {
+export function maxXp(ctx: ProgressContext, s?: Pick<StudyState, 'economy'>): { tasks: number; medals: number } {
+  const tierXp = s ? economyOf(s).tierXp : TIER_XP
   const game = ctx.challenges.length * (CHALLENGE_XP.identify + CHALLENGE_XP.fix) + bossCount(ctx) * BOSS_XP
-  return { tasks: MAX_TASK_XP + game + maxLearningXp(ctx), medals: medalDefinitions(ctx).reduce((n, d) => n + TIER_XP[d.tier], 0) }
+  return { tasks: MAX_TASK_XP + game + maxLearningXp(ctx), medals: medalDefinitions(ctx).reduce((n, d) => n + tierXp[d.tier], 0) }
 }
 
 /** Registra a data das medalhas recém-liberadas (altera `s`) e devolve a lista delas. */

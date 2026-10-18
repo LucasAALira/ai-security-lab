@@ -1,3 +1,4 @@
+import { economyOf } from './economy'
 import { SWAP_LIMIT } from './relics'
 import { CHEST_COINS, QUESTS, QUESTS_PER_DAY, REVIEW, type QuestDef } from './catalog'
 import { countDone } from './core'
@@ -102,15 +103,16 @@ export interface DailyView {
 export function dailyView(s: StudyState, ctx: ProgressContext, now: Date): DailyView {
   const view = JSON.parse(JSON.stringify(s)) as StudyState
   rollDay(view, ctx, now)
+  const cm = economyOf(s).coinMultiplier
   const quests = view.quests.ids.flatMap((id): QuestView[] => {
     const q = QUESTS.find((x) => x.id === id)
     if (!q) return []
-    return [{ id, title: q.title, progress: Math.min(q.target, view.daily[q.counter]), target: q.target, coins: q.coins, done: view.quests.done.includes(id) }]
+    return [{ id, title: q.title, progress: Math.min(q.target, view.daily[q.counter]), target: q.target, coins: q.coins * cm, done: view.quests.done.includes(id) }]
   })
   return {
     quests,
     chest: view.quests.chest,
-    chestCoins: CHEST_COINS,
+    chestCoins: CHEST_COINS * cm,
     allDone: quests.length > 0 && quests.every((q) => q.done),
     xpToday: view.daily.xp,
     reviewsToday: view.daily.reviews,

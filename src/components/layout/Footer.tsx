@@ -6,7 +6,7 @@ export function Footer() {
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
         <span className="inline-flex items-center gap-2">
           <LogoMark className="!size-7 !animate-none" />
-          <span className="gx-gothic text-[17px] text-[var(--ivory)]">AI Security Lab</span>
+          <span className="gx-brand text-[13px]">AI Security Lab</span>
         </span>
         <span className="text-muted-foreground">Conteúdo de apoio ao estudo · Referências consultadas em 15/10/2026</span>
       </div>

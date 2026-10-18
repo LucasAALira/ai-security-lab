@@ -1,4 +1,5 @@
-import { RELICS, ROOMS, DISPLAY_LIMIT, SWAP_PRICE, roomOwned } from './relics'
+import { RELICS, ROOMS, DISPLAY_LIMIT, roomOwned } from './relics'
+import { cleanEconomy, economyOf, modulePrice, relicPrice, roomPrice, shieldPrice, swapPrice, themePrice } from './economy'
 import { questReplacement } from './quests'
 import { medals } from './medals'
 import { isFreeTheme, isThemeId, moduleUnlockPrice, REVIEW, REWARD_LIMITS, SHIELD, THEMES } from './catalog'
@@ -48,6 +49,8 @@ export type Action =
   /** Sessão de revisão concluída: `total` questões, `lost` vidas perdidas pelo caminho. */
   | { type: 'review'; total: number; lost: number }
   | { type: 'buyShield' }
+  /** Dificuldade e ajustes do modo deus (o editor só existe no app Android). */
+  | { type: 'setEconomy'; economy: unknown }
   | { type: 'buyTheme'; theme: string }
   /** Desbloqueio imediato de um módulo de acesso antecipado, pago com moedas. */
   | { type: 'unlockModule'; module: number }
@@ -168,7 +171,7 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
       const item = RELICS.find(r => r.id === action.id)
       if (!item) return reject('invalid')
       if (s.shop.relics.includes(item.id)) return reject('owned')
-      if (!spend(s, ctx, item.price)) return reject('coins')
+      if (!spend(s, ctx, relicPrice(s, item.id, item.price))) return reject('coins')
       s.shop.relics.push(item.id)
       return { changed: true, events: [{ kind: 'purchase', item: 'relic', name: item.name }] }
     }
@@ -176,7 +179,7 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
       const room = ROOMS.find(r => r.id === action.id && r.price > 0)
       if (!room) return reject('invalid')
       if (roomOwned(room.id, s.shop.relics)) return reject('owned')
-      if (!spend(s, ctx, room.price)) return reject('coins')
+      if (!spend(s, ctx, roomPrice(s, room.id, room.price))) return reject('coins')
       s.shop.relics.push('room:' + room.id)
       s.shop.room = room.id
       return { changed: true, events: [{ kind: 'purchase', item: 'room', name: room.name }] }
@@ -200,15 +203,22 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
       if (action.day !== s.quests.day) return reject('invalid')
       const replacement = questReplacement(s, ctx, action.id)
       if (!replacement) return reject('limit')
-      if (!spend(s, ctx, SWAP_PRICE)) return reject('coins')
+      if (!spend(s, ctx, swapPrice(s))) return reject('coins')
       s.quests.ids = s.quests.ids.map(id => id === action.id ? replacement.id : id)
       s.quests.retired = [...(s.quests.retired ?? []), action.id]
       s.quests.swaps = (s.quests.swaps ?? 0) + 1
       return { changed: true, events: [{ kind: 'purchase', item: 'swap', name: 'Nova missão: ' + replacement.title }] }
     }
+    case 'setEconomy': {
+      const next = cleanEconomy(action.economy)
+      if (JSON.stringify(next ?? null) === JSON.stringify(s.economy ?? null)) return nothing
+      if (next) s.economy = next
+      else delete s.economy
+      return { changed: true }
+    }
     case 'buyShield': {
       if (s.shop.shields >= SHIELD.max) return reject('limit')
-      if (!spend(s, ctx, SHIELD.price)) return reject('coins')
+      if (!spend(s, ctx, shieldPrice(s))) return reject('coins')
       s.shop.shields += 1
       s.lifetime.shields = bump(s.lifetime.shields)
       return { changed: true, events: [{ kind: 'purchase', item: 'shield', name: 'Escudo de sequência' }] }
@@ -218,7 +228,7 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
       const theme = THEMES.find((t) => t.id === action.theme && t.price > 0)
       if (!theme) return reject('invalid')
       if (s.shop.owned.includes(theme.id)) return reject('owned')
-      if (!spend(s, ctx, theme.price)) return reject('coins')
+      if (!spend(s, ctx, themePrice(s, theme.id, theme.price))) return reject('coins')
       s.shop.owned.push(theme.id)
       s.shop.theme = theme.id
       s.shop.themeChosen = true
@@ -231,7 +241,7 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
       if (s.shop.unlocked.includes(action.module)) return reject('owned')
       // Já liberado pelos pré-requisitos (ou por progresso anterior): não há o que pagar.
       if (isModuleUnlocked(s, ctx, action.module)) return reject('open')
-      if (!spend(s, ctx, price)) return reject('coins')
+      if (!spend(s, ctx, modulePrice(s, action.module, price))) return reject('coins')
       s.shop.unlocked = [...s.shop.unlocked, action.module].sort((a, b) => a - b)
       return {
         changed: true,
@@ -490,6 +500,13 @@ export function applyAction(state: StudyState, action: Action, ctx: ProgressCont
   const out = mutate(draft, action, ctx, now)
   if (!out.changed) return { state, events: [], changed: false, rejected: out.rejected }
 
+  // Trocar a dificuldade recalcula valores, mas não é estudo: não conta como XP do dia, não cumpre
+  // missões nem rende baú. Só registra a data das conquistas que passarem a valer.
+  if (action.type === 'setEconomy') {
+    recordMedals(draft, ctx, dayKey(now))
+    return { state: draft, events: [], changed: true }
+  }
+
   const today = dayKey(now)
   if (!draft.learner.id) draft.learner = { id: `a${now.getTime().toString(36)}`, since: today }
   for (const [kind, ref] of out.log ?? []) logEvent(draft, now, kind, ref)
@@ -538,6 +555,14 @@ export function applyAction(state: StudyState, action: Action, ctx: ProgressCont
     if (t.tier && (!was || TIER_RANK[t.tier] > TIER_RANK[was])) events.push({ kind: 'track', name: t.name, tier: t.tier })
   })
   events.push(...tail)
+  // Moedas recebidas aparecem já com o multiplicador da dificuldade.
+  const cm = economyOf(draft).coinMultiplier
+  if (cm !== 1) {
+    for (const e of events) {
+      if (e.kind === 'coins') e.amount *= cm
+      else if (e.kind === 'quest' || e.kind === 'chest') e.coins *= cm
+    }
+  }
   const level = levelFor(seen)
   if (level.number > levelFor(before.xp).number) events.push({ kind: 'level', level })
 
