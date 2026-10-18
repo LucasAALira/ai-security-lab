@@ -288,3 +288,11 @@ Acesse `#/sala-de-trofeus` pelo menu Jogo ou pela loja.
 - As figuras usam símbolos de Lorc e Delapouite, Game-icons.net, CC BY 3.0; detalhes em `public/assets/relics/CREDITS.md` e na página Referências. Molduras, sala, nomes e histórias são originais.
 
 O progresso de localhost não aparece automaticamente em outro endereço. Exporte em Conquistas e importe no novo endereço para transferi-lo.
+
+## Sons do Santuário — música pessoal
+
+Abra o painel **Sons do Santuário**, abaixo do cabeçalho, e escolha **Carregar minha música**. Selecione um áudio local de até 30 MB (MP3 recomendado) e pressione **Reproduzir**. O player oferece volume, repetição e remoção da faixa; navegar entre as páginas não reinicia o áudio.
+
+O arquivo fica no IndexedDB deste navegador/dispositivo, separado do progresso. Não é enviado ao servidor, incluído no repositório ou exportado no backup de estudos. Ao reabrir, a faixa é restaurada **pausada**. Se o armazenamento estiver indisponível, a importação funciona apenas na sessão e avisa essa limitação. Limpar os dados do navegador/app remove a música. Ao ocultar a página, a reprodução pausa e só volta por ação do usuário.
+
+Nenhuma música acompanha o projeto. Importe seu próprio arquivo obtido legitimamente. A reprodução depende dos codecs do dispositivo; arquivos incompatíveis são recusados antes de substituir a faixa atual. A integração usa APIs web compatíveis com WebView; seleção de arquivos, persistência e interrupções de áudio ainda precisam de validação em Android físico. Não há serviço de reprodução em segundo plano.

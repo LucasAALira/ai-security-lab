@@ -1,3 +1,4 @@
+import { SanctuaryPlayer } from '@/components/audio/SanctuaryPlayer'
 import { Suspense, useEffect, useRef, type RefObject } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import { NextObjective } from '@/components/gamification/NextObjective'
@@ -58,6 +59,7 @@ export function Shell() {
       <Sidebar />
       <div className="px-5 md:ml-[205px] md:px-7 min-[1151px]:ml-[245px] min-[1151px]:px-[52px] min-[1450px]:px-[75px]">
         <TopBar />
+        <SanctuaryPlayer />
         {showObjective ? <NextObjective className="mx-auto max-w-[1400px]" /> : null}
         <main id="conteudo" ref={main} tabIndex={-1} className="mx-auto max-w-[1400px] pt-0 outline-none">
           <div key={page} className="gx-page-enter">
