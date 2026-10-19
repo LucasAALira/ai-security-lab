@@ -1,3 +1,4 @@
+import { economyOf } from './economy'
 import { bossCount, challengeStats, isBossWon, gameXp } from './challenges'
 import { BOSS_XP, CHALLENGE_XP, MAX_TASK_XP, READS_PER_MODULE, STUDY_GOAL, TIER_XP, TOTAL_TASKS } from './constants'
 import { baseTotals, coreModules, countDone, isModuleComplete } from './core'
@@ -139,6 +140,7 @@ const CAMPAIGN_MEDALS: { id: string; campaign: string; name: string; icon: Medal
   { id: 'agente-sob-controle', campaign: 'agente-poder-demais', name: 'Agente sob Controle', icon: 'shield', desc: 'Conclua a campanha O agente com poder demais, sobre privilégio mínimo e aprovação humana.' },
   { id: 'lancamento-responsavel', campaign: 'lancamento-sob-pressao', name: 'Lançamento Responsável', icon: 'scale', desc: 'Conclua a campanha O lançamento sob pressão, sobre ameaças, fornecedores e risco aceito.' },
   { id: 'carrinho-seguro', campaign: 'checkout-outro-cliente', name: 'Carrinho Seguro', icon: 'globe', desc: 'Conclua a campanha O checkout de outro cliente, sobre autorização e regras de negócio.' },
+  { id: 'segredo-contido', campaign: 'a-chave-no-pacote', name: 'Segredo Contido', icon: 'key-round', desc: 'Conclua a campanha A chave que saiu no pacote, sobre engenharia reversa defensiva e segredos expostos.' },
   { id: 'rastros-apagados', campaign: 'app-deixou-rastros', name: 'Rastros Apagados', icon: 'smartphone', desc: 'Conclua a campanha O aplicativo que deixou rastros, sobre segurança Mobile.' },
   { id: 'uma-conta-um-padrao', campaign: 'uma-conta-muitos-caminhos', name: 'Uma Conta, Um Padrão', icon: 'network', desc: 'Conclua a campanha Uma conta, muitos caminhos, sobre controles consistentes entre canais.' },
 ]
@@ -218,7 +220,7 @@ export function medalDefinitions(ctx: ProgressContext): MedalDef[] {
     { id: 'sem-dicas-missao', category: 'campanhas', name: 'Missão Sem Dicas', tier: 'prata', icon: 'lightbulb-off', desc: 'Conclua uma missão aprovada sem abrir nenhuma dica.', goal: (st) => [st.missionsNoHints, 1], when: missionTotal > 0 },
     { id: 'decisao-fundamentada', category: 'campanhas', name: 'Decisão Fundamentada', tier: 'prata', icon: 'scale', desc: 'Complete uma decisão arquitetural guiada (ADR): decisão aceitável, justificativa escrita e autoavaliação registrada.', goal: (st) => [st.adrs, 1], when: hasAdr },
     { id: 'investigador', category: 'campanhas', name: 'Investigador', tier: 'prata', icon: 'microscope', desc: 'Leia um dossiê de caso real e conclua o exercício dele.', goal: (st) => [st.dossiersPassed, 1], when: dossierTotal > 0 },
-    { id: 'arquivo-completo', category: 'campanhas', name: 'Arquivo Completo', tier: 'ouro', icon: 'microscope', desc: 'Leia os quatro dossiês e conclua o exercício de cada um.', goal: (st) => [st.dossiersPassed, dossierTotal], when: dossierTotal > 0 },
+    { id: 'arquivo-completo', category: 'campanhas', name: 'Arquivo Completo', tier: 'ouro', icon: 'microscope', desc: 'Leia todos os dossiês de casos reais e conclua o exercício de cada um.', goal: (st) => [st.dossiersPassed, dossierTotal], when: dossierTotal > 0 },
     { id: 'autorizacao-entre-canais', category: 'campanhas', name: 'Mesma Regra em Todo Canal', tier: 'prata', icon: 'network', desc: 'Conclua a missão em que um controle existe no site e falta no aplicativo e na API, e corrija a autorização entre os canais.', goal: (st) => [Number(Boolean(st.missionPassed['controle-so-no-site'])), 1], when: ctx.missions.some((m) => m.id === 'controle-so-no-site') },
     { id: 'fronteiras-definidas', category: 'arquitetura', name: 'Fronteiras Definidas', tier: 'prata', icon: 'blocks', desc: 'Conclua uma revisão de arquitetura: ameaças identificadas e controles obrigatórios aplicados dentro das restrições.', goal: (st) => [st.architectEvaluated, 1], when: ctx.architect.length > 0 },
     { id: 'revisao-web', category: 'arquitetura', name: 'Revisão Web Concluída', tier: 'prata', icon: 'globe', desc: 'Conclua a revisão de arquitetura da loja com site, API e pagamentos.', goal: (st) => [Number(Boolean(st.architectDone['loja-web-api'])), 1], when: ctx.architect.some((a) => a.id === 'loja-web-api') },
@@ -253,6 +255,7 @@ export function medalDefinitions(ctx: ProgressContext): MedalDef[] {
 
 export function medals(s: StudyState, ctx: ProgressContext): Medal[] {
   const st = computeStats(s, ctx)
+  const tierXp = economyOf(s).tierXp
   return medalDefinitions(ctx).map((d) => {
     const [value, target] = d.goal(st, s)
     const unlocked = target > 0 && value >= target
@@ -268,7 +271,7 @@ export function medals(s: StudyState, ctx: ProgressContext): Medal[] {
       secret,
       masked,
       hint: d.hint ?? null,
-      xp: TIER_XP[d.tier],
+      xp: tierXp[d.tier],
       value: masked ? 0 : Math.min(value, target),
       target: masked ? 0 : target,
       unlocked,
@@ -293,9 +296,10 @@ export function summary(s: StudyState, ctx: ProgressContext): Summary {
   return { ...base, taskXp, medalXp, xp: taskXp + medalXp, medals: got.length, medalTotal: medalDefinitions(ctx).length }
 }
 
-export function maxXp(ctx: ProgressContext): { tasks: number; medals: number } {
+export function maxXp(ctx: ProgressContext, s?: Pick<StudyState, 'economy'>): { tasks: number; medals: number } {
+  const tierXp = s ? economyOf(s).tierXp : TIER_XP
   const game = ctx.challenges.length * (CHALLENGE_XP.identify + CHALLENGE_XP.fix) + bossCount(ctx) * BOSS_XP
-  return { tasks: MAX_TASK_XP + game + maxLearningXp(ctx), medals: medalDefinitions(ctx).reduce((n, d) => n + TIER_XP[d.tier], 0) }
+  return { tasks: MAX_TASK_XP + game + maxLearningXp(ctx), medals: medalDefinitions(ctx).reduce((n, d) => n + tierXp[d.tier], 0) }
 }
 
 /** Registra a data das medalhas recém-liberadas (altera `s`) e devolve a lista delas. */

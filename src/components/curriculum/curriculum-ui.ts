@@ -1,4 +1,4 @@
-import { Blocks, Brain, Globe, Package, Scale, Server, Smartphone, type LucideIcon } from 'lucide-react'
+import { Blocks, Brain, Globe, Microscope, Package, Scale, Server, Smartphone, type LucideIcon } from 'lucide-react'
 import type { Area, Platform } from '@/data/curriculum'
 import { findSub, subProgress, type ProgressContext, type Rollup, type StudyState } from '@/lib/progress'
 
@@ -41,6 +41,7 @@ export const areaIcons: Record<Area['icon'], LucideIcon> = {
   package: Package,
   blocks: Blocks,
   scale: Scale,
+  microscope: Microscope,
 }
 
 /** Porcentagem do que é obrigatório e já foi feito. `null` quando não há nada que possa ser concluído. */

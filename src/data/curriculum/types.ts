@@ -1,8 +1,9 @@
+import type { FigureKey } from '@/components/curriculum/LessonFigure'
 import type { CodeLanguage, FrameworkRef, Level } from '../types'
 
 export type { FrameworkRef }
 
-export type AreaId = 'web' | 'api' | 'ia' | 'mobile' | 'supply' | 'arq' | 'gov'
+export type AreaId = 'web' | 'api' | 'ia' | 'mobile' | 'supply' | 'arq' | 'gov' | 'rev'
 
 /** Onde o conteúdo se aplica. Serve de filtro, nunca de pontuação. */
 export type Platform = 'web' | 'api' | 'android' | 'ios' | 'ia' | 'cicd' | 'geral'
@@ -12,7 +13,7 @@ export interface Area {
   title: string
   summary: string
   /** Chave do ícone (ver `AreaIcon`). */
-  icon: 'globe' | 'server' | 'brain' | 'smartphone' | 'package' | 'blocks' | 'scale'
+  icon: 'globe' | 'server' | 'brain' | 'smartphone' | 'package' | 'blocks' | 'scale' | 'microscope'
   modules: string[]
 }
 
@@ -45,6 +46,8 @@ export interface Lesson {
   /** Aprofundamento opcional (botão "Aprofundar"). */
   deeper?: string[]
   example?: LessonExample
+  /** Ilustração original da aula (ver `components/curriculum/LessonFigure`). */
+  figure?: FigureKey
   /** Como verificar se o controle funciona. */
   validation: string
   /** Pares pergunta/resposta para revisão (viram flashcards do submódulo). */

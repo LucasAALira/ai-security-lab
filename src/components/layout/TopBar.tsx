@@ -2,6 +2,7 @@ import { Coins, Flame } from 'lucide-react'
 import { Link } from 'react-router'
 import { LevelBadge } from '@/components/gamification/LevelBadge'
 import { EmberBurst } from '@/components/gothic/EmberBurst'
+import { useRise } from '@/components/gothic/use-rise'
 import { Bump } from '@/components/motion/Bump'
 import { formatNumber, plural } from '@/lib/format'
 import { LEVELS } from '@/lib/progress'
@@ -19,10 +20,11 @@ export function TopBar() {
   const span = level.next === null ? 1 : level.next - level.start
   const pct = level.next === null ? 100 : Math.max(0, Math.min(100, Math.round(((summary.xp - level.start) / span) * 100)))
   const nextName = level.next === null ? null : LEVELS[level.number]?.name
-  const chip = 'inline-flex min-h-9 items-center gap-1.5 rounded-[2px] border border-[var(--stone-line)] bg-[var(--stone)] px-2.5 text-[13px] font-semibold tabular-nums'
+  const charging = useRise(summary.xp)
+  const chip = 'inline-flex min-h-9 items-center gap-1.5 border border-[var(--line)] bg-[var(--glass-strong)] px-2.5 font-mono text-[12.5px] font-semibold tabular-nums'
 
   return (
-    <header className="flex min-h-16 items-center justify-between gap-3 border-b border-[var(--stone-line)] py-2.5 md:min-h-[76px]">
+    <header className="flex min-h-16 items-center justify-between gap-3 border-b border-[var(--line)] py-2.5 md:min-h-[76px]">
       <Link
         to="/conquistas"
         className="group flex min-w-0 items-center gap-2.5 rounded-[2px] focus-visible:outline-2"
@@ -34,7 +36,7 @@ export function TopBar() {
           </span>
           <span className="mt-1 flex items-center gap-2">
             <span className="gx-gauge relative h-2 w-[clamp(72px,16vw,180px)]" aria-hidden="true">
-              <span className="gx-gauge-fill block" style={{ transform: `translateX(-${100 - pct}%)` }} />
+              <span className={cn('gx-gauge-fill block', charging && 'is-charging')} style={{ transform: `translateX(-${100 - pct}%)` }} />
             </span>
             <span className="text-[11.5px] text-muted-foreground tabular-nums" data-testid="xp-header">
               {formatNumber(summary.xp)} XP

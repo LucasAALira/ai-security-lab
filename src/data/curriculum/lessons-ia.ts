@@ -68,6 +68,7 @@ export const iaLessons: Record<string, Lesson> = {
       'Na {{injecao-de-prompt|injeção}} **indireta**, a instrução maliciosa não vem do usuário, e sim de um conteúdo que o sistema lê: página, documento, e-mail, resultado de ferramenta. O usuário legítimo nem sabe que ela existe.',
       'Não há filtro de texto confiável contra isso. A defesa é de arquitetura: conteúdo externo nunca decide sozinho uma ferramenta com efeito, ações pedem confirmação mostrando o que vai acontecer, destinos são restritos e a ferramenta valida tudo fora do modelo.',
     ],
+    figure: 'injecao-indireta',
     validation: 'Coloque uma instrução escondida em um documento ou página de teste e peça ao sistema para resumi-lo. Nenhuma ferramenta com efeito deve ser chamada sem confirmação, e destinos fora da lista devem ser recusados.',
     review: [
       { front: 'Qual a diferença entre injeção direta e indireta?', back: 'Na direta, o texto vem de quem usa o sistema; na indireta, vem de um conteúdo que o sistema lê.' },
@@ -139,6 +140,7 @@ export const iaLessons: Record<string, Lesson> = {
       'A autorização precisa acontecer **na busca**, antes de qualquer trecho chegar ao modelo, com a identidade do usuário. Filtrar a resposta depois é tarde: o modelo já leu o trecho e pode repeti-lo de outra forma.',
       'Cada trecho carrega a permissão do documento de origem, e a consulta à base filtra por ela. Mudanças de permissão precisam se refletir no índice.',
     ],
+    figure: 'rag',
     validation: 'Com um usuário sem acesso a um documento, faça perguntas cuja resposta está nele: nenhum trecho dele deve ser recuperado. Retire a permissão de um usuário e confirme que a busca respeita a mudança.',
     review: [
       { front: 'Por que filtrar a resposta do modelo é tarde demais?', back: 'Porque o trecho já chegou ao contexto e pode ser repetido de outra forma.' },
@@ -314,6 +316,7 @@ export const iaLessons: Record<string, Lesson> = {
       'Cada ferramenta roda com uma identidade. Se essa identidade é uma conta ampla do serviço, o agente alcança tudo o que ela alcança, e as regras da pessoa deixam de valer. Com a {{delegacao|identidade delegada}} da pessoa, a ferramenta só faz o que ela já poderia fazer.',
       'Além da identidade, cada ferramenta tem o mínimo de permissão para a sua função (ler em vez de escrever, uma coleção em vez de todas) e confere a autorização sobre o objeto, como qualquer rota de API.',
     ],
+    figure: 'ferramentas',
     validation: 'Para cada ferramenta, confira com qual identidade ela chama os sistemas. Peça, como um usuário sem acesso, algo que só outro pode ver: a ferramenta deve recusar.',
     review: [
       { front: 'Por que uma conta de serviço ampla é perigosa em um agente?', back: 'Porque o agente passa a alcançar tudo o que a conta alcança, independentemente de quem pediu.' },

@@ -86,6 +86,10 @@ Um dossiê (`DossierContent`) separa três camadas, rotuladas na interface: **fa
 4. `uncertainties`: o que as fontes não confirmam. Não preencha lacunas com suposições.
 5. Só cite IA se o incidente envolveu IA; caso contrário, use `notice` para dizer isso.
 6. `exercise` roda no mesmo motor das missões: pelo menos três formatos de atividade, empresa inventada, endereços `.example`.
+7. `country`: preencha com `'Brasil'` nos casos brasileiros. A página de casos agrupa por esse campo ("Casos brasileiros" e "Cadeia de suprimentos de software").
+8. Para o selo **Novo** na lista, acrescente o id a `NEW_DOSSIERS`, em `src/data/whats-new.ts`, e retire-o quando deixar de ser novidade.
+
+Nas fontes oficiais brasileiras, use o documento e não a notícia quando os dois existirem: decisões e relatórios da ANPD, decisões e comunicados do Banco Central, comunicados de tribunais e notícias do Ministério Público. Quando a fonte oficial não puder ser lida na íntegra, diga isso em `uncertainties` e atribua os fatos à fonte que você de fato leu.
 
 ## Projeto do modo Arquiteto
 
@@ -107,6 +111,7 @@ A hierarquia Área → Módulo → Submódulo fica em `src/data/curriculum/tree.
   concept: ['Dois ou mais parágrafos.', '...'],
   deeper: ['Opcional: aprofundamento.'],
   example: { title, language, code: [...], caption },   // opcional
+  figure: 'triagem',                                    // opcional: ilustração original (ver abaixo)
   validation: 'Como verificar que o controle funciona.',
   review: [{ front: 'Pergunta', back: 'Resposta' }],    // vira flashcard
   refs: [{ framework: 'owasp-top10', id: 'A01' }],
@@ -115,3 +120,11 @@ A hierarquia Área → Módulo → Submódulo fica em `src/data/curriculum/tree.
 ```
 
 Um submódulo sem aula nem desafio aparece como **planejado** e não entra em nenhuma porcentagem. O **integrador** de cada módulo (missão, desafio ou projeto do Arquiteto) fica em `src/data/curriculum/integrators.ts`; um teste confere que ele existe.
+
+### Ilustrações das aulas
+
+As figuras ficam em `src/components/curriculum/LessonFigure.tsx`, uma entrada por chave. Cada uma tem `title` (nome curto, rótulo da região rolável), `alt` (texto alternativo que diz o mesmo que o desenho), `caption` (legenda visível), tamanho e o desenho em SVG. Use os auxiliares `Box` e `Arrow` para manter o traço de 1 px e as cores do tema; nada de imagem externa. Depois é só apontar `figure: 'chave'` na aula.
+
+### Selo "Novo"
+
+`src/data/whats-new.ts` lista as áreas, os módulos do currículo e os módulos clássicos que aparecem com o selo **Novo** (`components/common/NewSeal.tsx`). A lista é mantida à mão: quando deixar de ser novidade, tire o id de lá. O selo é só visual — não entra em progresso nem em ordenação.

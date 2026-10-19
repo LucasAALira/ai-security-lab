@@ -26,8 +26,8 @@ function acyclic(nodes: { id: string; recommends: string[] }[]): boolean {
 }
 
 describe('hierarquia Área > Módulo > Submódulo', () => {
-  it('tem as sete áreas pedidas, na ordem do menu', () => {
-    expect(areas.map((a) => a.id)).toEqual(['web', 'api', 'ia', 'mobile', 'supply', 'arq', 'gov'])
+  it('tem as oito áreas pedidas, na ordem do menu', () => {
+    expect(areas.map((a) => a.id)).toEqual(['web', 'api', 'ia', 'mobile', 'supply', 'arq', 'rev', 'gov'])
   })
 
   it('ids únicos, no formato aceito pelo progresso salvo', () => {

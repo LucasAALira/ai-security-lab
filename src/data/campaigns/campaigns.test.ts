@@ -289,14 +289,14 @@ describe('casos reais', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
-  it('há quatro dossiês, e ao menos um é de um incidente em pacote público (npm ou PyPI)', () => {
-    expect(dossiers).toHaveLength(4)
+  it('há vários dossiês, e ao menos um é de um incidente em pacote público (npm ou PyPI)', () => {
+    expect(dossiers.length).toBeGreaterThanOrEqual(15)
     expect(dossiers.some((d) => /npm|pypi/i.test(d.title))).toBe(true)
   })
 })
 
 describe.each(dossiers.map((d) => [d.id, d] as const))('dossiê %s', (_id, d) => {
-  const DATE = /^\d{4}-\d{2}(-\d{2})?/
+  const DATE = /^\d{4}(-\d{2}(-\d{2})?)?/ // alguns casos só têm o ano divulgado
 
   it('informa a data do incidente, a data da divulgação e a data da revisão', () => {
     expect(d.incidentDate).toMatch(DATE)

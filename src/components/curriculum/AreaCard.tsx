@@ -1,11 +1,13 @@
 import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router'
+import { NewSeal } from '@/components/common/NewSeal'
 import { Crest } from '@/components/gothic/Crest'
 import { Progress } from '@/components/ui/progress'
 import type { Area } from '@/data/curriculum'
 import { areaRollup } from '@/lib/progress'
 import { plural } from '@/lib/format'
 import { useProgress } from '@/state/ProgressProvider'
+import { isNewArea } from '@/data/whats-new'
 import { areaIcons, rollupPercent } from './curriculum-ui'
 
 /** Card de uma área. O progresso conta só o que é obrigatório e já existe; o que está planejado aparece à parte. */
@@ -20,10 +22,11 @@ export function AreaCard({ area, headingLevel: H = 'h3' }: { area: Area; heading
       <div className="flex items-start gap-3">
         <Crest area={area.id} icon={Icon} />
         <div className="min-w-0">
-          <H className="font-display text-[17px] leading-snug font-semibold">
+          <H className="flex flex-wrap items-center gap-2 font-display text-[17px] leading-snug font-semibold">
             <Link to={`/areas/${area.id}`} className="hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
               {area.title}
             </Link>
+            {isNewArea(area.id) ? <NewSeal title={`área ${area.title}`} /> : null}
           </H>
           <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{area.summary}</p>
         </div>

@@ -16,6 +16,7 @@ export const supplyLessons: Record<string, Lesson> = {
       code: ['$ npm ls pacote-x', 'app@1.0.0', '└─┬ sdk-assistente@4.2.0', '  └─┬ cliente-http@2.1.3', '    └── pacote-x@0.3.1'],
       caption: 'Ninguém pediu `pacote-x`; ele chegou por duas camadas de dependência.',
     },
+    figure: 'dependencias',
     validation: 'Gere a árvore de dependências e conte diretas e transitivas. Para três transitivas escolhidas ao acaso, descubra quem as trouxe e se são necessárias.',
     review: [
       { front: 'O que é uma dependência transitiva?', back: 'Um pacote que veio porque uma dependência direta depende dele.' },
@@ -164,6 +165,7 @@ export const supplyLessons: Record<string, Lesson> = {
       code: ['{', '  "subject": [{ "name": "app.tgz", "digest": { "sha256": "<hash>" } }],', '  "buildDefinition": { "externalParameters": { "ref": "refs/heads/main" } },', '  "runDetails": { "builder": { "id": "https://ci.empresa.example/builder" } }', '}'],
       caption: 'O hash liga a atestação ao artefato; o builder e o ref dizem quem e de onde.',
     },
+    figure: 'proveniencia',
     validation: 'Gere a atestação de proveniência em cada build e verifique-a na implantação: o hash deve corresponder ao artefato, o builder deve ser o esperado e o ref deve ser o da branch protegida.',
     review: [
       { front: 'Qual a diferença entre assinatura e proveniência?', back: 'A assinatura prova quem assinou; a proveniência registra como e de onde o artefato foi produzido.' },

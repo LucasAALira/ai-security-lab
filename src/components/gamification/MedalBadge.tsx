@@ -46,7 +46,7 @@ function Ornament({ tier }: { tier: Tier }) {
  *  Bloqueado vira um contorno tracejado e apagado, com cadeado (ou interrogação, se oculta). */
 export function MedalBadge({ icon, tier, locked = false, hidden = false, className }: Props) {
   const Icon = medalIcons[icon]
-  const art: Partial<Record<MedalIcon, string>> = { crown:'crown', 'key-round':'key', 'flame-kindling':'burning-embers', flame:'burning-embers', eye:'crystal-ball', 'book-open':'spell-book', library:'spell-book', gift:'locked-chest', 'shield-check':'chained-heart' }
+  const art: Partial<Record<MedalIcon, string>> = { swords:'black-blade', crown:'crown', 'key-round':'key', 'flame-kindling':'burning-embers', flame:'burning-embers', eye:'crystal-ball', 'book-open':'spell-book', library:'spell-book', gift:'locked-chest', 'shield-check':'chained-heart' }
   const symbol = art[icon] ?? (tier === 'dragao' ? 'dragon-head' : null)
   const gradient = useId().replace(/:/g, '')
   return (

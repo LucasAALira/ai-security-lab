@@ -6,7 +6,10 @@
 export const XP_PER_COIN = 5
 
 export const THEMES = [
-  { id: 'library', name: 'Biblioteca dos Condenados', description: 'Carvão, marfim, bronze e luz de vela — o tema padrão.', price: 0 },
+  { id: 'draconic', name: 'Forja Dracônica', description: 'Preto absoluto, titânio fosco e vermelho-brasa — o tema padrão.', price: 0 },
+  { id: 'bloodcode', name: 'Código de Sangue', description: 'O código-fonte brilha em ciano sobre o preto puro, vigiado por linhas de monitoramento carmim.', price: 90 },
+  { id: 'silicon', name: 'Catedral de Silício', description: 'Branco espectral e titânio em alto contraste, com linhas de varredura verticais discretas.', price: 90 },
+  { id: 'library', name: 'Biblioteca dos Condenados', description: 'Carvão, marfim e bronze — o padrão da versão anterior, gratuito.', price: 0 },
   { id: 'ashes', name: 'Fortaleza de Cinzas', description: 'Pedra escura, cobre e brasas vermelhas.', price: 60 },
   { id: 'eclipse', name: 'Catedral do Eclipse', description: 'Obsidiana, ouro envelhecido e marfim.', price: 80 },
   { id: 'abyss', name: 'Arquivo Abissal', description: 'Azul profundo, prata e luz fria.', price: 80 },
@@ -17,9 +20,11 @@ export const THEMES = [
 ] as const
 
 export type ThemeId = (typeof THEMES)[number]['id']
-export const DEFAULT_THEME: ThemeId = 'library'
-/** O tema padrão das versões anteriores. Quem nunca escolheu um tema (só tinha o padrão) passa para o novo padrão. */
+export const DEFAULT_THEME: ThemeId = 'draconic'
+/** O tema padrão mais antigo (antes de existir a marca de escolha). Quem estava nele sem ter comprado tema passa ao padrão atual. */
 export const LEGACY_DEFAULT_THEME: ThemeId = 'dragon'
+/** Padrões anteriores. Quem estava num deles sem nunca ter escolhido tema acompanha o padrão atual. */
+export const PREVIOUS_DEFAULT_THEMES: readonly ThemeId[] = ['dragon', 'library']
 /** Temas gratuitos não precisam de compra. */
 export const isFreeTheme = (id: string): boolean => THEMES.some((t) => t.id === id && t.price === 0)
 export const THEME_IDS: readonly string[] = THEMES.map((t) => t.id)

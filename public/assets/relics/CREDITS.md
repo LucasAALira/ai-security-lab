@@ -1,11 +1,8 @@
-# Relic symbols
-Source: https://github.com/game-icons/icons and https://game-icons.net
-License: Creative Commons Attribution 3.0 Unported
-https://creativecommons.org/licenses/by/3.0/
+# Relíquias
 
-Lorc: dragon-head, burning-embers, chained-heart, crystal-ball, key, locked-chest, trophy, crown.
-Delapouite: ring, spell-book.
+Arte original do AI Security Lab (estilo souls sombrio: ferro, obsidiana, brasa e veneno), desenhada
+em SVG e gerada por `scripts/make-relics.py`. Nomes, histórias, molduras, pedestais e salas também são
+originais. Nenhum asset de jogos, da FromSoftware, da Steam ou de bancos de ícones está incluído.
 
-Changes: removed black background path; sizing and color treatment in CSS.
-Original item names, stories, frames and room design by AI Security Lab.
-No FromSoftware or Steam assets are included. Attribution is also visible on References.
+Versões anteriores usavam símbolos de Lorc e Delapouite (Game-icons.net, CC BY 3.0); foram todos
+substituídos por estes desenhos próprios.

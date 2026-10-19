@@ -5,6 +5,8 @@ import { EarlyAccessPreview } from '@/components/shop/EarlyAccessPreview'
 import { FlashcardDeck } from '@/components/study/FlashcardDeck'
 import { TierChip } from '@/components/gamification/TierChip'
 import { Button } from '@/components/ui/button'
+import { AnalogyCard } from '@/components/curriculum/AnalogyCard'
+import { classicAnalogyOf } from '@/data/analogies'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { flashcardsOfModule } from '@/data/flashcards'
@@ -174,6 +176,8 @@ export function LessonDialog({ index, onClose }: { index: number; onClose: () =>
                 ) : null}
               </div>
             ) : null}
+
+            {classicAnalogyOf(index) ? <AnalogyCard analogy={classicAnalogyOf(index)!} className="mt-4" /> : null}
 
             <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="mt-5 min-w-0">
               <TabsList aria-label="Etapas do módulo" className="h-auto w-full max-w-full justify-start gap-1 overflow-x-auto">

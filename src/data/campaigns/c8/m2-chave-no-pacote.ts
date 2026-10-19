@@ -1,0 +1,197 @@
+import type { MissionContent } from '../types'
+
+/* Missão 2 da campanha A chave que saiu no pacote. Dados sintéticos. */
+
+export const chaveNoPacote: MissionContent = {
+  id: 'chave-no-pacote',
+  campaign: 'a-chave-no-pacote',
+  order: 2,
+  title: 'A chave que saiu no pacote',
+  level: 'Intermediário',
+  minutes: 35,
+  prereqs: 'Ajuda ter feito a triagem da missão anterior. As evidências trazem o resto.',
+  objective: 'Encontrar um segredo embutido em um artefato publicado, medir a exposição real, conduzir a resposta na ordem correta e corrigir a origem para que o caso não se repita.',
+  context: [
+    'Enquanto você analisava o SDK do fornecedor, a mesma técnica foi aplicada ao aplicativo da própria Vértice — a versão 4.2.0, publicada na loja há seis dias.',
+    'O arquivo de recursos do pacote tem uma chave do provedor de SMS. Ela é a mesma que o backend usa, e serve para enviar mensagens em nome da empresa.',
+  ],
+  criteria: [
+    'Você reconhece o segredo entre valores parecidos e explica por que ele é segredo.',
+    'Você mede a exposição pelo caminho que o valor percorreu, não pelo aviso.',
+    'Sua resposta encerra o acesso antes de limpar o repositório.',
+    'Sua correção tira o segredo do cliente, em vez de escondê-lo melhor.',
+  ],
+  evidence: [
+    {
+      id: 'distribuicao',
+      title: 'Onde a versão 4.2.0 já chegou',
+      kind: 'table',
+      from: 0,
+      head: ['Destino', 'Desde', 'Alcance'],
+      rows: [
+        ['Loja de aplicativos', '13/10', '28 mil instalações'],
+        ['Repositório interno de artefatos', '12/10', 'toda a engenharia'],
+        ['Pacote de testes enviado a parceiros', '12/10', '4 empresas'],
+        ['Imagem do servidor de build', '12/10', 'registro interno'],
+      ],
+      note: 'A pergunta não é se dá para despublicar: é por quantos caminhos a chave já passou.',
+    },
+    {
+      id: 'uso',
+      title: 'Uso da chave no provedor de SMS',
+      kind: 'table',
+      from: 2,
+      head: ['Período', 'Envios', 'Origens distintas', 'Observação'],
+      rows: [
+        ['06/10 a 12/10', '41 mil', '2', 'padrão normal: backend e homologação'],
+        ['13/10 a 17/10', '43 mil', '2', 'mesmo padrão'],
+        ['18/10', '47 mil', '9', 'sete origens novas, 4 mil envios fora do padrão'],
+      ],
+      note: 'Compare as origens, não só o volume.',
+    },
+    {
+      id: 'pipeline',
+      title: 'De onde a chave veio parar no pacote',
+      kind: 'code',
+      from: 3,
+      language: 'yaml',
+      lines: [
+        '# .github/workflows/release.yml (trecho)',
+        '- name: Gerar strings do app',
+        '  run: |',
+        '    sed -i "s|__SMS_KEY__|${{ secrets.SMS_API_KEY }}|" app/src/main/res/values/strings.xml',
+        '- name: Build',
+        '  run: ./gradlew assembleRelease',
+      ],
+      note: 'A substituição acontece na build: o valor entra no arquivo que vai dentro do pacote.',
+    },
+  ],
+  activities: [
+    {
+      id: 'encontrar',
+      kind: 'spot',
+      title: 'O arquivo de recursos do aplicativo',
+      prompt: 'Este é o `strings.xml` publicado dentro da versão 4.2.0. Marque a linha que dá acesso a alguma coisa e escolha a correção.',
+      challenge: 'chave-no-pacote-android',
+      explain: 'Encontrar o segredo é a parte rápida. O resto da missão trata do que fazer com ele, que é onde as respostas costumam errar a ordem.',
+    },
+    {
+      id: 'exposicao',
+      kind: 'multi',
+      variant: 'inspect',
+      title: 'O tamanho da exposição',
+      prompt: 'Marque **todas** as afirmações sustentadas pelas evidências.',
+      options: [
+        { text: 'A chave está em cópias que a Vértice não controla mais.', feedback: 'Sustentado: 28 mil instalações e um pacote enviado a quatro parceiros. Nenhuma dessas cópias volta.' },
+        { text: 'A janela de exposição começou em 12/10, quando o artefato saiu da build.', feedback: 'Sustentado: o artefato com a chave existe desde 12/10 no repositório interno e nos pacotes enviados.' },
+        { text: 'Houve uso fora do padrão a partir de 18/10.', feedback: 'Sustentado: sete origens novas e 4 mil envios fora do padrão em um único dia.' },
+        { text: 'Despublicar a versão da loja encerra a exposição.', feedback: 'Não sustentado: quem já instalou continua com o pacote, e os parceiros também.' },
+        { text: 'O aumento de envios prova que a chave foi usada por um atacante.', feedback: 'Não sustentado como prova: é um indício forte, mas a conclusão exige comparar as origens novas com os sistemas legítimos da empresa.' },
+        { text: 'Como o backend usa a mesma chave, girá-la vai derrubar o envio de SMS para sempre.', feedback: 'Não sustentado: girar exige atualizar o backend junto, o que é um procedimento normal, não uma interrupção permanente.' },
+      ],
+      correct: [0, 1, 2],
+      hints: [
+        'Olhe as datas da distribuição antes das datas do uso.',
+        'Pergunte o que volta e o que não volta depois de publicado.',
+        'Três afirmações descrevem o que as tabelas mostram; as outras extrapolam.',
+      ],
+      explain: 'A exposição se mede pelo caminho do artefato, e a janela começa na publicação, não no aviso. É essa janela que a investigação precisa cobrir.',
+    },
+    {
+      id: 'resposta',
+      kind: 'decide',
+      title: 'As primeiras duas horas',
+      prompt: 'São 23h. Escolha a resposta para as próximas duas horas.',
+      options: [
+        {
+          text: 'Emitir uma chave nova, colocá-la em uso no backend e revogar a antiga em seguida; investigar os registros desde 12/10; e só depois tratar do repositório e da versão publicada.',
+          quality: 'best',
+          flags: ['girou', 'investigou'],
+          feedback: 'Encerra o acesso primeiro, que é o único passo que para o vazamento, e investiga a janela inteira antes de qualquer limpeza.',
+          consequence: 'As sete origens novas param de funcionar à 1h. A investigação mostra 4 mil envios indevidos em 18/10, todos para a mesma faixa de números, e isso entra no comunicado.',
+        },
+        {
+          text: 'Despublicar a versão 4.2.0 da loja, remover a chave do repositório e publicar uma versão corrigida na manhã seguinte.',
+          quality: 'poor',
+          flags: ['soLimpou'],
+          feedback: 'Nenhuma dessas ações alcança as cópias já instaladas, e a chave antiga continua funcionando o tempo todo.',
+          consequence: 'Os envios indevidos continuam durante a noite e o dia seguinte, agora com volume maior.',
+        },
+        {
+          text: 'Emitir a chave nova e manter a antiga ativa por uma semana, para não quebrar integrações que ainda a usem.',
+          quality: 'partial',
+          flags: ['girouParcial'],
+          feedback: 'Manter as duas ativas é manter o vazamento ativo. Se há integrações desconhecidas, elas precisam ser mapeadas agora, não depois.',
+          consequence: 'O envio indevido segue por mais seis dias; na revisão, descobre-se que nenhuma outra integração usava a chave.',
+        },
+        {
+          text: 'Monitorar o uso por 48 horas antes de decidir, para não agir com base em um indício.',
+          quality: 'poor',
+          flags: ['esperou'],
+          feedback: 'O segredo saiu: isso já é certo e não depende do indício. Monitorar sem revogar é observar o prejuízo acontecer.',
+          consequence: 'Em 48 horas o volume indevido triplica e o provedor suspende a conta da empresa por abuso.',
+        },
+      ],
+      hints: [
+        'Pergunte qual ação encerra o acesso de quem já tem a chave.',
+        'Limpar o repositório e despublicar não alcançam as cópias existentes.',
+        'A ordem correta começa por emitir a nova e revogar a antiga.',
+      ],
+      explain: 'Girar e revogar encerram o vazamento; limpar a origem evita a repetição. Inverter a ordem mantém o problema aberto durante toda a limpeza.',
+    },
+    {
+      id: 'corrigir',
+      kind: 'order',
+      title: 'A correção da origem',
+      prompt: 'Depois da contenção, ordene o que corrige a causa.',
+      items: [
+        { text: 'Mover o envio de SMS para uma rota do backend, autenticada pela sessão do usuário', why: 'Tira o segredo do artefato distribuído: sem chave no pacote, não há o que extrair.' },
+        { text: 'Remover a substituição da chave do fluxo de build', why: 'Enquanto a build injetar o valor, toda versão nova volta a carregá-lo.' },
+        { text: 'Varrer histórico, imagens e artefatos publicados em busca do mesmo padrão', why: 'O mesmo valor costuma ter deixado cópias em outros lugares, que continuam expostas.' },
+        { text: 'Acrescentar ao pipeline uma verificação que falhe a publicação quando o pacote contiver padrões de credencial', why: 'É o que impede o próximo caso, inclusive com uma chave diferente e um time diferente.' },
+      ],
+      before: [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+      ],
+      hints: [
+        'Comece pelo que tira o segredo de dentro do artefato.',
+        'Depois impeça que a build volte a colocá-lo lá.',
+        'A verificação automática é o que protege o futuro, e vem por último.',
+      ],
+      explain: 'A ordem vai do que resolve este caso ao que previne o próximo. Inverter deixa a correção dependendo de cada pessoa lembrar da regra.',
+    },
+  ],
+  clean: { require: ['girou', 'investigou'], forbid: ['soLimpou', 'esperou'] },
+  closing: [
+    {
+      when: ['girou', 'investigou'],
+      text: 'A chave antiga está revogada, a janela inteira foi investigada e a build não injeta mais o valor. O comunicado pôde dizer o que aconteceu, quando e o que foi feito — com números, não com adjetivos.',
+    },
+    {
+      when: ['girouParcial'],
+      text: 'A chave nova entrou em uso, mas a antiga continuou aceitando conexões. Da próxima vez, mapeie as integrações antes e revogue junto: conviver com as duas é conviver com o vazamento.',
+    },
+    {
+      text: 'A limpeza aconteceu, o acesso não foi encerrado. Lembre da ordem: girar e revogar primeiro, porque é o único passo que alcança as cópias que você não controla.',
+    },
+  ],
+  review: {
+    solution: [
+      'O segredo é o valor que autentica. Endereço público e e-mail de suporte informam; a chave dá acesso.',
+      'A exposição começa quando o artefato sai da build e alcança todas as cópias distribuídas — instalações, parceiros, repositório e imagens.',
+      'A resposta correta é girar, revogar, investigar toda a janela, corrigir a origem e comunicar. Despublicar é complementar.',
+      'A correção da causa tira a chave do cliente: a chamada passa a ser feita pelo backend, com autenticação do usuário, limite por conta e registro.',
+    ],
+    residual: 'As 28 mil instalações continuam com um pacote que traz uma chave revogada. Ela não funciona mais, mas o aplicativo antigo também não envia SMS: a versão corrigida precisa ser distribuída e acompanhada por atualização obrigatória.',
+    validation: 'Confirme no provedor que a chave antiga é recusada e que os envios passaram a vir só do backend. No pipeline, gere o pacote e falhe a publicação se o padrão de credencial aparecer: teste com uma chave de descarte plantada de propósito.',
+  },
+  refs: [
+    { label: 'CWE-798 · Uso de credenciais embutidas no código', framework: { framework: 'cwe', id: 'CWE-798' } },
+    { label: 'OWASP Mobile Top 10 · M1 Improper Credential Usage', framework: { framework: 'owasp-mobile-top10', id: 'M1' } },
+    { label: 'NIST SSDF · RV.1 Identificar e confirmar vulnerabilidades continuamente', framework: { framework: 'nist-ssdf', id: 'RV.1' } },
+  ],
+  medals: ['segredo-contido', 'contencao-precisa'],
+  tags: ['reverse'],
+}

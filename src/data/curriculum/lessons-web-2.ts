@@ -54,6 +54,7 @@ export const webLessons2: Record<string, Lesson> = {
       '**IDOR** (referência insegura a objeto) é a falta de verificação de que o objeto pedido pertence a quem pede. Ela aparece em detalhes, downloads, cancelamentos, listas e exportações, ou seja, em qualquer rota que recebe um identificador.',
       'A correção é conferir o dono (ou o direito de acesso) no servidor, de preferência junto da consulta, e responder do mesmo jeito para "não existe" e "não é seu", para não revelar a existência do objeto.',
     ],
+    figure: 'idor',
     validation: 'Com duas contas, tente acessar o objeto da outra em cada rota que recebe um identificador, inclusive downloads e exportações. Escreva esses testes na suíte automatizada.',
     review: [
       { front: 'Em que tipo de rota o IDOR costuma aparecer?', back: 'Em qualquer rota que recebe um identificador: detalhe, download, cancelamento, exportação e listas.' },
@@ -73,6 +74,7 @@ export const webLessons2: Record<string, Lesson> = {
       code: ['COLUNAS = {"nome": "nome", "criado": "criado_em"}', 'coluna = COLUNAS.get(pedido_ordenacao, "nome")', 'cursor.execute(f"SELECT id, nome FROM clientes WHERE loja = %s ORDER BY {coluna}", (loja_id,))'],
       caption: 'O valor vai por parâmetro; a coluna só pode ser uma das opções da lista.',
     },
+    figure: 'injecao',
     validation: 'Envie aspas, comentários de SQL e nomes de coluna inexistentes em cada parâmetro: nenhum deve alterar a consulta nem gerar erro detalhado. Confirme as permissões da conta do banco.',
     review: [
       { front: 'Como tratar partes da consulta que não aceitam parâmetro, como o nome da coluna?', back: 'Com uma lista fechada de opções permitidas, mapeadas no servidor.' },
@@ -111,6 +113,7 @@ export const webLessons2: Record<string, Lesson> = {
       code: ['// o React codifica texto automaticamente', 'return <h1>Resultados para: {termo}</h1>', '', '// perigoso: insere HTML sem codificar', '// <div dangerouslySetInnerHTML={{ __html: termo }} />'],
       caption: 'Inserir HTML cru só é aceitável com sanitização por lista de elementos permitidos.',
     },
+    figure: 'xss',
     validation: 'Envie `<script>`, atributos de evento e URLs `javascript:` em cada campo exibido: nada deve executar. Confira a CSP da página e que ela não permite scripts inline sem necessidade.',
     review: [
       { front: 'Qual é a defesa principal contra XSS?', back: 'Codificar a saída conforme o contexto em que ela é inserida.' },

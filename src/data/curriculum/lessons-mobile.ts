@@ -36,6 +36,7 @@ export const mobileLessons: Record<string, Lesson> = {
       'O aplicativo roda em um aparelho controlado por quem o usa: ele pode ser descompilado, alterado ou ter as chamadas interceptadas. O que o aplicativo "garante" vale só para quem não quer burlá-lo.',
       'Decisões de segurança e de negócio (plano, permissão, preço, limite, autorização) ficam no **servidor**. O aplicativo cuida da experiência e protege o que guarda e mostra no aparelho.',
     ],
+    figure: 'app-backend',
     validation: 'Para cada decisão tomada no aplicativo, envie ao servidor uma requisição que finge o resultado oposto: o servidor deve decidir por conta própria e recusar o que não for permitido.',
     review: [
       { front: 'O que o aplicativo consegue garantir sozinho?', back: 'Só a experiência e a proteção do que guarda no aparelho; decisões de segurança ficam no servidor.' },
@@ -94,6 +95,7 @@ export const mobileLessons: Record<string, Lesson> = {
       'Dados que chegam por intents e por {{deep-link|links}} são **entrada não confiável**: qualquer aplicativo pode enviá-los e qualquer página pode montá-los. Esquemas próprios (`app://`) podem ser registrados por outros aplicativos.',
       'Os **App Links** ligam o link a um domínio verificado, de modo que só o aplicativo dono abre o link. Mesmo assim, o link nunca carrega credenciais nem executa ações sozinho: indica a tela, e o aplicativo autentica e pede confirmação.',
     ],
+    figure: 'deep-link',
     validation: 'Instale um aplicativo de teste que registre o mesmo esquema e toque no link: com App Links verificados, só o aplicativo correto deve abrir. Abra links com parâmetros forjados: nenhuma ação deve acontecer sem confirmação.',
     review: [
       { front: 'Por que esquemas próprios são arriscados?', back: 'Porque qualquer aplicativo pode registrá-los e receber o link.' },

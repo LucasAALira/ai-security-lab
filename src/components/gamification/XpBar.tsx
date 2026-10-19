@@ -3,6 +3,7 @@ import { LEVELS } from '@/lib/progress'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
 import { LevelBadge } from './LevelBadge'
+import { useRise } from '@/components/gothic/use-rise'
 
 /** Nível, título e a barra de XP até o próximo nível. Os títulos vêm de metas de XP reais
  *  (tarefas, desafios, chefes e conquistas), então a barra nunca anda por outra via. */
@@ -12,6 +13,7 @@ export function XpBar({ className, compact = false }: { className?: string; comp
   const next = level.next === null ? null : LEVELS[level.number]
   const span = level.next === null ? 1 : level.next - level.start
   const pct = level.next === null ? 100 : Math.min(100, Math.round(((summary.xp - level.start) / span) * 100))
+  const charging = useRise(summary.xp)
   return (
     <div className={cn('flex items-center gap-3.5', className)}>
       <LevelBadge level={level.number} className={compact ? 'size-10' : 'size-14'} />
@@ -31,7 +33,7 @@ export function XpBar({ className, compact = false }: { className?: string; comp
           aria-valuetext={next ? `${pct}% do caminho até ${next.name}` : 'Nível máximo'}
           className="gx-gauge mt-1.5 h-2.5"
         >
-          <div className="gx-gauge-fill" style={{ transform: `translateX(-${100 - pct}%)` }} />
+          <div className={cn('gx-gauge-fill', charging && 'is-charging')} style={{ transform: `translateX(-${100 - pct}%)` }} />
         </div>
         <p className="mt-1 text-[11px] text-muted-foreground">
           {next && level.next !== null ? `Faltam ${formatNumber(level.next - summary.xp)} XP para o título "${next.name}"` : 'Título máximo alcançado'}

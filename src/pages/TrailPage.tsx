@@ -1,5 +1,6 @@
-import { Flame, Lock, Skull, Sword } from 'lucide-react'
+import { Lock, Skull, Sword } from 'lucide-react'
 import { Link, Outlet, useSearchParams } from 'react-router'
+import { NewSeal } from '@/components/common/NewSeal'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { NextObjective } from '@/components/gamification/NextObjective'
 import { XpBar } from '@/components/gamification/XpBar'
@@ -9,12 +10,15 @@ import { TrailStep } from '@/components/trail/TrailStep'
 import { Card } from '@/components/ui/card'
 import { bossOfModule } from '@/data/bosses'
 import { modules } from '@/data/modules'
+import { classicAnalogyOf } from '@/data/analogies'
+import { isNewClassicModule } from '@/data/whats-new'
 import { formatNumber } from '@/lib/format'
 import { CORE_MODULE_COUNT, type StepId, type TrailModule } from '@/lib/progress'
 import { useDocumentTitle } from '@/lib/use-document-title'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
 import { SealMark } from '@/components/gothic/Seal'
+import { PrismFlame } from '@/components/gothic/PrismFlame'
 
 const stepLabel: Record<StepId, string> = {
   aulas: 'Aulas: Conceito, Exemplo e Como corrigir',
@@ -49,22 +53,31 @@ function ModuleNode({ t, onBoss }: { t: TrailModule; onBoss: (module: number) =>
   const state = t.complete ? 'Concluído' : t.unlocked ? 'Em andamento' : 'Bloqueado'
   return (
     <li className="relative pl-9 max-sm:pl-8">
-      <span
-        aria-hidden="true"
-        className={cn(
-          'absolute top-5 left-0 grid size-7 place-items-center rounded-full border-2 bg-background',
-          t.complete ? 'border-primary text-primary' : t.unlocked ? 'border-primary/70 text-primary' : 'border-dashed border-muted-foreground/60 text-muted-foreground',
-        )}
-      >
-        {t.complete ? <Flame className="size-3.5" /> : t.unlocked ? <Sword className="size-3.5" /> : <Lock className="size-3.5" />}
-      </span>
+      {/* Marcador da trilha: concluído, a fogueira digital acesa; senão, uma runa (losango de 1 px). */}
+      {t.complete ? (
+        <PrismFlame lit className="absolute top-3 -left-1 h-10 w-8" />
+      ) : (
+        <span
+          aria-hidden="true"
+          className={cn(
+            'absolute top-5 left-0.5 grid size-6 rotate-45 place-items-center border bg-background',
+            t.unlocked ? 'border-primary text-primary shadow-[0_0_10px_-2px_var(--glow)]' : 'border-dashed border-muted-foreground/60 text-muted-foreground',
+          )}
+        >
+          {t.unlocked ? <Sword className="size-3.5 -rotate-45" /> : <Lock className="size-3.5 -rotate-45" />}
+        </span>
+      )}
       <Card className={cn('gap-3 p-4 sm:p-5', t.unlocked ? 'border-border' : 'border-dashed bg-card/60')}>
         <header className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
           <div className="min-w-0">
-            <p className="text-[10px] font-semibold tracking-[0.18em] text-primary uppercase">
-              Módulo {m.number} · {m.category}
+            <p className="flex flex-wrap items-center gap-2 text-[10px] font-semibold tracking-[0.18em] text-primary uppercase">
+              <span>
+                Módulo {m.number} · {m.category}
+              </span>
+              {isNewClassicModule(t.module) ? <NewSeal title={`módulo ${m.title}`} /> : null}
             </p>
             <h3 className="mt-1 text-lg leading-snug font-medium">{m.title}</h3>
+            {classicAnalogyOf(t.module) ? <p className="mt-1.5 max-w-xl border-l border-[var(--line-strong)] pl-3 text-[12.5px] leading-relaxed text-foreground/75 italic">{classicAnalogyOf(t.module)!.text}</p> : null}
           </div>
           <p className="shrink-0 text-xs text-muted-foreground">
             <span className={cn('font-medium', t.unlocked ? 'text-foreground' : '')}>{state}</span> · {requiredDone} de {required.length} etapas

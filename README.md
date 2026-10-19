@@ -8,10 +8,10 @@ Um site de aprendizado em português que reúne aulas, missões investigativas, 
 
 | Parte | Conteúdo |
 | --- | --- |
-| **Áreas** (`#/areas`) | 7 áreas (Web, APIs, IA, Mobile, Cadeia de suprimentos, Arquitetura e Governança), 36 módulos e 167 submódulos. 158 submódulos têm aula própria (contexto, conceito, exemplo, validação, revisão e referências); os outros 9 usam os módulos clássicos da trilha. Cada módulo tem um integrador e um checkpoint. |
-| **Campanhas** (`#/campanhas`) | 7 campanhas com 6 missões cada (42 missões), em empresas fictícias: evidências liberadas por etapas, decisões com consequências, ramificações, sete formatos de atividade e revisão da solução com risco residual. |
-| **Casos reais** (`#/casos`) | 4 dossiês (XZ Utils, 3CX, SolarWinds Orion e ua-parser-js) que separam fatos com fonte, incertezas, análise educacional e uma simulação fictícia. |
-| **Laboratório de código** (`#/desafios`) | 60 desafios: marcar as linhas vulneráveis, escolher a correção e ver o código corrigido e como validar. 44 são das áreas novas (Web, API, Mobile Android e iOS, cadeia de suprimentos e configuração). |
+| **Áreas** (`#/areas`) | 8 áreas (Web, APIs, IA, Mobile, Cadeia de suprimentos, Arquitetura, **Engenharia reversa** e Governança), 42 módulos e 198 submódulos. 189 submódulos têm aula própria (contexto, conceito, exemplo, ilustração quando ajuda, validação, revisão e referências); os outros 9 usam os módulos clássicos da trilha. Cada módulo tem um integrador e um checkpoint. Áreas e módulos recém-publicados levam o selo **Novo**. |
+| **Campanhas** (`#/campanhas`) | 8 campanhas com 6 missões cada (48 missões), em empresas fictícias: evidências liberadas por etapas, decisões com consequências, ramificações, sete formatos de atividade e revisão da solução com risco residual. |
+| **Casos reais** (`#/casos`) | 19 dossiês que separam fatos com fonte, incertezas, análise educacional e uma simulação fictícia: **15 brasileiros** (STJ, TSE, ConecteSUS, DATASUS/SCPA, Secretaria de Educação do DF, organização social de saúde, primeira multa da ANPD, TikTok, Claro e Serasa, consultas ao DICT, chaves Pix, o ataque de 30 de junho de 2025, Netshoes, Banco Inter e venda de dados pessoais) e 4 de cadeia de suprimentos (XZ Utils, 3CX, SolarWinds Orion e ua-parser-js). |
+| **Laboratório de código** (`#/desafios`) | 71 desafios: marcar as linhas vulneráveis, escolher a correção e ver o código corrigido e como validar. 55 são das áreas novas (Web, API, Mobile Android e iOS, cadeia de suprimentos, configuração e engenharia reversa), incluindo 6 sobre segredos: chave no pacote, variável de build e source map, camada de imagem, registro de pipeline, resposta ao vazamento e triagem sem executar a amostra. |
 | **Modo Arquiteto** (`#/arquiteto`) | 3 projetos (loja Web com API, aplicativo com backend e conta multicanal com assistente): componentes clicáveis, ameaças STRIDE, controles com custo e complexidade, várias soluções defensáveis, avaliação por critérios e ADR com sete campos e autoavaliação. |
 | **Cobertura** (`#/cobertura`) | Matriz que liga cada item dos frameworks (OWASP Top 10, API, Mobile, LLM, MASVS, MITRE ATLAS, CWE, SSDF, SLSA) ao conteúdo que o pratica. |
 | **Explorar** (`#/explorar`) | Busca em aulas, missões, desafios, casos e projetos. |
@@ -26,12 +26,13 @@ Um site de aprendizado em português que reúne aulas, missões investigativas, 
 - ISO/IEC 42001.
 - LGPD aplicada à inteligência artificial.
 - Regulamento europeu de inteligência artificial (AI Act).
-- Engenharia reversa para defensores (módulo 09, de [acesso antecipado](#acesso-antecipado-e-página-em-breve)).
+- **Engenharia reversa para defensores**: a maior área do site, com 6 módulos e 31 submódulos — fundamentos e laboratório, análise estática, caça a segredos em artefatos, aplicativos e clientes, artefatos de IA e análise dinâmica com relatório. O módulo 09 da trilha é a porta de entrada, de [acesso antecipado](#acesso-antecipado-e-página-em-breve); a área fica aberta em [Arquivos](#o-que-há-no-site).
 - Segurança Web e de APIs: autenticação, autorização por objeto, injeções, SSRF, regras de negócio, OWASP Top 10 e API Security Top 10.
 - Segurança Mobile (Android e iOS): armazenamento, links, WebViews, TLS, biometria e a divisão entre aplicativo e servidor, com OWASP Mobile Top 10 e MASVS.
 - Cadeia de suprimentos de software: dependências, pipelines, segredos, SBOM, assinatura, proveniência e incidentes reais.
 - Arquitetura de segurança: modelagem de ameaças, identidade, dados, decisões e ADR.
 - Governança: SAMM, SSDF, requisitos, vulnerabilidades, fornecedores, evidências e privacidade.
+- Habilidades de agente como artefato, com a OWASP Agentic Skills Top 10 (rascunho do projeto, citada como tal).
 
 As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dentro do próprio site. Cada uma tem três leituras (Compreender, Conectar e Aplicar) com exemplos, tabelas e quadros "Em palavras simples", além de um **resumo em pontos-chave** e um **glossário**. Os módulos regulatórios trazem a data de revisão e avisam quando um prazo ou texto pode ter mudado.
 
@@ -42,7 +43,7 @@ As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dent
 - **Aulas interativas:** cada módulo tem abas *Conceito, Exemplo, Como corrigir, Revisar, Praticar* e *Quiz*, com o resumo primeiro e o texto completo em "Saiba mais".
 - **Laboratório de código:** 60 desafios em que você marca as linhas vulneráveis e escolhe a correção, com dicas, explicação do erro e a opção de repetir.
 - **Flashcards** com resposta que se revela, em cada módulo.
-- **Conquistas:** 68 conquistas (inclui as 8 do sistema de aprendizado, as das campanhas e do modo Arquiteto, e uma secreta), com brasões em SVG, filtros, progresso real e detalhes. Veja [Aprendizado interativo e conquistas](#aprendizado-interativo-e-conquistas).
+- **Conquistas:** 69 conquistas (inclui as 8 do sistema de aprendizado, as das campanhas e do modo Arquiteto, e uma secreta), com brasões em SVG, filtros, progresso real e detalhes. Veja [Aprendizado interativo e conquistas](#aprendizado-interativo-e-conquistas).
 - **Em breve:** página com o que está por vir (Engenharia reversa e preparação para a CompTIA SecurityX, entre outros), sem datas inventadas. O módulo de Engenharia reversa já está disponível por **desbloqueio imediato de 5.000 moedas** ou de graça, concluindo os módulos recomendados.
 - **XP e níveis:** pontos pelas atividades registradas e pelos exercícios. Repetir uma atividade nunca soma XP de novo.
 - **Medalhas e conquistas:** quatro níveis (bronze, prata, ouro e dragão), por leitura, pesquisa, prática, questões, módulos, trilhas, laboratório, cenários, desafios, chefes, dias seguidos, revisões, missões, escudos e recompensas. Cada uma dá XP bônus uma única vez (10, 20, 40 e 100 XP) e as bloqueadas mostram quanto falta.
@@ -53,13 +54,13 @@ As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dent
 - **Cenários de remediação:** situações fictícias organizadas por porte de empresa, com alternativas de solução e feedback.
 - **Anotações e progresso:** armazenamento local no navegador.
 - **Ferramentas e pentest de LLMs:** material textual com exemplos técnicos e situações do cotidiano.
-- **Identidade de RPG gótico, "Biblioteca dos Condenados"**, com oito temas de cor (dois gratuitos e seis na loja), interface responsiva e respeito à preferência do sistema por menos movimento. Veja [Identidade visual](#identidade-visual-biblioteca-dos-condenados).
+- **Identidade gótica moderna, "Forja Dracônica" (Dark Tech)**, com onze temas de cor (três gratuitos e oito na loja), interface responsiva e respeito à preferência do sistema por menos movimento. Veja [Identidade visual](#identidade-visual-forja-dracônica).
 
 > Os cenários são exercícios educacionais de decisão. O projeto não provisiona máquinas virtuais nem executa ataques, ferramentas de pentest ou ambientes vulneráveis.
 
 ## Aprendizado interativo e conquistas
 
-A direção visual é a de um RPG gótico (veja [Identidade visual](#identidade-visual-biblioteca-dos-condenados)), com medalhas em forma de brasão e identidade própria: nenhum nome, imagem, fonte, som ou arte de jogos ou da Steam foi copiado. Os ícones são SVG (Lucide e Game-icons.net, com crédito) e os estados nunca dependem só da cor.
+A direção visual é a de um gótico moderno em linhas de circuito (veja [Identidade visual](#identidade-visual-forja-dracônica)), com medalhas em forma de brasão e identidade própria: nenhum nome, imagem, fonte, som ou arte de jogos ou da Steam foi copiado. Os ícones são SVG (Lucide, com crédito, e relíquias desenhadas para o projeto) e os estados nunca dependem só da cor.
 
 **Onde fica cada coisa**
 
@@ -86,7 +87,7 @@ A direção visual é a de um RPG gótico (veja [Identidade visual](#identidade-
 
 **Progressão**
 
-- XP total: 8.452, sendo 6.742 em atividades (módulos, laboratório, cenários, desafios de código, chefes, missões, dossiês, aulas e projetos do Arquiteto) e 1.710 em conquistas. Níveis de *Iniciante* (0) a *Lenda do AppSec* (2.400).
+- XP total: 9.986, sendo 8.236 em atividades (módulos, laboratório, cenários, desafios de código, chefes, missões, dossiês, aulas e projetos do Arquiteto) e 1.750 em conquistas. Níveis de *Iniciante* (0) a *Lenda do AppSec* (2.400).
 - Desafio de código: 15 XP ao identificar e 15 ao corrigir, só na primeira vez. Chefe: 60 XP, só na primeira vitória.
 - Errar dá explicação e nova tentativa; nunca apaga XP, conquistas nem bloqueia as explicações.
 - Conquistas são concedidas uma única vez e registram a data. Não há estatística de raridade nem comparação com outras pessoas.
@@ -95,18 +96,19 @@ A direção visual é a de um RPG gótico (veja [Identidade visual](#identidade-
 
 Regras, dados salvos e como acrescentar conquistas ou desafios: [docs/APRENDIZADO-E-CONQUISTAS.md](docs/APRENDIZADO-E-CONQUISTAS.md).
 
-## Identidade visual: Biblioteca dos Condenados
+## Identidade visual: Forja Dracônica
 
-Um santuário de conhecimento dentro de uma fortaleza em ruínas: pedra escura, metal envelhecido, luz de vela, selos e vitrais, com um toque de tecnologia (a rosácea do vitral é um circuito). A atmosfera é inspirada em RPGs góticos, mas toda a arte é original, feita em CSS e SVG; nenhum personagem, logotipo, trilha sonora ou asset de franquias foi usado.
+Um gótico moderno, "Dark Tech": uma catedral desenhada em linhas de circuito, com preto absoluto, titânio fosco, vidro fumado, vermelho-brasa e ouro anodizado. Usa linhas de 1 px, cantos chanfrados e títulos nítidos, sem pergaminho nem madeira. A atmosfera lembra os soulslike, mas toda a arte é original, feita em CSS e SVG. Nenhum personagem, logotipo, trilha sonora ou asset de franquias foi usado.
 
 | Elemento | Como funciona |
 | --- | --- |
-| **Início (Santuário do Conhecimento)** | Primeiro a missão atual, com uma ação principal ("Continuar jornada"; "Começar jornada" para quem acabou de chegar). Duração e recompensa só aparecem quando vêm do conteúdo. Depois: áreas (Arquivos), contratos do dia e progresso com a última conquista. No celular, a cena encolhe para a ação aparecer na primeira tela. |
-| **Navegação** | Nomes temáticos com a função escrita ao lado: Jornada (continuar os estudos), Arquivos (áreas e aulas), Contratos (missões do dia), Provações (desafios de código), Relicário (conquistas), Mercador (loja). As rotas e os links antigos não mudaram. |
-| **Componentes** | Botões retangulares com borda dupla; a ação principal é uma placa de metal; seleção com luz âmbar e estado em ARIA; painéis de grimório; bloqueios com selo de cera e o requisito escrito; medidores de XP com o valor sempre visível; conquistas como medalhões em nichos, com a raridade no desenho, no símbolo e no nome. |
-| **Animações** | Tela de carregamento com o brasão (720 ms, sem bloquear cliques), entrada de página, brasas ao receber XP, medalhão revelado ao desbloquear e a faixa "Provação superada" na primeira vitória. Nada repete conquistas antigas, nada toca som sozinho e tudo some com "reduzir movimento". |
-| **Fontes** | Cinzel nos títulos, Grenze Gotisch só na marca e em inscrições curtas, Literata no texto e nos controles, JetBrains Mono no código. Empacotadas para uso offline. |
-| **Temas** | O novo tema padrão é gratuito. Temas comprados continuam seus; quem escolheu um tema continua com ele. Só quem nunca escolheu (e usava o padrão antigo) passa ao novo padrão, e o Dragão continua gratuito na loja. |
+| **Início (Santuário do Conhecimento)** | Primeiro vem a missão atual, com uma ação principal. Atrás dela fica a catedral digital: arcos ogivais em circuito, friso de escamas de dragão e a rosácea-circuito, com a fogueira digital (um prisma com chama geométrica) no altar, abaixo do vitral. |
+| **Navegação** | Nomes temáticos com a função escrita ao lado: Jornada, Arquivos, Contratos, Provações, Relicário, Sala de troféus e Mercador (mercado negro). No app Android aparece também Configurações. |
+| **Componentes** | Cartões de vidro fumado com borda de 1 px; botões de cantos vivos com chanfro e brilho no hover; medidores de XP em blocos de luz que pulsam quando o XP sobe; molduras cujas linhas pulsam como dados (`dataPulse`). |
+| **Fogueiras** | Na trilha, os pontos de controle e os módulos concluídos são prismas flutuantes sobre nós de servidor. Apagados, aparecem tracejados; acesos, mostram a chama. |
+| **Fontes** | Cinzel em maiúsculas espaçadas nos títulos (H1 a H3), Inter no texto e nos controles e JetBrains Mono no código e nos dados. A fonte fraktur, pouco legível, saiu. Todas vão empacotadas para uso offline. |
+| **Temas** | Forja Dracônica é o padrão gratuito. Código de Sangue (ciano e carmim) e Catedral de Silício (monocromático) custam 90 moedas. Biblioteca dos Condenados e Dragão continuam gratuitos. Temas comprados e escolhidos continuam valendo; só quem nunca escolheu passa ao novo padrão. |
+| **Acessibilidade** | Contraste AA conferido com axe em quatro temas, foco âmbar visível, alvos de 44 px no toque, e tudo para com "reduzir movimento". Sem desfoque disponível, ou com "menos transparência", as superfícies ficam sólidas. |
 
 Tokens, componentes e regras de uso: [docs/IDENTIDADE-VISUAL.md](docs/IDENTIDADE-VISUAL.md).
 
@@ -119,11 +121,41 @@ Inspiradas em apps de aprendizado como o Duolingo e em Habitica, mas escritas do
 | **Moedas** | 1 moeda a cada 5 XP, mais as das missões, do baú e das revisões. Gastar moedas nunca reduz XP, nível ou medalhas. |
 | **Missões do dia** | 3 missões por dia, sorteadas entre 7 tipos (só as que ainda são possíveis). Cada uma rende 5 a 8 moedas; cumprir as três abre um baú de 15 moedas. |
 | **Revisão com vidas** | Sessão de até 5 questões que você já acertou, com 3 vidas. Erro custa uma vida e a questão volta para o fim da fila. Terminar com vidas conta como dia de estudo e rende moedas (nas 3 primeiras sessões do dia). |
-| **Escudo de sequência** | 20 moedas, no máximo 2. Cobre um dia sem estudo e mantém a sequência. |
-| **Temas** | Biblioteca dos Condenados (padrão) e Dragão são gratuitos; Ciano e Arcano custam 40 moedas, e os da sala de troféus de 60 a 100. |
+| **Escudo de Silício** | Proteção de sequência: 20 moedas, no máximo 2. Cobre um dia sem estudo e mantém a sequência. |
+| **Injetor de Cinzas** | Troca uma missão do dia por outra de recompensa equivalente: 10 moedas, uma vez por dia. |
+| **Núcleo de LLM Exilado** | Desbloqueio imediato de módulo restrito (hoje, a Engenharia Reversa): 5.000 moedas. |
+| **Temas** | Forja Dracônica (padrão), Biblioteca dos Condenados e Dragão são gratuitos. Ciano e Arcano custam 40 moedas, os da sala de troféus de 60 a 100, e Código de Sangue e Catedral de Silício 90. |
+| **Dificuldade** | Soulslike (padrão, valores originais), Difícil (×10), Médio (×20) e Fácil (×30) no XP das conquistas e nas moedas recebidas. No app Android, o modo deus edita esses valores e os preços. Veja [Dificuldade e modo deus](#dificuldade-e-modo-deus). |
 | **Recompensas pessoais** | Prêmios que você cria (um café, uma pausa) e resgata com moedas. O resgate é por conta e confiança. |
 
 Ligas e placares ficaram de fora: exigiriam contas e um servidor.
+
+## Dificuldade e modo deus
+
+O padrão é **Soulslike**: os valores de sempre. No app Android, em **Configurações** (`#/configuracoes`), dá para escolher outra dificuldade:
+
+| Modo | XP de cada conquista | Moedas recebidas |
+| --- | --- | --- |
+| Soulslike (padrão) | Bronze 10, Prata 20, Ouro 40, Dragão 100 | ×1 |
+| Difícil | ×10 | ×10 |
+| Médio | ×20 | ×20 |
+| Fácil | ×30 | ×30 |
+
+As regras:
+
+- O multiplicador vale para tudo, inclusive o que já foi conquistado, e voltar ao Soulslike restaura os valores originais.
+- O XP das tarefas não muda, e as moedas gastas não voltam.
+- Trocar de modo não conta como estudo: não soma XP do dia nem cumpre missões.
+
+No **modo deus**, na mesma página, você edita à mão:
+
+- o XP de cada nível de conquista;
+- o multiplicador de moedas;
+- o preço de cada item da loja (consumíveis, módulos, temas, relíquias e salas).
+
+O que você mudar fica fixo, e o resto acompanha a dificuldade. "Restaurar valores do modo" desfaz os ajustes. Tudo é validado (inteiros com limite).
+
+A escolha fica no progresso deste aparelho e entra no backup. Um estado sem dificuldade salva continua igual ao de antes. No navegador, a página só mostra o modo atual: o editor existe apenas no app.
 
 ## Acesso antecipado e página Em breve
 
@@ -193,9 +225,10 @@ O site também vira um app Android: um WebView em Java puro, sem bibliotecas de 
 
 | No app | Como funciona |
 | --- | --- |
-| Abertura | Brasão sobre carvão e, em seguida, a tela de abertura com o nome e a linha de carregamento (2 s no total; um toque pula). |
+| Abertura | Brasão sobre o preto absoluto e, em seguida, a tela de abertura com o nome e a linha de carregamento (2 s no total; um toque pula). |
 | Botão Voltar | Fecha o diálogo aberto; senão volta uma página; na página inicial, sai do app. |
-| Barras do sistema | Ficam fora da área do app, em carvão com ícones claros. |
+| Barras do sistema | Ficam fora da área do app, em preto com ícones claros. |
+| Configurações | Dificuldade (Soulslike, Difícil, Médio, Fácil) e modo deus, só no app. |
 | Backup | "Exportar progresso" abre o compartilhamento do Android (Drive, Arquivos, e-mail). "Importar progresso" abre o seletor de arquivos. |
 | Progresso | Fica no armazenamento do app, separado do navegador. Para levar o progresso do site para o app (ou o contrário), exporte de um lado e importe do outro. |
 | Links externos | Abrem no navegador do aparelho; o app só mostra o conteúdo empacotado. |
@@ -226,11 +259,11 @@ A pasta `dist/` é versionada de propósito, para que `iniciar.py` funcione sem 
 | React 19 + TypeScript + Vite | Aplicação. As rotas usam hash (`#/materias/...`), então o site abre de qualquer pasta ou servidor estático. |
 | Tailwind CSS v4 | Estilos e tokens de tema. |
 | [shadcn/ui](https://ui.shadcn.com) | Componentes de interface (em `src/components/ui`, copiados e ajustados ao tema, sobre o Radix UI). |
-| [daisyUI](https://daisyui.com) | Temas de cor (Biblioteca dos Condenados, Dragão e os da loja) e componentes de estatísticas e progresso radial. As cores do shadcn derivam do mesmo tema. |
+| [daisyUI](https://daisyui.com) | Temas de cor (Forja Dracônica, Biblioteca dos Condenados, Dragão e os da loja) e componentes de estatísticas e progresso radial. As cores do shadcn derivam do mesmo tema. |
 | [Motion](https://motion.dev) | Animações de entrada, de medalhas, de moedas e de vidas. Respeita "reduzir movimento". |
 | [Rive](https://rive.app) | Dois espaços para animações `.riv` (topo da página inicial e fim da revisão). Sem arquivo, aparece a ilustração padrão. Veja `src/assets/rive/LEIA-ME.md`. |
 | [React Bits](https://reactbits.dev) | Dois componentes em `src/components/reactbits`: contador animado e cartão com destaque. |
-| [Fontsource](https://fontsource.org) | Cinzel, Literata, Grenze Gotisch e JetBrains Mono empacotadas com o site (SIL OFL 1.1), só os subconjuntos latinos. |
+| [Fontsource](https://fontsource.org) | Cinzel, Inter e JetBrains Mono empacotadas com o site (SIL OFL 1.1), só os subconjuntos latinos. |
 
 ### Estrutura
 
@@ -268,7 +301,8 @@ O progresso fica no `localStorage` do navegador. Não há conta de usuário, ban
 - Alterar entre `localhost` e `127.0.0.1`, ou mudar a porta, utiliza outro armazenamento do navegador.
 - O XP reflete atividades registradas na interface; não comprova domínio técnico nem valida pesquisas externas.
 - O progresso salvo por versões anteriores continua válido: as medalhas já merecidas são reconhecidas ao abrir o site, e os endereços antigos (`?modulo=2`, `#trilhas`, `materias/x.html`) continuam levando ao lugar certo.
-- O XP é calculado a partir do progresso salvo, sem contar duas vezes: repetir uma missão, um desafio ou um projeto não soma XP de novo. O XP máximo é 8.452: 6.742 em atividades e 1.710 em conquistas.
+- O XP é calculado a partir do progresso salvo, sem contar duas vezes: repetir uma missão, um desafio ou um projeto não soma XP de novo. O XP máximo é 9.986: 8.236 em atividades e 1.750 em conquistas.
+- As ilustrações das aulas são SVG originais, desenhados no mesmo sistema visual do site, com texto alternativo e legenda; a região rolável é focável pelo teclado.
 - O progresso das áreas e dos módulos conta só o que é obrigatório (aula lida e desafios aprovados). Submódulos planejados não entram em nenhuma porcentagem, e um módulo sem conteúdo nunca aparece como concluído.
 - **Backup:** na página Conquistas, *Exportar progresso* baixa um arquivo JSON e *Importar progresso* o restaura (pede confirmação, porque substitui o progresso atual). É o jeito de levar o progresso a outro navegador ou aparelho.
 - **Fuso horário:** os dias de estudo e a sequência usam o fuso do navegador. Viajar ou mudar o fuso do sistema pode mover o limite do dia.
@@ -290,7 +324,7 @@ Ao propor uma alteração, descreva o problema, a solução e como verificar o r
 
 ## Créditos e licenças
 
-- **Bibliotecas:** shadcn/ui, daisyUI, Motion, Rive, Tailwind CSS, Radix UI, Lucide, Sonner e React Router são MIT/ISC; as fontes Cinzel, Literata, Grenze Gotisch e JetBrains Mono são SIL OFL 1.1. A página **Referências** do site lista cada uma com a licença.
+- **Bibliotecas:** shadcn/ui, daisyUI, Motion, Rive, Tailwind CSS, Radix UI, Lucide, Sonner e React Router são MIT/ISC; as fontes Cinzel, Inter e JetBrains Mono são SIL OFL 1.1. A página **Referências** do site lista cada uma com a licença.
 - **React Bits** usa MIT + Commons Clause. Os dois componentes copiados estão dentro do app, o que a licença permite; ela **não** permite revender nem redistribuir os componentes isoladamente. O aviso completo está em `src/components/reactbits/LICENSE.md`.
 - **Projetos de estudo:** [Lingo — Duolingo Clone](https://github.com/sanidhyy/duolingo-clone) (MIT), [Duolingo Next.js](https://github.com/RikhiSingh/Duolingo-Clone) (MIT) e [Habitica](https://github.com/HabitRPG/habitica) (código GPL v3, arte CC BY-NC-SA 3.0) serviram só de inspiração para as ideias de jogo; nenhum código ou imagem foi copiado, e as mecânicas foram reescritas.
 - **Frameworks citados:** as edições e os itens estão em `src/data/frameworks.ts`, cada um com o endereço oficial e a data da conferência. O MITRE ATLAS foi conferido na versão 2026.09 (dados publicados em [mitre-atlas/atlas-data](https://github.com/mitre-atlas/atlas-data)).
@@ -299,13 +333,13 @@ Ao propor uma alteração, descreva o problema, a solução e como verificar o r
 ## Sala de troféus e relíquias
 
 Acesse `#/sala-de-trofeus` pelo menu Jogo ou pela loja.
-- Oito relíquias cosméticas, com compra única, história e prévia. Não concedem XP.
-- Seis nichos para expor relíquias compradas e medalhas conquistadas; retirar uma peça não a remove da coleção.
+- Dez relíquias cosméticas, com compra única, história e prévia. Não concedem XP. As novas são a Espada Negra da IA (90 moedas) e o Montante Envenenado (80 moedas, do tema envenenamento de dados).
+- Seis nichos, como pedestais de luz holográfica, para expor relíquias compradas e medalhas conquistadas. Retirar uma peça não a remove da coleção.
 - Salão de Pedra incluído; Galeria das Brasas (50 moedas) e Observatório Lunar (70 moedas).
 - Quatro temas adicionais: Fortaleza de Cinzas (60), Catedral do Eclipse (80), Arquivo Abissal (80) e Santuário Arcano (100).
-- Uma troca de missão pendente por dia, por 10 moedas. Só troca se houver alternativa possível de recompensa equivalente; sem alternativa, não há cobrança. Missões concluídas não podem ser trocadas.
+- O Injetor de Cinzas: uma troca de missão pendente por dia, por 10 moedas. Só troca se houver alternativa possível de recompensa equivalente; sem alternativa, não há cobrança. Missões concluídas não podem ser trocadas.
 - Compras e exposição fazem parte do progresso e do backup. Estados anteriores recebem os campos novos vazios, sem perder o conteúdo existente.
-- As figuras usam símbolos de Lorc e Delapouite, Game-icons.net, CC BY 3.0; detalhes em `public/assets/relics/CREDITS.md` e na página Referências. Molduras, sala, nomes e histórias são originais.
+- As figuras das relíquias são arte original em SVG (estilo souls sombrio), geradas por `scripts/make-relics.py`; detalhes em `public/assets/relics/CREDITS.md`. Pedestais, salas, nomes e histórias também são originais. Entre elas, a Espada Negra da IA e o Montante Envenenado (do tema envenenamento de dados).
 
 O progresso de localhost não aparece automaticamente em outro endereço. Exporte em Conquistas e importe no novo endereço para transferi-lo.
 
@@ -313,6 +347,6 @@ O progresso de localhost não aparece automaticamente em outro endereço. Export
 
 O painel abaixo do cabeçalho reúne música pessoal e efeitos originais gerados no aparelho, sem downloads externos. **Ativar efeitos** habilita sons de seleção, XP, compras, vitórias e conquistas; **Ouvir fogueira** liga um ambiente suave de lenha. Os volumes são independentes da música. Os efeitos começam desligados na primeira visita; a preferência fica salva. O ambiente nunca começa automaticamente e pausa ao ocultar a página.
 
-Em **Carregar minha música**, importe um áudio local de até 30 MB (MP3 recomendado). O arquivo é validado antes de substituir a faixa anterior e fica no IndexedDB deste aparelho, separado do progresso e dos backups. Nenhuma música acompanha o projeto. A faixa é restaurada pausada, continua entre páginas e pode ser removida pelo player. Se não houver armazenamento disponível, o player avisa e permite ouvir apenas na sessão.
+Em **Carregar minha música**, importe um áudio local de até 170 MB (MP3 recomendado). O arquivo é validado antes de substituir a faixa anterior e fica no IndexedDB deste aparelho, separado do progresso e dos backups. Nenhuma música acompanha o projeto. A faixa é restaurada pausada, continua entre páginas e pode ser removida pelo player. Se não houver armazenamento disponível, o player avisa e permite ouvir apenas na sessão.
 
-A fogueira vetorial da página inicial é arte original; a animação respeita movimento reduzido e pausa com a página oculta. Em telas intermediárias sem espaço lateral, ela é ocultada para preservar a leitura. Sons de conquista são emitidos a partir de resultados reais de ações, sem reproduzir conquistas antigas ao carregar um backup. A implementação funciona offline no site empacotado; não oferece áudio em segundo plano. A seleção de arquivos e codecs ainda precisa ser validada em Android físico.
+A fogueira da página inicial é um prisma digital com chama geométrica, arte original desenhada no altar, abaixo da rosácea do vitral, sem cobri-la. A animação respeita movimento reduzido e pausa com a página oculta. Em telas intermediárias, em que o texto fica sobre o vitral, ela é ocultada para preservar a leitura. Sons de conquista são emitidos a partir de resultados reais de ações, sem reproduzir conquistas antigas ao carregar um backup. A implementação funciona offline no site empacotado; não oferece áudio em segundo plano. A seleção de arquivos e codecs ainda precisa ser validada em Android físico.

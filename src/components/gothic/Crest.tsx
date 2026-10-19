@@ -13,6 +13,7 @@ export const AREA_TINCTURES: Record<string, string> = {
   supply: '#3a3631',
   arq: '#5a4520',
   gov: '#36404d',
+  rev: '#2b3a3a',
 }
 
 const ARCH = 'M4 54 V22 C4 12 12 5 24 2 C36 5 44 12 44 22 V54 Z'

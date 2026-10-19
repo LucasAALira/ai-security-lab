@@ -1,6 +1,7 @@
 import { BookOpenCheck, CheckCircle2, ShieldCheck } from 'lucide-react'
 import { CodeBlock } from '@/components/mission/CodeBlock'
 import { RichParagraphs, RichText } from '@/components/rich/RichText'
+import { LessonFigure } from './LessonFigure'
 import type { Lesson } from '@/data/curriculum'
 import { refLabel, resolveRef } from '@/data/frameworks'
 
@@ -20,6 +21,8 @@ export function LessonBody({ lesson }: { lesson: Lesson }) {
           <RichParagraphs texts={lesson.concept} className="text-[14px] leading-relaxed" />
         </div>
       </div>
+
+      {lesson.figure ? <LessonFigure name={lesson.figure} /> : null}
 
       {lesson.example ? (
         <div>

@@ -11,8 +11,8 @@ Este documento acompanha a página **Referências** do site. A fonte de verdade 
 | Motion | MIT | `Providers.tsx` (`MotionConfig reducedMotion="user"`), `components/motion/*`, vidas da revisão e a detecção de "reduzir movimento" nas animações da identidade gótica. A transição entre páginas é CSS (`gx-page-enter`). |
 | Rive | MIT (runtime) | `components/rive/RiveSlot.tsx`. O motor WebAssembly vai junto do site (funciona offline) e só é baixado quando existe um `.riv`. |
 | React Bits | MIT + Commons Clause | `components/reactbits/`: CountUp e SpotlightCard, copiados do repositório oficial. (DecryptedText e ShinyText saíram com o novo início.) |
-| Game-icons.net (Lorc e Delapouite) | CC BY 3.0 | `public/assets/relics/`: símbolos de relíquias e de algumas conquistas, com crédito em `CREDITS.md` e na página Referências. |
-| Cinzel, Literata, Grenze Gotisch, JetBrains Mono (Fontsource) | SIL OFL 1.1 | `src/styles/fonts.css`: só os subconjuntos latino e latino estendido, empacotados (sem internet). Acentos do português conferidos nos arquivos. |
+| Relíquias (arte própria) | do projeto | `public/assets/relics/`: SVG originais gerados por `scripts/make-relics.py`. Até a versão anterior eram símbolos de Game-icons.net (CC BY 3.0), todos substituídos. |
+| Cinzel, Inter, JetBrains Mono (Fontsource) | SIL OFL 1.1 | `src/styles/fonts.css`: só os subconjuntos latino e latino estendido, empacotados (sem internet). Acentos do português conferidos nos arquivos. |
 
 ### React Bits e a Commons Clause
 
@@ -43,6 +43,14 @@ Conferidas em 17/10/2026, com clone dos repositórios e leitura dos arquivos de 
 | [projeto-darksouls](https://github.com/Gatapericles/projeto-darksouls) | Sem licença; imagens e fonte do jogo | Só observado: página de entrada com um chamado em destaque. |
 | [CastlevaniaJS](https://github.com/Viet281101/CastlevaniaJS) | Código MIT; gráficos CC BY-NC-SA 4.0 e sprites de terceiros | Ambientação (castelo, vitrais, biblioteca). A cena do Santuário é SVG próprio. |
 | [rpgui (ApiO)](https://github.com/ApiO/rpgui) | MIT | Organização de barras de status sempre visíveis → cabeçalho compacto. |
+
+## Frameworks e normas citados
+
+O registro verificado fica em `src/data/frameworks.ts`, com edição, data de revisão e como cada item foi conferido; a página **Cobertura** (`#/cobertura`) mostra o que o conteúdo trabalha item a item. Uma observação sobre a entrada mais recente:
+
+| Fonte | Situação na data da revisão |
+| --- | --- |
+| OWASP Agentic Skills Top 10 | Projeto em desenvolvimento, com rascunho v0.5 publicado e versão 1.0 em preparação de lançamento. Identificadores (AST01 a AST10) e títulos conferidos na página oficial do projeto em 19/10/2026. O conteúdo cita a lista como rascunho; antes de usá-la em documento formal, confira a versão vigente. |
 
 ## Fora do escopo
 

@@ -55,6 +55,7 @@ export const arqLessons: Record<string, Lesson> = {
       code: ['Marcar pedido como pago sem pagar', '├─ Forjar o retorno do provedor de pagamento', '│  └─ Retorno aceito sem verificar a assinatura', '├─ Alterar o valor antes da cobrança', '│  └─ Valor aceito do que o navegador envia', '└─ Reaproveitar uma cobrança aprovada', '   └─ Sem idempotência por evento'],
       caption: 'Cada folha aponta um controle: verificar a assinatura, recalcular no servidor, idempotência.',
     },
+    figure: 'stride',
     validation: 'Aplique as seis categorias a cada componente e fluxo do diagrama e registre ao menos uma pergunta por categoria. Para o objetivo mais grave, monte a árvore e confira qual controle corta cada folha.',
     review: [
       { front: 'Quais são as seis categorias do STRIDE?', back: 'Falsificação, adulteração, repúdio, vazamento, negação de serviço e elevação de privilégio.' },
@@ -81,6 +82,7 @@ export const arqLessons: Record<string, Lesson> = {
       'O {{privilegio-minimo|privilégio mínimo}} dá a cada identidade só o que a função usa, e só pelo tempo necessário. Começar pelo que é usado (registros de acesso, testes) é mais eficaz do que tentar adivinhar.',
       'Permissões amplas costumam nascer "para não dar erro". Revisões periódicas, credenciais temporárias e separação por função (um papel para ler, outro para publicar) evitam que elas se acumulem.',
     ],
+    figure: 'privilegio',
     validation: 'Para uma identidade com permissões amplas, levante pelos registros o que ela usou nos últimos 30 dias e crie uma política só com isso. Rode o processo com a nova política e confirme que funciona.',
     review: [
       { front: 'Como descobrir o mínimo necessário para uma identidade?', back: 'Pelo que ela de fato usa, a partir dos registros de acesso e de testes.' },

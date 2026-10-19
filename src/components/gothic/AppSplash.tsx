@@ -51,8 +51,8 @@ export function AppSplash({ enabled = splashEnabled(), total = SPLASH_MS }: { en
       <div className="grid justify-items-center gap-5 px-6 text-center">
         <LogoMark className="gx-splash-mark !size-28" />
         <div>
-          <p className="gx-gothic text-[34px] leading-none text-[var(--ivory)]">AI Security Lab</p>
-          <p className="mt-2 font-display text-[11px] font-semibold tracking-[0.18em] text-primary">Biblioteca dos Condenados</p>
+          <p className="gx-brand text-[24px]">AI Security Lab</p>
+          <p className="mt-2 font-mono text-[11px] font-semibold tracking-[0.2em] text-primary uppercase">Forja Dracônica</p>
         </div>
         <span className="gx-splash-track" aria-hidden="true">
           <span className="gx-splash-fill" />

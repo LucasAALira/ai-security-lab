@@ -1,12 +1,15 @@
 import { ArrowRight } from 'lucide-react'
 import { Link, useParams } from 'react-router'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
+import { NewSeal } from '@/components/common/NewSeal'
 import { NotFoundHere } from '@/components/common/NotFoundHere'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { areaIcons, rollupPercent } from '@/components/curriculum/curriculum-ui'
 import { ResumeCard } from '@/components/curriculum/ResumeCard'
 import { Progress } from '@/components/ui/progress'
 import { areaById, modulesOfArea } from '@/data/curriculum'
+import { analogyOf } from '@/data/analogies'
+import { isNewArea, isNewModule } from '@/data/whats-new'
 import { plural } from '@/lib/format'
 import { isModuleCurriculumDone, moduleRollup, areaRollup } from '@/lib/progress'
 import { useDocumentTitle } from '@/lib/use-document-title'
@@ -28,7 +31,7 @@ export function AreaPage() {
     <div className="grid grid-cols-[minmax(0,1fr)] gap-5 py-8 md:py-10">
       <div>
         <Breadcrumbs items={[{ label: 'Áreas', to: '/areas' }, { label: area.title }]} />
-        <SectionHeading eyebrow="ÁREA" level="h1" title={<span className="inline-flex items-center gap-3"><Icon className="size-7 text-primary" aria-hidden="true" /> {area.title}</span>} description={area.summary} />
+        <SectionHeading eyebrow="ÁREA" level="h1" title={<span className="inline-flex flex-wrap items-center gap-3"><Icon className="size-7 text-primary" aria-hidden="true" /> {area.title} {isNewArea(area.id) ? <NewSeal title={`área ${area.title}`} className="align-middle" /> : null}</span>} description={area.summary} />
         <div className="mt-4 max-w-xl">
           {pct === null ? (
             <p className="text-xs text-muted-foreground">Sem atividades obrigatórias concluíveis ainda. {roll.subsTotal} submódulos planejados.</p>
@@ -49,14 +52,18 @@ export function AreaPage() {
           const p = rollupPercent(r)
           const done = isModuleCurriculumDone(state, ctx, m.id)
           return (
-            <li key={m.id} className="flex flex-col rounded-xl border border-border bg-card p-4 sm:p-5">
-              <p className="text-[10px] font-semibold tracking-[0.18em] text-primary uppercase">Módulo {i + 1}</p>
+            <li key={m.id} className="gx-panel flex flex-col border p-4 sm:p-5">
+              <p className="flex flex-wrap items-center gap-2 text-[10px] font-semibold tracking-[0.18em] text-primary uppercase">
+                Módulo {i + 1}
+                {isNewModule(m.id) ? <NewSeal title={`módulo ${m.title}`} /> : null}
+              </p>
               <h2 className="mt-1 text-lg leading-snug font-medium">
                 <Link to={`/areas/${area.id}/${m.id}`} className="hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
                   {m.title}
                 </Link>
               </h2>
               <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{m.summary}</p>
+              {analogyOf(m.id) ? <p className="mt-2 border-l border-[var(--line-strong)] pl-3 text-[12.5px] leading-relaxed text-foreground/75 italic">{analogyOf(m.id)!.text}</p> : null}
               <div className="mt-3">
                 {p === null ? (
                   <p className="text-xs text-muted-foreground">Planejado: nenhum submódulo tem conteúdo ainda ({r.subsTotal} previstos).</p>
