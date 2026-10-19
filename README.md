@@ -353,3 +353,9 @@ O painel abaixo do cabeçalho reúne música pessoal e efeitos originais gerados
 Em **Carregar minha música**, importe um áudio local de até 170 MB (MP3 recomendado). O arquivo é validado antes de substituir a faixa anterior e fica no IndexedDB deste aparelho, separado do progresso e dos backups. Nenhuma música acompanha o projeto. A faixa é restaurada pausada, continua entre páginas e pode ser removida pelo player. Se não houver armazenamento disponível, o player avisa e permite ouvir apenas na sessão.
 
 A fogueira da página inicial é um prisma digital com chama geométrica, arte original desenhada no altar, abaixo da rosácea do vitral, sem cobri-la. A animação respeita movimento reduzido e pausa com a página oculta. Em telas intermediárias, em que o texto fica sobre o vitral, ela é ocultada para preservar a leitura. Sons de conquista são emitidos a partir de resultados reais de ações, sem reproduzir conquistas antigas ao carregar um backup. A implementação funciona offline no site empacotado; não oferece áudio em segundo plano. A seleção de arquivos e codecs ainda precisa ser validada em Android físico.
+
+### DAS visual e fogueira do santuário
+
+Os três projetos do Modo Arquiteto exibem um Desenho de Arquitetura de Segurança na etapa Projeto. Os componentes e fluxos vêm do próprio exercício; zonas tracejadas mostram fronteiras de confiança. Selecione um componente por toque ou teclado para destacar conexões e ler seu contexto. No celular, o mapa pode ser rolado horizontalmente. O DAS representa o cenário a revisar, sem antecipar o gabarito da avaliação.
+
+A fogueira é uma ilustração SVG original, com soldado descansando, espada, chama translúcida, fumaça e brasas. Funciona offline, pausa ao ocultar a página e respeita a preferência de movimento reduzido.

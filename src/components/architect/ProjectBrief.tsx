@@ -1,3 +1,4 @@
+import { SecurityArchitecture } from './SecurityArchitecture'
 import { RichParagraphs } from '@/components/rich/RichText'
 import type { ArchitectProject } from '@/data/architect'
 
@@ -8,6 +9,8 @@ export function ProjectBrief({ project: p }: { project: ArchitectProject }) {
       <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
         <RichParagraphs texts={p.context} className="text-[13px] leading-relaxed" />
       </div>
+
+      <SecurityArchitecture key={p.id} project={p} />
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
         <section aria-labelledby="req-func" className="rounded-xl border border-border bg-card p-4">
