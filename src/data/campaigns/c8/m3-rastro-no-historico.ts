@@ -1,0 +1,198 @@
+import type { MissionContent } from '../types'
+
+/* Missão 3 da campanha A chave que saiu no pacote. Dados sintéticos. */
+
+export const rastroNoHistorico: MissionContent = {
+  id: 'rastro-no-historico',
+  campaign: 'a-chave-no-pacote',
+  order: 3,
+  title: 'O rastro que ficou para trás',
+  level: 'Avançado',
+  minutes: 35,
+  prereqs: 'Ajuda ter conduzido a resposta da missão anterior. As evidências trazem o resto.',
+  objective: 'Mapear todas as cópias em que um segredo persiste depois de removido do código, decidir a ordem de tratamento de cada uma e deixar o pipeline capaz de barrar o próximo caso.',
+  context: [
+    'A chave do provedor de SMS foi girada e revogada. Na varredura seguinte, a equipe encontrou outros quatro segredos — nenhum deles no código atual.',
+    'Estão no histórico do repositório, em uma imagem de contêiner publicada, nos registros de um pipeline e em um artefato de build guardado desde março.',
+  ],
+  criteria: [
+    'Você reconhece que remover do código não remove das cópias.',
+    'Você trata cada cópia pelo que ela é, sem aplicar a mesma receita a todas.',
+    'Você prioriza pelo acesso que cada segredo dá, não pela ordem em que foram achados.',
+    'Você deixa uma verificação que impede a repetição.',
+  ],
+  evidence: [
+    {
+      id: 'varredura',
+      title: 'Resultado da varredura completa',
+      kind: 'table',
+      from: 0,
+      head: ['Segredo', 'Onde está', 'Desde', 'Dá acesso a'],
+      rows: [
+        ['Senha do banco de faturas', 'histórico do repositório (commit de março)', '7 meses', 'leitura e escrita na base de faturas'],
+        ['Token do registro de pacotes', 'camada de imagem publicada', '4 meses', 'publicar pacotes com o nome da empresa'],
+        ['Token de deploy', 'registro de execução do pipeline', '2 meses', 'publicar em produção'],
+        ['Chave de teste do gateway de pagamento', 'artefato de build guardado', '7 meses', 'ambiente de teste do gateway, sem dinheiro real'],
+      ],
+      note: 'A coluna da direita é a que ordena o trabalho.',
+    },
+    {
+      id: 'historico',
+      title: 'O commit que "removeu" a senha',
+      kind: 'code',
+      from: 1,
+      language: 'text',
+      lines: [
+        '$ git log --all --oneline -- config/producao-env',
+        'd41f9a2 remove credenciais do repositório',
+        '0c7b155 configura serviço de faturas',
+        '',
+        '$ git show 0c7b155:config/producao-env',
+        'DB_URL=postgres://faturas:Fat2026%23ver@db.interna.vertice.example:5432/faturas',
+        '',
+        '# 14 clones do repositório registrados no servidor interno',
+      ],
+      note: 'O commit de remoção funciona como índice: ele diz exatamente onde procurar.',
+    },
+    {
+      id: 'alcance',
+      title: 'Quem alcança cada cópia',
+      kind: 'text',
+      from: 2,
+      paragraphs: [
+        '**Repositório**: 41 pessoas com acesso de leitura e 14 clones locais registrados. O repositório é privado.',
+        '**Imagem publicada**: registro interno, acessível a toda a engenharia e aos runners de build.',
+        '**Registros do pipeline**: visíveis a qualquer pessoa da organização, guardados por 90 dias.',
+        '**Artefato de build**: bucket interno com acesso de leitura para a engenharia, sem expiração configurada.',
+      ],
+      note: 'Nenhuma das cópias é pública, o que muda a urgência — mas não a necessidade de girar.',
+    },
+  ],
+  activities: [
+    {
+      id: 'imagem',
+      kind: 'spot',
+      title: 'Como o token foi parar na imagem',
+      prompt: 'Este é o Dockerfile que gerou a imagem. Marque as linhas que colocam segredo dentro do artefato e escolha a correção.',
+      challenge: 'segredo-na-imagem',
+      explain: 'Camadas guardam o que foi gravado nelas. O `rm` em uma camada posterior não apaga o conteúdo da anterior — e essa é a razão de o token continuar recuperável.',
+    },
+    {
+      id: 'persistencia',
+      kind: 'assign',
+      variant: 'classify',
+      title: 'O que remove e o que não remove',
+      prompt: 'Para cada cópia, classifique o efeito de "remover o segredo do código atual".',
+      rows: [
+        { text: 'Histórico do repositório, com 14 clones locais', why: 'A remoção cria um commit novo; os anteriores e todos os clones continuam com o valor.' },
+        { text: 'Camada de uma imagem já publicada no registro', why: 'A imagem é imutável: alterar o Dockerfile só afeta as imagens construídas depois.' },
+        { text: 'Registro de execução do pipeline, guardado por 90 dias', why: 'O registro é um texto já gravado; mudar o fluxo não reescreve execuções passadas.' },
+        { text: 'Arquivo de configuração lido pelo serviço em produção', why: 'Esse é o único caso em que trocar o valor na origem muda o que está em uso.' },
+      ],
+      choices: ['Não remove: a cópia continua com o valor', 'Remove: a origem é a própria cópia'],
+      accept: [[0], [0], [0], [1]],
+      hints: [
+        'Pergunte, para cada linha: a cópia é gerada de novo a partir do código?',
+        'Três das quatro já existem como artefato gravado.',
+        'Só uma delas é lida do código a cada execução.',
+      ],
+      explain: 'Essa classificação explica por que a rotação vem primeiro: para três das quatro cópias, não existe ação de limpeza que alcance quem já as tem.',
+    },
+    {
+      id: 'prioridade',
+      kind: 'order',
+      title: 'A ordem de tratamento',
+      prompt: 'Ordene os quatro segredos pelo que trata primeiro o que dá mais acesso.',
+      items: [
+        { text: 'Token de deploy: publica em produção', why: 'É o que permite alterar o que roda para os clientes: o maior alcance da lista.' },
+        { text: 'Senha do banco de faturas: lê e escreve dados reais', why: 'Dá acesso direto a dados de clientes, com escrita, mas não altera o que é publicado.' },
+        { text: 'Token do registro de pacotes: publica com o nome da empresa', why: 'Permite envenenar dependências, porém depende de alguém instalar o pacote publicado.' },
+        { text: 'Chave de teste do gateway: ambiente sem dinheiro real', why: 'Precisa ser girada, mas o acesso que concede é limitado ao ambiente de teste.' },
+      ],
+      before: [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+      ],
+      hints: [
+        'Ordene pelo que a credencial permite fazer, não por quando foi encontrada.',
+        'Duas das quatro permitem publicar algo; uma delas publica direto em produção.',
+        'A de ambiente de teste é a última, e ainda assim entra na lista.',
+      ],
+      explain: 'Prioridade por acesso concedido, não por data de descoberta. Todas são giradas; a ordem decide o que acontece na primeira hora.',
+    },
+    {
+      id: 'depois',
+      kind: 'decide',
+      title: 'Reescrever o histórico?',
+      prompt: 'Os quatro segredos foram girados e revogados. Alguém propõe reescrever o histórico do repositório. Qual é a melhor decisão?',
+      options: [
+        {
+          text: 'Não reescrever agora: as credenciais já estão revogadas e os 14 clones não seriam alcançados. Registrar a decisão, restringir quem clona, reduzir a retenção dos registros do pipeline e expirar os artefatos antigos.',
+          quality: 'best',
+          flags: ['decidiu', 'documentou'],
+          feedback: 'Reconhece que o valor dos segredos foi a zero e que a reescrita teria custo alto com alcance parcial. As outras medidas reduzem a exposição futura.',
+          consequence: 'A decisão fica registrada com a justificativa. Três meses depois, uma auditoria encontra os valores no histórico e a resposta já está escrita: revogados em 19/10.',
+        },
+        {
+          text: 'Reescrever o histórico imediatamente e pedir a todos que recliquem o repositório, antes de girar os segredos restantes.',
+          quality: 'poor',
+          flags: ['reescreveuAntes'],
+          feedback: 'Inverte a ordem: enquanto a reescrita acontece, as credenciais continuam válidas. E a reescrita não alcança os clones existentes.',
+          consequence: 'A reescrita leva o dia inteiro e quebra três pedidos de mudança abertos. Os segredos seguem válidos durante todo o período.',
+        },
+        {
+          text: 'Não fazer nada além da rotação: segredo revogado é assunto encerrado.',
+          quality: 'partial',
+          flags: ['soGirou'],
+          feedback: 'A rotação resolve o acesso, mas deixa de lado a retenção dos registros e dos artefatos, que vão acumular os próximos casos.',
+          consequence: 'Dois meses depois, a varredura encontra três segredos novos nos mesmos lugares, pelos mesmos motivos.',
+        },
+        {
+          text: 'Tornar o repositório público para que ferramentas externas varram o histórico e avisem sobre o que ainda está exposto.',
+          quality: 'poor',
+          flags: ['expos'],
+          feedback: 'Isso transforma uma exposição interna e controlada em exposição pública, inclusive de tudo o que ainda não foi encontrado.',
+          consequence: 'Em poucas horas, varreduras automáticas públicas registram o histórico inteiro, e ele deixa de poder ser retirado.',
+        },
+      ],
+      hints: [
+        'Pergunte o que a reescrita alcança e o que ela não alcança.',
+        'Se os segredos já foram revogados, qual é o valor do que está no histórico?',
+        'A melhor decisão trata da retenção e fica registrada.',
+      ],
+      explain: 'Reescrever histórico é caro e parcial. Depois da rotação, costuma valer mais reduzir retenção, restringir acesso e registrar a decisão — que é o que responde à auditoria seguinte.',
+    },
+  ],
+  clean: { require: ['decidiu', 'documentou'], forbid: ['reescreveuAntes', 'expos'] },
+  closing: [
+    {
+      when: ['decidiu', 'documentou'],
+      text: 'Os quatro segredos foram girados por ordem de acesso, a decisão sobre o histórico está registrada com a justificativa, e a retenção de registros e artefatos deixou de acumular casos novos.',
+    },
+    {
+      when: ['soGirou'],
+      text: 'A rotação resolveu o acesso. Falta a parte que evita a repetição: retenção dos registros, expiração dos artefatos e varredura na entrada do pipeline.',
+    },
+    {
+      text: 'A limpeza do histórico consumiu o dia e não alcançou os clones. Da próxima vez, gire primeiro: depois disso, o que sobra no histórico vale muito menos.',
+    },
+  ],
+  review: {
+    solution: [
+      'Remover do código atual só tem efeito onde a cópia é gerada do código. Histórico, imagens, registros e artefatos guardam o valor de forma independente.',
+      'A prioridade vem do acesso concedido: publicar em produção, depois dados reais, depois publicação de pacotes, depois ambiente de teste.',
+      'Camadas de imagem são imutáveis: a correção é não deixar o segredo virar camada, com montagem de segredo na build e configuração injetada na execução.',
+      'Depois da rotação, a reescrita de histórico costuma ser opcional. O que não é opcional: retenção curta de registros, expiração de artefatos e varredura na entrada.',
+    ],
+    residual: 'Os valores continuam existindo em clones locais e em backups de registro até o fim da retenção. Como estão revogados, o risco remanescente é de informação (nomes de host internos e formato de credenciais), e isso fica declarado.',
+    validation: 'Rode a varredura sobre todas as referências do repositório, sobre as imagens publicadas nos últimos doze meses e sobre os artefatos guardados. Depois, plante um segredo de descarte em um pedido de mudança e confirme que o pipeline barra a entrada.',
+  },
+  refs: [
+    { label: 'CWE-798 · Uso de credenciais embutidas no código', framework: { framework: 'cwe', id: 'CWE-798' } },
+    { label: 'CWE-532 · Informação sensível em arquivo de log', framework: { framework: 'cwe', id: 'CWE-532' } },
+    { label: 'NIST SSDF · PO.5 Ambientes de desenvolvimento seguros', framework: { framework: 'nist-ssdf', id: 'PO.5' } },
+  ],
+  medals: ['segredo-contido', 'cadeia-de-suprimentos'],
+  tags: ['reverse'],
+}

@@ -140,6 +140,7 @@ const CAMPAIGN_MEDALS: { id: string; campaign: string; name: string; icon: Medal
   { id: 'agente-sob-controle', campaign: 'agente-poder-demais', name: 'Agente sob Controle', icon: 'shield', desc: 'Conclua a campanha O agente com poder demais, sobre privilégio mínimo e aprovação humana.' },
   { id: 'lancamento-responsavel', campaign: 'lancamento-sob-pressao', name: 'Lançamento Responsável', icon: 'scale', desc: 'Conclua a campanha O lançamento sob pressão, sobre ameaças, fornecedores e risco aceito.' },
   { id: 'carrinho-seguro', campaign: 'checkout-outro-cliente', name: 'Carrinho Seguro', icon: 'globe', desc: 'Conclua a campanha O checkout de outro cliente, sobre autorização e regras de negócio.' },
+  { id: 'segredo-contido', campaign: 'a-chave-no-pacote', name: 'Segredo Contido', icon: 'key-round', desc: 'Conclua a campanha A chave que saiu no pacote, sobre engenharia reversa defensiva e segredos expostos.' },
   { id: 'rastros-apagados', campaign: 'app-deixou-rastros', name: 'Rastros Apagados', icon: 'smartphone', desc: 'Conclua a campanha O aplicativo que deixou rastros, sobre segurança Mobile.' },
   { id: 'uma-conta-um-padrao', campaign: 'uma-conta-muitos-caminhos', name: 'Uma Conta, Um Padrão', icon: 'network', desc: 'Conclua a campanha Uma conta, muitos caminhos, sobre controles consistentes entre canais.' },
 ]

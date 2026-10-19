@@ -8,10 +8,10 @@ Um site de aprendizado em português que reúne aulas, missões investigativas, 
 
 | Parte | Conteúdo |
 | --- | --- |
-| **Áreas** (`#/areas`) | 7 áreas (Web, APIs, IA, Mobile, Cadeia de suprimentos, Arquitetura e Governança), 36 módulos e 167 submódulos. 158 submódulos têm aula própria (contexto, conceito, exemplo, validação, revisão e referências); os outros 9 usam os módulos clássicos da trilha. Cada módulo tem um integrador e um checkpoint. |
-| **Campanhas** (`#/campanhas`) | 7 campanhas com 6 missões cada (42 missões), em empresas fictícias: evidências liberadas por etapas, decisões com consequências, ramificações, sete formatos de atividade e revisão da solução com risco residual. |
+| **Áreas** (`#/areas`) | 8 áreas (Web, APIs, IA, Mobile, Cadeia de suprimentos, Arquitetura, **Engenharia reversa** e Governança), 42 módulos e 198 submódulos. 189 submódulos têm aula própria (contexto, conceito, exemplo, ilustração quando ajuda, validação, revisão e referências); os outros 9 usam os módulos clássicos da trilha. Cada módulo tem um integrador e um checkpoint. Áreas e módulos recém-publicados levam o selo **Novo**. |
+| **Campanhas** (`#/campanhas`) | 8 campanhas com 6 missões cada (48 missões), em empresas fictícias: evidências liberadas por etapas, decisões com consequências, ramificações, sete formatos de atividade e revisão da solução com risco residual. |
 | **Casos reais** (`#/casos`) | 4 dossiês (XZ Utils, 3CX, SolarWinds Orion e ua-parser-js) que separam fatos com fonte, incertezas, análise educacional e uma simulação fictícia. |
-| **Laboratório de código** (`#/desafios`) | 60 desafios: marcar as linhas vulneráveis, escolher a correção e ver o código corrigido e como validar. 44 são das áreas novas (Web, API, Mobile Android e iOS, cadeia de suprimentos e configuração). |
+| **Laboratório de código** (`#/desafios`) | 71 desafios: marcar as linhas vulneráveis, escolher a correção e ver o código corrigido e como validar. 55 são das áreas novas (Web, API, Mobile Android e iOS, cadeia de suprimentos, configuração e engenharia reversa), incluindo 6 sobre segredos: chave no pacote, variável de build e source map, camada de imagem, registro de pipeline, resposta ao vazamento e triagem sem executar a amostra. |
 | **Modo Arquiteto** (`#/arquiteto`) | 3 projetos (loja Web com API, aplicativo com backend e conta multicanal com assistente): componentes clicáveis, ameaças STRIDE, controles com custo e complexidade, várias soluções defensáveis, avaliação por critérios e ADR com sete campos e autoavaliação. |
 | **Cobertura** (`#/cobertura`) | Matriz que liga cada item dos frameworks (OWASP Top 10, API, Mobile, LLM, MASVS, MITRE ATLAS, CWE, SSDF, SLSA) ao conteúdo que o pratica. |
 | **Explorar** (`#/explorar`) | Busca em aulas, missões, desafios, casos e projetos. |
@@ -26,12 +26,13 @@ Um site de aprendizado em português que reúne aulas, missões investigativas, 
 - ISO/IEC 42001.
 - LGPD aplicada à inteligência artificial.
 - Regulamento europeu de inteligência artificial (AI Act).
-- Engenharia reversa para defensores (módulo 09, de [acesso antecipado](#acesso-antecipado-e-página-em-breve)).
+- **Engenharia reversa para defensores**: a maior área do site, com 6 módulos e 31 submódulos — fundamentos e laboratório, análise estática, caça a segredos em artefatos, aplicativos e clientes, artefatos de IA e análise dinâmica com relatório. O módulo 09 da trilha é a porta de entrada, de [acesso antecipado](#acesso-antecipado-e-página-em-breve); a área fica aberta em [Arquivos](#o-que-há-no-site).
 - Segurança Web e de APIs: autenticação, autorização por objeto, injeções, SSRF, regras de negócio, OWASP Top 10 e API Security Top 10.
 - Segurança Mobile (Android e iOS): armazenamento, links, WebViews, TLS, biometria e a divisão entre aplicativo e servidor, com OWASP Mobile Top 10 e MASVS.
 - Cadeia de suprimentos de software: dependências, pipelines, segredos, SBOM, assinatura, proveniência e incidentes reais.
 - Arquitetura de segurança: modelagem de ameaças, identidade, dados, decisões e ADR.
 - Governança: SAMM, SSDF, requisitos, vulnerabilidades, fornecedores, evidências e privacidade.
+- Habilidades de agente como artefato, com a OWASP Agentic Skills Top 10 (rascunho do projeto, citada como tal).
 
 As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dentro do próprio site. Cada uma tem três leituras (Compreender, Conectar e Aplicar) com exemplos, tabelas e quadros "Em palavras simples", além de um **resumo em pontos-chave** e um **glossário**. Os módulos regulatórios trazem a data de revisão e avisam quando um prazo ou texto pode ter mudado.
 
@@ -42,7 +43,7 @@ As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dent
 - **Aulas interativas:** cada módulo tem abas *Conceito, Exemplo, Como corrigir, Revisar, Praticar* e *Quiz*, com o resumo primeiro e o texto completo em "Saiba mais".
 - **Laboratório de código:** 60 desafios em que você marca as linhas vulneráveis e escolhe a correção, com dicas, explicação do erro e a opção de repetir.
 - **Flashcards** com resposta que se revela, em cada módulo.
-- **Conquistas:** 68 conquistas (inclui as 8 do sistema de aprendizado, as das campanhas e do modo Arquiteto, e uma secreta), com brasões em SVG, filtros, progresso real e detalhes. Veja [Aprendizado interativo e conquistas](#aprendizado-interativo-e-conquistas).
+- **Conquistas:** 69 conquistas (inclui as 8 do sistema de aprendizado, as das campanhas e do modo Arquiteto, e uma secreta), com brasões em SVG, filtros, progresso real e detalhes. Veja [Aprendizado interativo e conquistas](#aprendizado-interativo-e-conquistas).
 - **Em breve:** página com o que está por vir (Engenharia reversa e preparação para a CompTIA SecurityX, entre outros), sem datas inventadas. O módulo de Engenharia reversa já está disponível por **desbloqueio imediato de 5.000 moedas** ou de graça, concluindo os módulos recomendados.
 - **XP e níveis:** pontos pelas atividades registradas e pelos exercícios. Repetir uma atividade nunca soma XP de novo.
 - **Medalhas e conquistas:** quatro níveis (bronze, prata, ouro e dragão), por leitura, pesquisa, prática, questões, módulos, trilhas, laboratório, cenários, desafios, chefes, dias seguidos, revisões, missões, escudos e recompensas. Cada uma dá XP bônus uma única vez (10, 20, 40 e 100 XP) e as bloqueadas mostram quanto falta.
@@ -301,6 +302,7 @@ O progresso fica no `localStorage` do navegador. Não há conta de usuário, ban
 - O XP reflete atividades registradas na interface; não comprova domínio técnico nem valida pesquisas externas.
 - O progresso salvo por versões anteriores continua válido: as medalhas já merecidas são reconhecidas ao abrir o site, e os endereços antigos (`?modulo=2`, `#trilhas`, `materias/x.html`) continuam levando ao lugar certo.
 - O XP é calculado a partir do progresso salvo, sem contar duas vezes: repetir uma missão, um desafio ou um projeto não soma XP de novo. O XP máximo é 8.452: 6.742 em atividades e 1.710 em conquistas.
+- As ilustrações das aulas são SVG originais, desenhados no mesmo sistema visual do site, com texto alternativo e legenda; a região rolável é focável pelo teclado.
 - O progresso das áreas e dos módulos conta só o que é obrigatório (aula lida e desafios aprovados). Submódulos planejados não entram em nenhuma porcentagem, e um módulo sem conteúdo nunca aparece como concluído.
 - **Backup:** na página Conquistas, *Exportar progresso* baixa um arquivo JSON e *Importar progresso* o restaura (pede confirmação, porque substitui o progresso atual). É o jeito de levar o progresso a outro navegador ou aparelho.
 - **Fuso horário:** os dias de estudo e a sequência usam o fuso do navegador. Viajar ou mudar o fuso do sistema pode mover o limite do dia.

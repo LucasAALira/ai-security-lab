@@ -1,5 +1,6 @@
 import { Lock, Skull, Sword } from 'lucide-react'
 import { Link, Outlet, useSearchParams } from 'react-router'
+import { NewSeal } from '@/components/common/NewSeal'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { NextObjective } from '@/components/gamification/NextObjective'
 import { XpBar } from '@/components/gamification/XpBar'
@@ -9,6 +10,7 @@ import { TrailStep } from '@/components/trail/TrailStep'
 import { Card } from '@/components/ui/card'
 import { bossOfModule } from '@/data/bosses'
 import { modules } from '@/data/modules'
+import { isNewClassicModule } from '@/data/whats-new'
 import { formatNumber } from '@/lib/format'
 import { CORE_MODULE_COUNT, type StepId, type TrailModule } from '@/lib/progress'
 import { useDocumentTitle } from '@/lib/use-document-title'
@@ -67,8 +69,11 @@ function ModuleNode({ t, onBoss }: { t: TrailModule; onBoss: (module: number) =>
       <Card className={cn('gap-3 p-4 sm:p-5', t.unlocked ? 'border-border' : 'border-dashed bg-card/60')}>
         <header className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
           <div className="min-w-0">
-            <p className="text-[10px] font-semibold tracking-[0.18em] text-primary uppercase">
-              Módulo {m.number} · {m.category}
+            <p className="flex flex-wrap items-center gap-2 text-[10px] font-semibold tracking-[0.18em] text-primary uppercase">
+              <span>
+                Módulo {m.number} · {m.category}
+              </span>
+              {isNewClassicModule(t.module) ? <NewSeal title={`módulo ${m.title}`} /> : null}
             </p>
             <h3 className="mt-1 text-lg leading-snug font-medium">{m.title}</h3>
           </div>

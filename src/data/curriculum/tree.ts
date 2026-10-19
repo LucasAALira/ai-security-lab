@@ -193,6 +193,52 @@ const mobVerificacao = subs('mob-verificacao', 'mobile', ['android', 'ios'], [
   ['mob-projeto-final', 'Projeto final integrado ao backend', A, 'Revisar app e backend juntos e dividir os controles entre eles.'],
 ])
 
+/* ---------- Engenharia reversa ---------- */
+
+const revFundamentos = subs('rev-fundamentos', 'rev', ['geral'], [
+  ['rev-o-que-e', 'O que é engenharia reversa na defesa', B, 'Explicar o que a engenharia reversa responde a quem defende e o que ela não resolve.'],
+  ['rev-legalidade', 'Autorização, licença e limites', B, 'Decidir se você pode analisar um artefato e registrar a autorização antes de começar.'],
+  ['rev-laboratorio', 'Laboratório isolado e higiene de análise', B, 'Montar um ambiente descartável e manter a amostra separada do resto do mundo.'],
+  ['rev-artefatos', 'Tipos de artefato e o que cada um revela', B, 'Reconhecer o tipo de artefato recebido e prever o que ele costuma entregar.'],
+  ['rev-triagem', 'Triagem em camadas: o roteiro de quatro passos', I, 'Aplicar o roteiro identificar, ler, mapear e observar sem pular etapas.'],
+])
+const revEstatica = subs('rev-estatica', 'rev', ['geral'], [
+  ['rev-identificacao', 'Identificação: tipo, hash e metadados', B, 'Identificar o formato real de um arquivo e registrar o hash antes de qualquer outra coisa.'],
+  ['rev-strings', 'Textos embutidos e o que eles entregam', B, 'Extrair textos de um artefato e separar achado de ruído.'],
+  ['rev-dependencias-binario', 'Bibliotecas, símbolos e importações', I, 'Listar o que o artefato carrega e chamar, e tirar disso hipóteses de comportamento.'],
+  ['rev-bytecode', 'Bytecode e código gerenciado', I, 'Ler código gerenciado (Java, .NET, Python) que volta quase ao original e saber o limite disso.'],
+  ['rev-nativo', 'Binários nativos: seções, desmontagem e proteções', A, 'Reconhecer seções, empacotamento e proteções de um binário nativo antes de desmontar.'],
+])
+const revSegredos = subs('rev-segredos', 'rev', ['geral'], [
+  ['rev-segredos-onde', 'Onde os segredos se escondem', I, 'Procurar segredos nos lugares em que eles de fato aparecem, do pacote ao histórico.'],
+  ['rev-segredos-padroes', 'Como reconhecer um segredo de verdade', I, 'Separar credencial viva de exemplo, teste e chave pública, sem testar o que não pode.'],
+  ['rev-segredos-bundle', 'Bundles web, mapas de código e variáveis de build', I, 'Entender por que uma variável de build vira texto no navegador e o que fazer no lugar.'],
+  ['rev-segredos-historico', 'Histórico do repositório e artefatos de build', I, 'Achar segredos que saíram do código atual mas continuam no histórico e nos artefatos.'],
+  ['rev-segredos-resposta', 'O que fazer quando um segredo vaza', I, 'Conduzir a resposta na ordem certa: girar, revogar, investigar uso e corrigir a origem.'],
+])
+const revAplicativos = subs('rev-aplicativos', 'rev', ['android', 'ios', 'web'], [
+  ['rev-app-pacote', 'Anatomia de um pacote de aplicativo', I, 'Abrir um pacote de aplicativo e saber o que cada parte dele conta.'],
+  ['rev-app-rede', 'Descobrir a API a partir do cliente', I, 'Reconstruir rotas, parâmetros e autenticação de uma API lendo o cliente.'],
+  ['rev-app-cliente-decide', 'Decisões tomadas no cliente', I, 'Identificar regras de preço, permissão e limite que moram no cliente e precisam ir ao servidor.'],
+  ['rev-app-armazenamento', 'O que o app guarda no aparelho', I, 'Encontrar dados sensíveis guardados pelo aplicativo e decidir onde eles deveriam estar.'],
+  ['rev-app-resiliencia', 'Ofuscação, detecção e o que elas valem', A, 'Dizer o que ofuscação e detecção de root atrasam e o que elas nunca substituem.'],
+])
+const revModelos = subs('rev-modelos', 'rev', ['ia'], [
+  ['rev-modelo-formatos', 'Formatos de modelo e o risco de carregar', I, 'Escolher formatos que guardam só pesos e explicar por que pickle executa código.'],
+  ['rev-modelo-proveniencia', 'Proveniência, hash e cartão do modelo', I, 'Verificar origem, versão e integridade de um modelo antes de usá-lo.'],
+  ['rev-modelo-prompts', 'Prompts, ferramentas e chaves embutidos', I, 'Encontrar prompt de sistema, lista de ferramentas e credenciais embutidos em um cliente de IA.'],
+  ['rev-modelo-extracao', 'Extração de modelo pela API', A, 'Reconhecer consulta sistemática que copia o comportamento de um modelo e dificultá-la.'],
+  ['rev-modelo-defesas', 'O que reduzir no que você publica', A, 'Reduzir o que o seu próprio artefato revela, sem contar com a ofuscação.'],
+  ['rev-skills-agente', 'Habilidades de agente como artefato', A, 'Analisar uma habilidade de agente antes de instalá-la: metadados, permissões, isolamento e atualização.'],
+])
+const revDinamica = subs('rev-dinamica', 'rev', ['geral'], [
+  ['rev-execucao-isolada', 'Execução observada em ambiente descartável', I, 'Executar uma amostra com rede controlada e registrar o que ela faz.'],
+  ['rev-rede-observada', 'Tráfego, proxy e TLS no laboratório', I, 'Observar o tráfego de um cliente que você controla, sem quebrar proteção de terceiros.'],
+  ['rev-instrumentacao', 'Instrumentação e pontos de observação', A, 'Escolher onde instrumentar para responder a uma pergunta específica.'],
+  ['rev-relatorio', 'Relatório reproduzível e cadeia de evidências', I, 'Escrever uma análise que outra pessoa consegue repetir, separando fato de hipótese.'],
+  ['rev-divulgacao', 'Divulgação responsável e conversa com o fornecedor', I, 'Comunicar um achado ao responsável com prazo, prova e caminho de correção.'],
+])
+
 /* ---------- Supply Chain e DevSecOps ---------- */
 
 const scDependencias = subs('sc-dependencias', 'supply', ['cicd'], [
@@ -329,6 +375,13 @@ export const curriculumModules: CurriculumModule[] = [
   mod('mob-integridade-distribuicao', 'mobile', 'Integridade e distribuição', 'Assinatura, dependências, engenharia reversa e resiliência.', mobIntegridade, ['mob-android', 'mob-ios']),
   mod('mob-verificacao', 'mobile', 'Verificação Mobile', 'Mobile Top 10, MASVS, MASTG e revisão de apps e backend.', mobVerificacao, ['mob-identidade-comunicacao']),
 
+  mod('rev-fundamentos', 'rev', 'Fundamentos da engenharia reversa', 'Para que serve na defesa, o que a lei e a licença permitem e o laboratório que vem antes.', revFundamentos),
+  mod('rev-estatica', 'rev', 'Análise estática', 'Identificação, textos embutidos, bibliotecas, bytecode e binários nativos.', revEstatica, ['rev-fundamentos']),
+  mod('rev-segredos', 'rev', 'Caça a segredos em artefatos', 'Onde eles se escondem, como reconhecê-los e o que fazer quando um vaza.', revSegredos, ['rev-estatica']),
+  mod('rev-aplicativos', 'rev', 'Aplicativos e clientes', 'Pacote, API reconstruída do cliente, regras no cliente, armazenamento e resiliência.', revAplicativos, ['rev-estatica']),
+  mod('rev-modelos', 'rev', 'Artefatos de IA', 'Formatos de modelo, proveniência, prompts embutidos e extração pela API.', revModelos, ['rev-estatica']),
+  mod('rev-dinamica', 'rev', 'Análise dinâmica e relatório', 'Execução observada, tráfego, instrumentação, relatório e divulgação responsável.', revDinamica, ['rev-segredos']),
+
   mod('sc-dependencias', 'supply', 'Dependências', 'O que o projeto instala, de onde vem e com que garantias.', scDependencias),
   mod('sc-repos-pipelines', 'supply', 'Repositórios e pipelines', 'Revisão, identidades, segredos e isolamento de builds.', scRepos, ['sc-dependencias']),
   mod('sc-artefatos', 'supply', 'Artefatos e distribuição', 'SBOM, assinatura, proveniência, registries e rollback.', scArtefatos, ['sc-repos-pipelines']),
@@ -353,6 +406,7 @@ export const curriculumAreas: Area[] = [
   { id: 'mobile', title: 'Segurança Mobile', summary: 'Android e iOS: armazenamento, links, WebViews, rede, privacidade e integridade.', icon: 'smartphone', modules: [] },
   { id: 'supply', title: 'Supply Chain e DevSecOps', summary: 'Dependências, pipelines, artefatos, verificações automatizadas e incidentes reais.', icon: 'package', modules: [] },
   { id: 'arq', title: 'Arquitetura de Segurança', summary: 'Modelagem, identidade, dados, decisões e a oficina do arquiteto.', icon: 'blocks', modules: [] },
+  { id: 'rev', title: 'Engenharia reversa', summary: 'Ler aplicativos, binários e modelos que você não escreveu: triagem, segredos, clientes e relatório.', icon: 'microscope', modules: [] },
   { id: 'gov', title: 'Governança e Desenvolvimento Seguro', summary: 'SAMM, SSDF, governança de IA, privacidade e regulação.', icon: 'scale', modules: [] },
 ].map((a) => ({ ...a, modules: curriculumModules.filter((m) => m.area === a.id).map((m) => m.id) })) as Area[]
 
@@ -361,6 +415,7 @@ export const curriculumSubs: Submodule[] = [
   ...apiFundamentos, ...apiIdentidade, ...apiAbuso, ...apiIntegracoes, ...apiVerificacao,
   ...iaFundamentos, ...iaPrompts, ...iaRag, ...iaAgentes, ...iaModelos, ...iaVerificacao,
   ...mobFundamentos, ...mobAndroid, ...mobIos, ...mobIdentidade, ...mobIntegridade, ...mobVerificacao,
+  ...revFundamentos, ...revEstatica, ...revSegredos, ...revAplicativos, ...revModelos, ...revDinamica,
   ...scDependencias, ...scRepos, ...scArtefatos, ...scVerificacoes, ...scIncidentes,
   ...arqModelagem, ...arqIdentidade, ...arqIntegradas, ...arqDecisoes, ...arqOficina,
   ...govDesenvolvimento, ...govIa, ...govPrivacidade,

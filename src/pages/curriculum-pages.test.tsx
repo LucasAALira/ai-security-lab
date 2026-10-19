@@ -33,9 +33,9 @@ function open(path: string, store = createProgressStore({ storage: null, ctx: pr
 }
 
 describe('áreas', () => {
-  it('mostra as sete áreas, cada uma com progresso medido pelo conteúdo que existe', () => {
+  it('mostra as oito áreas, cada uma com progresso medido pelo conteúdo que existe', () => {
     open('/areas')
-    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(7)
+    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(8)
     const arq = screen.getByRole('link', { name: 'Arquitetura de Segurança' }).closest('li')!
     expect(within(arq).getByRole('progressbar')).toBeInTheDocument()
     expect(within(arq).getByText(/24 de 24 submódulos com conteúdo/)).toBeInTheDocument()
@@ -44,7 +44,7 @@ describe('áreas', () => {
   it('a página inicial traz os cards das áreas', () => {
     open('/')
     expect(screen.getByRole('heading', { name: 'Escolha por onde começar' })).toBeInTheDocument()
-    expect(screen.getAllByRole('link', { name: /^Abrir a área/ })).toHaveLength(7)
+    expect(screen.getAllByRole('link', { name: /^Abrir a área/ })).toHaveLength(8)
   })
 
   it('a página da área lista os módulos com migalhas de pão', () => {

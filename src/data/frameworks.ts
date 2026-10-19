@@ -32,6 +32,8 @@ export interface Framework {
 }
 
 const REVIEWED = '2026-10-17'
+/** Revisão posterior, só dos itens conferidos nesta data. */
+const REVIEWED_AST = '2026-10-19'
 
 export const frameworks: Framework[] = [
   {
@@ -181,6 +183,29 @@ export const frameworks: Framework[] = [
       { id: 'LLM08', title: 'Vector and Embedding Weaknesses' },
       { id: 'LLM09', title: 'Misinformation' },
       { id: 'LLM10', title: 'Unbounded Consumption' },
+    ],
+  },
+  {
+    id: 'owasp-agentic-skills-top10',
+    name: 'OWASP Agentic Skills Top 10',
+    short: 'OWASP Agentic Skills Top 10 (rascunho)',
+    publisher: 'OWASP',
+    edition: 'Projeto em desenvolvimento: rascunho v0.5 publicado e versão 1.0 (edição 2026) em preparação de lançamento. Os itens podem mudar até a publicação.',
+    url: 'https://owasp.org/www-project-agentic-skills-top-10/',
+    complete: true,
+    reviewed: REVIEWED_AST,
+    verification: 'Identificadores e títulos conferidos na página oficial do projeto e no README do repositório em 19/10/2026. A própria página se descreve como proposta em desenvolvimento, em preparação de lançamento, e pede comentários de revisão: trate a lista como rascunho, não como edição final.',
+    items: [
+      { id: 'AST01', title: 'Malicious Skills' },
+      { id: 'AST02', title: 'Supply Chain Compromise' },
+      { id: 'AST03', title: 'Over-Privileged Skills' },
+      { id: 'AST04', title: 'Insecure Metadata' },
+      { id: 'AST05', title: 'Untrusted External Instructions' },
+      { id: 'AST06', title: 'Weak Isolation' },
+      { id: 'AST07', title: 'Update Drift' },
+      { id: 'AST08', title: 'Poor Scanning' },
+      { id: 'AST09', title: 'No Governance' },
+      { id: 'AST10', title: 'Cross-Platform Reuse' },
     ],
   },
   {

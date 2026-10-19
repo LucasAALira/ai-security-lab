@@ -35,6 +35,16 @@ export const glossary: GlossaryTerm[] = [
   { id: 'aprovacao-humana', term: 'Aprovação humana', definition: 'Etapa em que uma pessoa confirma uma ação antes de ela acontecer. Só protege quando a pessoa vê o que de fato vai ocorrer, tem tempo de ler e pode recusar.' },
   { id: 'delegacao', term: 'Delegação de identidade', definition: 'Agir em nome de um usuário com as permissões dele, em vez de usar uma conta própria e mais ampla. Assim o agente nunca pode mais do que a pessoa que o chamou.' },
   { id: 'deep-link', term: 'Deep link', definition: 'Endereço que abre uma tela específica de um aplicativo. Esquemas próprios (como `app://`) podem ser registrados por qualquer aplicativo; App Links (Android) e Universal Links (iOS) ligam o link a um domínio verificado.' },
+  { id: 'analise-estatica', term: 'Análise estática', definition: 'Examinar um artefato sem executá-lo: tipo, hash, textos embutidos, bibliotecas, configuração e código. É o que se faz primeiro, porque não corre risco de acionar o que o artefato faz.' },
+  { id: 'analise-dinamica', term: 'Análise dinâmica', definition: 'Executar o artefato em ambiente isolado e observar o que ele faz: arquivos que abre, endereços que procura, chamadas que realiza. Mostra o comportamento real, e por isso exige contenção.' },
+  { id: 'hash', term: 'Hash', definition: 'Resumo de tamanho fixo calculado a partir do conteúdo de um arquivo. Serve para identificar a amostra sem ambiguidade e para provar que ela não mudou durante a análise.' },
+  { id: 'bytecode', term: 'Bytecode', definition: 'Código intermediário executado por uma máquina virtual (Java, .NET, Python). Guarda nomes e estrutura, por isso volta a uma forma bem próxima do código original.' },
+  { id: 'desmontagem', term: 'Desmontagem', definition: 'Tradução do código de máquina de volta para instruções de montagem legíveis. Não devolve o código-fonte: nomes, comentários e tipos originais não estão no binário.' },
+  { id: 'ofuscacao', term: 'Ofuscação', definition: 'Transformar o código para dificultar a leitura, sem mudar o que ele faz. Aumenta o tempo de quem analisa; não impede a leitura nem corrige uma falha de autorização.' },
+  { id: 'segredo', term: 'Segredo', definition: 'Valor que dá acesso a algo: chave de API, senha, token, chave privada, string de conexão. Um segredo que chegou ao cliente ou ao histórico do repositório deve ser considerado exposto.' },
+  { id: 'rotacao', term: 'Rotação de segredo', definition: 'Emitir um valor novo e invalidar o antigo. É o que corrige de fato um vazamento: enquanto a credencial antiga aceitar conexões, ela continua utilizável.' },
+  { id: 'sourcemap', term: 'Source map', definition: 'Arquivo que liga o código empacotado de volta ao código original, para depurar. Publicado em produção, entrega a estrutura do projeto e às vezes trechos inteiros do fonte.' },
+  { id: 'pickle', term: 'Pickle', definition: 'Formato de serialização do Python que reconstrói objetos executando instruções do próprio arquivo. Carregar um pickle de origem desconhecida é executar código dessa origem.' },
   { id: 'webview', term: 'WebView', definition: 'Componente que mostra páginas web dentro de um aplicativo. Se a página puder chamar funções do aplicativo, quem controla a página passa a controlar essas funções.' },
 ]
 

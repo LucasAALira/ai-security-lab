@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { TierChip } from '@/components/gamification/TierChip'
 import SpotlightCard from '@/components/reactbits/SpotlightCard'
+import { NewSeal } from '@/components/common/NewSeal'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,6 +14,7 @@ import type { Category } from '@/data/types'
 import { CORE_MODULE_COUNT, isModuleComplete, moduleSteps, moduleXp, nextTierFor, tierFor, TASKS_PER_MODULE, MODULE_XP } from '@/lib/progress'
 import { formatNumber } from '@/lib/format'
 import { cn } from '@/lib/utils'
+import { isNewClassicModule } from '@/data/whats-new'
 import { useProgress } from '@/state/ProgressProvider'
 
 export type ModuleFilter = 'Todos' | Category
@@ -63,8 +65,11 @@ export function ModulesSection({ filter, onFilterChange }: Props) {
               style={CARD_VARS}
               className="flex min-h-[265px] flex-col !rounded-[10px] bg-[linear-gradient(150deg,var(--tint-strong),var(--card))] !p-6 transition-transform motion-safe:hover:-translate-y-0.5"
             >
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-lg text-muted-foreground">{m.number}</span>
+              <div className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-2 font-mono text-lg text-muted-foreground">
+                  {m.number}
+                  {isNewClassicModule(m.id) ? <NewSeal title={`módulo ${m.title}`} /> : null}
+                </span>
                 <Badge variant="secondary" className="rounded text-[9px] text-primary">
                   {gated ? <Lock className="size-2.5" aria-hidden="true" /> : null}
                   {gated ? 'Acesso antecipado' : m.category}

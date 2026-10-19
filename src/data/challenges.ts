@@ -3,6 +3,7 @@ import { defineChallenge } from './define-challenge'
 import { apiChallenges } from './challenge-packs/api'
 import { generalChallenges } from './challenge-packs/general'
 import { mobileChallenges } from './challenge-packs/mobile'
+import { reverseChallenges } from './challenge-packs/reverse'
 import { supplyChallenges } from './challenge-packs/supply'
 import { webChallenges } from './challenge-packs/web'
 import type { CodeChallenge } from './types'
@@ -566,7 +567,7 @@ const classic: CodeChallenge[] = [
   }),
 ]
 
-export const challenges: CodeChallenge[] = [...classic, ...supplyChallenges, ...generalChallenges, ...webChallenges, ...apiChallenges, ...mobileChallenges]
+export const challenges: CodeChallenge[] = [...classic, ...supplyChallenges, ...generalChallenges, ...webChallenges, ...apiChallenges, ...mobileChallenges, ...reverseChallenges]
 
 export const challengeById = (id: string) => challenges.find((c) => c.id === id)
 export const challengesOfModule = (module: number) => challenges.filter((c) => c.module === module)

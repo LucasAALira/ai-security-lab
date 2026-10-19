@@ -6,7 +6,7 @@ export const engenhariaReversa: Materia = {
   number: "09",
   title: "Engenharia reversa para defensores",
   summary: "Aprenda a examinar aplicativos, binários e arquivos de modelo que você não escreveu, em laboratório isolado, para achar o que eles escondem e decidir o que corrigir.",
-  note: "Texto didático original · Exemplos fictícios · Revisão: 16/10/2026",
+  note: "Texto didático original · Exemplos fictícios · Revisão: 19/10/2026",
   sections: [
     {
       id: "compreender",
@@ -42,7 +42,19 @@ export const engenhariaReversa: Materia = {
 <li>Guarde o artefato de um jeito que não seja executado por engano, como um arquivo compactado com senha e extensão neutra. Nunca o abra com um clique duplo.</li>
 <li>Registre tudo: data, hash, ferramentas, comandos e o que você observou.</li>
 </ul>
-<p>Este cuidado não é exagero. Quem analisa um programa suspeito está, por definição, lidando com algo que pode se comportar mal. O ambiente isolado transforma um possível incidente em um simples “voltar ao instantâneo”.</p>`,
+<p>Este cuidado não é exagero. Quem analisa um programa suspeito está, por definição, lidando com algo que pode se comportar mal. O ambiente isolado transforma um possível incidente em um simples “voltar ao instantâneo”.</p>
+<h3>O roteiro de quatro passos</h3>
+<p>A triagem segue sempre a mesma ordem, do passo mais barato ao mais caro. Cada um responde a uma pergunta e reduz o que falta fazer no seguinte.</p>
+<div class="table-wrap" role="region" aria-label="Triagem em camadas" tabindex="0"><table><caption>Triagem em camadas</caption><thead><tr><th scope="col">Passo</th><th scope="col">Pergunta</th><th scope="col">O que costuma render</th></tr></thead><tbody>
+<tr><th scope="row">1. Identificar</th><td>O que é isto?</td><td>Tipo real (não a extensão), tamanho, hash, assinatura</td></tr>
+<tr><th scope="row">2. Ler</th><td>O que ele diz de si?</td><td>Textos, manifesto, configuração, bibliotecas, endereços, chaves</td></tr>
+<tr><th scope="row">3. Mapear</th><td>Com o que ele fala?</td><td>Permissões, rotas, pontos de entrada, capacidades</td></tr>
+<tr><th scope="row">4. Observar</th><td>O que ele faz mesmo?</td><td>Arquivos, processos e conexões em execução isolada</td></tr>
+</tbody></table></div>
+<p>Entre os passos há retorno: o que se observa quase sempre manda voltar a ler. Dois erros aparecem com frequência. O primeiro é começar pelo desmontador, que é o passo mais caro e o de menor contexto. O segundo é parar no primeiro achado bom — encontrar uma chave é satisfatório, e é exatamente aí que muita análise termina, deixando passar as outras três que estavam no mesmo arquivo.</p>
+<h3>O que a análise não prova</h3>
+<p>Você encontra o que procurou. “Nenhum achado” significa que os procedimentos aplicados não encontraram nada, e não que o artefato seja inofensivo. Por isso o relatório registra também <em>o que não foi examinado</em>: quem lê precisa saber a diferença entre uma região limpa e uma região não visitada.</p>
+<div class="callout"><p class="callout-title">Continua na área Engenharia reversa</p><p>Esta matéria é a visão geral. A área <strong>Engenharia reversa</strong> desenvolve cada parte em submódulos próprios, com aulas, ilustrações e desafios: fundamentos, análise estática, caça a segredos, aplicativos e clientes, artefatos de IA e análise dinâmica com relatório.</p></div>`,
     },
     {
       id: "conectar",
@@ -96,7 +108,20 @@ OURO-1234-LIVRE</code></pre>
 <dt>Extração pela API</dt>
 <dd>Quem consegue fazer muitas consultas a um endpoint de inferência pode usar as respostas para treinar um modelo substituto que imita o original. O MITRE ATLAS descreve esse tipo de comportamento. A engenharia reversa aqui não abre arquivos: ela observa entradas e saídas.</dd>
 </dl>
-<div class="callout is-warn"><p class="callout-title">Erro comum</p><p>Confundir um formato “seguro” com um arquivo “confiável”. Um arquivo só de pesos não executa código ao carregar, mas pode conter um modelo adulterado, com comportamento diferente do prometido. Segurança do formato e confiança na origem são perguntas diferentes.</p></div>`,
+<div class="callout is-warn"><p class="callout-title">Erro comum</p><p>Confundir um formato “seguro” com um arquivo “confiável”. Um arquivo só de pesos não executa código ao carregar, mas pode conter um modelo adulterado, com comportamento diferente do prometido. Segurança do formato e confiança na origem são perguntas diferentes.</p></div>
+<h3>Caça a segredos: onde eles de fato aparecem</h3>
+<p>A pergunta útil não é “existe segredo no código?”, e sim “por quantos caminhos este segredo já passou?”. Um valor que chegou ao cliente ou ao histórico precisa ser tratado como exposto.</p>
+<div class="table-wrap" role="region" aria-label="Onde procurar segredos" tabindex="0"><table><caption>Lugares produtivos, em ordem de retorno</caption><thead><tr><th scope="col">Lugar</th><th scope="col">Por que rende</th><th scope="col">Some ao remover do código?</th></tr></thead><tbody>
+<tr><th scope="row">Recursos e configuração do pacote</th><td>Escritos por pessoas, empacotados inteiros</td><td>Só nas versões futuras</td></tr>
+<tr><th scope="row">Variáveis embutidas na build</th><td>A ferramenta troca a variável por texto literal</td><td>Só nas versões futuras</td></tr>
+<tr><th scope="row">Bundle de frontend e source maps</th><td>Baixados por qualquer visitante, antes do login</td><td>Só nas versões futuras</td></tr>
+<tr><th scope="row">Camadas antigas de imagens</th><td>Cada instrução grava uma camada, e o <code>rm</code> cria outra</td><td>Não</td></tr>
+<tr><th scope="row">Histórico do repositório</th><td>O commit que “removeu” indica onde procurar</td><td>Não</td></tr>
+<tr><th scope="row">Registros de pipeline e artefatos</th><td>Comandos de diagnóstico imprimem o valor</td><td>Não</td></tr>
+</tbody></table></div>
+<p>Reconhecer um candidato tem duas partes. A <strong>forma</strong> levanta a suspeita: prefixos conhecidos de provedor, cadeias longas de alta entropia, cabeçalhos de chave privada, estrutura de JWT. O <strong>contexto</strong> decide: o nome da variável, o arquivo, o que o código faz com o valor. Um hexadecimal de 64 caracteres pode ser chave viva ou hash de arquivo, e só o uso resolve. Uma regra não se negocia: <strong>não teste a credencial de terceiros</strong> para “ver se funciona” — isso é acesso não autorizado. A confirmação vem dos registros de quem é dono, ou simplesmente se trata o valor como vivo e se gira.</p>
+<h3>Quando um segredo vaza</h3>
+<p>A ordem é <strong>girar, revogar, investigar, corrigir, comunicar</strong>. Emitir a credencial nova sem revogar a antiga mantém o vazamento ativo; despublicar um pacote não alcança quem já o baixou. A investigação cobre toda a janela de exposição, desde a publicação do artefato — não desde o aviso. E a ausência de uso indevido nos registros é informação para o comunicado, nunca motivo para não girar.</p>`,
     },
     {
       id: "aplicar",
@@ -121,6 +146,8 @@ OURO-1234-LIVRE</code></pre>
 </ul>
 <h3>Dificultar a extração de modelo</h3>
 <p>Não existe bloqueio perfeito, porque o serviço precisa responder a consultas legítimas. O objetivo é elevar o custo e criar evidência: exija autenticação, imponha limites de taxa e de volume, monitore padrões incomuns (muitas consultas variadas e sistemáticas de um mesmo cliente) e exponha o mínimo de detalhe nas respostas. Por exemplo, devolver só a resposta final em vez de todas as probabilidades, quando elas não são necessárias.</p>
+<h3>Habilidades de agente também são artefatos</h3>
+<p>Uma habilidade de agente é um pacote que concede capacidades: instruções em texto, metadados, lista de ferramentas e, às vezes, scripts. Instalar é conceder. Antes de instalar, verifique o escopo pedido por cada ferramenta, a origem das instruções (buscar instruções de um endereço externo a cada execução anula a revisão), a política de atualização automática e o isolamento. Os metadados merecem atenção especial porque são lidos <em>pelo modelo</em>: uma descrição que manda “ignorar instruções anteriores” é injeção embalada como documentação. A defesa é aplicar permissões no código, não pedir bom comportamento no prompt.</p>
 <h3>Registrar a análise para que outra pessoa a repita</h3>
 <p>Uma análise sem registro vira opinião. Um relatório curto e útil separa fato de hipótese e termina em uma ação verificável. Exemplo fictício:</p>
 <pre tabindex="0"><code>Objeto:        app-atendimento 3.2.1 (SHA-256 completo no anexo)
@@ -134,6 +161,8 @@ Recomendação:  mover a chamada ao servidor; revogar e girar a chave;
                exigir autenticação na rota
 Reteste:       novo pacote sem a chave; rota recusa pedido sem sessão</code></pre>
 <p>Depois da correção, repita a análise no novo pacote. O reteste confirma que o segredo saiu do artefato, que a chave antiga foi revogada e que o servidor recusa pedidos forjados. Registre também o que <em>não</em> foi examinado, para que ninguém leia “sem achados” como “seguro”.</p>
+<h3>Falar com quem pode corrigir</h3>
+<p>Quando o achado é de terceiro, o objetivo é a correção, não o crédito. Comunique primeiro em canal privado, com achado, impacto, passos de reprodução, versão afetada, prazo pretendido e contato — sem exploração pronta e sem adjetivos sobre quem escreveu o código. Sem canal de segurança publicado, tente nesta ordem: política pública ou arquivo de segurança, endereço de segurança do site, contato comercial e, por fim, um intermediário. Registre cada tentativa com data: esse registro é o que justifica os passos seguintes e protege quem reportou.</p>
 <div class="callout"><p class="callout-title">Para o Security Champion</p><p>Você não precisa dominar um desmontador para ajudar. Perguntar “o que um estranho enxerga se abrir este pacote?”, “quem decide a permissão, o cliente ou o servidor?” e “de onde veio este modelo e como sabemos que é o mesmo que foi aprovado?” já muda a qualidade de uma revisão.</p></div>`,
     },
   ],
@@ -144,6 +173,9 @@ Reteste:       novo pacote sem a chave; rota recusa pedido sem sessão</code></p
     "Arquivos de modelo em pickle podem executar código ao carregar; prefira formatos só de pesos e confira origem e hash.",
     "Ofuscar atrasa quem lê, mas não corrige uma falha. Chave exposta deve ser revogada.",
     "Registre cada análise de um jeito que outra pessoa consiga repetir, e faça o reteste depois da correção.",
+    "Segredos persistem em cópias: a resposta a um vazamento começa por girar e revogar, e só depois limpa a origem.",
+    "Habilidades de agente concedem capacidades: avalie escopo, origem das instruções e atualização automática antes de instalar.",
+    "Achado de terceiro vai primeiro por canal privado, com reprodução e prazo combinado, e com registro de cada tentativa.",
   ],
   glossary: [
     { term: "Análise dinâmica", definition: "Observação do artefato em execução, em ambiente controlado, para ver arquivos, processos e conexões de rede." },
@@ -154,9 +186,11 @@ Reteste:       novo pacote sem a chave; rota recusa pedido sem sessão</code></p
     { term: "Instantâneo (snapshot)", definition: "Cópia do estado de uma máquina virtual, para voltar ao ponto limpo depois de uma análise." },
     { term: "Ofuscação", definition: "Técnica que embaralha o código para dificultar a leitura. Aumenta o esforço, mas não impede a análise." },
     { term: "Pickle", definition: "Formato de serialização do Python que pode executar código quando o arquivo é carregado." },
+    { term: "Rotação de segredo", definition: "Emitir uma credencial nova e invalidar a antiga. É o que encerra de fato um vazamento, porque alcança as cópias que você não controla." },
     { term: "Safetensors", definition: "Formato pensado para guardar apenas os pesos de um modelo, sem código executável." },
     { term: "Sandbox", definition: "Ambiente isolado onde um programa é executado com limites, para observar seu comportamento sem arriscar o sistema real." },
     { term: "Segredo embutido", definition: "Chave, senha ou código interno gravado no aplicativo, na página ou no prompt. Quem examina o pacote consegue lê-lo." },
+    { term: "Source map", definition: "Arquivo que liga o código empacotado ao original, para depurar. Publicado em produção, entrega estrutura, nomes e trechos do fonte." },
   ],
   research: {
     heading: "Pesquisa orientada e revisão",

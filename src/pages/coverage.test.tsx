@@ -19,7 +19,9 @@ describe('página de cobertura de frameworks', () => {
     open()
     const registro = screen.getByRole('table', { name: /Frameworks e normas registrados/ })
     expect(within(registro).getAllByRole('row')).toHaveLength(frameworks.length + 1)
-    expect(within(registro).getAllByText('17/10/2026').length).toBe(frameworks.length)
+    // A maioria foi conferida em 17/10/2026; o rascunho da Agentic Skills Top 10 entrou em 19/10/2026.
+    expect(within(registro).getAllByText('17/10/2026').length).toBe(frameworks.length - 1)
+    expect(within(registro).getAllByText('19/10/2026')).toHaveLength(1)
   })
 
   it('a matriz mostra o que cada item trabalha e assume as lacunas', () => {

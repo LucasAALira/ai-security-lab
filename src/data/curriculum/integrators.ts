@@ -31,6 +31,13 @@ export const integrators: Record<string, Integrator> = {
   'ia-modelos-dados': { kind: 'challenge', id: 'modelo-sem-verificacao' },
   'ia-verificacao': { kind: 'challenge', id: 'executor-que-executa' },
 
+  'rev-fundamentos': { kind: 'challenge', id: 'triagem-do-pacote' },
+  'rev-estatica': { kind: 'challenge', id: 'sourcemap-em-producao' },
+  'rev-segredos': { kind: 'mission', id: 'chave-no-pacote' },
+  'rev-aplicativos': { kind: 'challenge', id: 'rotas-que-o-app-conhece' },
+  'rev-modelos': { kind: 'challenge', id: 'habilidade-de-agente' },
+  'rev-dinamica': { kind: 'mission', id: 'relatorio-que-corrige' },
+
   'mob-fundamentos': { kind: 'mission', id: 'biometria-e-o-servidor' },
   'mob-android': { kind: 'mission', id: 'webview-do-pagamento' },
   'mob-ios': { kind: 'mission', id: 'token-no-lugar-errado' },

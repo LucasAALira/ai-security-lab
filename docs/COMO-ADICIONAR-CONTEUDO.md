@@ -107,6 +107,7 @@ A hierarquia Área → Módulo → Submódulo fica em `src/data/curriculum/tree.
   concept: ['Dois ou mais parágrafos.', '...'],
   deeper: ['Opcional: aprofundamento.'],
   example: { title, language, code: [...], caption },   // opcional
+  figure: 'triagem',                                    // opcional: ilustração original (ver abaixo)
   validation: 'Como verificar que o controle funciona.',
   review: [{ front: 'Pergunta', back: 'Resposta' }],    // vira flashcard
   refs: [{ framework: 'owasp-top10', id: 'A01' }],
@@ -115,3 +116,11 @@ A hierarquia Área → Módulo → Submódulo fica em `src/data/curriculum/tree.
 ```
 
 Um submódulo sem aula nem desafio aparece como **planejado** e não entra em nenhuma porcentagem. O **integrador** de cada módulo (missão, desafio ou projeto do Arquiteto) fica em `src/data/curriculum/integrators.ts`; um teste confere que ele existe.
+
+### Ilustrações das aulas
+
+As figuras ficam em `src/components/curriculum/LessonFigure.tsx`, uma entrada por chave. Cada uma tem `title` (nome curto, rótulo da região rolável), `alt` (texto alternativo que diz o mesmo que o desenho), `caption` (legenda visível), tamanho e o desenho em SVG. Use os auxiliares `Box` e `Arrow` para manter o traço de 1 px e as cores do tema; nada de imagem externa. Depois é só apontar `figure: 'chave'` na aula.
+
+### Selo "Novo"
+
+`src/data/whats-new.ts` lista as áreas, os módulos do currículo e os módulos clássicos que aparecem com o selo **Novo** (`components/common/NewSeal.tsx`). A lista é mantida à mão: quando deixar de ser novidade, tire o id de lá. O selo é só visual — não entra em progresso nem em ordenação.

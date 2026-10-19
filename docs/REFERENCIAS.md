@@ -44,6 +44,14 @@ Conferidas em 17/10/2026, com clone dos repositórios e leitura dos arquivos de 
 | [CastlevaniaJS](https://github.com/Viet281101/CastlevaniaJS) | Código MIT; gráficos CC BY-NC-SA 4.0 e sprites de terceiros | Ambientação (castelo, vitrais, biblioteca). A cena do Santuário é SVG próprio. |
 | [rpgui (ApiO)](https://github.com/ApiO/rpgui) | MIT | Organização de barras de status sempre visíveis → cabeçalho compacto. |
 
+## Frameworks e normas citados
+
+O registro verificado fica em `src/data/frameworks.ts`, com edição, data de revisão e como cada item foi conferido; a página **Cobertura** (`#/cobertura`) mostra o que o conteúdo trabalha item a item. Uma observação sobre a entrada mais recente:
+
+| Fonte | Situação na data da revisão |
+| --- | --- |
+| OWASP Agentic Skills Top 10 | Projeto em desenvolvimento, com rascunho v0.5 publicado e versão 1.0 em preparação de lançamento. Identificadores (AST01 a AST10) e títulos conferidos na página oficial do projeto em 19/10/2026. O conteúdo cita a lista como rascunho; antes de usá-la em documento formal, confira a versão vigente. |
+
 ## Fora do escopo
 
 - Ligas e placares: exigem contas e servidor.
