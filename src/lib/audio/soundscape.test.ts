@@ -20,3 +20,23 @@ describe('sound selection from actual progress results', () => {
     expect(cueFor(result([{ kind: 'boss-miss', module: 0 }]))).toBe('retry')
   })
 })
+
+import { ambienceSamples, audioLevel } from './soundscape'
+describe('ambience signal', () => {
+  it('keeps both layers bounded and tapers loop edges to silence', () => {
+    for (const kind of ['fire', 'sea'] as const) {
+      let seed = 17
+      const random = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296)
+      const samples = ambienceSamples(kind, 8000, 2, random)
+      expect(Math.abs(samples[0])).toBe(0); expect(Math.abs(samples.at(-1)!)).toBe(0)
+      expect(samples.every(v => Number.isFinite(v) && Math.abs(v) < 1)).toBe(true)
+      expect(samples.some(v => Math.abs(v) > 0.01)).toBe(true)
+    }
+  })
+  it('rejects invalid preferences and clamps volume', () => {
+    expect(audioLevel(NaN, 0.2)).toBe(0.2)
+    expect(audioLevel(Infinity, 0.2)).toBe(0.2)
+    expect(audioLevel(-2)).toBe(0)
+    expect(audioLevel(3)).toBe(1)
+  })
+})

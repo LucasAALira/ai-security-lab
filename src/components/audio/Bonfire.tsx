@@ -13,13 +13,15 @@ export function Bonfire() {
   }, [])
   return (
     <figure className="bonfire" data-paused={paused}>
-      <svg viewBox="0 0 360 250" role="img" aria-label="Soldado de armadura descansando junto a uma fogueira, com espada nas cinzas, chamas translúcidas e brasas">
+      <svg viewBox="0 0 360 250" role="img" aria-label="Arauto Esmeralda de Dark Souls II ao lado do cavaleiro e da fogueira; o brasão de dragões do site aparece na veste verde e no escudo">
         <defs>
           <radialGradient id={`${id}-glow`}><stop stopColor="#f69c48" stopOpacity=".36" /><stop offset="1" stopColor="#d85c23" stopOpacity="0" /></radialGradient>
           <linearGradient id={`${id}-fire`} x1="0" y1="1" x2="0.3" y2="0"><stop stopColor="#e55b24" stopOpacity=".8" /><stop offset=".55" stopColor="#ffb35c" stopOpacity=".65" /><stop offset="1" stopColor="#f9dca5" stopOpacity=".06" /></linearGradient>
           <linearGradient id={`${id}-steel`}><stop stopColor="#242c36" /><stop offset=".5" stopColor="#66717b" /><stop offset="1" stopColor="#ad9270" /></linearGradient>
           <linearGradient id={`${id}-cloak`}><stop stopColor="#171c26" /><stop offset=".7" stopColor="#35313a" /><stop offset="1" stopColor="#784b3d" /></linearGradient>
           <filter id={`${id}-soft`} x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" /></filter>
+          <linearGradient id={`${id}-emerald`}><stop stopColor="#132e2b" /><stop offset=".5" stopColor="#356251" /><stop offset="1" stopColor="#193d34" /></linearGradient>
+          <linearGradient id={`${id}-linen`}><stop stopColor="#8c816c" /><stop offset=".5" stopColor="#c6b998" /><stop offset="1" stopColor="#756b5d" /></linearGradient>
         </defs>
         <ellipse cx="199" cy="203" rx="145" ry="30" fill="#080a10" opacity=".45" />
         <ellipse className="bonfire-halo" cx="228" cy="153" rx="109" ry="90" fill={`url(#${id}-glow)`} />
@@ -50,7 +52,38 @@ export function Bonfire() {
         {/* Shield leaning on the stone. */}
         <path d="M60 145l26-8 20 14-5 42-20 18-18-22z" fill="#262c34" stroke="#8b7b63" strokeWidth="2" />
         <path d="M68 152l16-6 14 10-5 32-11 12-11-15z" fill="none" stroke="#5e6570" />
-        <path d="M81 151v40m-9-25 19-3" stroke="#967253" strokeWidth="3" opacity=".6" />
+        <image href={`${import.meta.env.BASE_URL}assets/dragon-lock.png`} x="71" y="161" width="25" height="25" opacity=".92" />
+        {/* Shanalotte / Emerald Herald: green hood and cloak, auburn hair, linen dress,
+            crimson sash and leather gloves. A vector interpretation beside the resting knight. */}
+        <g aria-hidden="true" strokeLinejoin="round">
+          <ellipse cx="310" cy="217" rx="38" ry="8" fill="#080b10" opacity=".4" />
+          <path d="M300 203l-5 16 18 1 3-16m10-2 1 16 15 2-7-18" fill="#342d2b" stroke="#665342" />
+          <path d="M299 84Q282 92 281 118l-11 83 22 15 45-2 13-15-14-94-15-23z" fill={`url(#${id}-emerald)`} stroke="#426354" strokeWidth="1.5" />
+          <path d="M303 101l20-1 5 53 10 61-49-1 12-62z" fill={`url(#${id}-linen)`} stroke="#6c6854" />
+          <path d="M307 145l-7 59m15-56-1 57m6-55 7 54" fill="none" stroke="#e4d8b5" strokeOpacity=".3" />
+          <path d="M298 111l22-6 9 23-4 25-25 2-6-24z" fill="#554b3f" stroke="#968061" />
+          <path d="M307 111l11 32m-16-23 20 12m-21-3 21-6" fill="none" stroke="#bda480" strokeWidth="1" />
+          <path d="M296 145l33-5 2 9-35 6z" fill="#8e3736" stroke="#ba6550" />
+          <path d="M323 148l6 39-9-6-3-31z" fill="#803537" />
+          {/* Hood framing a left-facing, quietly lowered face. */}
+          <path d="M293 82l-6-17 3-24 14-16 20 5 13 20-2 30-16 20z" fill={`url(#${id}-emerald)`} stroke="#55715b" strokeWidth="1.5" />
+          <path d="M300 42l16-4 10 13-2 26-12 13-15-9-4-23z" fill="#302c29" />
+          <path d="M303 46l14 1 6 12-4 19-10 8-9-10-5-8 4-8z" fill="#c4a48a" />
+          <path d="M299 48q15-18 26 6l-2 26-5 9-3-11 5-18-9-8-11 10-5 15-3-10z" fill="#6c3f2f" />
+          <path d="M300 62l6 1m-6 8 4 2m0 5 5 1" fill="none" stroke="#624b43" strokeWidth="1.2" />
+          <path d="M294 42l-5 31 12 21-12 13-8 71-9 21 17 13 12-47-1-61 9-14-13-16z" fill="#234d3f" stroke="#627558" />
+          <path d="M329 44l7 33-10 19 10 47 14 56-13 15-14-43-6-71 11-22z" fill="#294d40" stroke="#667b59" />
+          {/* Sleeves and gloved hands held in front of the waist. */}
+          <path d="M293 102l-12 10 2 22 17 15 9-8-15-17 7-14z" fill="#3f6351" stroke="#77846a" />
+          <path d="M329 102l10 18-13 25-14 3-2-10 12-8-2-19z" fill="#355a49" stroke="#758365" />
+          <path d="M301 138l10 2 10-3 5 6-10 10-13-4-7-5z" fill="#665044" stroke="#ac8969" />
+          <path d="M306 142l12 3m-9 1 8 3" stroke="#b49a7a" strokeWidth=".8" fill="none" />
+          {/* Gold trim and the exact site crest on the lower green mantle. */}
+          <path d="M277 196l13 10m42-10 8 13M295 207q17 5 37 0" stroke="#b09b6e" strokeWidth="1.5" fill="none" />
+          <image href={`${import.meta.env.BASE_URL}assets/dragon-lock.png`} x="274" y="159" width="26" height="26" opacity=".9" />
+          <path d="M294 87l12 9 17-3" stroke="#bda77a" fill="none" />
+          <circle cx="306" cy="96" r="2.5" fill="#c6ab72" />
+        </g>
         {/* Ash ring, charred wood and sword. */}
         <g fill="#393235" stroke="#655147"><ellipse cx="234" cy="212" rx="47" ry="10" /><path d="M196 210l58-12 8 7-62 13zm10-16 53 17-6 7-53-17z" /></g>
         <g stroke="#9f7352" strokeWidth="1.5" fill="#b7aaa0"><path d="M237 97l8 1-6 108-7 9-1-11z" /><path d="M223 103l34 2-1 5-34-2z" /><path d="M237 77l9 1-2 25-8-1z" fill="#3d3030" /><circle cx="242" cy="74" r="5" /></g>
