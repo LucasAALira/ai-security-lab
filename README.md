@@ -12,7 +12,7 @@ Um site de aprendizado em português que reúne aulas, missões investigativas, 
 | **Campanhas** (`#/campanhas`) | 8 campanhas com 6 missões cada (48 missões), em empresas fictícias: evidências liberadas por etapas, decisões com consequências, ramificações, sete formatos de atividade e revisão da solução com risco residual. |
 | **Casos reais** (`#/casos`) | 19 dossiês que separam fatos com fonte, incertezas, análise educacional e uma simulação fictícia: **15 brasileiros** (STJ, TSE, ConecteSUS, DATASUS/SCPA, Secretaria de Educação do DF, organização social de saúde, primeira multa da ANPD, TikTok, Claro e Serasa, consultas ao DICT, chaves Pix, o ataque de 30 de junho de 2025, Netshoes, Banco Inter e venda de dados pessoais) e 4 de cadeia de suprimentos (XZ Utils, 3CX, SolarWinds Orion e ua-parser-js). |
 | **Laboratório de código** (`#/desafios`) | 71 desafios: marcar as linhas vulneráveis, escolher a correção e ver o código corrigido e como validar. 55 são das áreas novas (Web, API, Mobile Android e iOS, cadeia de suprimentos, configuração e engenharia reversa), incluindo 6 sobre segredos: chave no pacote, variável de build e source map, camada de imagem, registro de pipeline, resposta ao vazamento e triagem sem executar a amostra. |
-| **Modo Arquiteto** (`#/arquiteto`) | 3 projetos (loja Web com API, aplicativo com backend e conta multicanal com assistente): componentes clicáveis, ameaças STRIDE, controles com custo e complexidade, várias soluções defensáveis, avaliação por critérios e ADR com sete campos e autoavaliação. |
+| **Modo Arquiteto** (`#/arquiteto`) | 13 projetos (Web, mobile, IA, SaaS, pagamentos, supply chain, Kubernetes, IoT, dados e acesso privilegiado): componentes clicáveis, ameaças STRIDE, controles com custo e complexidade, várias soluções defensáveis, avaliação por critérios e ADR com sete campos e autoavaliação. |
 | **Cobertura** (`#/cobertura`) | Matriz que liga cada item dos frameworks (OWASP Top 10, API, Mobile, LLM, MASVS, MITRE ATLAS, CWE, SSDF, SLSA) ao conteúdo que o pratica. |
 | **Explorar** (`#/explorar`) | Busca em aulas, missões, desafios, casos e projetos. |
 
@@ -356,6 +356,23 @@ A fogueira da página inicial é um prisma digital com chama geométrica, arte o
 
 ### DAS visual e fogueira do santuário
 
-Os três projetos do Modo Arquiteto exibem um Desenho de Arquitetura de Segurança na etapa Projeto. Os componentes e fluxos vêm do próprio exercício; zonas tracejadas mostram fronteiras de confiança. Selecione um componente por toque ou teclado para destacar conexões e ler seu contexto. No celular, o mapa pode ser rolado horizontalmente. O DAS representa o cenário a revisar, sem antecipar o gabarito da avaliação.
+Os 13 projetos do Modo Arquiteto exibem um Desenho de Arquitetura de Segurança na etapa Projeto. Os componentes e fluxos vêm do próprio exercício; zonas tracejadas mostram fronteiras de confiança. Selecione um componente por toque ou teclado para destacar conexões e ler seu contexto. No celular, o mapa pode ser rolado horizontalmente. O DAS representa o cenário a revisar, sem antecipar o gabarito da avaliação.
 
 A fogueira é uma ilustração SVG original, com soldado descansando, espada, chama translúcida, fumaça e brasas. Funciona offline, pausa ao ocultar a página e respeita a preferência de movimento reduzido.
+
+### Dez novos exercícios de arquitetura
+
+Na página `#/arquiteto`, os novos projetos incluem DAS interativo, seis componentes, três ameaças críticas, duas ameaças residuais e três distratores. Cada caso oferece duas soluções comentadas, orçamento de 12 pontos, limite de complexidade 9, ADR e plano de validação. Os pontos são didáticos.
+
+| Projeto | Foco |
+| --- | --- |
+| Uma chave para cada empresa | Isolamento SaaS e jobs por tenant |
+| O pagamento que chegou duas vezes | Webhooks, preço e idempotência |
+| Da contribuição ao artefato confiável | CI/CD e supply chain |
+| Um pod não é toda a plataforma | Identidade e rede em Kubernetes |
+| A biblioteca que sussurra instruções | RAG, autorização documental e saída |
+| O assistente que pode devolver dinheiro | Agentes e autorização transacional |
+| A vistoria que volta da estrada | Mobile offline e sincronização |
+| Sensores com identidade própria | IoT, MQTT e firmware |
+| Análise sem uma cópia de todos os segredos | Minimização e exportação de dados |
+| A porta de manutenção temporária | Privilégios temporários e sessões |

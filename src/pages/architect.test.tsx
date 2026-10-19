@@ -41,11 +41,11 @@ function solvedActions(): Action[] {
 }
 
 describe('lista do modo Arquiteto', () => {
-  it('mostra os três projetos com situação e link', () => {
+  it('mostra todos os projetos com situação e link', () => {
     open('/arquiteto')
     expect(screen.getByRole('heading', { level: 1, name: 'Arquiteto de Segurança' })).toBeInTheDocument()
     for (const p of architectProjects) expect(screen.getByRole('link', { name: p.title })).toHaveAttribute('href', `/arquiteto/${p.id}`)
-    expect(screen.getAllByText('Não iniciada')).toHaveLength(3)
+    expect(screen.getAllByText('Não iniciada')).toHaveLength(architectProjects.length)
   })
 })
 

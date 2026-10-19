@@ -1,3 +1,4 @@
+import { additionalArchitectProjects } from './extra-scenarios'
 import type { ArchitectSpec } from '@/lib/progress'
 import { appEBackend } from './app-e-backend'
 import { contaMulticanal } from './conta-multicanal'
@@ -8,7 +9,7 @@ export * from './types'
 export { ADR_FIELDS } from './adr'
 
 /* Projetos do modo Arquiteto de Segurança, do mais focado ao mais amplo. */
-export const architectProjects: ArchitectProject[] = [lojaWebApi, appEBackend, contaMulticanal]
+export const architectProjects: ArchitectProject[] = [lojaWebApi, appEBackend, contaMulticanal, ...additionalArchitectProjects]
 
 export const architectById = (id: string): ArchitectProject | undefined => architectProjects.find((p) => p.id === id)
 
