@@ -15,6 +15,7 @@ export const webLessons: Record<string, Lesson> = {
       code: ['POST /carrinho/finalizar HTTP/1.1', 'Host: loja.example', 'Cookie: sessao=<cookie>', 'Content-Type: application/json', '', '{ "produto": 5521, "quantidade": 1, "preco": 0.01 }'],
       caption: 'O campo `preco` foi enviado pelo cliente. O servidor deve ignorá-lo e buscar o preço no catálogo.',
     },
+    figure: 'http',
     validation: 'Repita uma requisição real com um proxy, alterando cada campo (preço, quantidade, identificadores). Para cada um, confirme que o servidor recusa ou recalcula, e nunca usa o valor enviado para decidir dinheiro ou permissão.',
     review: [
       { front: 'Quem controla uma requisição HTTP enviada pelo navegador?', back: 'A pessoa que usa o navegador. Qualquer campo pode ser alterado antes de chegar ao servidor.' },
@@ -53,6 +54,7 @@ export const webLessons: Record<string, Lesson> = {
       code: ['Set-Cookie: sessao=<valor aleatório>; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=1800'],
       caption: 'Sem `HttpOnly`, um XSS lê o cookie; sem `Secure`, ele pode trafegar sem criptografia.',
     },
+    figure: 'sessao',
     validation: 'No console do navegador, tente ler `document.cookie`: o cookie de sessão não deve aparecer. Confira os atributos na aba de rede e que não há token de sessão no armazenamento local.',
     review: [
       { front: 'Por que não guardar o token de sessão no localStorage?', back: 'Qualquer script da página pode lê-lo, inclusive um injetado por XSS.' },

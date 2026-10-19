@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router'
 import { Breadcrumbs } from '@/components/common/Breadcrumbs'
 import { NotFoundHere } from '@/components/common/NotFoundHere'
 import { NewSeal } from '@/components/common/NewSeal'
+import { AnalogyCard } from '@/components/curriculum/AnalogyCard'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { platformLabel, rollupPercent, subStatus, subStatusText, type SubStatus } from '@/components/curriculum/curriculum-ui'
 import { Badge } from '@/components/ui/badge'
@@ -16,6 +17,7 @@ import { isChallengeDone, isModuleCurriculumDone, missionDone, moduleRollup, typ
 import type { CurriculumModule } from '@/data/curriculum/types'
 import { useDocumentTitle } from '@/lib/use-document-title'
 import { cn } from '@/lib/utils'
+import { analogyOf } from '@/data/analogies'
 import { isNewModule } from '@/data/whats-new'
 import { useProgress } from '@/state/ProgressProvider'
 
@@ -69,6 +71,11 @@ export function ModulePage() {
           }
           description={mod.summary}
         />
+      </div>
+
+      {analogyOf(mod.id) ? <AnalogyCard analogy={analogyOf(mod.id)!} /> : null}
+
+      <div>
         <div className="mt-4 max-w-xl">
           {pct === null ? (
             <p className="text-xs text-muted-foreground">Planejado: nenhum submódulo deste módulo tem conteúdo ainda, então não há progresso a medir.</p>

@@ -49,6 +49,7 @@ export const govLessons: Record<string, Lesson> = {
       code: ['vago:     o login deve ser protegido', 'testável: após 10 tentativas falhas em 15 minutos para uma conta,', '          novas tentativas são recusadas por 15 minutos, e um teste automatizado', '          comprova isso a cada mudança no serviço de autenticação'],
       caption: 'O requisito testável diz o comportamento, a condição e a verificação.',
     },
+    figure: 'ciclo-governanca',
     validation: 'Pegue três requisitos de segurança de um projeto e escreva, para cada um, o teste que comprova o cumprimento. Requisitos para os quais não existe teste precisam ser reescritos.',
     review: [
       { front: 'O que torna um requisito de segurança testável?', back: 'Dizer o comportamento, a condição e como verificar.' },

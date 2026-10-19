@@ -41,6 +41,7 @@ export const apiLessons: Record<string, Lesson> = {
       'Um **inventário** lista cada API, versão, ambiente, dono, dados que expõe e consumidores. Sem ele, versões antigas, rotas de teste e ambientes esquecidos ficam no ar sem os controles atuais.',
       'Cada versão publicada recebe os mesmos controles da atual ou é retirada com data. Documentação e gateway são fontes do inventário, e uma varredura periódica compara o que está publicado com o que está documentado.',
     ],
+    figure: 'inventario',
     validation: 'Compare a lista de rotas publicadas no gateway com o inventário e com o contrato: toda rota publicada deve ter dono, versão e controles. Chame versões antigas sem autenticação: devem estar retiradas ou protegidas.',
     review: [
       { front: 'O que um inventário de APIs deve registrar?', back: 'API, versão, ambiente, dono, dados expostos e consumidores.' },
@@ -73,6 +74,7 @@ export const apiLessons: Record<string, Lesson> = {
       '**BOLA** (autorização quebrada em nível de objeto) é a ausência de verificação de que o objeto pertence a quem pede. Em APIs, é o risco mais comum, porque cada rota recebe identificadores e basta uma esquecer a verificação.',
       'A verificação acontece em cada rota, idealmente em um ponto central (camada de dados ou de autorização), com testes de duas contas para cada operação: ler, alterar, excluir e listar.',
     ],
+    figure: 'bola',
     validation: 'Para cada rota com identificador, chame com o token de outro cliente: deve responder como se o objeto não existisse. Inclua listas e exportações, que também precisam filtrar pelo dono.',
     review: [
       { front: 'Por que BOLA é tão comum em APIs?', back: 'Porque toda rota recebe identificadores, e basta uma esquecer a verificação do dono.' },
@@ -137,6 +139,7 @@ export const apiLessons: Record<string, Lesson> = {
       code: ['const MAX = 100', 'const limite = Math.min(Math.max(Number(req.query.limite) || 20, 1), MAX)'],
       caption: 'O cliente pode pedir menos, nunca mais do que o teto.',
     },
+    figure: 'limites',
     validation: 'Peça páginas acima do teto e valores inválidos: o servidor deve limitar. Dispare requisições acima do limite por identidade: deve responder `429` sem afetar outras identidades.',
     review: [
       { front: 'Quem define o tamanho máximo de página?', back: 'O servidor. O valor enviado pelo cliente só vale até o teto.' },

@@ -8,6 +8,7 @@ import { areaIcons, rollupPercent } from '@/components/curriculum/curriculum-ui'
 import { ResumeCard } from '@/components/curriculum/ResumeCard'
 import { Progress } from '@/components/ui/progress'
 import { areaById, modulesOfArea } from '@/data/curriculum'
+import { analogyOf } from '@/data/analogies'
 import { isNewArea, isNewModule } from '@/data/whats-new'
 import { plural } from '@/lib/format'
 import { isModuleCurriculumDone, moduleRollup, areaRollup } from '@/lib/progress'
@@ -62,6 +63,7 @@ export function AreaPage() {
                 </Link>
               </h2>
               <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{m.summary}</p>
+              {analogyOf(m.id) ? <p className="mt-2 border-l border-[var(--line-strong)] pl-3 text-[12.5px] leading-relaxed text-foreground/75 italic">{analogyOf(m.id)!.text}</p> : null}
               <div className="mt-3">
                 {p === null ? (
                   <p className="text-xs text-muted-foreground">Planejado: nenhum submódulo tem conteúdo ainda ({r.subsTotal} previstos).</p>

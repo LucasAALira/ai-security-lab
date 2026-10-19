@@ -10,6 +10,7 @@ import { TrailStep } from '@/components/trail/TrailStep'
 import { Card } from '@/components/ui/card'
 import { bossOfModule } from '@/data/bosses'
 import { modules } from '@/data/modules'
+import { classicAnalogyOf } from '@/data/analogies'
 import { isNewClassicModule } from '@/data/whats-new'
 import { formatNumber } from '@/lib/format'
 import { CORE_MODULE_COUNT, type StepId, type TrailModule } from '@/lib/progress'
@@ -76,6 +77,7 @@ function ModuleNode({ t, onBoss }: { t: TrailModule; onBoss: (module: number) =>
               {isNewClassicModule(t.module) ? <NewSeal title={`módulo ${m.title}`} /> : null}
             </p>
             <h3 className="mt-1 text-lg leading-snug font-medium">{m.title}</h3>
+            {classicAnalogyOf(t.module) ? <p className="mt-1.5 max-w-xl border-l border-[var(--line-strong)] pl-3 text-[12.5px] leading-relaxed text-foreground/75 italic">{classicAnalogyOf(t.module)!.text}</p> : null}
           </div>
           <p className="shrink-0 text-xs text-muted-foreground">
             <span className={cn('font-medium', t.unlocked ? 'text-foreground' : '')}>{state}</span> · {requiredDone} de {required.length} etapas
