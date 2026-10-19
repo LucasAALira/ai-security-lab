@@ -32,8 +32,10 @@ function stateFor(p: ArchitectProject, controls: string[]): ArchitectState {
 }
 
 describe('projetos do modo Arquiteto', () => {
-  it('há três projetos, com identificadores únicos e registrados no contexto do progresso', () => {
-    expect(architectProjects.map((p) => p.id)).toEqual(['loja-web-api', 'app-e-backend', 'conta-multicanal'])
+  it('há treze projetos, com identificadores únicos e registrados no contexto do progresso', () => {
+    expect(architectProjects).toHaveLength(13)
+    expect(new Set(architectProjects.map(p => p.id)).size).toBe(13)
+    expect(architectProjects.slice(0, 3).map((p) => p.id)).toEqual(['loja-web-api', 'app-e-backend', 'conta-multicanal'])
     expect(ctx.architect.map((a) => a.id)).toEqual(architectProjects.map((p) => p.id))
   })
 })
@@ -142,6 +144,16 @@ describe.each(architectProjects.map((p) => [p.id, p] as const))('projeto %s', (_
       for (const match of text.matchAll(/https?:\/\/([^/\s"'`)]+)/g)) expect(match[1]).toMatch(/\.example(:\d+)?$/)
       for (const id of termsIn(text)) expect(glossaryById(id), id).toBeTruthy()
     }
+  })
+})
+
+describe('conquista das revisões originais', () => {
+  it('não substitui as revisões originais por três novos cenários', () => {
+    const state = emptyState()
+    for (const p of architectProjects.slice(3, 6)) state.architect[p.id] = { ...emptyArchitect(), evaluated: '2026-10-19' }
+    expect(medals(state, ctx).find(m => m.id === 'revisao-completa')?.unlocked).toBe(false)
+    for (const p of architectProjects.slice(0, 3)) state.architect[p.id] = { ...emptyArchitect(), evaluated: '2026-10-19' }
+    expect(medals(state, ctx).find(m => m.id === 'revisao-completa')?.unlocked).toBe(true)
   })
 })
 
