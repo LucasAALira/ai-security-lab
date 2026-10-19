@@ -4,11 +4,31 @@ import { SectionHeading } from '@/components/common/SectionHeading'
 import { formatDay, LAYERS } from '@/components/mission/dossier-layers'
 import { missionStatus, statusText } from '@/components/mission/mission-status'
 import { Badge } from '@/components/ui/badge'
+import { NewSeal } from '@/components/common/NewSeal'
 import { dossiers } from '@/data/campaigns'
+import { isNewDossier } from '@/data/whats-new'
 import { findMission } from '@/lib/progress'
 import { useDocumentTitle } from '@/lib/use-document-title'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
+
+const brasileiros = dossiers.filter((d) => d.country === 'Brasil')
+const internacionais = dossiers.filter((d) => d.country !== 'Brasil')
+
+const GRUPOS = [
+  {
+    id: 'brasil',
+    title: 'Casos brasileiros',
+    hint: 'Incidentes e decisões no Brasil, com fontes oficiais: comunicados de tribunais e do Banco Central, decisões da ANPD e atuação do Ministério Público.',
+    items: brasileiros,
+  },
+  {
+    id: 'cadeia',
+    title: 'Cadeia de suprimentos de software',
+    hint: 'Comprometimentos de pacotes, dependências e atualizações que alcançaram quem apenas instalou o software.',
+    items: internacionais,
+  },
+].filter((g) => g.items.length > 0)
 
 export function DossiersPage() {
   useDocumentTitle('Casos reais')
@@ -20,7 +40,7 @@ export function DossiersPage() {
         eyebrow="CASOS REAIS"
         level="h1"
         title="Dossiês de incidentes documentados"
-        description="Quatro casos de cadeia de suprimentos, cada um com os fatos, a análise e uma simulação fictícia separados e rotulados."
+        description={`${dossiers.length} casos documentados, sendo ${brasileiros.length} brasileiros, cada um com os fatos, a análise e uma simulação fictícia separados e rotulados.`}
       />
 
       <div className="mt-5 grid gap-3 md:grid-cols-3">
@@ -35,18 +55,25 @@ export function DossiersPage() {
         As fontes primárias vêm primeiro em cada dossiê, o texto funciona sem internet (só os links externos precisam dela) e cada caso traz a data em que foi revisado. Quando as fontes não confirmam algo, isso aparece como incerteza, e não como fato.
       </p>
 
-      <ul className="mt-6 grid gap-4 md:grid-cols-2">
-        {dossiers.map((d) => {
+      {GRUPOS.map((grupo) => (
+        <section key={grupo.title} aria-labelledby={`grupo-${grupo.id}`} className="mt-10">
+          <h2 id={`grupo-${grupo.id}`} className="text-lg">
+            {grupo.title} <span className="font-mono text-[12px] text-muted-foreground">({grupo.items.length})</span>
+          </h2>
+          <p className="mt-1 max-w-3xl text-sm text-muted-foreground">{grupo.hint}</p>
+          <ul className="mt-5 grid gap-4 md:grid-cols-2">
+        {grupo.items.map((d) => {
           const spec = findMission(ctx, d.id)
           const read = state.dossiers[d.id]
           const status = spec ? missionStatus(state, ctx, spec) : 'new'
           return (
             <li key={d.id} className="flex flex-col rounded-xl border border-border bg-card p-4 sm:p-5">
-              <h2 className="text-xl leading-snug font-medium">
+              <h3 className="flex flex-wrap items-start gap-x-3 gap-y-1.5 text-xl leading-snug font-medium">
                 <Link to={`/casos/${d.id}`} className="hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
                   {d.title}
                 </Link>
-              </h2>
+                {isNewDossier(d.id) ? <NewSeal title={`caso ${d.title}`} className="mt-1" /> : null}
+              </h3>
               <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{d.subtitle}</p>
               <dl className="mt-3 grid gap-1 text-xs">
                 <div className="flex flex-wrap gap-x-2">
@@ -87,7 +114,9 @@ export function DossiersPage() {
             </li>
           )
         })}
-      </ul>
+          </ul>
+        </section>
+      ))}
     </div>
   )
 }

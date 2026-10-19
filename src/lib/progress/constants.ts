@@ -126,7 +126,7 @@ export const LIMITS = {
   answerTexts: 8,
   answerText: 1_500,
   lessons: 400,
-  dossiers: 16,
+  dossiers: 40,
   architect: 8,
   components: 24,
 } as const

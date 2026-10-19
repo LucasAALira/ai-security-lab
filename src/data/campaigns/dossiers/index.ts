@@ -1,8 +1,23 @@
 import type { DossierContent } from '../types'
 import { tresCx } from './3cx'
+import { bancoInter2018 } from './banco-inter-2018'
+import { claroSerasa2026 } from './claro-serasa-2026'
+import { cmSoftware2025 } from './cm-software-2025'
+import { datasusScpa2022 } from './datasus-scpa-2022'
+import { isacRansomware2025 } from './isac-ransomware-2025'
+import { ministerioSaude2021 } from './ministerio-saude-2021'
+import { netshoes2018 } from './netshoes-2018'
+import { pixChavesVazamentos } from './pix-chaves-vazamentos'
+import { pixSumupDict2024 } from './pix-sumup-dict-2024'
 import { solarwinds } from './solarwinds'
+import { seedfFormulario2021 } from './seedf-formulario-2021'
+import { stj2020 } from './stj-2020'
+import { telekall2023 } from './telekall-2023'
+import { tiktokAnpd2026 } from './tiktok-anpd-2026'
+import { tse2020 } from './tse-2020'
 import { uaParserJs } from './ua-parser-js'
+import { vendaDeDados2020 } from './venda-de-dados-2020'
 import { xzUtils } from './xz-utils'
 
 /* Dossiês de casos reais: ver `README.md` ("Como adicionar um caso real"). */
-export const dossiers: DossierContent[] = [xzUtils, tresCx, solarwinds, uaParserJs]
+export const dossiers: DossierContent[] = [xzUtils, tresCx, solarwinds, uaParserJs, stj2020, tse2020, ministerioSaude2021, datasusScpa2022, seedfFormulario2021, isacRansomware2025, telekall2023, tiktokAnpd2026, claroSerasa2026, pixSumupDict2024, pixChavesVazamentos, cmSoftware2025, netshoes2018, bancoInter2018, vendaDeDados2020]

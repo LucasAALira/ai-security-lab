@@ -166,6 +166,8 @@ export interface DossierContent {
     review: { solution: string[]; residual: string; validation: string }
   }
   sources: { label: string; url: string; kind: 'primária' | 'secundária' }[]
+  /** País do caso, quando ele é específico de uma jurisdição (por exemplo `Brasil`). */
+  country?: string
   /** Itens de frameworks que o caso ilustra (só correspondências reais, conferidas em `data/frameworks.ts`). */
   frameworks?: FrameworkRef[]
   tags: string[]

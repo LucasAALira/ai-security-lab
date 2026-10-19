@@ -86,6 +86,10 @@ Um dossiê (`DossierContent`) separa três camadas, rotuladas na interface: **fa
 4. `uncertainties`: o que as fontes não confirmam. Não preencha lacunas com suposições.
 5. Só cite IA se o incidente envolveu IA; caso contrário, use `notice` para dizer isso.
 6. `exercise` roda no mesmo motor das missões: pelo menos três formatos de atividade, empresa inventada, endereços `.example`.
+7. `country`: preencha com `'Brasil'` nos casos brasileiros. A página de casos agrupa por esse campo ("Casos brasileiros" e "Cadeia de suprimentos de software").
+8. Para o selo **Novo** na lista, acrescente o id a `NEW_DOSSIERS`, em `src/data/whats-new.ts`, e retire-o quando deixar de ser novidade.
+
+Nas fontes oficiais brasileiras, use o documento e não a notícia quando os dois existirem: decisões e relatórios da ANPD, decisões e comunicados do Banco Central, comunicados de tribunais e notícias do Ministério Público. Quando a fonte oficial não puder ser lida na íntegra, diga isso em `uncertainties` e atribua os fatos à fonte que você de fato leu.
 
 ## Projeto do modo Arquiteto
 
