@@ -358,7 +358,7 @@ A fogueira da página inicial é um prisma digital com chama geométrica, arte o
 
 Os 13 projetos do Modo Arquiteto exibem um Desenho de Arquitetura de Segurança na etapa Projeto. Os componentes e fluxos vêm do próprio exercício; zonas tracejadas mostram fronteiras de confiança. Selecione um componente por toque ou teclado para destacar conexões e ler seu contexto. No celular, o mapa pode ser rolado horizontalmente. O DAS representa o cenário a revisar, sem antecipar o gabarito da avaliação.
 
-A fogueira é uma ilustração SVG original, com soldado descansando, espada, chama translúcida, fumaça e brasas. Funciona offline, pausa ao ocultar a página e respeita a preferência de movimento reduzido.
+A fogueira é uma ilustração SVG original, com cavaleiro descansando, Arauto Esmeralda (interpretação vetorial de Dark Souls II), espada, chama translúcida, fumaça e brasas. A veste da Arauto e o escudo reutilizam o mesmo brasão de dragões do site. Funciona offline, pausa ao ocultar a página e respeita a preferência de movimento reduzido.
 
 ### Dez novos exercícios de arquitetura
 
@@ -376,3 +376,7 @@ Na página `#/arquiteto`, os novos projetos incluem DAS interativo, seis compone
 | Sensores com identidade própria | IoT, MQTT e firmware |
 | Análise sem uma cópia de todos os segredos | Minimização e exportação de dados |
 | A porta de manutenção temporária | Privilégios temporários e sessões |
+
+### Ambiente de foco: fogueira e mar
+
+No player do santuário, abra **Refúgio à beira-mar** e use **Foco: fogueira + mar**. O preset mistura chama baixa e ondas lentas, desliga os efeitos de menus e conquistas e permite ajustar separadamente os volumes de mar e fogueira. O áudio é sintetizado localmente, sem downloads ou trilha do jogo. Tem transições suaves, pausa ao ocultar a página e não retoma automaticamente. Preferências de volume são salvas, mas a reprodução exige ativação. A música importada no player continua independente; pause-a se quiser apenas o ambiente.

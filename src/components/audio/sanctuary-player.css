@@ -12,3 +12,5 @@
 @media(prefers-reduced-motion:reduce){.sanctuary-player .sanctuary-flame{animation:none!important}}
 @media(max-width:420px){.sanctuary-state{display:none}.sanctuary-controls button{flex:1 1 44%}}
 @media(max-width:767px){.sanctuary-player{-webkit-backdrop-filter:none;backdrop-filter:none}}
+
+[data-sound-controls] .sanctuary-controls + .sanctuary-controls{margin-top:.65rem}

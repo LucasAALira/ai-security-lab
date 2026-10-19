@@ -13,5 +13,5 @@
 @keyframes bonfire-drift{0%{transform:translate(0,8px);opacity:0}35%{opacity:.16}100%{transform:translate(14px,-25px);opacity:0}}
 @keyframes bonfire-rise{0%{transform:translate(0,0);opacity:0}20%{opacity:.8}100%{transform:translate(-12px,-90px);opacity:0}}
 .bonfire[data-paused="true"] *{animation-play-state:paused!important}
-@media(max-width:1199px){.bonfire{width:280px;max-width:90%;right:50%;bottom:0;transform:translateX(50%)}.bonfire figcaption{display:none}}
+@media(max-width:1199px){.bonfire{width:320px;max-width:95%;right:50%;bottom:0;transform:translateX(50%)}.bonfire figcaption{display:none}}
 @media(prefers-reduced-motion:reduce){.bonfire *{animation:none!important}.bonfire-ember{opacity:.35}.bonfire-smoke{opacity:.08}}
