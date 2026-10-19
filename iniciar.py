@@ -7,6 +7,7 @@ import argparse
 import functools
 import http.server
 import pathlib
+import socket
 import threading
 import webbrowser
 
@@ -36,9 +37,27 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         pass
 
 
+def network_addresses():
+    """IPv4 locais; consultar a rota nao envia dados para a internet."""
+    addresses = set()
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+            probe.connect(('192.0.2.1', 80))
+            addresses.add(probe.getsockname()[0])
+    except OSError:
+        pass
+    try:
+        addresses.update(socket.gethostbyname_ex(socket.gethostname())[2])
+    except OSError:
+        pass
+    return sorted(ip for ip in addresses if not ip.startswith('127.') and ip != '0.0.0.0')
+
+
 def main():
-    parser = argparse.ArgumentParser(description='AI Security Lab em localhost')
+    parser = argparse.ArgumentParser(description='AI Security Lab na rede local')
     parser.add_argument('--porta', type=int, default=8080)
+    parser.add_argument('--host', default='0.0.0.0',
+                        help='Interface IPv4 (padrao: todas; use 127.0.0.1 para acesso apenas neste computador)')
     parser.add_argument('--sem-navegador', action='store_true')
     args = parser.parse_args()
     if not 1 <= args.porta <= 65535:
@@ -50,12 +69,21 @@ def main():
         return 1
     handler = functools.partial(Handler, directory=str(root))
     try:
-        server = http.server.ThreadingHTTPServer(('127.0.0.1', args.porta), handler)
+        server = http.server.ThreadingHTTPServer((args.host, args.porta), handler)
     except OSError as exc:
         print(f'Nao foi possivel iniciar: {exc}\nTente: python iniciar.py --porta 8081')
         return 1
-    url = f'http://localhost:{args.porta}'
-    print(f'AI Security Lab: {url}\nMantenha este terminal aberto. Ctrl+C para encerrar.', flush=True)
+    hosts = network_addresses() if args.host == '0.0.0.0' else [args.host]
+    urls = [f'http://{host}:{args.porta}' for host in hosts]
+    url = urls[0] if urls else f'http://127.0.0.1:{args.porta}'
+    print('AI Security Lab — enderecos de acesso:')
+    for address in urls:
+        print(f'  {address}')
+    if not urls:
+        print(f'  Neste computador: {url}\n  Na rede: use o IPv4 do computador (ipconfig no Windows).')
+    print('Celular e computador devem estar na mesma rede. Libere a porta no firewall apenas na rede privada.\n'
+          'O servidor nao tem login; use somente em rede confiavel.\n'
+          'Mantenha este terminal aberto. Ctrl+C para encerrar.', flush=True)
     if not args.sem_navegador:
         timer = threading.Timer(0.7, webbrowser.open, args=(url,))
         timer.daemon = True

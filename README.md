@@ -204,7 +204,7 @@ Ou:
 python3 iniciar.py
 ```
 
-O navegador abrirá em **http://localhost:8080**. Mantenha o terminal aberto enquanto utiliza o site. Para encerrar, pressione **Ctrl+C**.
+O servidor escuta em **0.0.0.0:8080** e mostra os endereços IP do computador. O navegador abre um desses endereços (por exemplo, `http://192.168.1.10:8080`). No celular ou em outro computador conectado à **mesma rede Wi-Fi/LAN**, abra o endereço mostrado no terminal. `0.0.0.0` é a interface de escuta, não um endereço para digitar no navegador. Mantenha o terminal aberto enquanto utiliza o site. Para encerrar, pressione **Ctrl+C**.
 
 > Abrir `dist/index.html` com dois cliques (endereço `file://`) não funciona: os navegadores bloqueiam módulos JavaScript fora de um servidor. Use o iniciador.
 
@@ -213,9 +213,10 @@ O navegador abrirá em **http://localhost:8080**. Mantenha o terminal aberto enq
 ```bash
 python3 iniciar.py --porta 8081        # se a porta estiver ocupada
 python3 iniciar.py --sem-navegador     # não abre o navegador sozinho
+python3 iniciar.py --host 127.0.0.1    # opcional: acesso somente neste computador
 ```
 
-No Windows, substitua `python3` por `py -3`. O servidor escuta apenas em `127.0.0.1`. Depois de instalar Python e baixar os arquivos, tudo funciona sem internet (a fonte e o motor das animações vão junto do site).
+No Windows, substitua `python3` por `py -3`. O servidor aceita conexões da rede local. No Windows, permita o Python no firewall somente em redes privadas. Use uma rede confiável: não há autenticação e não é necessário abrir portas no roteador. Se o terminal listar IPs de VPN ou adaptadores virtuais, escolha o IPv4 do Wi-Fi/Ethernet (consulte `ipconfig`). Redes de convidados podem bloquear a comunicação entre aparelhos. Depois de instalar Python e baixar os arquivos, tudo funciona sem internet (a fonte e o motor das animações vão junto do site).
 
 ## App Android (APK)
 
@@ -233,6 +234,8 @@ O site também vira um app Android: um WebView em Java puro, sem bibliotecas de 
 | Progresso | Fica no armazenamento do app, separado do navegador. Para levar o progresso do site para o app (ou o contrário), exporte de um lado e importe do outro. |
 | Links externos | Abrem no navegador do aparelho; o app só mostra o conteúdo empacotado. |
 
+O APK permanece independente do servidor do computador: o acesso pela rede local é feito pelo navegador. O progresso não sincroniza automaticamente entre aparelhos ou endereços; use exportar/importar para transferir.
+
 **Gerar o APK.**
 
 - Com Android Studio ou Gradle: `npm run build`, depois `cd android && ./gradlew assembleDebug` (a tarefa `copyWeb` copia `dist/` para dentro do app). O APK sai em `android/app/build/outputs/apk/debug/`.
@@ -244,7 +247,7 @@ Requer **Node.js 20.19+ ou 22.12+**.
 
 ```bash
 npm install        # dependências
-npm run dev        # servidor de desenvolvimento com recarga (http://localhost:5173)
+npm run dev        # desenvolvimento com recarga, também na rede local (porta 5173)
 npm test           # testes (Vitest): regras de progresso, conquistas, trilha, desafios, componentes e conteúdo
 npm run typecheck  # verificação de tipos
 npm run build      # verifica os tipos e gera o site em dist/

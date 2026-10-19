@@ -37,7 +37,7 @@ import java.util.Map;
 public class MainActivity extends Activity {
     static final String HOST = "appassets.androidplatform.net";
     static final String START = "https://" + HOST + "/index.html";
-    static final String VERSION = "2.1.0";
+    static final String VERSION = "2.3.1";
     private static final int FILE_REQUEST = 41;
 
     // Classes aninhadas são estáticas (sem classes internas nem anônimas): o build sem Gradle usa o
