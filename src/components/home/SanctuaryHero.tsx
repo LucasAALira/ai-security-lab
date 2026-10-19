@@ -15,14 +15,14 @@ export function SanctuaryHero() {
   const j = journeyOf(state, ctx, derived.objective, derived.summary.xp)
   return (
     <section id="inicio" aria-labelledby="santuario-titulo" className="relative mt-4 mb-12 overflow-hidden border border-[var(--line)] md:mt-6">
-      <div className="relative h-[112px] sm:h-[150px] md:absolute md:inset-0 md:h-auto" aria-hidden="true">
-        {/* Um `hero.riv` em src/assets/rive substitui a cena; sem ele, a cena em SVG, com a fogueira digital no altar. */}
+      <div className="relative h-[210px] sm:h-[220px] xl:absolute xl:inset-0 xl:h-auto" aria-hidden="true">
+        {/* Um `hero.riv` em src/assets/rive substitui a cena; sem ele, a cena em SVG, com a fogueira e o soldado descansando. */}
         <RiveSlot src="hero.riv" stateMachine="Hero" className="size-full" fallback={<SanctuaryScene />} />
         <Bonfire />
       </div>
       {/* véu: escurece a cena atrás do texto (contraste garantido) e a deixa respirar à direita */}
-      <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,color-mix(in_oklab,var(--background)_96%,transparent)_0%,color-mix(in_oklab,var(--background)_88%,transparent)_46%,transparent_78%)] md:block" aria-hidden="true" />
-      <div className="relative grid gap-4 bg-[var(--background)] p-4 sm:p-6 md:max-w-[620px] md:bg-transparent md:p-9 md:pr-0 lg:py-12 [@media(max-height:520px)]:gap-2 [@media(max-height:520px)]:py-4">
+      <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,color-mix(in_oklab,var(--background)_96%,transparent)_0%,color-mix(in_oklab,var(--background)_88%,transparent)_46%,transparent_78%)] xl:block" aria-hidden="true" />
+      <div className="relative grid gap-4 bg-[var(--background)] p-4 sm:p-6 xl:max-w-[620px] xl:bg-transparent md:p-9 md:pr-0 lg:py-12 [@media(max-height:520px)]:gap-2 [@media(max-height:520px)]:py-4">
         <h1 id="santuario-titulo" className="gx-display text-[24px] sm:text-[32px] [@media(max-height:520px)]:text-[21px]">
           Santuário do Conhecimento
         </h1>

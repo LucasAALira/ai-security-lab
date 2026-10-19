@@ -7,6 +7,8 @@ import tailwindcss from '@tailwindcss/vite'
 // (inclusive o `iniciar.py`), sem depender de uma URL raiz.
 export default defineConfig({
   base: './',
+  server: { host: '0.0.0.0' },
+  preview: { host: '0.0.0.0' },
   plugins: [react(), tailwindcss()],
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   build: { outDir: 'dist', emptyOutDir: true, chunkSizeWarningLimit: 800 },

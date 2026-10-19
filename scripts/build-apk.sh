@@ -6,6 +6,7 @@
 # Requer: JDK 17+, python3 e as ferramentas abaixo (caminhos por variável de ambiente):
 #   ANDROID_JAR    android.jar da plataforma (API 34)
 #   AAPT2          executável aapt2
+#   ZIPALIGN       executável zipalign (padrão: ao lado de AAPT2)
 #   D8_JAR         d8.jar (R8)
 #   APKSIGNER_JAR  apksigner.jar
 #   KEYSTORE       keystore para assinar (criado como chave de depuração se não existir)
@@ -18,7 +19,7 @@ root=$(cd "$(dirname "$0")/.." && pwd)
 app=$root/android/app/src/main
 pkg=io.github.lucasaalira.aisecuritylab
 version=$(node -p "require('$root/package.json').version")
-code=${VERSION_CODE:-2}
+code=${VERSION_CODE:-$(sed -n 's/^[[:space:]]*versionCode[[:space:]]*\([0-9]*\).*/\1/p' "$root/android/app/build.gradle")}
 out=${1:-$root/android/build/ai-security-lab-$version.apk}
 work=$root/android/build/apk
 KS_PASS=${KS_PASS:-android}
@@ -27,6 +28,8 @@ for v in ANDROID_JAR AAPT2 D8_JAR APKSIGNER_JAR KEYSTORE; do
   eval "val=\${$v:-}"
   [ -n "$val" ] || { echo "Defina $v (veja o cabeçalho deste script)." >&2; exit 1; }
 done
+ZIPALIGN=${ZIPALIGN:-$(dirname "$AAPT2")/zipalign}
+[ -x "$ZIPALIGN" ] || { echo "Defina ZIPALIGN para o executável do SDK." >&2; exit 1; }
 [ -f "$root/dist/index.html" ] || { echo "Gere o site antes: npm run build" >&2; exit 1; }
 
 rm -rf "$work"
@@ -61,13 +64,15 @@ with zipfile.ZipFile(sys.argv[1], 'a', zipfile.ZIP_DEFLATED) as z:
     z.write(sys.argv[2], 'classes.dex')
 PY
 
-echo "6/6 Assinatura (o apksigner também alinha o pacote)"
+echo "6/6 Alinhamento e assinatura"
+"$ZIPALIGN" -f 4 "$work/base.apk" "$work/aligned.apk"
 if [ ! -f "$KEYSTORE" ]; then
   keytool -genkeypair -keystore "$KEYSTORE" -storepass "$KS_PASS" -keypass "$KS_PASS" -alias androiddebugkey \
     -dname "CN=Android Debug,O=Android,C=US" -keyalg RSA -keysize 2048 -validity 10000 >/dev/null 2>&1
 fi
 java -jar "$APKSIGNER_JAR" sign --ks "$KEYSTORE" --ks-pass "pass:$KS_PASS" --ks-key-alias androiddebugkey \
-  --min-sdk-version 24 --out "$out" "$work/base.apk"
+  --min-sdk-version 24 --out "$out" "$work/aligned.apk"
 java -jar "$APKSIGNER_JAR" verify --min-sdk-version 24 "$out"
+"$ZIPALIGN" -c 4 "$out"
 
 echo "APK pronto: $out ($(du -h "$out" | cut -f1))"
