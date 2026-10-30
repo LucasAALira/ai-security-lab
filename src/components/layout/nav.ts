@@ -37,6 +37,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { label: 'Campanhas', hint: 'Missões investigativas', to: '/campanhas' },
       { label: 'Casos reais', hint: 'Incidentes documentados', to: '/casos' },
+      { label: 'Escrutínio', hint: 'Treino de análise de código', to: '/analise' },
       { label: 'Modo Arquiteto', hint: 'Revisões de arquitetura', to: '/arquiteto' },
       { label: 'Trilha de módulos', hint: 'Fogueiras e chefes', to: '/trilha' },
       { label: 'Revisão com vidas', hint: 'Questões já acertadas', to: '/revisao' },

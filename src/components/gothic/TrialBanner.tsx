@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { architectById } from '@/data/architect'
 import { dossierById, missionContentById } from '@/data/campaigns'
 import { challengeById } from '@/data/challenges'
@@ -55,7 +56,9 @@ export function TrialBanner() {
   }, [trial])
 
   if (!trial) return null
-  return (
+  /* Vai direto ao `body`: dentro da árvore da página, qualquer ancestral com transform ou filtro
+     criaria um contexto de empilhamento e a faixa sumiria atrás de um diálogo aberto (o chefe). */
+  return createPortal(
     <div key={trial.n} className="gx-banner" aria-hidden="true" data-testid="trial-banner">
       <div className="relative">
         <p className="gx-banner-text uppercase">
@@ -64,6 +67,7 @@ export function TrialBanner() {
         </p>
         <p className="gx-banner-sub text-center">{trial.detail}</p>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

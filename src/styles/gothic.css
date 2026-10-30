@@ -733,7 +733,7 @@
     left: 0;
     right: 0;
     top: 38%;
-    z-index: 70;
+    z-index: 80; /* acima dos diálogos (z-50) para a faixa aparecer também no chefe */
     display: grid;
     place-items: center;
     padding: 26px 16px;

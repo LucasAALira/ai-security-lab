@@ -45,6 +45,7 @@ export interface ProgressStats {
   missionsNoHints: number
   /** Dossiês lidos cujo exercício foi creditado. */
   dossiersPassed: number
+  reviewsPassed: number
   /** ADRs guiadas concluídas: decisão aceitável, texto escrito e autoavaliação registrada. */
   adrs: number
   architectEvaluated: number
@@ -98,6 +99,7 @@ export function computeStats(s: StudyState, ctx: ProgressContext): ProgressStats
     missionsClean: lr.missionsClean,
     missionsNoHints: lr.missionsNoHints,
     dossiersPassed: lr.dossiersPassed,
+    reviewsPassed: lr.reviewsPassed,
     adrs: lr.selfAssessed + lr.adrDone,
     architectEvaluated: lr.architectEvaluated,
     done: ch.byTag,
@@ -197,6 +199,7 @@ export function medalDefinitions(ctx: ProgressContext): MedalDef[] {
   // decisões com crédito; abrir uma tela, sozinho, nunca conquista nada.
   const missionTotal = ctx.missions.filter((m) => m.kind === 'mission').length
   const dossierTotal = ctx.missions.filter((m) => m.kind === 'dossier').length
+  const reviewTotal = ctx.missions.filter((m) => m.kind === 'review').length
   const hasClean = ctx.missions.some((m) => m.kind === 'mission' && (m.clean.require.length > 0 || m.clean.forbid.length > 0))
   const hasAdr = ctx.architect.length > 0 || ctx.missions.some((m) => m.activities.some((a) => a.kind === 'adr'))
   const tagged = (tag: string) => ctx.challenges.filter((c) => c.tags.includes(tag)).length
@@ -221,6 +224,8 @@ export function medalDefinitions(ctx: ProgressContext): MedalDef[] {
     { id: 'decisao-fundamentada', category: 'campanhas', name: 'Decisão Fundamentada', tier: 'prata', icon: 'scale', desc: 'Complete uma decisão arquitetural guiada (ADR): decisão aceitável, justificativa escrita e autoavaliação registrada.', goal: (st) => [st.adrs, 1], when: hasAdr },
     { id: 'investigador', category: 'campanhas', name: 'Investigador', tier: 'prata', icon: 'microscope', desc: 'Leia um dossiê de caso real e conclua o exercício dele.', goal: (st) => [st.dossiersPassed, 1], when: dossierTotal > 0 },
     { id: 'arquivo-completo', category: 'campanhas', name: 'Arquivo Completo', tier: 'ouro', icon: 'microscope', desc: 'Leia todos os dossiês de casos reais e conclua o exercício de cada um.', goal: (st) => [st.dossiersPassed, dossierTotal], when: dossierTotal > 0 },
+    { id: 'triagem-certeira', category: 'desafios', name: 'Triagem Certeira', tier: 'prata', icon: 'search-check', desc: 'Conclua uma amostra do treino de análise de código: veredito, sinais e o que fazer em seguida.', goal: (st) => [st.reviewsPassed, 1], when: reviewTotal > 0 },
+    { id: 'mesa-de-escrutinio', category: 'desafios', name: 'Mesa de Escrutínio', tier: 'ouro', icon: 'search-check', desc: 'Conclua todas as amostras do treino de análise de código, inclusive as de falso positivo.', goal: (st) => [st.reviewsPassed, reviewTotal], when: reviewTotal > 0 },
     { id: 'autorizacao-entre-canais', category: 'campanhas', name: 'Mesma Regra em Todo Canal', tier: 'prata', icon: 'network', desc: 'Conclua a missão em que um controle existe no site e falta no aplicativo e na API, e corrija a autorização entre os canais.', goal: (st) => [Number(Boolean(st.missionPassed['controle-so-no-site'])), 1], when: ctx.missions.some((m) => m.id === 'controle-so-no-site') },
     { id: 'fronteiras-definidas', category: 'arquitetura', name: 'Fronteiras Definidas', tier: 'prata', icon: 'blocks', desc: 'Conclua uma revisão de arquitetura: ameaças identificadas e controles obrigatórios aplicados dentro das restrições.', goal: (st) => [st.architectEvaluated, 1], when: ctx.architect.length > 0 },
     { id: 'revisao-web', category: 'arquitetura', name: 'Revisão Web Concluída', tier: 'prata', icon: 'globe', desc: 'Conclua a revisão de arquitetura da loja com site, API e pagamentos.', goal: (st) => [Number(Boolean(st.architectDone['loja-web-api'])), 1], when: ctx.architect.some((a) => a.id === 'loja-web-api') },
