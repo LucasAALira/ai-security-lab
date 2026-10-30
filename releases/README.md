@@ -6,12 +6,12 @@ O aplicativo é o mesmo site, empacotado: todo o conteúdo vai dentro do APK e f
 
 | Arquivo | Versão | versionCode | Tamanho | SHA-256 |
 | --- | --- | --- | --- | --- |
-| [`ai-security-lab-2.5.0.apk`](./ai-security-lab-2.5.0.apk) | 2.5.0 | 7 | 2.5M | `27f07af6a3c111ef918dfaca660dd8559a69de698ff494439ec6b73017f7ed4d` |
+| [`ai-security-lab-2.6.0.apk`](./ai-security-lab-2.6.0.apk) | 2.6.0 | 8 | 2.6M | `3df4fbdec4e1f447b337af9ac350549afd6d1a3533827cf63937e9aa9ca4a2d2` |
 
 Confira o arquivo baixado antes de instalar:
 
 ```sh
-sha256sum ai-security-lab-2.5.0.apk
+sha256sum ai-security-lab-2.6.0.apk
 ```
 
 ## Como instalar
@@ -26,6 +26,7 @@ sha256sum ai-security-lab-2.5.0.apk
 
 | Versão | O que entrou |
 | --- | --- |
+| 2.6.0 | Nove amostras de análise de segredos baseadas em casos documentados (23 no total). |
 | 2.5.0 | Treino de análise de código (Escrutínio): 14 amostras de triagem com falsos positivos e o quiz de o que fazer em seguida. |
 | 2.4.0 | Quinze casos reais brasileiros nos dossiês. |
 | 2.3.x | Ilustrações nas áreas, analogias nos módulos e exercícios de arquitetura. |
