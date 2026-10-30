@@ -102,6 +102,7 @@ Uma amostra (`ReviewSample`, em `src/data/code-review/`) é um achado para triar
 5. `next`: quatro condutas comparáveis, com uma `best`, feedback e consequência próprios. A diferença entre `best` e `good` é o que a amostra ensina.
 6. Mantenha o código fictício, com endereços no domínio `.example`; o endereço de ligação local dos serviços de metadados é aceito quando o caso é sobre nuvem.
 7. O veredito não aparece na lista nem no índice de busca antes da conclusão: ele é a resposta do exercício.
+8. `inspiredBy` (opcional): o caso real documentado que inspira a amostra, com `label`, `url` e uma `note` que diga **o que vem do caso e o que é ficção**. O código continua inventado: o que o caso empresta é o padrão da falha e o desfecho. A fonte precisa ser alcançável e de primeira mão sempre que possível (aviso da própria empresa, alerta de autoridade, base de advisories, documento de processo). Ele aparece só na revisão, junto das referências, para não entregar o veredito.
 
 ## Projeto do modo Arquiteto
 

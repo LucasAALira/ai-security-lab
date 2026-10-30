@@ -34,7 +34,7 @@ function* strings(value: unknown): Generator<string> {
 
 describe('treino de análise de código', () => {
   it('tem amostras suficientes, com identificadores únicos e áreas variadas', () => {
-    expect(reviewSamples.length).toBeGreaterThanOrEqual(12)
+    expect(reviewSamples.length).toBeGreaterThanOrEqual(20)
     const ids = reviewSamples.map((s) => s.id)
     expect(new Set(ids).size).toBe(ids.length)
     for (const id of ids) expect(ID.test(id), id).toBe(true)
@@ -48,6 +48,24 @@ describe('treino de análise de código', () => {
     expect(conta('falta-contexto')).toBeGreaterThanOrEqual(2)
   })
 
+  it('boa parte das amostras é inspirada em caso documentado, com fonte alcançável', () => {
+    const comCaso = reviewSamples.filter((s) => s.inspiredBy)
+    expect(comCaso.length).toBeGreaterThanOrEqual(8)
+    for (const s of comCaso) {
+      expect(s.inspiredBy!.url, s.id).toMatch(/^https:\/\//)
+      expect(s.inspiredBy!.label.length, s.id).toBeGreaterThan(15)
+      // a nota diz o que vem do caso e o que é ficção na amostra
+      expect(s.inspiredBy!.note.length, s.id).toBeGreaterThan(80)
+    }
+  })
+
+  it('o caso real só aparece na revisão, nunca no enunciado das etapas', () => {
+    for (const s of reviewSamples.filter((x) => x.inspiredBy)) {
+      const antes = [s.subtitle, ...s.context, ...s.signals.map((o) => o.text), ...s.verdictFeedback].join(' ')
+      expect(antes, s.id).not.toContain(s.inspiredBy!.url)
+    }
+  })
+
   it('os identificadores não colidem com os das missões e dos dossiês', () => {
     const outros = ctx.missions.filter((m) => m.kind !== 'review').map((m) => m.id)
     for (const s of reviewSamples) expect(outros).not.toContain(s.id)
@@ -56,7 +74,8 @@ describe('treino de análise de código', () => {
 
   it('não usa endereços nem endereços IP fora dos reservados para exemplo', () => {
     for (const s of reviewSamples) {
-      for (const text of strings(s)) {
+      // `inspiredBy` aponta para a fonte real do caso: é a única parte com endereço de fora.
+      for (const text of strings({ ...s, inspiredBy: undefined })) {
         for (const m of text.matchAll(/https?:\/\/([^/\s"'`)<>]+)/g)) {
           const host = m[1].replace(/:\d+$/, '')
           expect(host.endsWith('.example') || RESERVED.test(host), `${s.id}: ${host}`).toBe(true)

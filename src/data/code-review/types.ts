@@ -68,5 +68,8 @@ export interface ReviewSample {
   closing: string
   review: { solution: string[]; residual: string; validation: string }
   frameworks?: FrameworkRef[]
+  /** Caso real que inspira a amostra. O código continua fictício: o que vem do caso é o padrão da
+   *  falha e o desfecho. Só aparece na revisão, depois do veredito, para não entregar a resposta. */
+  inspiredBy?: { label: string; url: string; note: string }
   tags: string[]
 }
