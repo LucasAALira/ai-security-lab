@@ -10,6 +10,7 @@ Um site de aprendizado em português que reúne aulas, missões investigativas, 
 | --- | --- |
 | **Áreas** (`#/areas`) | 8 áreas (Web, APIs, IA, Mobile, Cadeia de suprimentos, Arquitetura, **Engenharia reversa** e Governança), 42 módulos e 198 submódulos. 189 submódulos têm aula própria (contexto, conceito, exemplo, ilustração quando ajuda, validação, revisão e referências); os outros 9 usam os módulos clássicos da trilha. Cada módulo tem um integrador e um checkpoint. Áreas e módulos recém-publicados levam o selo **Novo**. |
 | **Campanhas** (`#/campanhas`) | 8 campanhas com 6 missões cada (48 missões), em empresas fictícias: evidências liberadas por etapas, decisões com consequências, ramificações, sete formatos de atividade e revisão da solução com risco residual. |
+| **Análise de código** (`#/analise`) | 14 amostras de triagem de achado: ler o trecho, decidir se o alerta **procede**, é **falso positivo** ou está **indeterminado**, apontar os sinais que sustentam o veredito e escolher **o que fazer em seguida**, com a comparação entre a melhor conduta e as que parecem resolver. Cinco amostras são falso positivo e duas dependem de contexto que falta. |
 | **Casos reais** (`#/casos`) | 19 dossiês que separam fatos com fonte, incertezas, análise educacional e uma simulação fictícia: **15 brasileiros** (STJ, TSE, ConecteSUS, DATASUS/SCPA, Secretaria de Educação do DF, organização social de saúde, primeira multa da ANPD, TikTok, Claro e Serasa, consultas ao DICT, chaves Pix, o ataque de 30 de junho de 2025, Netshoes, Banco Inter e venda de dados pessoais) e 4 de cadeia de suprimentos (XZ Utils, 3CX, SolarWinds Orion e ua-parser-js). |
 | **Laboratório de código** (`#/desafios`) | 71 desafios: marcar as linhas vulneráveis, escolher a correção e ver o código corrigido e como validar. 55 são das áreas novas (Web, API, Mobile Android e iOS, cadeia de suprimentos, configuração e engenharia reversa), incluindo 6 sobre segredos: chave no pacote, variável de build e source map, camada de imagem, registro de pipeline, resposta ao vazamento e triagem sem executar a amostra. |
 | **Modo Arquiteto** (`#/arquiteto`) | 13 projetos (Web, mobile, IA, SaaS, pagamentos, supply chain, Kubernetes, IoT, dados e acesso privilegiado): componentes clicáveis, ameaças STRIDE, controles com custo e complexidade, várias soluções defensáveis, avaliação por critérios e ADR com sete campos e autoavaliação. |
@@ -87,7 +88,7 @@ A direção visual é a de um gótico moderno em linhas de circuito (veja [Ident
 
 **Progressão**
 
-- XP total: 9.986, sendo 8.236 em atividades (módulos, laboratório, cenários, desafios de código, chefes, missões, dossiês, aulas e projetos do Arquiteto) e 1.750 em conquistas. Níveis de *Iniciante* (0) a *Lenda do AppSec* (2.400).
+- XP total: 11.376, sendo 9.566 em atividades (módulos, laboratório, cenários, desafios de código, chefes, missões, dossiês, triagens de análise de código, aulas e projetos do Arquiteto) e 1.810 em conquistas. Níveis de *Iniciante* (0) a *Lenda do AppSec* (2.400).
 - Desafio de código: 15 XP ao identificar e 15 ao corrigir, só na primeira vez. Chefe: 60 XP, só na primeira vitória.
 - Errar dá explicação e nova tentativa; nunca apaga XP, conquistas nem bloqueia as explicações.
 - Conquistas são concedidas uma única vez e registram a data. Não há estatística de raridade nem comparação com outras pessoas.
@@ -304,7 +305,7 @@ O progresso fica no `localStorage` do navegador. Não há conta de usuário, ban
 - Alterar entre `localhost` e `127.0.0.1`, ou mudar a porta, utiliza outro armazenamento do navegador.
 - O XP reflete atividades registradas na interface; não comprova domínio técnico nem valida pesquisas externas.
 - O progresso salvo por versões anteriores continua válido: as medalhas já merecidas são reconhecidas ao abrir o site, e os endereços antigos (`?modulo=2`, `#trilhas`, `materias/x.html`) continuam levando ao lugar certo.
-- O XP é calculado a partir do progresso salvo, sem contar duas vezes: repetir uma missão, um desafio ou um projeto não soma XP de novo. O XP máximo é 9.986: 8.236 em atividades e 1.750 em conquistas.
+- O XP é calculado a partir do progresso salvo, sem contar duas vezes: repetir uma missão, um desafio ou um projeto não soma XP de novo. O XP máximo é 11.376: 9.566 em atividades e 1.810 em conquistas.
 - As ilustrações das aulas são SVG originais, desenhados no mesmo sistema visual do site, com texto alternativo e legenda; a região rolável é focável pelo teclado.
 - O progresso das áreas e dos módulos conta só o que é obrigatório (aula lida e desafios aprovados). Submódulos planejados não entram em nenhuma porcentagem, e um módulo sem conteúdo nunca aparece como concluído.
 - **Backup:** na página Conquistas, *Exportar progresso* baixa um arquivo JSON e *Importar progresso* o restaura (pede confirmação, porque substitui o progresso atual). É o jeito de levar o progresso a outro navegador ou aparelho.

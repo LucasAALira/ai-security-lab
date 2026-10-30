@@ -1,5 +1,6 @@
 import { architectProjects } from './architect'
 import { campaigns, dossiers } from './campaigns'
+import { reviewSamples } from './code-review'
 import { challenges } from './challenges'
 import { areas, areaById, curriculumModuleList, lessons, submodules, subById, moduleById } from './curriculum'
 import type { AreaId, Platform } from './curriculum'
@@ -8,9 +9,9 @@ import type { Level } from './types'
 /* Índice da busca global. Tudo é montado a partir dos próprios dados do site, em memória e sem rede:
    a busca funciona offline e não depende de nenhum serviço. */
 
-export type SearchKind = 'área' | 'módulo' | 'submódulo' | 'aula' | 'desafio' | 'missão' | 'caso real' | 'arquitetura'
+export type SearchKind = 'área' | 'módulo' | 'submódulo' | 'aula' | 'desafio' | 'missão' | 'caso real' | 'análise' | 'arquitetura'
 
-export const searchKinds: SearchKind[] = ['área', 'módulo', 'submódulo', 'aula', 'desafio', 'missão', 'caso real', 'arquitetura']
+export const searchKinds: SearchKind[] = ['área', 'módulo', 'submódulo', 'aula', 'desafio', 'missão', 'caso real', 'análise', 'arquitetura']
 
 export interface SearchEntry {
   kind: SearchKind
@@ -74,6 +75,15 @@ function build(): SearchEntry[] {
   }
   for (const d of dossiers) {
     out.push(entry({ kind: 'caso real', id: d.id, title: d.title, where: 'Casos reais', area: 'supply', level: null, platforms: platformsOfTags(d.tags), href: `/casos/${d.id}` }, `${d.subtitle} ${d.tags.join(' ')} ${d.summary.join(' ')}`))
+  }
+  for (const r of reviewSamples) {
+    // O veredito não entra no índice: ele é a resposta do exercício.
+    out.push(
+      entry(
+        { kind: 'análise', id: r.id, title: r.title, where: 'Treino de análise de código', area: null, level: r.level, platforms: platformsOfTags(r.tags), href: `/analise/${r.id}` },
+        `${r.subtitle} ${r.tags.join(' ')} ${r.finding.rule} ${r.finding.message} ${r.file} ${r.context.join(' ')}`,
+      ),
+    )
   }
   for (const p of architectProjects) {
     const text = `${p.summary} ${p.context.join(' ')} ${p.components.map((c) => `${c.label} ${c.threats.map((t) => t.title).join(' ')}`).join(' ')}`

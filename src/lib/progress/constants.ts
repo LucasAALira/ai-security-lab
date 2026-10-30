@@ -81,6 +81,8 @@ export const MISSION_XP = {
   passed: 15,
 } as const
 export const DOSSIER_XP = { read: 10, activity: 10, passed: 10 } as const
+/** Treino de análise de código: cada etapa creditada e o bônus de concluir a triagem. */
+export const REVIEW_XP = { activity: 10, passed: 15 } as const
 export const ARCHITECT_XP = { review: 60, adr: 10 } as const
 /** Marcar a aula de um submódulo como lida (autodeclarado, por isso vale pouco). */
 export const LESSON_XP = 4

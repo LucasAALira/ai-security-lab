@@ -18,6 +18,8 @@ const UpcomingPage = lazy(() => import('@/pages/UpcomingPage').then((m) => ({ de
 const CampaignsPage = lazy(() => import('@/pages/CampaignsPage').then((m) => ({ default: m.CampaignsPage })))
 const CampaignPage = lazy(() => import('@/pages/CampaignPage').then((m) => ({ default: m.CampaignPage })))
 const MissionPage = lazy(() => import('@/pages/MissionPage').then((m) => ({ default: m.MissionPage })))
+const CodeReviewPage = lazy(() => import('@/pages/CodeReviewPage').then((m) => ({ default: m.CodeReviewPage })))
+const CodeReviewSamplePage = lazy(() => import('@/pages/CodeReviewSamplePage').then((m) => ({ default: m.CodeReviewSamplePage })))
 const DossiersPage = lazy(() => import('@/pages/DossiersPage').then((m) => ({ default: m.DossiersPage })))
 const DossierPage = lazy(() => import('@/pages/DossierPage').then((m) => ({ default: m.DossierPage })))
 const DossierSimulationPage = lazy(() => import('@/pages/DossierSimulationPage').then((m) => ({ default: m.DossierSimulationPage })))
@@ -59,6 +61,8 @@ export function App() {
           <Route path="campanhas/:campaign/:mission" element={<MissionPage />} />
           <Route path="arquiteto" element={<ArchitectListPage />} />
           <Route path="arquiteto/:project" element={<ArchitectProjectPage />} />
+          <Route path="analise" element={<CodeReviewPage />} />
+          <Route path="analise/:amostra" element={<CodeReviewSamplePage />} />
           <Route path="casos" element={<DossiersPage />} />
           <Route path="casos/:dossier" element={<DossierPage />} />
           <Route path="casos/:dossier/simulacao" element={<DossierSimulationPage />} />

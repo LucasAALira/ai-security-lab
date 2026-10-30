@@ -301,6 +301,7 @@ export type MedalIcon =
   | 'link'
   | 'map'
   | 'microscope'
+  | 'search-check'
   | 'scale'
   | 'network'
   | 'smartphone'
@@ -390,8 +391,9 @@ export interface ProgressContext {
 
 export interface MissionSpec {
   id: string
-  /** `dossier`: exercício de um dossiê de caso real. Fica fora da contagem de missões das campanhas. */
-  kind: 'mission' | 'dossier'
+  /** `dossier`: exercício de um dossiê de caso real. `review`: amostra do treino de análise de código.
+   *  Os dois ficam fora da contagem de missões das campanhas e não dependem de missão anterior. */
+  kind: 'mission' | 'dossier' | 'review'
   campaign: string | null
   /** Posição na campanha, a partir de 1. */
   order: number

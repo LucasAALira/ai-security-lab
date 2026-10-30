@@ -91,6 +91,18 @@ Um dossiê (`DossierContent`) separa três camadas, rotuladas na interface: **fa
 
 Nas fontes oficiais brasileiras, use o documento e não a notícia quando os dois existirem: decisões e relatórios da ANPD, decisões e comunicados do Banco Central, comunicados de tribunais e notícias do Ministério Público. Quando a fonte oficial não puder ser lida na íntegra, diga isso em `uncertainties` e atribua os fatos à fonte que você de fato leu.
 
+## Amostra de análise de código
+
+Uma amostra (`ReviewSample`, em `src/data/code-review/`) é um achado para triar. Ela roda no mesmo motor das missões: três etapas geradas a partir do conteúdo — **veredito**, **sinais** e **o que fazer em seguida**.
+
+1. Crie `src/data/code-review/sNN-<assunto>.ts` e registre em `index.ts`.
+2. `finding`: ferramenta, regra, severidade, confiança e a linha apontada. Severidade e confiança são declaradas pela ferramenta e podem estar erradas: é parte do exercício.
+3. `verdict`: `procede`, `falso-positivo` ou `falta-contexto`. Escreva `verdictFeedback` para os **três**, explicando por que os dois descartados não servem.
+4. `signals`: o que sustenta o veredito, com distratores verdadeiros mas irrelevantes. `correctSignals` precisa ser menor que a lista.
+5. `next`: quatro condutas comparáveis, com uma `best`, feedback e consequência próprios. A diferença entre `best` e `good` é o que a amostra ensina.
+6. Mantenha o código fictício, com endereços no domínio `.example`; o endereço de ligação local dos serviços de metadados é aceito quando o caso é sobre nuvem.
+7. O veredito não aparece na lista nem no índice de busca antes da conclusão: ele é a resposta do exercício.
+
 ## Projeto do modo Arquiteto
 
 Os projetos ficam em `src/data/architect/<projeto>.ts` (tipos em `types.ts`) e são registrados em `src/data/architect/index.ts`.

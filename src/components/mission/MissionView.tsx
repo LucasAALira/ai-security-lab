@@ -31,9 +31,9 @@ export function closingFor(content: MissionContent, flags: string[]): string {
   return (content.closing.find((c) => (c.when ?? []).every((f) => flags.includes(f))) ?? content.closing[content.closing.length - 1]).text
 }
 
-function Stepper({ stage, reachable, onGo }: { stage: number; reachable: number; onGo: (n: number) => void }) {
+function Stepper({ stage, reachable, onGo, rotulo }: { stage: number; reachable: number; onGo: (n: number) => void; rotulo: string }) {
   return (
-    <nav aria-label="Etapas da missão">
+    <nav aria-label={rotulo}>
       <ol className="m-0 flex list-none flex-wrap gap-2 p-0 text-xs">
         {STAGES.map((s, i) => {
           const state = i < stage ? 'feita' : i === stage ? 'atual' : 'pendente'
@@ -61,6 +61,14 @@ function Stepper({ stage, reachable, onGo }: { stage: number; reachable: number;
   )
 }
 
+/** Como cada tipo de conteúdo se chama na interface: campanhas têm missões, dossiês têm simulações
+ *  e o treino de análise de código tem triagens. O motor é o mesmo; só o vocabulário muda. */
+const PALAVRA: Record<MissionSpec['kind'], { a: string; da: string; Titulo: string }> = {
+  mission: { a: 'a missão', da: 'da missão', Titulo: 'Missão' },
+  dossier: { a: 'a simulação', da: 'da simulação', Titulo: 'Simulação' },
+  review: { a: 'a triagem', da: 'da triagem', Titulo: 'Triagem' },
+}
+
 const resultIcon = (r: ActivityResult | null) => (r === null ? Circle : r === 'revealed' ? Circle : isGood(r) ? CheckCircle2 : Circle)
 
 export function MissionView({ content, spec }: { content: MissionContent; spec: MissionSpec }) {
@@ -69,6 +77,13 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
   const lock = missionLock(state, ctx, spec.id)
   const campaign = campaignById(content.campaign)
   const dossier = spec.kind === 'dossier' ? dossierById(spec.id) : undefined
+  const palavra = PALAVRA[spec.kind]
+  const volta =
+    spec.kind === 'review'
+      ? { to: '/analise', label: 'Voltar ao treino de análise' }
+      : spec.kind === 'dossier'
+        ? { to: '/casos', label: 'Voltar aos casos reais' }
+        : { to: '/campanhas', label: 'Voltar às campanhas' }
   const total = spec.activities.length
   const pending = firstPending(state, spec, m)
   const flags = useMemo(() => runFlags(spec, m), [spec, m])
@@ -118,7 +133,11 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
     <div className="grid grid-cols-[minmax(0,1fr)] gap-5">
       <header>
         <p className="text-[10px] font-semibold tracking-[0.2em] text-primary uppercase">
-          {dossier ? `Simulação fictícia · inspirada em ${dossier.title}` : `Campanha ${campaign?.title ?? ''} · Missão ${content.order} de ${campaign?.missions.length ?? '?'}`}
+          {spec.kind === 'review'
+            ? 'Treino de análise de código · triagem de um achado'
+            : dossier
+              ? `Simulação fictícia · inspirada em ${dossier.title}`
+              : `Campanha ${campaign?.title ?? ''} · Missão ${content.order} de ${campaign?.missions.length ?? '?'}`}
         </p>
         <h1 className="mt-2 text-2xl leading-tight font-medium tracking-tight sm:text-3xl">{content.title}</h1>
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -134,11 +153,11 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
               Atividades: {pending} de {total}
             </span>
           ) : null}
-          <span>XP desta missão: {xp}</span>
+          <span>XP desta {palavra.a.replace('a ', '')}: {xp}</span>
         </div>
       </header>
 
-      <Stepper stage={stage} reachable={reachable} onGo={(n) => (n === MISSION_STAGES - 1 ? dispatch({ type: 'missionFinish', mission: spec.id }) : go(n))} />
+      <Stepper rotulo={`Etapas ${palavra.da}`} stage={stage} reachable={reachable} onGo={(n) => (n === MISSION_STAGES - 1 ? dispatch({ type: 'missionFinish', mission: spec.id }) : go(n))} />
 
       {stage === 0 ? (
         <section aria-labelledby="etapa-titulo" className="grid gap-4 rounded-xl border border-border bg-card p-4 sm:p-5">
@@ -167,7 +186,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button type="button" onClick={() => go(1)}>
-              {started ? 'Continuar' : 'Começar a missão'} <ArrowRight aria-hidden="true" />
+              {started ? 'Continuar' : `Começar ${palavra.a}`} <ArrowRight aria-hidden="true" />
             </Button>
             <span className="text-xs text-muted-foreground">Seu avanço é salvo neste navegador a cada passo.</span>
           </div>
@@ -198,7 +217,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
           <h2 id="etapa-titulo" ref={headingRef} tabIndex={-1} className="text-lg font-medium outline-none">
             3. Decisão · {content.activities[step].title}
           </h2>
-          <nav aria-label="Atividades da missão">
+          <nav aria-label={`Atividades ${palavra.da}`}>
             <ol className="m-0 flex list-none flex-wrap gap-1.5 p-0 text-xs">
               {decisionList.map(({ a, i, result }) => {
                 const Icon = resultIcon(result)
@@ -319,8 +338,8 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
               {passed ? <Trophy className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" /> : <Compass className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />}
               <span>
                 {passed
-                  ? `Missão aprovada: todas as atividades têm crédito.${m.clean ? ' Os critérios de contenção e preservação de evidências foram cumpridos.' : ''}${m.noHints ? ' Você a concluiu sem dicas.' : ''}`
-                  : 'Missão concluída, mas ainda há atividades sem crédito (decisões frágeis ou soluções mostradas). Comece uma nova tentativa para obtê-lo: o que você já conquistou permanece.'}
+                  ? `${palavra.Titulo} aprovada: todas as atividades têm crédito.${m.clean ? ' Os critérios de contenção e preservação de evidências foram cumpridos.' : ''}${m.noHints ? ' Você a concluiu sem dicas.' : ''}`
+                  : `${palavra.Titulo} concluída, mas ainda há atividades sem crédito (decisões frágeis ou soluções mostradas). Comece uma nova tentativa para obtê-lo: o que você já conquistou permanece.`}
                 {m.done && !isCleanRun(spec, m) && content.clean ? ' Nesta tentativa, os critérios de contenção precisa não foram todos cumpridos.' : ''}
               </span>
             </p>
@@ -371,7 +390,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
                 </li>
               ))}
             </ul>
-            <p className="mt-2 text-[11px] text-muted-foreground">Os links levam a fontes externas (precisam de internet); o conteúdo da missão funciona offline. Edições e datas de revisão estão em <Link to="/cobertura" className="text-primary underline underline-offset-2">Cobertura de frameworks</Link>.</p>
+            <p className="mt-2 text-[11px] text-muted-foreground">Os links levam a fontes externas (precisam de internet); o conteúdo funciona offline. Edições e datas de revisão estão em <Link to="/cobertura" className="text-primary underline underline-offset-2">Cobertura de frameworks</Link>.</p>
           </div>
 
           <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
@@ -413,7 +432,7 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
               </Button>
             ) : (
               <Button asChild>
-                <Link to="/campanhas">Voltar às campanhas</Link>
+                <Link to={volta.to}>{volta.label}</Link>
               </Button>
             )}
             <Button type="button" variant="outline" onClick={() => dispatch({ type: 'missionRestart', mission: spec.id })}>

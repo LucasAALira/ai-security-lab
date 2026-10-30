@@ -1,9 +1,9 @@
 import { isDecision, type ActivitySpec } from './activities'
 import { isChallengeDone } from './challenges'
-import { ARCHITECT_XP, DOSSIER_XP, LESSON_XP, MISSION_XP } from './constants'
+import { ARCHITECT_XP, DOSSIER_XP, LESSON_XP, MISSION_XP, REVIEW_XP } from './constants'
 import type { ActivityResult, CampaignSpec, MissionSpec, MissionState, ProgressContext, StudyState } from './types'
 
-/* Regras das campanhas e dos exercícios de dossiê. Tudo é derivado do estado salvo; o XP nunca é
+/* Regras das campanhas, dos exercícios de dossiê e das amostras de análise de código. Tudo é derivado do estado salvo; o XP nunca é
    guardado, então repetir uma atividade não pode somá-lo de novo. */
 
 export const findMission = (ctx: ProgressContext, id: string): MissionSpec | undefined => ctx.missions.find((m) => m.id === id)
@@ -87,10 +87,11 @@ export function campaignPassed(s: StudyState, ctx: ProgressContext, id: string):
 export type MissionLock = { locked: false } | { locked: true; reason: 'campaign' | 'previous'; campaigns: string[]; previous: string | null }
 
 /** Uma missão abre quando as campanhas exigidas estão concluídas e a missão anterior foi concluída.
- *  Quem já começou a missão continua com acesso. Exercícios de dossiê estão sempre abertos. */
+ *  Quem já começou a missão continua com acesso. Exercícios de dossiê e amostras de análise de
+ *  código estão sempre abertos. */
 export function missionLock(s: StudyState, ctx: ProgressContext, id: string): MissionLock {
   const mission = findMission(ctx, id)
-  if (!mission || mission.kind === 'dossier' || s.missions[id]?.started) return { locked: false }
+  if (!mission || mission.kind !== 'mission' || s.missions[id]?.started) return { locked: false }
   const campaign = findCampaign(ctx, mission.campaign)
   if (!campaign) return { locked: false }
   const pending = campaign.requires.filter((c) => !campaignDone(s, ctx, c))
@@ -108,18 +109,20 @@ export const isMissionUnlocked = (s: StudyState, ctx: ProgressContext, id: strin
 const paying = (mission: MissionSpec) => mission.activities.filter((a) => a.kind !== 'spot')
 
 /** XP máximo de uma missão (atividades próprias e bônus de conclusão), sem o dos desafios de código. */
+/** XP por etapa e por conclusão, conforme o tipo de missão. */
+const xpOf = (kind: MissionSpec['kind']) => (kind === 'dossier' ? DOSSIER_XP : kind === 'review' ? REVIEW_XP : MISSION_XP)
+
 export function missionMaxXp(mission: MissionSpec): number {
-  const dossier = mission.kind === 'dossier'
-  return paying(mission).length * (dossier ? DOSSIER_XP.activity : MISSION_XP.activity) + (dossier ? DOSSIER_XP.passed : MISSION_XP.passed)
+  const xp = xpOf(mission.kind)
+  return paying(mission).length * xp.activity + xp.passed
 }
 
 export function missionXp(s: StudyState, mission: MissionSpec): number {
   const m = s.missions[mission.id]
   if (!m) return 0
-  const dossier = mission.kind === 'dossier'
-  const per = dossier ? DOSSIER_XP.activity : MISSION_XP.activity
+  const xp = xpOf(mission.kind)
   const credited = paying(mission).filter((a) => m.credited.includes(a.id)).length
-  return credited * per + (missionPassed(s, mission) ? (dossier ? DOSSIER_XP.passed : MISSION_XP.passed) : 0)
+  return credited * xp.activity + (missionPassed(s, mission) ? xp.passed : 0)
 }
 
 /** XP de campanhas, dossiês, aulas dos submódulos e revisões de arquitetura. */
@@ -160,6 +163,8 @@ export interface LearningStats {
   selfAssessed: number
   dossiersRead: number
   dossiersPassed: number
+  /** Amostras do treino de análise de código concluídas com todas as etapas creditadas. */
+  reviewsPassed: number
   campaignsPassed: number
   lessons: number
   architectEvaluated: number
@@ -179,6 +184,7 @@ export function learningStats(s: StudyState, ctx: ProgressContext): LearningStat
     selfAssessed: 0,
     dossiersRead: 0,
     dossiersPassed: 0,
+    reviewsPassed: 0,
     campaignsPassed: 0,
     lessons: ctx.lessons.filter((id) => s.lessons[id]).length,
     architectEvaluated: 0,
@@ -191,6 +197,8 @@ export function learningStats(s: StudyState, ctx: ProgressContext): LearningStat
     if (mission.kind === 'dossier') {
       if (s.dossiers[mission.id]) out.dossiersRead += 1
       if (passed && s.dossiers[mission.id]) out.dossiersPassed += 1
+    } else if (mission.kind === 'review') {
+      if (passed) out.reviewsPassed += 1
     } else {
       if (m?.started) out.missionsStarted += 1
       if (m?.done) out.missionsDone += 1
