@@ -237,10 +237,12 @@ O site também vira um app Android: um WebView em Java puro, sem bibliotecas de 
 
 O APK permanece independente do servidor do computador: o acesso pela rede local é feito pelo navegador. O progresso não sincroniza automaticamente entre aparelhos ou endereços; use exportar/importar para transferir.
 
+**Baixar o APK.** O pacote pronto fica em [`releases/`](releases/), com o resumo SHA-256 e as instruções de instalação. É um pacote de depuração, assinado com chave de teste: ele não vem de loja e não se atualiza sozinho.
+
 **Gerar o APK.**
 
 - Com Android Studio ou Gradle: `npm run build`, depois `cd android && ./gradlew assembleDebug` (a tarefa `copyWeb` copia `dist/` para dentro do app). O APK sai em `android/app/build/outputs/apk/debug/`.
-- Sem Gradle: `npm run build && sh scripts/build-apk.sh`, com as variáveis `ANDROID_JAR`, `AAPT2`, `D8_JAR`, `APKSIGNER_JAR` e `KEYSTORE` apontando para as ferramentas do Android SDK (veja o cabeçalho do script).
+- Sem Gradle: `npm run build && sh scripts/build-apk.sh`, com as variáveis `ANDROID_JAR`, `AAPT2`, `ZIPALIGN`, `D8_JAR`, `APKSIGNER_JAR` e `KEYSTORE` apontando para as ferramentas do Android SDK (veja o cabeçalho do script).
 
 ## Desenvolvimento
 
