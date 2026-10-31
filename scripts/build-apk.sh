@@ -16,6 +16,7 @@
 set -eu
 
 root=$(cd "$(dirname "$0")/.." && pwd)
+sh "$root/scripts/arte.sh" dragao
 app=$root/android/app/src/main
 pkg=io.github.lucasaalira.aisecuritylab
 version=$(node -p "require('$root/package.json').version")

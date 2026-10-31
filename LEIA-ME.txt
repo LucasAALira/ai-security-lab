@@ -13,6 +13,12 @@ Este pacote contem scripts executaveis; nao e um binario .exe independente.
    Se nao abrir, acesse esse endereco manualmente.
 5. Mantenha o terminal aberto. Ctrl+C encerra o servidor.
 
+DESENHO DE ABERTURA
+Se a pasta scripts/ veio junto, o iniciador sorteia um desenho em ASCII antes
+de subir o servidor (arte.sh no Linux/macOS, arte.bat no Windows). Para ver um
+desenho a qualquer momento: sh scripts/arte.sh  ou  scripts\arte.bat
+Sem a pasta scripts/, o iniciador segue normalmente, sem desenho.
+
 Nao abra dist/index.html com dois cliques: os navegadores bloqueiam modulos
 JavaScript fora de um servidor. Use sempre o iniciador.
 

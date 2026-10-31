@@ -321,7 +321,7 @@ A pasta `dist/` é versionada de propósito, para que `iniciar.py` funcione sem 
 
 ### 🎭 Desenho no terminal
 
-`npm run arte` sorteia uma das nove figuras em ASCII — hacker, cadeado, chave, escudo, inseto, terminal, dragão, caveira e fogueira — com uma inscrição curta de cada vez. O mesmo desenho aparece sozinho antes de `npm run dev`, pelo gancho `predev`.
+`npm run arte` sorteia uma das nove figuras em ASCII — hacker, cadeado, chave, escudo, inseto, terminal, dragão, caveira e fogueira — com uma inscrição curta de cada vez.
 
 ```sh
 npm run arte            # sorteia
@@ -329,7 +329,33 @@ npm run arte -- chave   # escolhe pelo nome
 npm run arte -- --lista # mostra os nomes
 ```
 
-Tudo é desenho original, com no máximo 46 colunas. A cor sai só quando o terminal aceita: com `NO_COLOR`, `TERM=dumb` ou saída redirecionada, o texto vai puro. O arquivo é `scripts/arte.mjs`, e os testes dele estão em `scripts/arte.test.mjs`.
+**Onde o desenho aparece sozinho:** antes de `npm run dev`, `npm run build` e `npm run preview` (ganchos `predev`, `prebuild` e `prepreview`), ao abrir o site pelos lançadores `iniciar-linux-mac.sh` e `iniciar-windows.bat`, e no começo de `scripts/build-apk.sh`.
+
+**Sem Node, direto no terminal.** Os mesmos desenhos existem em shell e em Prompt de Comando:
+
+```sh
+sh scripts/arte.sh            # sorteia (Linux, macOS, WSL, Git Bash)
+sh scripts/arte.sh chave      # escolhe pelo nome
+sh scripts/arte.sh --lista    # mostra os nomes
+```
+
+```bat
+scripts\arte.bat
+scripts\arte.bat chave
+scripts\arte.bat --lista
+```
+
+**Ao abrir o terminal.** Acrescente a linha ao arquivo de início do seu shell — nada é instalado por conta própria:
+
+| Terminal | Onde | Linha |
+| --- | --- | --- |
+| bash, zsh, sh | `~/.bashrc`, `~/.zshrc` | `[ -t 1 ] && sh "$HOME/ai-security-lab/scripts/arte.sh"` |
+| Prompt de Comando | AutoRun do CMD | `reg add "HKCU\Software\Microsoft\Command Processor" /v AutoRun /d "C:\caminho\scripts\arte.bat" /f` |
+| PowerShell | `$PROFILE` | `cmd /c "C:\caminho\scripts\arte.bat"` |
+
+Tudo é desenho original, com no máximo 46 colunas. A cor sai só quando o terminal aceita: com `NO_COLOR`, `TERM=dumb` ou saída redirecionada, o texto vai puro (`FORCE_COLOR` força). O `.bat` troca a página de código para UTF-8 por causa dos acentos e devolve a anterior ao sair.
+
+Os três arquivos vêm da mesma fonte: `scripts/arte.mjs` guarda os desenhos e gera os outros dois com `npm run arte:gerar`. Os testes em `scripts/arte.test.mjs` executam o `arte.sh` de verdade e conferem que `arte.sh` e `arte.bat` continuam iguais ao que o gerador produz — editar um deles à mão quebra a suíte.
 
 ### 🧱 Pilha
 
@@ -348,7 +374,8 @@ Tudo é desenho original, com no máximo 46 colunas. A cor sai só quando o term
 
 | Pasta ou arquivo | Finalidade |
 | --- | --- |
-| `iniciar.py`, `iniciar-*.sh/.bat` | Servidor local da pasta `dist/` e abertura do navegador. |
+| `iniciar.py`, `iniciar-*.sh/.bat` | Servidor local da pasta `dist/` e abertura do navegador, com o desenho de abertura. |
+| `scripts/arte.mjs`, `arte.sh`, `arte.bat` | Desenho de abertura do terminal: a fonte em Node e as versões geradas para shell e CMD. |
 | `dist/` | Site gerado, pronto para servir. |
 | `src/lib/progress/` | Regras do jogo em TypeScript puro: XP, medalhas, sequência, missões, moedas, revisão e a função única `applyAction`. |
 | `src/data/` | Conteúdo: módulos, matérias, cenários e pentest; `curriculum/` (áreas, módulos, submódulos, aulas e integradores), `campaigns/` (campanhas, missões e dossiês), `challenge-packs/` (desafios novos), `architect/` (projetos do modo Arquiteto), `frameworks.ts` (registro verificado) e `glossary.ts`. |
