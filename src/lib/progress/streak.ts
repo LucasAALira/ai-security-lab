@@ -1,3 +1,4 @@
+import { STUDY_CLOCK } from './constants'
 import { addDays, dayKey, daysBetween } from './dates'
 import type { StudyState } from './types'
 
@@ -62,7 +63,32 @@ export function touchStudy(s: StudyState, now: Date): void {
   if (k.last && daysBetween(k.last, today) <= 0) return
   k.current = k.last && daysBetween(k.last, today) === 1 ? k.current + 1 : 1
   k.best = Math.max(k.best, k.current)
+  k.total = Math.min(STUDY_CLOCK.total, k.total + 1)
   k.last = today
+}
+
+/** Soma minutos medidos ao tempo de estudo (altera `s`); devolve se algo mudou. O contador do dia
+ *  reinicia quando `clockDay` muda e o teto diário limita o estrago de uma aba esquecida aberta.
+ *  Não mexe na sequência nem nos dias de estudo: tempo de tela não é atividade concluída. */
+export function tickStudyClock(s: StudyState, now: Date, minutes: number): boolean {
+  const k = s.study
+  const today = dayKey(now)
+  const ask = Number.isFinite(minutes) ? Math.min(Math.max(Math.round(minutes), 0), STUDY_CLOCK.maxPerTick) : 0
+  if (ask <= 0) return false
+  if (k.clockDay !== today) {
+    k.clockDay = today
+    k.minutesToday = 0
+  }
+  const add = Math.min(ask, Math.max(STUDY_CLOCK.perDay - k.minutesToday, 0), Math.max(STUDY_CLOCK.total - k.minutes, 0))
+  if (add <= 0) return false
+  k.minutesToday += add
+  k.minutes += add
+  return true
+}
+
+/** Minutos medidos hoje (0 quando o registro é de outro dia). */
+export function studyMinutesToday(s: StudyState, now: Date): number {
+  return s.study.clockDay === dayKey(now) ? s.study.minutesToday : 0
 }
 
 /** Dias reais seguidos em andamento: vale se o último estudo foi hoje ou ontem. */

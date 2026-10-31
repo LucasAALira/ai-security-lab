@@ -3,6 +3,15 @@ import { toActivitySpec } from '../campaigns'
 import { refLabel } from '../frameworks'
 import type { ActivityContent, MissionContent } from '../campaigns/types'
 import { chaveNoCodigo } from './s06-chave-no-codigo'
+import { achadoFechadoAntes } from './s21-achado-fechado-antes'
+import { chaveDeExemplo } from './s23-chave-de-exemplo'
+import { chaveEmRepositorioPrivado } from './s19-chave-em-repositorio-privado'
+import { chaveNoCodigoPublicado } from './s15-chave-no-codigo-publicado'
+import { credencialNoHistorico } from './s22-credencial-no-historico'
+import { scriptBaixadoNoPipeline } from './s18-script-baixado-no-pipeline'
+import { tokenMascaradoNoLog } from './s20-token-mascarado-no-log'
+import { urlAssinadaNoExemplo } from './s16-url-assinada-no-exemplo'
+import { variaveisNoLog } from './s17-variaveis-no-log'
 import { corsDoPainel } from './s11-cors-do-painel'
 import { dependenciaComCve } from './s14-dependencia-com-cve'
 import { downloadDoAnexo } from './s09-download-do-anexo'
@@ -34,6 +43,15 @@ export const reviewSamples: ReviewSample[] = [
   telaExportada,
   resumoDaPagina,
   dependenciaComCve,
+  chaveNoCodigoPublicado,
+  urlAssinadaNoExemplo,
+  variaveisNoLog,
+  scriptBaixadoNoPipeline,
+  chaveEmRepositorioPrivado,
+  tokenMascaradoNoLog,
+  achadoFechadoAntes,
+  credencialNoHistorico,
+  chaveDeExemplo,
 ]
 
 export const reviewById = (id: string): ReviewSample | undefined => reviewSamples.find((s) => s.id === id)
@@ -129,7 +147,10 @@ export function reviewAsMission(s: ReviewSample): MissionContent {
     activities: reviewActivities(s),
     closing: [{ text: s.closing }],
     review: s.review,
-    refs: (s.frameworks ?? []).map((framework) => ({ label: refLabel(framework), framework })),
+    refs: [
+      ...(s.inspiredBy ? [{ label: `Caso real que inspira a amostra: ${s.inspiredBy.label}`, url: s.inspiredBy.url, note: s.inspiredBy.note }] : []),
+      ...(s.frameworks ?? []).map((framework) => ({ label: refLabel(framework), framework })),
+    ],
     medals: ['triagem-certeira', 'mesa-de-escrutinio'],
     tags: s.tags,
   }

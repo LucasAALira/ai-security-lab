@@ -118,11 +118,19 @@ export interface BossState {
   flawless: boolean
 }
 
-/** Dias reais de estudo seguidos, sem escudos: base da conquista "Persistência". */
+/** Dias reais de estudo seguidos, sem escudos: base da conquista "Persistência".
+ *  Guarda também o total de dias com atividade e o tempo medido com o site em uso. */
 export interface StudyDays {
   last: string
   current: number
   best: number
+  /** Dias distintos em que houve alguma atividade registrada. */
+  total: number
+  /** Minutos medidos ao todo, contados só com a aba visível e com interação recente. */
+  minutes: number
+  /** Dia a que `minutesToday` se refere (AAAA-MM-DD). */
+  clockDay: string
+  minutesToday: number
 }
 
 export type LearningEventKind = (typeof EVENT_KINDS)[number]

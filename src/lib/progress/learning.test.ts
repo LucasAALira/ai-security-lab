@@ -666,9 +666,11 @@ describe('migração e saneamento do estado', () => {
   })
 
   it('migra dias reais de estudo da sequência antiga só quando nenhum escudo foi usado', () => {
-    expect(cleanState(v2).study).toEqual({ last: '2026-10-15', current: 4, best: 6 })
+    // O relógio de horas e os dias somados entraram depois: começam do que a sequência antiga garante.
+    const zerado = { minutes: 0, clockDay: '', minutesToday: 0 }
+    expect(cleanState(v2).study).toEqual({ last: '2026-10-15', current: 4, best: 6, total: 4, ...zerado })
     const shielded = cleanState({ ...v2, streak: { ...v2.streak, shieldUsed: '2026-10-10' } })
-    expect(shielded.study).toEqual({ last: '2026-10-15', current: 1, best: 1 }) // sem progresso fictício
+    expect(shielded.study).toEqual({ last: '2026-10-15', current: 1, best: 1, total: 1, ...zerado }) // sem progresso fictício
   })
 
   it('o XP e as medalhas antigas continuam iguais depois da migração', () => {

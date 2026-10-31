@@ -86,6 +86,11 @@ export const REVIEW_XP = { activity: 10, passed: 15 } as const
 export const ARCHITECT_XP = { review: 60, adr: 10 } as const
 /** Marcar a aula de um submódulo como lida (autodeclarado, por isso vale pouco). */
 export const LESSON_XP = 4
+/** Relógio de estudo: quanto cada tique soma, o teto por dia e o teto do total (em minutos).
+ *  O tique só é enviado com a aba visível e interação recente, então o teto diário é uma
+ *  salvaguarda contra uma aba esquecida aberta em uso. */
+export const STUDY_CLOCK = { tick: 1, maxPerTick: 5, perDay: 600, total: 1_000_000 } as const
+
 /** Etapas de uma missão: Contexto, Evidências, Decisão, Consequências e Revisão. */
 export const MISSION_STAGES = 5
 /** Envios errados necessários para liberar "mostrar a solução" numa atividade corrigida automaticamente. */

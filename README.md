@@ -1,23 +1,47 @@
-# AI Security Lab
+# 🐉 AI Security Lab
+
+```text
+╔══════════════════════════════════════════════════════════════════╗
+║        /\   /\             A I   S E C U R I T Y   L A B         ║
+║       /  \_/  \                                                  ║
+║  .---(  o   o  )---.       AppSec + IA, em português             ║
+║ /     \   ^   /     \      offline · sem conta · sem servidor    ║
+║ |  ~~~  '--v--'  ~~~  |    aulas, missões, triagem de achados    ║
+║  \     __|   |__     /     casos reais e revisões de arquitetura ║
+║   '---'  '---'  '---'      `npm run arte` desenha no terminal    ║
+╚══════════════════════════════════════════════════════════════════╝
+```
 
 **Central de estudos de segurança de aplicações e de inteligência artificial para profissionais de AppSec, Security Champions e desenvolvedores.**
 
-Um site de aprendizado em português que reúne aulas, missões investigativas, desafios de código, casos reais e revisões de arquitetura. A proposta é conectar os conceitos de segurança Web, de APIs, Mobile, de IA e da cadeia de suprimentos às decisões do dia a dia das empresas. Funciona inteiro no navegador, sem conta e sem servidor.
+![versão 2.6.0](https://img.shields.io/badge/vers%C3%A3o-2.6.0-ff3333?style=flat-square) ![2.258 testes](https://img.shields.io/badge/testes-2.258-dccb94?style=flat-square) ![português](https://img.shields.io/badge/idioma-portugu%C3%AAs-8a8f98?style=flat-square) ![funciona offline](https://img.shields.io/badge/offline-sim-8a8f98?style=flat-square) ![Android 7+](https://img.shields.io/badge/Android-7.0%2B-8a8f98?style=flat-square)
 
-## O que há no site
+Um site de aprendizado em português que reúne aulas, missões investigativas, desafios de código, casos reais e revisões de arquitetura. A proposta é conectar os conceitos de segurança Web, de APIs, Mobile, de IA e da cadeia de suprimentos às decisões do dia a dia das empresas. Funciona inteiro no navegador, sem conta e sem servidor. 🔌
+
+### 🧭 Atalhos
+
+| | | |
+| --- | --- | --- |
+| 🗺️ [O que há no site](#conteudo) | 🧪 [Executar localmente](#executar) | 📱 [App Android](#android) |
+| 🎮 [Mecânicas de jogo](#jogo) | 🛠️ [Desenvolvimento](#desenvolvimento) | 🔒 [Progresso e privacidade](#privacidade) |
+| 🎨 [Identidade visual](#identidade) | ✍️ [Como adicionar conteúdo](#conteudo-novo) | 📜 [Créditos e licenças](#creditos) |
+
+<a id="conteudo"></a>
+
+## 🗺️ O que há no site
 
 | Parte | Conteúdo |
 | --- | --- |
-| **Áreas** (`#/areas`) | 8 áreas (Web, APIs, IA, Mobile, Cadeia de suprimentos, Arquitetura, **Engenharia reversa** e Governança), 42 módulos e 198 submódulos. 189 submódulos têm aula própria (contexto, conceito, exemplo, ilustração quando ajuda, validação, revisão e referências); os outros 9 usam os módulos clássicos da trilha. Cada módulo tem um integrador e um checkpoint. Áreas e módulos recém-publicados levam o selo **Novo**. |
-| **Campanhas** (`#/campanhas`) | 8 campanhas com 6 missões cada (48 missões), em empresas fictícias: evidências liberadas por etapas, decisões com consequências, ramificações, sete formatos de atividade e revisão da solução com risco residual. |
-| **Análise de código** (`#/analise`) | 14 amostras de triagem de achado: ler o trecho, decidir se o alerta **procede**, é **falso positivo** ou está **indeterminado**, apontar os sinais que sustentam o veredito e escolher **o que fazer em seguida**, com a comparação entre a melhor conduta e as que parecem resolver. Cinco amostras são falso positivo e duas dependem de contexto que falta. |
-| **Casos reais** (`#/casos`) | 19 dossiês que separam fatos com fonte, incertezas, análise educacional e uma simulação fictícia: **15 brasileiros** (STJ, TSE, ConecteSUS, DATASUS/SCPA, Secretaria de Educação do DF, organização social de saúde, primeira multa da ANPD, TikTok, Claro e Serasa, consultas ao DICT, chaves Pix, o ataque de 30 de junho de 2025, Netshoes, Banco Inter e venda de dados pessoais) e 4 de cadeia de suprimentos (XZ Utils, 3CX, SolarWinds Orion e ua-parser-js). |
-| **Laboratório de código** (`#/desafios`) | 71 desafios: marcar as linhas vulneráveis, escolher a correção e ver o código corrigido e como validar. 55 são das áreas novas (Web, API, Mobile Android e iOS, cadeia de suprimentos, configuração e engenharia reversa), incluindo 6 sobre segredos: chave no pacote, variável de build e source map, camada de imagem, registro de pipeline, resposta ao vazamento e triagem sem executar a amostra. |
-| **Modo Arquiteto** (`#/arquiteto`) | 13 projetos (Web, mobile, IA, SaaS, pagamentos, supply chain, Kubernetes, IoT, dados e acesso privilegiado): componentes clicáveis, ameaças STRIDE, controles com custo e complexidade, várias soluções defensáveis, avaliação por critérios e ADR com sete campos e autoavaliação. |
-| **Cobertura** (`#/cobertura`) | Matriz que liga cada item dos frameworks (OWASP Top 10, API, Mobile, LLM, MASVS, MITRE ATLAS, CWE, SSDF, SLSA) ao conteúdo que o pratica. |
-| **Explorar** (`#/explorar`) | Busca em aulas, missões, desafios, casos e projetos. |
+| 📂 **Áreas** (`#/areas`) | 8 áreas (Web, APIs, IA, Mobile, Cadeia de suprimentos, Arquitetura, **Engenharia reversa** e Governança), 42 módulos e 198 submódulos. 189 submódulos têm aula própria (contexto, conceito, exemplo, ilustração quando ajuda, validação, revisão e referências); os outros 9 usam os módulos clássicos da trilha. Cada módulo tem um integrador e um checkpoint. Áreas e módulos recém-publicados levam o selo **Novo**. |
+| 🕵️ **Campanhas** (`#/campanhas`) | 8 campanhas com 6 missões cada (48 missões), em empresas fictícias: evidências liberadas por etapas, decisões com consequências, ramificações, sete formatos de atividade e revisão da solução com risco residual. |
+| 🔎 **Análise de código** (`#/analise`) | 23 amostras de triagem de achado: ler o trecho, decidir se o alerta **procede**, é **falso positivo** ou está **indeterminado**, apontar os sinais que sustentam o veredito e escolher **o que fazer em seguida**, com a comparação entre a melhor conduta e as que parecem resolver. Sete são falso positivo e três dependem de contexto que falta. Nove amostras são de **segredos** (chave no código, URL assinada, variável em registro de pipeline, credencial em repositório privado, achado reaberto, valor no histórico) e oito trazem, na revisão, o **caso real documentado** que as inspira, com a fonte. |
+| 📰 **Casos reais** (`#/casos`) | 19 dossiês que separam fatos com fonte, incertezas, análise educacional e uma simulação fictícia: **15 brasileiros** (STJ, TSE, ConecteSUS, DATASUS/SCPA, Secretaria de Educação do DF, organização social de saúde, primeira multa da ANPD, TikTok, Claro e Serasa, consultas ao DICT, chaves Pix, o ataque de 30 de junho de 2025, Netshoes, Banco Inter e venda de dados pessoais) e 4 de cadeia de suprimentos (XZ Utils, 3CX, SolarWinds Orion e ua-parser-js). |
+| 🧬 **Laboratório de código** (`#/desafios`) | 71 desafios: marcar as linhas vulneráveis, escolher a correção e ver o código corrigido e como validar. 55 são das áreas novas (Web, API, Mobile Android e iOS, cadeia de suprimentos, configuração e engenharia reversa), incluindo 6 sobre segredos: chave no pacote, variável de build e source map, camada de imagem, registro de pipeline, resposta ao vazamento e triagem sem executar a amostra. |
+| 🏗️ **Modo Arquiteto** (`#/arquiteto`) | 13 projetos (Web, mobile, IA, SaaS, pagamentos, supply chain, Kubernetes, IoT, dados e acesso privilegiado): componentes clicáveis, ameaças STRIDE, controles com custo e complexidade, várias soluções defensáveis, avaliação por critérios e ADR com sete campos e autoavaliação. |
+| 🧭 **Cobertura** (`#/cobertura`) | Matriz que liga cada item dos frameworks (OWASP Top 10, API, Mobile, LLM, MASVS, MITRE ATLAS, CWE, SSDF, SLSA) ao conteúdo que o pratica. |
+| 🔦 **Explorar** (`#/explorar`) | Busca em aulas, missões, desafios, casos e projetos. |
 
-## Temas de estudo
+## 📚 Temas de estudo
 
 - OWASP Top 10 para aplicações com LLMs.
 - Injeção de prompt e seus impactos.
@@ -27,7 +51,7 @@ Um site de aprendizado em português que reúne aulas, missões investigativas, 
 - ISO/IEC 42001.
 - LGPD aplicada à inteligência artificial.
 - Regulamento europeu de inteligência artificial (AI Act).
-- **Engenharia reversa para defensores**: a maior área do site, com 6 módulos e 31 submódulos — fundamentos e laboratório, análise estática, caça a segredos em artefatos, aplicativos e clientes, artefatos de IA e análise dinâmica com relatório. O módulo 09 da trilha é a porta de entrada, de [acesso antecipado](#acesso-antecipado-e-página-em-breve); a área fica aberta em [Arquivos](#o-que-há-no-site).
+- **Engenharia reversa para defensores**: a maior área do site, com 6 módulos e 31 submódulos — fundamentos e laboratório, análise estática, caça a segredos em artefatos, aplicativos e clientes, artefatos de IA e análise dinâmica com relatório. O módulo 09 da trilha é a porta de entrada, de [acesso antecipado](#acesso-antecipado); a área fica aberta em [Arquivos](#conteudo).
 - Segurança Web e de APIs: autenticação, autorização por objeto, injeções, SSRF, regras de negócio, OWASP Top 10 e API Security Top 10.
 - Segurança Mobile (Android e iOS): armazenamento, links, WebViews, TLS, biometria e a divisão entre aplicativo e servidor, com OWASP Mobile Top 10 e MASVS.
 - Cadeia de suprimentos de software: dependências, pipelines, segredos, SBOM, assinatura, proveniência e incidentes reais.
@@ -37,31 +61,34 @@ Um site de aprendizado em português que reúne aulas, missões investigativas, 
 
 As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dentro do próprio site. Cada uma tem três leituras (Compreender, Conectar e Aplicar) com exemplos, tabelas e quadros "Em palavras simples", além de um **resumo em pontos-chave** e um **glossário**. Os módulos regulatórios trazem a data de revisão e avisam quando um prazo ou texto pode ter mudado.
 
-## Funcionalidades
+## ⚙️ Funcionalidades
 
 - **Trilhas de aprendizado:** objetivos, pré-requisitos educacionais e tarefas de estudo.
 - **Trilha de módulos:** os módulos formam um caminho com etapas, **fogueiras** (pontos de conclusão e revisão) e um **chefe** por módulo. Módulos só abrem quando as fogueiras dos pré-requisitos estão acesas, e o próximo objetivo fica sempre visível.
 - **Aulas interativas:** cada módulo tem abas *Conceito, Exemplo, Como corrigir, Revisar, Praticar* e *Quiz*, com o resumo primeiro e o texto completo em "Saiba mais".
 - **Laboratório de código:** 60 desafios em que você marca as linhas vulneráveis e escolhe a correção, com dicas, explicação do erro e a opção de repetir.
 - **Flashcards** com resposta que se revela, em cada módulo.
-- **Conquistas:** 69 conquistas (inclui as 8 do sistema de aprendizado, as das campanhas e do modo Arquiteto, e uma secreta), com brasões em SVG, filtros, progresso real e detalhes. Veja [Aprendizado interativo e conquistas](#aprendizado-interativo-e-conquistas).
+- **Conquistas:** 69 conquistas (inclui as 8 do sistema de aprendizado, as das campanhas e do modo Arquiteto, e uma secreta), com brasões em SVG, filtros, progresso real e detalhes. Veja [Aprendizado interativo e conquistas](#conquistas).
 - **Em breve:** página com o que está por vir (Engenharia reversa e preparação para a CompTIA SecurityX, entre outros), sem datas inventadas. O módulo de Engenharia reversa já está disponível por **desbloqueio imediato de 5.000 moedas** ou de graça, concluindo os módulos recomendados.
 - **XP e níveis:** pontos pelas atividades registradas e pelos exercícios. Repetir uma atividade nunca soma XP de novo.
 - **Medalhas e conquistas:** quatro níveis (bronze, prata, ouro e dragão), por leitura, pesquisa, prática, questões, módulos, trilhas, laboratório, cenários, desafios, chefes, dias seguidos, revisões, missões, escudos e recompensas. Cada uma dá XP bônus uma única vez (10, 20, 40 e 100 XP) e as bloqueadas mostram quanto falta.
 - **Evolução por trilha:** cada trilha (Fundamentos, Ataques e defesa, Governança e Regulação) mostra XP, módulos e tarefas concluídas, com medalha bronze a partir de 40%, prata a partir de 70% e ouro aos 100%.
 - **Pontos de melhoria:** sugestões calculadas pelo progresso: questões ainda não acertadas, módulos quase concluídos, o próximo módulo com pré-requisitos em dia, o laboratório e os cenários pendentes.
-- **Missões do dia, moedas, loja e revisão com vidas:** veja [Mecânicas de jogo](#mecânicas-de-jogo).
+- **Missões do dia, moedas, loja e revisão com vidas:** veja [Mecânicas de jogo](#jogo).
 - **Quiz:** perguntas de múltipla escolha com correção e explicações.
 - **Cenários de remediação:** situações fictícias organizadas por porte de empresa, com alternativas de solução e feedback.
+- **⏳ Horas e dias de estudo:** na página inicial, o tempo medido ao todo, o tempo de hoje, os dias com atividade registrada e o recorde de dias seguidos. O relógio soma um minuto por vez, só com a aba à frente e com interação recente, no máximo 10 h por dia — aba esquecida aberta não vira hora de estudo. Tudo fica no navegador e entra no backup.
 - **Anotações e progresso:** armazenamento local no navegador.
 - **Ferramentas e pentest de LLMs:** material textual com exemplos técnicos e situações do cotidiano.
-- **Identidade gótica moderna, "Forja Dracônica" (Dark Tech)**, com onze temas de cor (três gratuitos e oito na loja), interface responsiva e respeito à preferência do sistema por menos movimento. Veja [Identidade visual](#identidade-visual-forja-dracônica).
+- **Identidade gótica moderna, "Forja Dracônica" (Dark Tech)**, com onze temas de cor (três gratuitos e oito na loja), interface responsiva e respeito à preferência do sistema por menos movimento. Veja [Identidade visual](#identidade).
 
 > Os cenários são exercícios educacionais de decisão. O projeto não provisiona máquinas virtuais nem executa ataques, ferramentas de pentest ou ambientes vulneráveis.
 
-## Aprendizado interativo e conquistas
+<a id="conquistas"></a>
 
-A direção visual é a de um gótico moderno em linhas de circuito (veja [Identidade visual](#identidade-visual-forja-dracônica)), com medalhas em forma de brasão e identidade própria: nenhum nome, imagem, fonte, som ou arte de jogos ou da Steam foi copiado. Os ícones são SVG (Lucide, com crédito, e relíquias desenhadas para o projeto) e os estados nunca dependem só da cor.
+## 🏅 Aprendizado interativo e conquistas
+
+A direção visual é a de um gótico moderno em linhas de circuito (veja [Identidade visual](#identidade)), com medalhas em forma de brasão e identidade própria: nenhum nome, imagem, fonte, som ou arte de jogos ou da Steam foi copiado. Os ícones são SVG (Lucide, com crédito, e relíquias desenhadas para o projeto) e os estados nunca dependem só da cor.
 
 **Onde fica cada coisa**
 
@@ -97,7 +124,9 @@ A direção visual é a de um gótico moderno em linhas de circuito (veja [Ident
 
 Regras, dados salvos e como acrescentar conquistas ou desafios: [docs/APRENDIZADO-E-CONQUISTAS.md](docs/APRENDIZADO-E-CONQUISTAS.md).
 
-## Identidade visual: Forja Dracônica
+<a id="identidade"></a>
+
+## 🎨 Identidade visual: Forja Dracônica
 
 Um gótico moderno, "Dark Tech": uma catedral desenhada em linhas de circuito, com preto absoluto, titânio fosco, vidro fumado, vermelho-brasa e ouro anodizado. Usa linhas de 1 px, cantos chanfrados e títulos nítidos, sem pergaminho nem madeira. A atmosfera lembra os soulslike, mas toda a arte é original, feita em CSS e SVG. Nenhum personagem, logotipo, trilha sonora ou asset de franquias foi usado.
 
@@ -113,7 +142,9 @@ Um gótico moderno, "Dark Tech": uma catedral desenhada em linhas de circuito, c
 
 Tokens, componentes e regras de uso: [docs/IDENTIDADE-VISUAL.md](docs/IDENTIDADE-VISUAL.md).
 
-## Mecânicas de jogo
+<a id="jogo"></a>
+
+## 🎮 Mecânicas de jogo
 
 Inspiradas em apps de aprendizado como o Duolingo e em Habitica, mas escritas do zero (nenhum código nem arte foi copiado). Tudo funciona no navegador, sem conta e sem servidor.
 
@@ -126,12 +157,14 @@ Inspiradas em apps de aprendizado como o Duolingo e em Habitica, mas escritas do
 | **Injetor de Cinzas** | Troca uma missão do dia por outra de recompensa equivalente: 10 moedas, uma vez por dia. |
 | **Núcleo de LLM Exilado** | Desbloqueio imediato de módulo restrito (hoje, a Engenharia Reversa): 5.000 moedas. |
 | **Temas** | Forja Dracônica (padrão), Biblioteca dos Condenados e Dragão são gratuitos. Ciano e Arcano custam 40 moedas, os da sala de troféus de 60 a 100, e Código de Sangue e Catedral de Silício 90. |
-| **Dificuldade** | Soulslike (padrão, valores originais), Difícil (×10), Médio (×20) e Fácil (×30) no XP das conquistas e nas moedas recebidas. No app Android, o modo deus edita esses valores e os preços. Veja [Dificuldade e modo deus](#dificuldade-e-modo-deus). |
+| **Dificuldade** | Soulslike (padrão, valores originais), Difícil (×10), Médio (×20) e Fácil (×30) no XP das conquistas e nas moedas recebidas. No app Android, o modo deus edita esses valores e os preços. Veja [Dificuldade e modo deus](#dificuldade). |
 | **Recompensas pessoais** | Prêmios que você cria (um café, uma pausa) e resgata com moedas. O resgate é por conta e confiança. |
 
 Ligas e placares ficaram de fora: exigiriam contas e um servidor.
 
-## Dificuldade e modo deus
+<a id="dificuldade"></a>
+
+## 💀 Dificuldade e modo deus
 
 O padrão é **Soulslike**: os valores de sempre. No app Android, em **Configurações** (`#/configuracoes`), dá para escolher outra dificuldade:
 
@@ -158,7 +191,9 @@ O que você mudar fica fixo, e o resto acompanha a dificuldade. "Restaurar valor
 
 A escolha fica no progresso deste aparelho e entra no backup. Um estado sem dificuldade salva continua igual ao de antes. No navegador, a página só mostra o modo atual: o editor existe apenas no app.
 
-## Acesso antecipado e página Em breve
+<a id="acesso-antecipado"></a>
+
+## 🔓 Acesso antecipado e página Em breve
 
 A página **Em breve** (`#/em-breve`) mostra o que está por vir em três situações: *acesso antecipado* (já está no site), *em planejamento* e *ideia em avaliação*. Ela não promete datas, não mostra porcentagem de andamento e não inventa números de usuários. Hoje lista a **Engenharia reversa para defensores** (já disponível em acesso antecipado), a **preparação para a CompTIA SecurityX** (exame CAS-005; conteúdo independente, sem vínculo com a CompTIA), a segurança de agentes e servidores MCP e a resposta a incidentes com IA.
 
@@ -173,15 +208,26 @@ Enquanto está fechado, o módulo mostra só uma prévia dos assuntos. Depois de
 
 O conteúdo é defensivo: laboratório isolado, autorização, análise de aplicativos e de arquivos de modelo que você tem direito de examinar, e como corrigir o que se encontra. Não traz instruções para violar proteções de software de terceiros.
 
-## Executar localmente
+```text
+   .---------------------.
+   | o o o               |     O terminal também tem desenho:
+   |---------------------|     `npm run arte` sorteia um a cada vez.
+   |  $ npm run dev      |
+   |  _                  |
+   '---------------------'
+```
 
-### Requisito
+<a id="executar"></a>
+
+## 🧪 Executar localmente
+
+### 📋 Requisito
 
 Python **3.8 ou superior**. Não é necessário instalar pacotes adicionais nem ter Node.js: a pasta `dist/` já traz o site gerado.
 
 Baixe o pacote, extraia todos os arquivos e abra um terminal na pasta que contém `iniciar.py`.
 
-### Windows
+### 🪟 Windows
 
 ```powershell
 .\iniciar-windows.bat
@@ -193,7 +239,7 @@ Ou diretamente com Python:
 py -3 iniciar.py
 ```
 
-### Linux e macOS
+### 🐧 Linux e macOS
 
 ```bash
 sh iniciar-linux-mac.sh
@@ -209,7 +255,7 @@ O servidor escuta em **0.0.0.0:8080** e mostra os endereços IP do computador. O
 
 > Abrir `dist/index.html` com dois cliques (endereço `file://`) não funciona: os navegadores bloqueiam módulos JavaScript fora de um servidor. Use o iniciador.
 
-### Opções
+### 🎛️ Opções
 
 ```bash
 python3 iniciar.py --porta 8081        # se a porta estiver ocupada
@@ -219,7 +265,20 @@ python3 iniciar.py --host 127.0.0.1    # opcional: acesso somente neste computad
 
 No Windows, substitua `python3` por `py -3`. O servidor aceita conexões da rede local. No Windows, permita o Python no firewall somente em redes privadas. Use uma rede confiável: não há autenticação e não é necessário abrir portas no roteador. Se o terminal listar IPs de VPN ou adaptadores virtuais, escolha o IPv4 do Wi-Fi/Ethernet (consulte `ipconfig`). Redes de convidados podem bloquear a comunicação entre aparelhos. Depois de instalar Python e baixar os arquivos, tudo funciona sem internet (a fonte e o motor das animações vão junto do site).
 
-## App Android (APK)
+```text
+   .-------------.
+   | ###   ###   |    O mesmo site, empacotado: o conteúdo inteiro
+   | ###   ###   |    vai dentro do APK e funciona sem internet.
+   |   .-----.   |
+   |   | /_\ |   |
+   |   '-----'   |
+   |      o      |
+   '-------------'
+```
+
+<a id="android"></a>
+
+## 📱 App Android (APK)
 
 O site também vira um app Android: um WebView em Java puro, sem bibliotecas de terceiros, que leva o site inteiro dentro do APK. Funciona sem internet e guarda o progresso no próprio aparelho. O projeto fica em `android/`.
 
@@ -244,7 +303,9 @@ O APK permanece independente do servidor do computador: o acesso pela rede local
 - Com Android Studio ou Gradle: `npm run build`, depois `cd android && ./gradlew assembleDebug` (a tarefa `copyWeb` copia `dist/` para dentro do app). O APK sai em `android/app/build/outputs/apk/debug/`.
 - Sem Gradle: `npm run build && sh scripts/build-apk.sh`, com as variáveis `ANDROID_JAR`, `AAPT2`, `ZIPALIGN`, `D8_JAR`, `APKSIGNER_JAR` e `KEYSTORE` apontando para as ferramentas do Android SDK (veja o cabeçalho do script).
 
-## Desenvolvimento
+<a id="desenvolvimento"></a>
+
+## 🛠️ Desenvolvimento
 
 Requer **Node.js 20.19+ ou 22.12+**.
 
@@ -258,7 +319,19 @@ npm run build      # verifica os tipos e gera o site em dist/
 
 A pasta `dist/` é versionada de propósito, para que `iniciar.py` funcione sem Node. **Depois de alterar o código-fonte, rode `npm run build` e inclua `dist/` no commit.**
 
-### Pilha
+### 🎭 Desenho no terminal
+
+`npm run arte` sorteia uma das nove figuras em ASCII — hacker, cadeado, chave, escudo, inseto, terminal, dragão, caveira e fogueira — com uma inscrição curta de cada vez. O mesmo desenho aparece sozinho antes de `npm run dev`, pelo gancho `predev`.
+
+```sh
+npm run arte            # sorteia
+npm run arte -- chave   # escolhe pelo nome
+npm run arte -- --lista # mostra os nomes
+```
+
+Tudo é desenho original, com no máximo 46 colunas. A cor sai só quando o terminal aceita: com `NO_COLOR`, `TERM=dumb` ou saída redirecionada, o texto vai puro. O arquivo é `scripts/arte.mjs`, e os testes dele estão em `scripts/arte.test.mjs`.
+
+### 🧱 Pilha
 
 | Peça | Uso |
 | --- | --- |
@@ -271,7 +344,7 @@ A pasta `dist/` é versionada de propósito, para que `iniciar.py` funcione sem 
 | [React Bits](https://reactbits.dev) | Dois componentes em `src/components/reactbits`: contador animado e cartão com destaque. |
 | [Fontsource](https://fontsource.org) | Cinzel, Inter e JetBrains Mono empacotadas com o site (SIL OFL 1.1), só os subconjuntos latinos. |
 
-### Estrutura
+### 📁 Estrutura
 
 | Pasta ou arquivo | Finalidade |
 | --- | --- |
@@ -286,7 +359,9 @@ A pasta `dist/` é versionada de propósito, para que `iniciar.py` funcione sem 
 | `src/styles/` | `gothic.css` (tokens e componentes visuais) e `fonts.css` (fontes empacotadas). |
 | `docs/` | Notas de projeto, como [adicionar conteúdo](docs/COMO-ADICIONAR-CONTEUDO.md), a [identidade visual](docs/IDENTIDADE-VISUAL.md) e as [referências](docs/REFERENCIAS.md). |
 
-## Como adicionar conteúdo
+<a id="conteudo-novo"></a>
+
+## ✍️ Como adicionar conteúdo
 
 O passo a passo está em [docs/COMO-ADICIONAR-CONTEUDO.md](docs/COMO-ADICIONAR-CONTEUDO.md). Em resumo:
 
@@ -298,7 +373,20 @@ O passo a passo está em [docs/COMO-ADICIONAR-CONTEUDO.md](docs/COMO-ADICIONAR-C
 
 Os testes conferem a estrutura, os dados sintéticos, as referências a frameworks e se cada missão e projeto tem uma solução possível.
 
-## Progresso e privacidade
+```text
+      .-------.
+    .'         '.      O progresso é seu e fica no seu aparelho:
+   /   .-----.   \     nada sai do navegador, nada vai para servidor.
+  |   |       |   |
+.-+---+-------+---+-.
+|        .---.      |
+|        | o |      |
+'--------'-|-'------'
+```
+
+<a id="privacidade"></a>
+
+## 🔒 Progresso e privacidade
 
 O progresso fica no `localStorage` do navegador. Não há conta de usuário, banco de dados remoto ou sincronização entre dispositivos.
 
@@ -314,7 +402,7 @@ O progresso fica no `localStorage` do navegador. Não há conta de usuário, ban
 - **Fuso horário:** os dias de estudo e a sequência usam o fuso do navegador. Viajar ou mudar o fuso do sistema pode mover o limite do dia.
 - O progresso, o XP e as conquistas ficam no navegador e podem ser editados por quem tem acesso a ele: servem ao seu acompanhamento, não como prova de aprendizado. Pesquisa e prática são autodeclaradas.
 
-## Uso educacional
+## 🎓 Uso educacional
 
 A seção de pentest exige digitar **"me responsabilizo"** antes de exibir o material. Essa confirmação é apenas uma etapa da interface, não um mecanismo de autenticação ou proteção dos arquivos.
 
@@ -322,13 +410,15 @@ Os exemplos destinam-se ao estudo defensivo e à discussão de mitigação. Qual
 
 Os resumos sobre normas, leis e frameworks são materiais de apoio, não substituem os documentos oficiais nem constituem certificação ou parecer jurídico.
 
-## Contribuições
+## 🤝 Contribuições
 
 Sugestões de melhoria, correções de conteúdo e novos cenários educacionais são bem-vindos por issues e pull requests.
 
 Ao propor uma alteração, descreva o problema, a solução e como verificar o resultado. Use dados fictícios nos exemplos e não inclua credenciais, dados pessoais ou informações internas de empresas.
 
-## Créditos e licenças
+<a id="creditos"></a>
+
+## 📜 Créditos e licenças
 
 - **Bibliotecas:** shadcn/ui, daisyUI, Motion, Rive, Tailwind CSS, Radix UI, Lucide, Sonner e React Router são MIT/ISC; as fontes Cinzel, Inter e JetBrains Mono são SIL OFL 1.1. A página **Referências** do site lista cada uma com a licença.
 - **React Bits** usa MIT + Commons Clause. Os dois componentes copiados estão dentro do app, o que a licença permite; ela **não** permite revender nem redistribuir os componentes isoladamente. O aviso completo está em `src/components/reactbits/LICENSE.md`.
@@ -336,7 +426,7 @@ Ao propor uma alteração, descreva o problema, a solução e como verificar o r
 - **Frameworks citados:** as edições e os itens estão em `src/data/frameworks.ts`, cada um com o endereço oficial e a data da conferência. O MITRE ATLAS foi conferido na versão 2026.09 (dados publicados em [mitre-atlas/atlas-data](https://github.com/mitre-atlas/atlas-data)).
 - OWASP, MITRE ATLAS, NIST, ISO/IEC e Kali Linux são referências ou marcas de seus respectivos responsáveis. Este é um projeto educacional independente, sem indicação de afiliação ou endosso dessas organizações.
 
-## Sala de troféus e relíquias
+## 🏆 Sala de troféus e relíquias
 
 Acesse `#/sala-de-trofeus` pelo menu Jogo ou pela loja.
 - Dez relíquias cosméticas, com compra única, história e prévia. Não concedem XP. As novas são a Espada Negra da IA (90 moedas) e o Montante Envenenado (80 moedas, do tema envenenamento de dados).
@@ -349,7 +439,7 @@ Acesse `#/sala-de-trofeus` pelo menu Jogo ou pela loja.
 
 O progresso de localhost não aparece automaticamente em outro endereço. Exporte em Conquistas e importe no novo endereço para transferi-lo.
 
-## Sons do Santuário e fogueira
+## 🔊 Sons do Santuário e fogueira
 
 O painel abaixo do cabeçalho reúne música pessoal e efeitos originais gerados no aparelho, sem downloads externos. **Ativar efeitos** habilita sons de seleção, XP, compras, vitórias e conquistas; **Ouvir fogueira** liga um ambiente suave de lenha. Os volumes são independentes da música. Os efeitos começam desligados na primeira visita; a preferência fica salva. O ambiente nunca começa automaticamente e pausa ao ocultar a página.
 
@@ -357,13 +447,13 @@ Em **Carregar minha música**, importe um áudio local de até 170 MB (MP3 recom
 
 A fogueira da página inicial é um prisma digital com chama geométrica, arte original desenhada no altar, abaixo da rosácea do vitral, sem cobri-la. A animação respeita movimento reduzido e pausa com a página oculta. Em telas intermediárias, em que o texto fica sobre o vitral, ela é ocultada para preservar a leitura. Sons de conquista são emitidos a partir de resultados reais de ações, sem reproduzir conquistas antigas ao carregar um backup. A implementação funciona offline no site empacotado; não oferece áudio em segundo plano. A seleção de arquivos e codecs ainda precisa ser validada em Android físico.
 
-### DAS visual e fogueira do santuário
+### 🔥 DAS visual e fogueira do santuário
 
 Os 13 projetos do Modo Arquiteto exibem um Desenho de Arquitetura de Segurança na etapa Projeto. Os componentes e fluxos vêm do próprio exercício; zonas tracejadas mostram fronteiras de confiança. Selecione um componente por toque ou teclado para destacar conexões e ler seu contexto. No celular, o mapa pode ser rolado horizontalmente. O DAS representa o cenário a revisar, sem antecipar o gabarito da avaliação.
 
 A fogueira é uma ilustração SVG original, com cavaleiro descansando, Arauto Esmeralda (interpretação vetorial de Dark Souls II), espada, chama translúcida, fumaça e brasas. A veste da Arauto e o escudo reutilizam o mesmo brasão de dragões do site. Funciona offline, pausa ao ocultar a página e respeita a preferência de movimento reduzido.
 
-### Dez novos exercícios de arquitetura
+### 🏛️ Dez novos exercícios de arquitetura
 
 Na página `#/arquiteto`, os novos projetos incluem DAS interativo, seis componentes, três ameaças críticas, duas ameaças residuais e três distratores. Cada caso oferece duas soluções comentadas, orçamento de 12 pontos, limite de complexidade 9, ADR e plano de validação. Os pontos são didáticos.
 
@@ -380,6 +470,6 @@ Na página `#/arquiteto`, os novos projetos incluem DAS interativo, seis compone
 | Análise sem uma cópia de todos os segredos | Minimização e exportação de dados |
 | A porta de manutenção temporária | Privilégios temporários e sessões |
 
-### Ambiente de foco: fogueira e mar
+### 🌊 Ambiente de foco: fogueira e mar
 
 No player do santuário, abra **Refúgio à beira-mar** e use **Foco: fogueira + mar**. O preset mistura chama baixa e ondas lentas, desliga os efeitos de menus e conquistas e permite ajustar separadamente os volumes de mar e fogueira. O áudio é sintetizado localmente, sem downloads ou trilha do jogo. Tem transições suaves, pausa ao ocultar a página e não retoma automaticamente. Preferências de volume são salvas, mas a reprodução exige ativação. A música importada no player continua independente; pause-a se quiser apenas o ambiente.
