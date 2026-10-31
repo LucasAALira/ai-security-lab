@@ -9,6 +9,8 @@
   },
   "scripts": {
     "dev": "vite",
+    "predev": "node scripts/arte.mjs",
+    "arte": "node scripts/arte.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
