@@ -14,7 +14,7 @@ function unlockingByCard(sound: boolean): [ApplyResult, Action] {
   const now = new Date(2026, 9, 16, 12)
   const state = emptyState()
   state.prefs.sound = sound
-  state.study = { last: '2026-10-15', current: 6, best: 6 }
+  state.study = { ...state.study, last: '2026-10-15', current: 6, best: 6, total: 6 }
   const action: Action = { type: 'card', id: 'm0-c1', known: true }
   return [applyAction(state, action, progressContext, now), action]
 }

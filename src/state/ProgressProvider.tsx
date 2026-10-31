@@ -12,6 +12,7 @@ import {
   medals,
   nextObjective,
   streakStatus,
+  studyMinutesToday,
   summary,
   trackProgress,
   trail,
@@ -30,6 +31,7 @@ import {
   type TrailModule,
 } from '@/lib/progress'
 import { browserStorage, createProgressStore, type ProgressStore } from './progress-store'
+import { useStudyClock } from './use-study-clock'
 
 export { progressContext }
 
@@ -47,6 +49,8 @@ export interface Derived {
   canReview: boolean
   /** Dias reais seguidos de estudo (sem escudos). */
   studyDays: number
+  /** Tempo medido com o site em uso e dias com alguma atividade. */
+  studyTime: { minutes: number; today: number; days: number }
   trail: TrailModule[]
   /** O próximo objetivo real da trilha. */
   objective: Objective
@@ -79,6 +83,7 @@ export function derive(state: StudyState, ctx: ProgressContext, now: Date): Deri
     streakStatus: streakStatus(state, now),
     canReview: canReview(state),
     studyDays: activeStudyDays(state, now),
+    studyTime: { minutes: state.study.minutes, today: studyMinutesToday(state, now), days: state.study.total },
     trail: trail(state, ctx),
     objective: nextObjective(state, ctx),
   }
@@ -124,6 +129,7 @@ export function ProgressProvider({ children, store: injected }: { children: Reac
   // `today` entra nas dependências para recalcular missões e sequência na virada do dia.
   const derived = useMemo(() => derive(state, progressContext, new Date()), [state, today])
   const dispatch = useCallback((action: Action) => store.dispatch(action), [store])
+  useStudyClock(dispatch)
   const value = useMemo<ProgressValue>(
     () => ({ store, state, ctx: progressContext, storageOk, today, derived, dispatch }),
     [store, state, storageOk, today, derived, dispatch],

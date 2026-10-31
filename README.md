@@ -77,6 +77,7 @@ As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dent
 - **Missões do dia, moedas, loja e revisão com vidas:** veja [Mecânicas de jogo](#jogo).
 - **Quiz:** perguntas de múltipla escolha com correção e explicações.
 - **Cenários de remediação:** situações fictícias organizadas por porte de empresa, com alternativas de solução e feedback.
+- **⏳ Horas e dias de estudo:** na página inicial, o tempo medido ao todo, o tempo de hoje, os dias com atividade registrada e o recorde de dias seguidos. O relógio soma um minuto por vez, só com a aba à frente e com interação recente, no máximo 10 h por dia — aba esquecida aberta não vira hora de estudo. Tudo fica no navegador e entra no backup.
 - **Anotações e progresso:** armazenamento local no navegador.
 - **Ferramentas e pentest de LLMs:** material textual com exemplos técnicos e situações do cotidiano.
 - **Identidade gótica moderna, "Forja Dracônica" (Dark Tech)**, com onze temas de cor (três gratuitos e oito na loja), interface responsiva e respeito à preferência do sistema por menos movimento. Veja [Identidade visual](#identidade).

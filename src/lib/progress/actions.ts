@@ -13,6 +13,7 @@ import {
   MODULE_COUNT,
   QUESTIONS_PER_MODULE,
   READS_PER_MODULE,
+  STUDY_CLOCK,
 } from './constants'
 import { coinBalance } from './coins'
 import { isModuleComplete, levelFor, trackProgress } from './core'
@@ -21,7 +22,7 @@ import { logEvent } from './events'
 import { recordMedals, summary } from './medals'
 import { rollDay, settleQuests, type ChestEvent, type QuestEvent } from './quests'
 import { canReview } from './review'
-import { touchStreak, touchStudy } from './streak'
+import { tickStudyClock, touchStreak, touchStudy } from './streak'
 import { emptyBoss, emptyChallenge } from './state'
 import { isChallengeOpen, isModuleUnlocked } from './trail'
 import { mutateMission, type MissionAction } from './mission-actions'
@@ -72,6 +73,9 @@ export type Action =
   /** Marca um flashcard como sabido ou para revisar. Não rende XP. */
   | { type: 'card'; id: string; known: boolean }
   | { type: 'setSound'; on: boolean }
+  /** Minuto(s) de uso medidos pelo relógio da interface. Soma tempo de estudo e nada mais:
+   *  não rende XP, não cumpre missão e não conta dia de estudo nem sequência. */
+  | { type: 'studyTick'; minutes?: number }
   | MissionAction
   | ArchitectAction
 
@@ -398,6 +402,9 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
     case 'architectReset':
       return mutateArchitect(s, action, ctx, now)
 
+    case 'studyTick':
+      return tickStudyClock(s, now, action.minutes ?? STUDY_CLOCK.tick) ? { changed: true } : nothing
+
     case 'setSound':
       if (typeof action.on !== 'boolean' || s.prefs.sound === action.on) return nothing
       s.prefs.sound = action.on
@@ -502,6 +509,9 @@ export function applyAction(state: StudyState, action: Action, ctx: ProgressCont
 
   // Trocar a dificuldade recalcula valores, mas não é estudo: não conta como XP do dia, não cumpre
   // missões nem rende baú. Só registra a data das conquistas que passarem a valer.
+  // O relógio só soma minutos: nada de XP, missão, baú ou dia de estudo.
+  if (action.type === 'studyTick') return { state: draft, events: [], changed: true }
+
   if (action.type === 'setEconomy') {
     recordMedals(draft, ctx, dayKey(now))
     return { state: draft, events: [], changed: true }

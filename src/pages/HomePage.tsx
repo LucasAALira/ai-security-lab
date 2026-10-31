@@ -11,13 +11,14 @@ import { PentestSection } from '@/components/home/PentestSection'
 import { RemediationSection } from '@/components/home/RemediationSection'
 import { RequirementsSection } from '@/components/home/RequirementsSection'
 import { StatsRow } from '@/components/home/StatsRow'
+import { StudyTimeSection } from '@/components/home/StudyTimeSection'
 import { TasksSection } from '@/components/home/TasksSection'
 import { remediationCases } from '@/data/scenarios'
 import type { CompanySize } from '@/data/types'
 import { useDocumentTitle } from '@/lib/use-document-title'
 
 /** Seções que os links de navegação (`/?secao=...`) sabem alcançar. */
-export const HOME_SECTIONS = ['inicio', 'areas', 'hoje', 'relicario', 'tarefas', 'medalhas', 'requisitos', 'trilhas', 'laboratorio', 'cenarios', 'pentest', 'fontes'] as const
+export const HOME_SECTIONS = ['inicio', 'areas', 'hoje', 'tempo', 'relicario', 'tarefas', 'medalhas', 'requisitos', 'trilhas', 'laboratorio', 'cenarios', 'pentest', 'fontes'] as const
 
 export function HomePage() {
   useDocumentTitle()
@@ -46,6 +47,7 @@ export function HomePage() {
       <SanctuaryHero />
       <AreasSection />
       <DailyPanel />
+      <StudyTimeSection />
       <RecentRelics />
       <StatsRow />
       <TasksSection onPickTrack={(track) => setFilter(track as ModuleFilter)} onOpenCase={openCase} />

@@ -15,6 +15,7 @@ import {
   QUESTIONS_PER_MODULE,
   READS_PER_MODULE,
   STORAGE_KEY,
+  STUDY_CLOCK,
 } from './constants'
 import { isDayKey } from './dates'
 import type { ThemeId } from './catalog'
@@ -347,11 +348,18 @@ export function cleanState(raw: unknown): StudyState {
   const rawStudy = at(raw, 'study')
   const studyLast = day(at(rawStudy, 'last'))
   const studyCurrent = small(at(rawStudy, 'current'))
+  // Total de dias e tempo medido entraram depois: estados antigos começam do que der para afirmar.
+  const relogio = {
+    total: Math.max(natural(at(rawStudy, 'total'), STUDY_CLOCK.total), studyCurrent, studyLast ? 1 : 0),
+    minutes: natural(at(rawStudy, 'minutes'), STUDY_CLOCK.total),
+    clockDay: day(at(rawStudy, 'clockDay')),
+    minutesToday: natural(at(rawStudy, 'minutesToday'), STUDY_CLOCK.perDay),
+  }
   const study: StudyState['study'] = isObject(rawStudy)
-    ? { last: studyLast, current: studyCurrent, best: Math.max(small(at(rawStudy, 'best')), studyCurrent) }
+    ? { last: studyLast, current: studyCurrent, best: Math.max(small(at(rawStudy, 'best')), studyCurrent), ...relogio }
     : streak.shieldUsed
-      ? { last: streak.last, current: streak.last ? 1 : 0, best: streak.last ? 1 : 0 }
-      : { last: streak.last, current: streak.current, best: streak.best }
+      ? { last: streak.last, current: streak.last ? 1 : 0, best: streak.last ? 1 : 0, ...relogio, total: Math.max(relogio.total, streak.last ? 1 : 0) }
+      : { last: streak.last, current: streak.current, best: streak.best, ...relogio, total: Math.max(relogio.total, streak.current) }
 
   const challenges: StudyState['challenges'] = {}
   const rawChallenges = at(raw, 'challenges')
