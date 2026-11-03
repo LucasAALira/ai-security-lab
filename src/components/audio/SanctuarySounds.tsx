@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useProgress } from '@/state/ProgressProvider'
-import { audioLevel, cueFor, Soundscape } from '@/lib/audio/soundscape'
+import { audioLevel, cueFor, menuCue, Soundscape } from '@/lib/audio/soundscape'
 const KEY = 'asl-soundscape'
 function initial() {
   try {
@@ -28,7 +28,7 @@ export function SanctuarySounds() {
       void sound.unlock().then(() => {
         if (document.hidden || engine.current !== sound) return
         sound.volumes(current.current.effectVolume, current.current.fireVolume, current.current.seaVolume)
-        clearTimeout(clickTimer); clickTimer = setTimeout(() => sound.cue('select'), 50)
+        clearTimeout(clickTimer); clickTimer = setTimeout(() => sound.cue(menuCue(target)), 50)
       }).catch(() => setError('Áudio indisponível neste dispositivo.'))
     }
     const unsubscribe = store.onResult(result => {
@@ -88,7 +88,7 @@ export function SanctuarySounds() {
     <label className="sanctuary-volume">Mar<input aria-label="Volume do mar" type="range" min="0" max="1" step="0.01" value={prefs.seaVolume} onChange={e => setPrefs(p => ({ ...p, seaVolume: +e.target.value }))} /></label>
     <div className="sanctuary-controls"><button type="button" disabled={busy} aria-pressed={prefs.effects} onClick={() => void enable('effects')}>{prefs.effects ? 'Desativar efeitos' : 'Ativar efeitos'}</button></div>
     <label className="sanctuary-volume">Efeitos<input aria-label="Volume dos efeitos" type="range" min="0" max="1" step="0.01" value={prefs.effectVolume} onChange={e => setPrefs(p => ({ ...p, effectVolume: +e.target.value }))} /></label>
-    <p className="sanctuary-note">O preset Foco desativa os efeitos de menus e conquistas. Sons ambientes originais, sem música, com entrada e saída suaves. Funcionam offline e pausam ao ocultar a página. Seus volumes ficam salvos; a reprodução só começa ao ativar.</p>
+    <p className="sanctuary-note">Com os efeitos ligados, cada ação tem seu toque: menus e botões de voltar, item guardado, compra, conquista e a fanfarra de chefe derrotado — impacto, coral e sino, com a reverberação da nave. O preset Foco desativa esses efeitos. Todos os sons são sintetizados na hora pelo próprio site, nota por nota: não há arquivo de áudio no projeto e nada foi copiado de trilhas de jogos. Funcionam offline, pausam ao ocultar a página e só começam quando você ativa.</p>
     <p role="status" className="sanctuary-note">{error || (fire || sea ? `Ambiente ativo: ${[fire && 'fogueira', sea && 'mar'].filter(Boolean).join(' e ')}.` : 'Ambiente pausado.')}</p>
   </fieldset>
 }

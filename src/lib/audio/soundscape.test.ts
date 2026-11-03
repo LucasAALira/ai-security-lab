@@ -7,13 +7,19 @@ describe('sound selection from actual progress results', () => {
     expect(cueFor(result([{ kind: 'xp', amount: 10 }], false))).toBeNull()
     expect(cueFor(result([]))).toBeNull()
   })
-  it('plays purchase only on successful purchase', () => {
-    expect(cueFor(result([{ kind: 'purchase', item: 'relic', name: 'Relíquia' }]))).toBe('purchase')
+  it('plays purchase only on successful purchase, and items sound like items', () => {
+    expect(cueFor(result([{ kind: 'purchase', item: 'relic', name: 'Relíquia' }]))).toBe('item')
+    expect(cueFor(result([{ kind: 'purchase', item: 'room', name: 'Sala' }]))).toBe('item')
+    expect(cueFor(result([{ kind: 'purchase', item: 'shield', name: 'Escudo' }]))).toBe('purchase')
+    expect(cueFor(result([{ kind: 'redeem', title: 'Café', price: 10 }]))).toBe('purchase')
     expect(cueFor(result([], false))).toBeNull()
   })
-  it('prioritizes one victory over the XP in the same event', () => {
-    expect(cueFor(result([{ kind: 'xp', amount: 30 }, { kind: 'boss', module: 0, flawless: true, first: true }]))).toBe('victory')
+  it('gives the defeated boss its own fanfare, above the medal it unlocks', () => {
+    expect(cueFor(result([{ kind: 'xp', amount: 30 }, { kind: 'boss', module: 0, flawless: true, first: true }]))).toBe('boss')
+    expect(cueFor(result([{ kind: 'boss', module: 0, flawless: true, first: true }, { kind: 'medal', medal: { id: 'x' } as never }]))).toBe('boss')
+    // Repetir um chefe já vencido não rende fanfarra (nem XP).
     expect(cueFor(result([{ kind: 'boss', module: 0, flawless: true, first: false }]))).toBeNull()
+    expect(cueFor(result([{ kind: 'xp', amount: 30 }, { kind: 'mission', mission: 'm1', passed: true }]))).toBe('victory')
   })
   it('handles XP and retry without victory', () => {
     expect(cueFor(result([{ kind: 'xp', amount: 5 }]))).toBe('xp')

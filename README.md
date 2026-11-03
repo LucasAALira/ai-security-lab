@@ -77,6 +77,7 @@ As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dent
 - **Missões do dia, moedas, loja e revisão com vidas:** veja [Mecânicas de jogo](#jogo).
 - **Quiz:** perguntas de múltipla escolha com correção e explicações.
 - **Cenários de remediação:** situações fictícias organizadas por porte de empresa, com alternativas de solução e feedback.
+- **🛡️ O cavaleiro do santuário:** a figura ao lado da fogueira, no topo da página inicial, é quem está estudando. Começa descalço, de faca na mão, e veste nove peças ao longo do caminho — umas por XP acumulado, outras pelo que você compra na loja. Veja [O cavaleiro e sua armadura](#cavaleiro).
 - **⏳ Horas e dias de estudo:** na página inicial, o tempo medido ao todo, o tempo de hoje, os dias com atividade registrada e o recorde de dias seguidos. O relógio soma um minuto por vez, só com a aba à frente e com interação recente, no máximo 10 h por dia — aba esquecida aberta não vira hora de estudo. Tudo fica no navegador e entra no backup.
 - **Anotações e progresso:** armazenamento local no navegador.
 - **Ferramentas e pentest de LLMs:** material textual com exemplos técnicos e situações do cotidiano.
@@ -319,6 +320,50 @@ npm run build      # verifica os tipos e gera o site em dist/
 
 A pasta `dist/` é versionada de propósito, para que `iniciar.py` funcione sem Node. **Depois de alterar o código-fonte, rode `npm run build` e inclua `dist/` no commit.**
 
+<a id="cavaleiro"></a>
+
+### 🛡️ O cavaleiro e sua armadura
+
+A figura ao lado da fogueira é a sua. Ela muda sozinha conforme o progresso, e o topo da página inicial diz em texto quem ela é e o que falta para a próxima peça (`Andarilho · 1 de 9 peças · próxima: Botas de couro`). A lista completa, com a história de cada peça, fica na loja, em **A armadura do cavaleiro**.
+
+| Peça | Como se conquista |
+| --- | --- |
+| 🔪 Faca de sílex | Você já começa com ela |
+| 🥾 Botas de couro | 250 XP |
+| 🦿 Grevas de aço | 800 XP |
+| 💪 Braçadeiras | Comprar uma relíquia |
+| 🛡️ Peitoral | 2.000 XP |
+| 🪪 Escudo de silício | Comprar um Escudo de Silício |
+| 🧣 Manto do santuário | Comprar um tema (os gratuitos não contam) |
+| ⛑️ Elmo | 4.000 XP |
+| ⚔️ Espada longa | 7.000 XP — aposenta a faca |
+
+Os títulos acompanham o número de peças: **Andarilho**, **Escudeiro**, **Sentinela**, **Cavaleiro** e **Cavaleiro Dracônico**. Os marcos são calibrados pelo XP que o site oferece (cerca de 11.800 no total), então a armadura se completa com uns dois terços do caminho andado.
+
+Nada disso altera preço, XP, moedas ou qualquer regra de progresso: a figura só lê o estado que já existe (`src/lib/knight.ts`). O desenho é original, em SVG de linha fina como o resto da catedral (`src/components/gothic/KnightArt.tsx`).
+
+**Animação.** O cavaleiro respira, o manto balança, a viseira do elmo acende e apaga e um lampejo desce pela lâmina. Tudo é lento e discreto, pausa quando a aba sai da frente e desaparece por completo para quem pede "reduzir movimento" no sistema.
+
+<a id="sons"></a>
+
+### 🔊 Sons do santuário
+
+Os efeitos são **sintetizados na hora pelo próprio site**, nota por nota, com a Web Audio API: não existe um único arquivo de áudio no projeto e nada foi amostrado ou copiado de trilhas de jogos. A atmosfera é a do gênero — sino grave, impacto e vozes em acorde menor — mas a composição é deste projeto (`src/lib/audio/cues.ts` descreve as vozes; `render.ts` as sintetiza).
+
+| Momento | O que você ouve |
+| --- | --- |
+| Menu, botão, link | Toque curto e seco, de couro e metal |
+| Voltar, cancelar, fechar | O mesmo toque, uma quarta abaixo e descendo |
+| XP ganho | Duas notas claras e discretas |
+| Desafio, missão ou revisão concluída | Terça e quinta subindo, com um sino atrás |
+| **Chefe derrotado** | Impacto grave, coral em lá menor em seis vozes e o sino que anuncia a queda — cerca de 4 s |
+| Conquista | Sino de ouro com a quinta logo atrás, cauda longa |
+| Item (relíquia ou sala) | Tinido de metal e duas notas |
+| Compra | Moedas trocando de mão |
+| Erro | Duas notas graves que descem, sem punir quem errou |
+
+A reverberação é a resposta de uma nave de pedra, também gerada por código. Os efeitos vêm **desligados**: ligue em **Refúgio à beira-mar**, no rodapé, onde também ficam a fogueira, o mar e os volumes. Nada toca sozinho ao abrir a página, e tudo pausa quando a aba sai da frente.
+
 ### 🎭 Desenho no terminal
 
 `npm run arte` sorteia uma das nove figuras em ASCII — hacker, cadeado, chave, escudo, inseto, terminal, dragão, caveira e fogueira — com uma inscrição curta de cada vez.
@@ -478,7 +523,9 @@ A fogueira da página inicial é um prisma digital com chama geométrica, arte o
 
 Os 13 projetos do Modo Arquiteto exibem um Desenho de Arquitetura de Segurança na etapa Projeto. Os componentes e fluxos vêm do próprio exercício; zonas tracejadas mostram fronteiras de confiança. Selecione um componente por toque ou teclado para destacar conexões e ler seu contexto. No celular, o mapa pode ser rolado horizontalmente. O DAS representa o cenário a revisar, sem antecipar o gabarito da avaliação.
 
-A fogueira é uma ilustração SVG original, com cavaleiro descansando, Arauto Esmeralda (interpretação vetorial de Dark Souls II), espada, chama translúcida, fumaça e brasas. A veste da Arauto e o escudo reutilizam o mesmo brasão de dragões do site. Funciona offline, pausa ao ocultar a página e respeita a preferência de movimento reduzido.
+A fogueira é uma ilustração SVG original: pedra, anel de cinzas, espada fincada, chama translúcida, fumaça e brasas, com o brasão de dragões do próprio site. Funciona offline, pausa ao ocultar a página e respeita a preferência de movimento reduzido.
+
+> **Correção de originalidade.** Até esta versão, ao lado da fogueira havia duas figuras que representavam personagens de Dark Souls II — uma delas nomeada no próprio código e no rótulo acessível. Isso contraria a regra do projeto (nada de personagens ou arte de franquias) e foi removido. No lugar entrou o cavaleiro do santuário, desenhado para o projeto, descrito abaixo. O teste `src/lib/originalidade.test.ts` varre o site inteiro e falha se o nome de uma franquia voltar a aparecer fora da página de referências.
 
 ### 🏛️ Dez novos exercícios de arquitetura
 

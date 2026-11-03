@@ -2,6 +2,7 @@ import { RelicArt } from '@/components/gamification/RelicArt'
 import { Check, Coins, Cpu, FlaskConical, Gift, Palette, ShieldHalf, Syringe, Trash2, type LucideIcon } from 'lucide-react'
 import { useId, useState } from 'react'
 import { Link } from 'react-router'
+import { KnightArmor } from '@/components/shop/KnightArmor'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { BuyButton } from '@/components/shop/BuyButton'
 import { UnlockModuleCard } from '@/components/shop/UnlockModuleCard'
@@ -180,6 +181,8 @@ export function ShopPage() {
           })}
         </div>
       </section>
+
+      <KnightArmor />
 
       <Rewards balance={balance} />
     </div>
