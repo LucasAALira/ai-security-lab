@@ -21,6 +21,7 @@ export function SanctuaryPlayer() {
   const [ready, setReady] = useState(false)
   const [busy, setBusy] = useState(false)
   const [playing, setPlaying] = useState(false)
+  const [ambiencePlaying, setAmbiencePlaying] = useState(false)
   const [settings, setSettings] = useState(preferences)
   const [message, setMessage] = useState('Sua música fica somente neste dispositivo. Nenhuma faixa incluída.')
 
@@ -91,8 +92,8 @@ export function SanctuaryPlayer() {
 
   return (
     <details className="sanctuary-player" data-playing={playing}>
-      <summary><Flame aria-hidden="true" className="sanctuary-flame" /><span>Sons do Santuário</span><span className="sanctuary-state">{playing ? 'Tocando' : 'Em silêncio'}</span></summary>
-      <SanctuarySounds />
+      <summary><Flame aria-hidden="true" className="sanctuary-flame" /><span>Sons do Santuário</span><span className="sanctuary-state">{playing ? 'Música tocando' : ambiencePlaying ? 'Ambiente ativo' : 'Em silêncio'}</span></summary>
+      <SanctuarySounds onPlayingChange={setAmbiencePlaying} />
       <div className="sanctuary-body" data-sound-controls>
         <p className="sanctuary-track"><Music2 size={18} aria-hidden="true" /><span>{track?.name ?? 'Escolha a música do seu refúgio'}</span></p>
         <div className="sanctuary-controls">

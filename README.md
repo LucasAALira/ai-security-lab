@@ -81,7 +81,7 @@ As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dent
 - **⏳ Horas e dias de estudo:** na página inicial, o tempo medido ao todo, o tempo de hoje, os dias com atividade registrada e o recorde de dias seguidos. O relógio soma um minuto por vez, só com a aba à frente e com interação recente, no máximo 10 h por dia — aba esquecida aberta não vira hora de estudo. Tudo fica no navegador e entra no backup.
 - **Anotações e progresso:** armazenamento local no navegador.
 - **Ferramentas e pentest de LLMs:** material textual com exemplos técnicos e situações do cotidiano.
-- **Identidade gótica moderna, "Forja Dracônica" (Dark Tech)**, com onze temas de cor (três gratuitos e oito na loja), interface responsiva e respeito à preferência do sistema por menos movimento. Veja [Identidade visual](#identidade).
+- **Identidade visual Forja Dracônica:** carvão, aço frio e luz de brasa, com onze temas de cor (três gratuitos e oito na loja), interface responsiva e respeito à preferência do sistema por menos movimento. Veja [Identidade visual](#identidade).
 
 > Os cenários são exercícios educacionais de decisão. O projeto não provisiona máquinas virtuais nem executa ataques, ferramentas de pentest ou ambientes vulneráveis.
 
@@ -129,7 +129,7 @@ Regras, dados salvos e como acrescentar conquistas ou desafios: [docs/APRENDIZAD
 
 ## 🎨 Identidade visual: Forja Dracônica
 
-Um gótico moderno, "Dark Tech": uma catedral desenhada em linhas de circuito, com preto absoluto, titânio fosco, vidro fumado, vermelho-brasa e ouro anodizado. Usa linhas de 1 px, cantos chanfrados e títulos nítidos, sem pergaminho nem madeira. A atmosfera lembra os soulslike, mas toda a arte é original, feita em CSS e SVG. Nenhum personagem, logotipo, trilha sonora ou asset de franquias foi usado.
+Uma identidade de carvão, aço frio, tecido gasto e luz de brasa. A imagem de referência orienta a atmosfera e a paleta; selos, linhas técnicas e circuitos discretos mantêm o vínculo com AppSec. A interface usa contraste claro e componentes consistentes. Toda a arte é original em CSS e SVG; nenhum personagem ou asset de franquia foi reproduzido.
 
 | Elemento | Como funciona |
 | --- | --- |
@@ -344,14 +344,20 @@ Nada disso altera preço, XP, moedas ou qualquer regra de progresso: a figura s�
 
 **Classes.** Na loja dá para escolher o caminho, o que troca a arma e o traje da figura:
 
-| Classe | Arma | Do que trata |
+| Classe | Arma e traje | Caminho de estudo |
 | --- | --- | --- |
-| ⚔️ **Cavaleiro** | espada e escudo | Defesa de aplicações: aguenta o primeiro golpe |
-| 📿 **Clérigo** | maça e códice | Governança e regulação: registra, audita e impõe a regra |
-| 🔮 **Arcanista** | cajado | Segurança de IA: o que fala, alucina e obedece a quem não devia |
-| 🗡️ **Batedor** | adagas | Ofensiva e reconhecimento: entra primeiro e volta com o mapa |
+| ⚔️ **Cavaleiro** | espada, escudo e manto de brasa | Defesa de aplicações |
+| 🗡️ **Duelista** | rapieira e aço azulado | Fundamentos |
+| 🪓 **Bárbaro** | machado pesado, couro e peles | Ataques e defesa |
+| 🗡️ **Ladrão** | duas adagas e capuz escuro | Fundamentos |
+| 🔮 **Astrólogo** | cajado, foco cristalino e manto frio | Fundamentos e segurança de IA |
+| 📿 **Clérigo** | maça, códice e túnica reforçada | Governança e regulação |
+| ⚔️ **Espadachim** | espada curva e faixa de tecido | Ataques e defesa |
+| ⛓️ **Prisioneiro arcano** | lâmina curta, correntes e capuz gasto | Fundamentos |
+| ⛓️ **Penitente** | mangual e manto fechado | Governança e regulação |
+| 🛠️ **Sobrevivente** | lança improvisada e roupa remendada | Ataques e defesa |
 
-São arquétipos clássicos de RPG, com nome, lema e arte escritos para este projeto — nenhuma classe, brasão ou arte de jogo foi copiada. Trocar de classe não custa nada e não altera XP, moedas nem progresso.
+A paleta e a silhueta usam a imagem de referência como direção visual — aço frio, tecido gasto e luz de brasa — sem reproduzir personagem ou peça. Os dez arquétipos têm nomes genéricos e arte original. Trocar de classe não custa nada e não altera XP, moedas nem progresso.
 
 **Poses.** A figura nunca encara quem está vendo: fica sempre de três quartos, voltada para a fogueira. São três poses, montadas por articulação (cada membro gira no próprio pivô, em `knight-pose.ts`): **descanso**, sentado na pedra ao lado do fogo, que é a do topo da página; **guarda**, de pé na loja; e **ataque**, nas crônicas de batalha.
 
@@ -553,7 +559,7 @@ O progresso de localhost não aparece automaticamente em outro endereço. Export
 
 ## 🔊 Sons do Santuário e fogueira
 
-O painel abaixo do cabeçalho reúne música pessoal e efeitos originais gerados no aparelho, sem downloads externos. **Ativar efeitos** habilita sons de seleção, XP, compras, vitórias e conquistas; **Ouvir fogueira** liga um ambiente suave de lenha. Os volumes são independentes da música. Os efeitos começam desligados na primeira visita; a preferência fica salva. O ambiente nunca começa automaticamente e pausa ao ocultar a página.
+O painel abaixo do cabeçalho reúne música pessoal e efeitos originais gerados no aparelho, sem downloads externos. **Ativar efeitos** habilita sons de seleção, XP, compras, vitórias e conquistas; **Ouvir fogueira** liga um ambiente de lenha; também há paisagens de floresta, montanha gelada, vulcão e toca de aranha. Os volumes são independentes da música. Os efeitos começam desligados na primeira visita; a preferência fica salva. O ambiente nunca começa automaticamente e pausa ao ocultar a página.
 
 Em **Carregar minha música**, importe um áudio local de até 170 MB (MP3 recomendado). O arquivo é validado antes de substituir a faixa anterior e fica no IndexedDB deste aparelho, separado do progresso e dos backups. Nenhuma música acompanha o projeto. A faixa é restaurada pausada, continua entre páginas e pode ser removida pelo player. Se não houver armazenamento disponível, o player avisa e permite ouvir apenas na sessão.
 
@@ -584,6 +590,6 @@ Na página `#/arquiteto`, os novos projetos incluem DAS interativo, seis compone
 | Análise sem uma cópia de todos os segredos | Minimização e exportação de dados |
 | A porta de manutenção temporária | Privilégios temporários e sessões |
 
-### 🌊 Ambiente de foco: fogueira e mar
+### 🌲 Paisagens sonoras do santuário
 
-No player do santuário, abra **Refúgio à beira-mar** e use **Foco: fogueira + mar**. O preset mistura chama baixa e ondas lentas, desliga os efeitos de menus e conquistas e permite ajustar separadamente os volumes de mar e fogueira. O áudio é sintetizado localmente, sem downloads ou trilha do jogo. Tem transições suaves, pausa ao ocultar a página e não retoma automaticamente. Preferências de volume são salvas, mas a reprodução exige ativação. A música importada no player continua independente; pause-a se quiser apenas o ambiente.
+No player do santuário, escolha **Foco: fogueira + mar** ou ative uma paisagem: **Floresta**, **Montanha gelada**, **Montanha de lava / vulcão** e **Toca da aranha na floresta**. Cada ambiente tem volume próprio, usa síntese de áudio local sem arquivos de trilha e funciona offline. A escolha exige ativação, pausa ao ocultar a página e não reinicia sozinha. A música local importada continua independente.
