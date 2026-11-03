@@ -1,7 +1,7 @@
 import { BonfireScene } from './BonfireScene'
 import { ArrowRight, Hourglass, Shield, Sparkles } from 'lucide-react'
 import { Link } from 'react-router'
-import { SanctuaryScene } from '@/components/gothic/SanctuaryScene'
+import { SanctuaryBackdrop } from '@/components/gothic/SanctuaryBackdrop'
 import { RiveSlot } from '@/components/rive/RiveSlot'
 import { Button } from '@/components/ui/button'
 import { formatNumber } from '@/lib/format'
@@ -20,8 +20,8 @@ export function SanctuaryHero() {
   return (
     <section id="inicio" aria-labelledby="santuario-titulo" className="relative mt-4 mb-12 overflow-hidden border border-[var(--line)] md:mt-6">
       <div className="relative h-[210px] sm:h-[220px] xl:absolute xl:inset-0 xl:h-auto" aria-hidden="true">
-        {/* Um `hero.riv` em src/assets/rive substitui a cena; sem ele, a cena em SVG, com a fogueira e o soldado descansando. */}
-        <RiveSlot src="hero.riv" stateMachine="Hero" className="size-full" fallback={<SanctuaryScene />} />
+        {/* Um `hero.riv` em src/assets/rive substitui a cena; sem ele, a nave em pixel art, com a fogueira e o personagem. */}
+        <RiveSlot src="hero.riv" stateMachine="Hero" className="size-full" fallback={<SanctuaryBackdrop />} />
         <BonfireScene />
       </div>
       {/* véu: escurece a cena atrás do texto (contraste garantido) e a deixa respirar à direita */}

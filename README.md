@@ -133,7 +133,7 @@ Uma identidade de carvão, aço frio, tecido gasto e luz de brasa. A imagem de r
 
 | Elemento | Como funciona |
 | --- | --- |
-| **Início (Santuário do Conhecimento)** | Primeiro vem a missão atual, com uma ação principal. Atrás dela fica a catedral digital: arcos ogivais em circuito, friso de escamas de dragão e a rosácea-circuito, com a fogueira digital (um prisma com chama geométrica) no altar, abaixo do vitral. |
+| **Início (Santuário do Conhecimento)** | Primeiro vem a missão atual, com uma ação principal. Atrás dela fica a nave do santuário em pixel art — arcos ogivais, pilares, cornija e piso de lajes em perspectiva —, com a fogueira acesa e o seu personagem ao lado dela. |
 | **Navegação** | Nomes temáticos com a função escrita ao lado: Jornada, Arquivos, Contratos, Provações, Relicário, Sala de troféus e Mercador (mercado negro). No app Android aparece também Configurações. |
 | **Componentes** | Cartões de vidro fumado com borda de 1 px; botões de cantos vivos com chanfro e brilho no hover; medidores de XP em blocos de luz que pulsam quando o XP sobe; molduras cujas linhas pulsam como dados (`dataPulse`). |
 | **Fogueiras** | Na trilha, os pontos de controle e os módulos concluídos são prismas flutuantes sobre nós de servidor. Apagados, aparecem tracejados; acesos, mostram a chama. |
@@ -355,7 +355,7 @@ Nada disso altera preço, XP, moedas ou qualquer regra de progresso: a figura s�
 
 São arquétipos de função, com nome, lema, equipamento e paleta escritos aqui — nenhuma classe, armadura, símbolo ou personagem de obra alguma foi copiado. Cada caminho aparece de dois jeitos: como **ilustração** (a figura da fogueira e a da escolha) e no **desenho vetorial**, que troca a arma e o acento de cor conforme o caminho e é quem mostra a armadura peça a peça. Escolher ou trocar não custa nada e não altera XP, moedas, conquistas nem qualquer regra. A troca fica na loja, em **A armadura do cavaleiro**. Quem havia escolhido um dos dez caminhos da versão anterior cai no mais próximo destes seis, sem perder nada (`HEROIS_ANTIGOS`, em `src/data/herois.ts`).
 
-**A fogueira.** A cena do topo é a fogueira em pixel art com o seu personagem ao lado, na mesma escala e no mesmo chão: a lenha bate no tornozelo dele e a espada fincada chega à altura do ombro. O personagem respira — um vaivém lento do peito, com origem nos pés, que para quando o sistema pede menos movimento. A imagem está em `public/assets/fogueira.png`, com a origem registrada em `public/assets/CREDITS.md`.
+**A fogueira.** A cena do topo é a fogueira em pixel art com o seu personagem ao lado, na mesma escala e no mesmo chão: a lenha bate no tornozelo dele e a espada fincada chega à altura do ombro. O fundo da nave é da mesma família: pixel art gerada por `scripts/cena-santuario.py`, só com geometria — arcos ogivais, pilares, cornija e lajes em perspectiva, com a brasa acesa do lado da fogueira e um véu da cor do tema por cima, para acompanhar quem trocou de tema na loja. O personagem respira — um vaivém lento do peito, com origem nos pés, que para quando o sistema pede menos movimento. A imagem está em `public/assets/fogueira.png`, com a origem registrada em `public/assets/CREDITS.md`.
 
 **O cavaleiro vetorial** continua existindo ao lado dos sprites, porque é ele que mostra a armadura peça a peça: aparece na loja, em guarda, e nas crônicas, em ataque. A figura nunca encara quem está vendo — fica de três quartos, montada por articulação (cada membro gira no próprio pivô, em `knight-pose.ts`).
 

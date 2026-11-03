@@ -4,8 +4,9 @@ import { heroOf, trajeOf } from '@/lib/hero'
 import { useProgress } from '@/state/ProgressProvider'
 import './bonfire-scene.css'
 
-/** Altura do personagem na cena. A arte vem com 320 px e é reduzida aqui. */
-const ALTURA_HEROI = 176
+/** Altura do personagem na cena, em telas largas. A arte vem com 320 px e é reduzida aqui;
+ *  nas telas estreitas o CSS encolhe a cena inteira (`--altura-heroi`). */
+const ALTURA_HEROI = 264
 
 /** A fogueira: a arte tem 73 × 144 px, recortada rente ao conteúdo, então a base da lenha
  *  encosta no mesmo chão dos pés do personagem. Fica mais baixa do que ele: a lenha bate no
