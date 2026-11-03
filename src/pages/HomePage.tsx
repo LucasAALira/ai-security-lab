@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import { AreasSection } from '@/components/home/AreasSection'
+import { BattleGallery } from '@/components/home/BattleGallery'
 import { DailyPanel } from '@/components/home/DailyPanel'
 import { RecentRelics } from '@/components/home/RecentRelics'
 import { SanctuaryHero } from '@/components/home/SanctuaryHero'
@@ -18,7 +19,7 @@ import type { CompanySize } from '@/data/types'
 import { useDocumentTitle } from '@/lib/use-document-title'
 
 /** Seções que os links de navegação (`/?secao=...`) sabem alcançar. */
-export const HOME_SECTIONS = ['inicio', 'areas', 'hoje', 'tempo', 'relicario', 'tarefas', 'medalhas', 'requisitos', 'trilhas', 'laboratorio', 'cenarios', 'pentest', 'fontes'] as const
+export const HOME_SECTIONS = ['inicio', 'areas', 'hoje', 'tempo', 'cronicas', 'relicario', 'tarefas', 'medalhas', 'requisitos', 'trilhas', 'laboratorio', 'cenarios', 'pentest', 'fontes'] as const
 
 export function HomePage() {
   useDocumentTitle()
@@ -48,6 +49,7 @@ export function HomePage() {
       <AreasSection />
       <DailyPanel />
       <StudyTimeSection />
+      <BattleGallery />
       <RecentRelics />
       <StatsRow />
       <TasksSection onPickTrack={(track) => setFilter(track as ModuleFilter)} onOpenCase={openCase} />

@@ -22,6 +22,7 @@ import { logEvent } from './events'
 import { recordMedals, summary } from './medals'
 import { rollDay, settleQuests, type ChestEvent, type QuestEvent } from './quests'
 import { canReview } from './review'
+import { isHeroId } from '@/lib/hero'
 import { tickStudyClock, touchStreak, touchStudy } from './streak'
 import { emptyBoss, emptyChallenge } from './state'
 import { isChallengeOpen, isModuleUnlocked } from './trail'
@@ -73,6 +74,8 @@ export type Action =
   /** Marca um flashcard como sabido ou para revisar. Não rende XP. */
   | { type: 'card'; id: string; known: boolean }
   | { type: 'setSound'; on: boolean }
+  /** Classe do cavaleiro do santuário. Só aparência: não rende XP nem muda regra alguma. */
+  | { type: 'setHero'; hero: string }
   /** Minuto(s) de uso medidos pelo relógio da interface. Soma tempo de estudo e nada mais:
    *  não rende XP, não cumpre missão e não conta dia de estudo nem sequência. */
   | { type: 'studyTick'; minutes?: number }
@@ -405,6 +408,11 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
     case 'studyTick':
       return tickStudyClock(s, now, action.minutes ?? STUDY_CLOCK.tick) ? { changed: true } : nothing
 
+    case 'setHero':
+      if (!isHeroId(action.hero) || s.prefs.hero === action.hero) return nothing
+      s.prefs.hero = action.hero
+      return { changed: true }
+
     case 'setSound':
       if (typeof action.on !== 'boolean' || s.prefs.sound === action.on) return nothing
       s.prefs.sound = action.on
@@ -509,8 +517,8 @@ export function applyAction(state: StudyState, action: Action, ctx: ProgressCont
 
   // Trocar a dificuldade recalcula valores, mas não é estudo: não conta como XP do dia, não cumpre
   // missões nem rende baú. Só registra a data das conquistas que passarem a valer.
-  // O relógio só soma minutos: nada de XP, missão, baú ou dia de estudo.
-  if (action.type === 'studyTick') return { state: draft, events: [], changed: true }
+  // Relógio e troca de classe não são estudo: nada de XP, missão, baú ou dia de estudo.
+  if (action.type === 'studyTick' || action.type === 'setHero') return { state: draft, events: [], changed: true }
 
   if (action.type === 'setEconomy') {
     recordMedals(draft, ctx, dayKey(now))

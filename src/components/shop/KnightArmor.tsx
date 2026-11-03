@@ -2,6 +2,8 @@ import { Check, Lock } from 'lucide-react'
 import { KnightArt, KNIGHT_VIEWBOX } from '@/components/gothic/KnightArt'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { Card } from '@/components/ui/card'
+import { HeroPicker } from './HeroPicker'
+import { heroOf } from '@/lib/hero'
 import { GEAR, knightGear } from '@/lib/knight'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
@@ -12,6 +14,7 @@ export function KnightArmor() {
   const { state, derived } = useProgress()
   const xp = derived.summary.xp
   const cavaleiro = knightGear(state, xp)
+  const classe = heroOf(state)
   return (
     <section aria-labelledby="armadura-titulo" className="mt-10">
       <SectionHeading
@@ -29,12 +32,14 @@ export function KnightArmor() {
             width="150"
             height="250"
             role="img"
-            aria-label={`${cavaleiro.titulo}, com ${cavaleiro.completo} de ${cavaleiro.total} peças de equipamento.`}
+            aria-label={`${classe.nome} ${cavaleiro.titulo}, de perfil e em guarda, com ${cavaleiro.completo} de ${cavaleiro.total} peças de equipamento.`}
             className="max-w-full text-[var(--foreground)]"
           >
-            <KnightArt gear={cavaleiro} />
+            <KnightArt gear={cavaleiro} hero={classe.id} pose="guarda" />
           </svg>
-          <p className="gx-inscription text-center">{cavaleiro.titulo}</p>
+          <p className="gx-inscription text-center">
+            {classe.nome} · {cavaleiro.titulo}
+          </p>
         </Card>
         <Card className="gap-0 p-0">
           <ul className="m-0 list-none divide-y divide-border p-0">
@@ -65,6 +70,11 @@ export function KnightArmor() {
           </ul>
         </Card>
       </div>
+      <h3 className="mt-8 mb-3 text-xl font-semibold">Escolha o seu caminho</h3>
+      <p className="mb-4 text-sm text-muted-foreground">
+        A classe troca a arma e o traje da figura. O equipamento continua vindo do seu progresso, e trocar de classe não custa nada nem altera o que você já conquistou.
+      </p>
+      <HeroPicker />
     </section>
   )
 }

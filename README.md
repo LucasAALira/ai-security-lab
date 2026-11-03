@@ -342,6 +342,33 @@ Os títulos acompanham o número de peças: **Andarilho**, **Escudeiro**, **Sent
 
 Nada disso altera preço, XP, moedas ou qualquer regra de progresso: a figura só lê o estado que já existe (`src/lib/knight.ts`). O desenho é original, em SVG de linha fina como o resto da catedral (`src/components/gothic/KnightArt.tsx`).
 
+**Classes.** Na loja dá para escolher o caminho, o que troca a arma e o traje da figura:
+
+| Classe | Arma | Do que trata |
+| --- | --- | --- |
+| ⚔️ **Cavaleiro** | espada e escudo | Defesa de aplicações: aguenta o primeiro golpe |
+| 📿 **Clérigo** | maça e códice | Governança e regulação: registra, audita e impõe a regra |
+| 🔮 **Arcanista** | cajado | Segurança de IA: o que fala, alucina e obedece a quem não devia |
+| 🗡️ **Batedor** | adagas | Ofensiva e reconhecimento: entra primeiro e volta com o mapa |
+
+São arquétipos clássicos de RPG, com nome, lema e arte escritos para este projeto — nenhuma classe, brasão ou arte de jogo foi copiada. Trocar de classe não custa nada e não altera XP, moedas nem progresso.
+
+**Poses.** A figura nunca encara quem está vendo: fica sempre de três quartos, voltada para a fogueira. São três poses, montadas por articulação (cada membro gira no próprio pivô, em `knight-pose.ts`): **descanso**, sentado na pedra ao lado do fogo, que é a do topo da página; **guarda**, de pé na loja; e **ataque**, nas crônicas de batalha.
+
+<a id="cronicas"></a>
+
+### 🖼️ Crônicas do santuário
+
+Na página inicial, uma galeria com um quadro por guardião da trilha: o seu cavaleiro, na pose de ataque, diante do vulto do chefe. Quem já caiu aparece com a data da queda (e um elogio quando foi sem nenhum erro); quem ainda está de pé fica no escuro, com uma inscrição no lugar da data. Dá para percorrer pelos botões, pela faixa numerada ou pelas setas do teclado, e cada quadro leva ao módulo daquele chefe.
+
+Os guardiões são cinco silhuetas originais — torre, vulto encapuzado, cavaleiro inimigo, figura de coroa e balança, e máquina de um olho só — distribuídas pelos nove chefes conforme o que cada um representa. Os olhos acendem devagar e se apagam quando o chefe já foi derrotado; quem pede "reduzir movimento" vê tudo parado.
+
+<a id="inscricoes"></a>
+
+### 🕯️ Inscrições
+
+As frases curtas que aparecem sob a fogueira e nas crônicas vêm de `src/data/inscricoes.ts`. São originais, no tom de quem escreveu numa pedra fria — e nenhuma delas empurra quem está cansado a varar a noite: cansaço aqui é motivo de descanso, e há um teste que garante isso. A frase é estável ao longo do dia, para o texto não dançar a cada clique.
+
 **Animação.** O cavaleiro respira, o manto balança, a viseira do elmo acende e apaga e um lampejo desce pela lâmina. Tudo é lento e discreto, pausa quando a aba sai da frente e desaparece por completo para quem pede "reduzir movimento" no sistema.
 
 <a id="sons"></a>

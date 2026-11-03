@@ -1,10 +1,12 @@
 import { useEffect, useId, useState } from 'react'
 import { KnightArt } from '@/components/gothic/KnightArt'
+import { inscricaoDoDia } from '@/data/inscricoes'
+import type { HeroId } from '@/lib/hero'
 import type { KnightGear } from '@/lib/knight'
 import './bonfire.css'
 
 /** Original vector illustration: no remote assets; CSS motion pauses in hidden tabs. */
-export function Bonfire({ knight }: { knight?: KnightGear }) {
+export function Bonfire({ knight, hero, dia }: { knight?: KnightGear; hero?: HeroId; dia?: string }) {
   const id = useId().replace(/:/g, '')
   const [paused, setPaused] = useState(false)
   useEffect(() => {
@@ -14,8 +16,9 @@ export function Bonfire({ knight }: { knight?: KnightGear }) {
     return () => document.removeEventListener('visibilitychange', update)
   }, [])
   const rotulo = knight
-    ? `${knight.titulo} de pé ao lado da fogueira do santuário, com ${knight.completo} de ${knight.total} peças de equipamento.`
+    ? `${knight.titulo} sentado junto à fogueira do santuário, de perfil, com ${knight.completo} de ${knight.total} peças de equipamento.`
     : 'Fogueira do santuário, com a espada fincada no anel de cinzas.'
+  const inscricao = inscricaoDoDia('fogueira', dia ?? '')
   return (
     <figure className="bonfire" data-paused={paused}>
       <svg viewBox="0 0 360 250" role="img" aria-label={rotulo}>
@@ -32,8 +35,8 @@ export function Bonfire({ knight }: { knight?: KnightGear }) {
         <ellipse className="bonfire-halo" cx="228" cy="153" rx="109" ry="90" fill={`url(#${id}-glow)`} />
         {/* Pedra do descanso, original: só rocha e sombra. Quem senta aqui é o cavaleiro do
             santuário, desenhado em `KnightArt` e montado abaixo, com o equipamento de quem estuda. */}
-        <path d="M59 199l12-35 35-12 33 22-1 33-64 5z" fill="#252831" stroke="#47454b" />
-        <path d="M70 180l28-9 24 15" fill="none" stroke="#5e6570" strokeOpacity=".5" />
+        <path d="M48 209l14-42 42-15 40 27-1 40-77 6z" fill="#252831" stroke="#47454b" />
+        <path d="M62 186l34-11 29 18" fill="none" stroke="#5e6570" strokeOpacity=".5" />
 
         {/* Ash ring, charred wood and sword. */}
         <g fill="#393235" stroke="#655147"><ellipse cx="234" cy="212" rx="47" ry="10" /><path d="M196 210l58-12 8 7-62 13zm10-16 53 17-6 7-53-17z" /></g>
@@ -49,15 +52,15 @@ export function Bonfire({ knight }: { knight?: KnightGear }) {
         {/* O cavaleiro do santuário: arte original, com o equipamento que o progresso rendeu. */}
         {knight ? (
           <g style={{ color: 'var(--foreground)' }}>
-            <ellipse cx="84" cy="215" rx="35" ry="8" fill="#080a10" opacity=".55" />
-            <g transform="translate(34 46) scale(0.84)">
-              <KnightArt gear={knight} />
+            <ellipse cx="104" cy="214" rx="46" ry="8" fill="#080a10" opacity=".5" />
+            <g transform="translate(70 90) scale(0.72)">
+              <KnightArt gear={knight} hero={hero} pose="descanso" />
             </g>
           </g>
         ) : null}
         <g fill="#ffbd71">{[0, 1, 2, 3, 4, 5, 6].map(i => <circle className="bonfire-ember" key={i} cx={215 + i * 7} cy={192 - i % 3 * 9} r={i % 2 ? 1.4 : 2} style={{ animationDelay: `${-i * .7}s`, animationDuration: `${3 + i * .35}s` }} />)}</g>
       </svg>
-      <figcaption>Descanse. A chama do conhecimento permanece.</figcaption>
+      <figcaption>{inscricao}</figcaption>
     </figure>
   )
 }
