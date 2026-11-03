@@ -81,7 +81,7 @@ As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dent
 - **⏳ Horas e dias de estudo:** na página inicial, o tempo medido ao todo, o tempo de hoje, os dias com atividade registrada e o recorde de dias seguidos. O relógio soma um minuto por vez, só com a aba à frente e com interação recente, no máximo 10 h por dia — aba esquecida aberta não vira hora de estudo. Tudo fica no navegador e entra no backup.
 - **Anotações e progresso:** armazenamento local no navegador.
 - **Ferramentas e pentest de LLMs:** material textual com exemplos técnicos e situações do cotidiano.
-- **Identidade gótica moderna, "Forja Dracônica" (Dark Tech)**, com onze temas de cor (três gratuitos e oito na loja), interface responsiva e respeito à preferência do sistema por menos movimento. Veja [Identidade visual](#identidade).
+- **Identidade visual Forja Dracônica:** carvão, aço frio e luz de brasa, com onze temas de cor (três gratuitos e oito na loja), interface responsiva e respeito à preferência do sistema por menos movimento. Veja [Identidade visual](#identidade).
 
 > Os cenários são exercícios educacionais de decisão. O projeto não provisiona máquinas virtuais nem executa ataques, ferramentas de pentest ou ambientes vulneráveis.
 
@@ -344,14 +344,20 @@ Nada disso altera preço, XP, moedas ou qualquer regra de progresso: a figura s�
 
 **Classes.** Na loja dá para escolher o caminho, o que troca a arma e o traje da figura:
 
-| Classe | Arma | Do que trata |
+| Classe | Arma e traje | Caminho de estudo |
 | --- | --- | --- |
-| ⚔️ **Cavaleiro** | espada e escudo | Defesa de aplicações: aguenta o primeiro golpe |
-| 📿 **Clérigo** | maça e códice | Governança e regulação: registra, audita e impõe a regra |
-| 🔮 **Arcanista** | cajado | Segurança de IA: o que fala, alucina e obedece a quem não devia |
-| 🗡️ **Batedor** | adagas | Ofensiva e reconhecimento: entra primeiro e volta com o mapa |
+| ⚔️ **Cavaleiro** | espada, escudo e manto de brasa | Defesa de aplicações |
+| 🗡️ **Duelista** | rapieira e aço azulado | Fundamentos |
+| 🪓 **Bárbaro** | machado pesado, couro e peles | Ataques e defesa |
+| 🗡️ **Ladrão** | duas adagas e capuz escuro | Fundamentos |
+| 🔮 **Astrólogo** | cajado, foco cristalino e manto frio | Fundamentos e segurança de IA |
+| 📿 **Clérigo** | maça, códice e túnica reforçada | Governança e regulação |
+| ⚔️ **Espadachim** | espada curva e faixa de tecido | Ataques e defesa |
+| ⛓️ **Prisioneiro arcano** | lâmina curta, correntes e capuz gasto | Fundamentos |
+| ⛓️ **Penitente** | mangual e manto fechado | Governança e regulação |
+| 🛠️ **Sobrevivente** | lança improvisada e roupa remendada | Ataques e defesa |
 
-São arquétipos clássicos de RPG, com nome, lema e arte escritos para este projeto — nenhuma classe, brasão ou arte de jogo foi copiada. Trocar de classe não custa nada e não altera XP, moedas nem progresso.
+A paleta e a silhueta usam a imagem de referência como direção visual — aço frio, tecido gasto e luz de brasa — sem reproduzir personagem ou peça. Os dez arquétipos têm nomes genéricos e arte original. Trocar de classe não custa nada e não altera XP, moedas nem progresso.
 
 **Poses.** A figura nunca encara quem está vendo: fica sempre de três quartos, voltada para a fogueira. São três poses, montadas por articulação (cada membro gira no próprio pivô, em `knight-pose.ts`): **descanso**, sentado na pedra ao lado do fogo, que é a do topo da página; **guarda**, de pé na loja; e **ataque**, nas crônicas de batalha.
 
