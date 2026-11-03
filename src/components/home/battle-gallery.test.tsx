@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
 import { bosses } from '@/data/bosses'
+import { errantes } from '@/data/errantes'
 import { progressContext } from '@/data/progress-context'
 import { emptyBoss } from '@/lib/progress'
 import { ProgressProvider } from '@/state/ProgressProvider'
@@ -30,8 +31,9 @@ describe('crônicas do santuário', () => {
   it('tem um quadro por guardião e conta os derrubados', () => {
     abrir({ 0: { won: '2026-10-02', flawless: true }, 3: { won: '2026-10-29', flawless: false } })
     expect(screen.getByRole('heading', { level: 2, name: 'Crônicas do santuário' })).toBeInTheDocument()
-    expect(screen.getAllByRole('tab').length).toBe(bosses.length)
-    expect(screen.getByText(`2/${bosses.length} derrubados`)).toBeInTheDocument()
+    const total = bosses.length + errantes.length
+    expect(screen.getAllByRole('tab').length).toBe(total)
+    expect(screen.getByText(`2/${total} derrubados`)).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 3, name: bosses[0].name })).toBeInTheDocument()
     expect(screen.getByText(/Caiu em 02\/10\/2026, sem um erro sequer\./)).toBeInTheDocument()
   })
@@ -41,10 +43,10 @@ describe('crônicas do santuário', () => {
     abrir()
     await user.click(screen.getByRole('button', { name: 'Próximo quadro' }))
     expect(screen.getByRole('heading', { level: 3, name: bosses[1].name })).toBeInTheDocument()
-    // voltar duas vezes dá a volta e chega no último
+    // voltar duas vezes dá a volta e chega no último quadro, que é o errante do fim da lista
     await user.click(screen.getByRole('button', { name: 'Quadro anterior' }))
     await user.click(screen.getByRole('button', { name: 'Quadro anterior' }))
-    expect(screen.getByRole('heading', { level: 3, name: bosses.at(-1)!.name })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 3, name: errantes.at(-1)!.nome })).toBeInTheDocument()
   })
 
   it('escolhe um quadro pela faixa de miniaturas', async () => {
@@ -64,6 +66,17 @@ describe('crônicas do santuário', () => {
     expect(screen.getByRole('link', { name: /Enfrentar/ })).toBeInTheDocument()
     const faixa = screen.getAllByRole('tab')
     expect(within(faixa[0]).queryByText(/derrubado/)).toBeNull()
+  })
+
+  it('os errantes entram no fim das crônicas, com a própria fala', async () => {
+    const user = userEvent.setup()
+    abrir()
+    const primeiro = errantes[0]
+    await user.click(screen.getByRole('tab', { name: new RegExp(`${primeiro.nome}, ainda de pé`) }))
+    expect(screen.getByRole('heading', { level: 3, name: primeiro.nome })).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(primeiro.fala.slice(0, 30)))).toBeInTheDocument()
+    expect(screen.getByText(/Errante · (Gelo|Veneno) · de pé/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Enfrentar/ })).toHaveAttribute('href', `/errantes/${primeiro.id}`)
   })
 
   it('a cena descreve em texto quem está diante de quem', () => {

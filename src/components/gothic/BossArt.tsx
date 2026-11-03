@@ -7,7 +7,7 @@ import type { ReactNode } from 'react'
 
    Sistema de 160 × 200, com o chão em y = 196. O vulto encara quem avança, à esquerda. */
 
-export type BossShape = 'guardia' | 'sombra' | 'cavaleiro' | 'juiza' | 'maquina'
+export type BossShape = 'guardia' | 'sombra' | 'cavaleiro' | 'juiza' | 'maquina' | 'gelo' | 'peconha'
 
 const olho = (cx: number, cy: number, r = 3) => <circle key={`${cx}-${cy}`} className="boss-eye" cx={cx} cy={cy} r={r} fill="var(--primary)" />
 
@@ -51,6 +51,27 @@ const FORMAS: Record<BossShape, ReactNode> = {
     </g>
   ),
   // Máquina de decifrar: um olho grande entre anéis que giram.
+  // Criatura de gelo: lascas verticais, ombros de cristal e um núcleo frio no peito.
+  gelo: (
+    <g>
+      <path d="M44 196 L54 108 L72 60 L84 30 L96 60 L114 108 L124 196 Z" />
+      <path d="M58 100 L84 76 L110 100 L104 128 L64 128 Z" opacity="0.8" />
+      <path d="M26 196 L38 128 L48 150 L46 196 Z M142 196 L130 128 L120 150 L122 196 Z" opacity="0.7" />
+      <path d="M84 40 L92 70 L84 86 L76 70 Z" opacity="0.9" />
+      <path d="M70 140 l14 -18 14 18 -14 18 Z" opacity="0.85" />
+    </g>
+  ),
+  // Peçonha: corpo baixo e largo, braços como raízes e bolhas subindo do que ela toca.
+  peconha: (
+    <g>
+      <path d="M34 196 Q38 150 58 122 Q70 96 86 92 Q104 98 114 124 Q134 152 138 196 Z" />
+      <path d="M62 94 Q86 62 110 94 Q110 118 86 126 Q62 118 62 94 Z" />
+      <path d="M50 140 Q24 150 18 184 M122 140 Q148 150 154 184" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" opacity="0.75" />
+      <circle cx="46" cy="120" r="5" opacity="0.6" />
+      <circle cx="128" cy="112" r="4" opacity="0.5" />
+      <circle cx="60" cy="98" r="3" opacity="0.45" />
+    </g>
+  ),
   maquina: (
     <g>
       <path d="M52 196 Q50 140 62 104 L104 104 Q116 140 114 196 Z" />
@@ -83,6 +104,18 @@ const OLHOS: Record<BossShape, ReactNode> = {
     </g>
   ),
   maquina: olho(83, 64, 10),
+  gelo: (
+    <g>
+      {olho(76, 64, 2.6)}
+      {olho(92, 64, 2.6)}
+    </g>
+  ),
+  peconha: (
+    <g>
+      {olho(78, 104, 3)}
+      {olho(94, 104, 3)}
+    </g>
+  ),
 }
 
 export const BOSS_VIEWBOX = { width: 160, height: 200 } as const
