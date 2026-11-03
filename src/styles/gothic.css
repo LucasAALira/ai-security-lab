@@ -14,25 +14,25 @@
 /* --- Paleta e tokens que valem para todos os temas ------------------------- */
 :root {
   /* Base: preto absoluto e titânio fosco. */
-  --void: #050505;
-  --titanium-950: #0a0b0c;
-  --titanium-900: #0e0f11;
-  --titanium-800: #16171a;
-  --titanium-700: #1f2125;
-  --titanium-600: #2a2c31;
-  --titanium-400: #5b5f68;
-  --titanium-200: #a9aeb8;
+  --void: #0b0e12;
+  --titanium-950: #0f1317;
+  --titanium-900: #151a1f;
+  --titanium-800: #1c2228;
+  --titanium-700: #272f36;
+  --titanium-600: #333c44;
+  --titanium-400: #77838d;
+  --titanium-200: #bdc6ce;
 
   /* Luzes: vermelho-brasa digital, âmbar (ação disponível) e ouro anodizado (conquista, sucesso). */
-  --ember-red: #ff3333;
-  --ember-deep: #8a1010;
-  --amber: #ffb340;
-  --gold-anodized: #dccb94;
-  --gold-deep: #8d7a4a;
+  --ember-red: #d88b57;
+  --ember-deep: #713e2a;
+  --amber: #e3ad67;
+  --gold-anodized: #c5b899;
+  --gold-deep: #78664d;
 
   /* Texto: branco puro nos títulos, cinza espectral na leitura. */
-  --heading: #ffffff;
-  --spectral: #c9ccd4;
+  --heading: #edf1f4;
+  --spectral: #cbd3da;
 
   /* Nomes antigos, mantidos para quem ainda os usa (medalhas, brasões, selos). */
   --bronze: var(--gold-anodized);
@@ -93,7 +93,7 @@
   --glow-soft: color-mix(in oklab, var(--primary) 22%, transparent);
   /* Cor dos circuitos de fundo e das linhas de monitoramento (cada tema pode trocar). */
   --monitor: var(--primary);
-  --monitor-opacity: 0.075;
+  --monitor-opacity: 0.035;
 
   --ornament: color-mix(in oklab, var(--primary) 48%, var(--border));
   --ornament-soft: color-mix(in oklab, var(--primary) 22%, transparent);
@@ -1180,5 +1180,49 @@
   }
   .gx-btn:active:not(:disabled) {
     transform: none;
+  }
+}
+
+/* Coesão visual: aço fosco, bordas frias e luz de brasa em todas as páginas. */
+:root,
+[data-theme] {
+  --monitor-opacity: 0.035;
+  --blur: 8px;
+  --cut: 6px;
+  --cut-sm: 4px;
+}
+
+.gx-glass,
+.gx-panel,
+.gx-frame,
+.gx-niche,
+.gx-counter {
+  border-radius: 3px;
+  border-color: color-mix(in oklab, var(--info) 16%, var(--line));
+}
+
+.gx-panel {
+  background:
+    linear-gradient(135deg, color-mix(in oklab, var(--info) 5%, transparent), transparent 48%),
+    var(--glass-strong);
+}
+
+.gx-frame {
+  background:
+    linear-gradient(135deg, color-mix(in oklab, var(--info) 5%, transparent), transparent 54%),
+    var(--glass-strong);
+}
+
+.gx-glass {
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 7%, transparent),
+    0 14px 32px -28px black;
+}
+
+@media (max-width: 767px) {
+  .gx-panel,
+  .gx-niche,
+  .gx-counter {
+    background-color: var(--glass-strong);
   }
 }
