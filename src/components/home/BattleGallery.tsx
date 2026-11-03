@@ -2,19 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, Swords } from 'lucide-react'
 import { Link } from 'react-router'
 import { BossArt, BOSS_VIEWBOX, type BossShape } from '@/components/gothic/BossArt'
-import { KnightArt } from '@/components/gothic/KnightArt'
+import { arteDoTraje, trajeDoHeroi } from '@/components/hero/HeroArt'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { bosses } from '@/data/bosses'
 import { errantes } from '@/data/errantes'
 import { inscricaoDoDia } from '@/data/inscricoes'
-import { heroOf } from '@/lib/hero'
-import type { HeroId } from '@/lib/hero'
+import { heroOf, trajeOf } from '@/lib/hero'
 import { findMission, missionPassed } from '@/lib/progress'
-import { knightGear } from '@/lib/knight'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
+import '@/components/hero/hero-art.css'
 import './battle-gallery.css'
 
 /** Que vulto cabe a cada guardião, pelo que ele representa no site. */
@@ -22,12 +21,17 @@ const FORMA_DO_MODULO: BossShape[] = ['guardia', 'sombra', 'sombra', 'cavaleiro'
 
 const data = (dia: string) => (dia ? dia.split('-').reverse().join('/') : '')
 
-/** Crônicas do santuário: um quadro por guardião, com o seu cavaleiro diante dele.
+/** Altura do personagem dentro do quadro, nas unidades do `viewBox` de 420 × 180.
+ *  O guardião tem 156 e fica mais alto de propósito: quem chega é menor do que o que guarda. */
+const ALTURA_HEROI = 106
+
+/** Crônicas do santuário: um quadro por guardião, com o seu personagem diante dele.
  *  Só mostra o que já está no progresso — nada aqui concede XP nem muda regra alguma. */
 export function BattleGallery() {
-  const { state, ctx, derived, today } = useProgress()
-  const cavaleiro = knightGear(state, derived.summary.xp)
+  const { state, ctx, today } = useProgress()
   const classe = heroOf(state)
+  const trajeAtual = trajeDoHeroi(classe, trajeOf(state))
+  const larguraHeroi = (trajeAtual.largura / trajeAtual.altura) * ALTURA_HEROI
   const [atual, setAtual] = useState(0)
   const faixa = useRef<HTMLDivElement>(null)
 
@@ -106,7 +110,7 @@ export function BattleGallery() {
             }
           }}
         >
-          <svg viewBox="0 0 420 180" className="block w-full" role="img" aria-label={`${classe.nome} ${cavaleiro.titulo} diante de ${quadro.nome}, ${quadro.epiteto}. ${quadro.venceu ? `Derrotado em ${data(quadro.venceu)}.` : 'Ainda não enfrentado.'}`}>
+          <svg viewBox="0 0 420 180" className="block w-full" role="img" aria-label={`${classe.nome}, traje ${trajeAtual.nome}, diante de ${quadro.nome}, ${quadro.epiteto}. ${quadro.venceu ? `Derrotado em ${data(quadro.venceu)}.` : 'Ainda não enfrentado.'}`}>
             <defs>
               <radialGradient id="battle-halo" cx="0.62" cy="0.5" r="0.6">
                 <stop offset="0" style={{ stopColor: 'var(--primary)', stopOpacity: 0.18 }} />
@@ -118,17 +122,23 @@ export function BattleGallery() {
             {/* chão e colunas, só para dar profundidade */}
             <path d="M0 168 H420" stroke="color-mix(in oklab, var(--foreground) 18%, transparent)" strokeWidth="1" fill="none" />
             <path d="M36 168 V26 M392 168 V26" stroke="color-mix(in oklab, var(--foreground) 10%, transparent)" strokeWidth="1" fill="none" />
-            <ellipse cx="174" cy="169" rx="36" ry="6" fill="#05060a" opacity="0.5" />
+            <ellipse cx="158" cy="169" rx="30" ry="6" fill="#05060a" opacity="0.5" />
             <ellipse cx="312" cy="169" rx="54" ry="7" fill="#05060a" opacity="0.55" />
-            <g transform="translate(124 30) scale(0.70)" style={{ color: 'var(--foreground)' }}>
-              <KnightArt gear={cavaleiro} hero={classe.id as HeroId} pose="ataque" />
-            </g>
+            {/* o personagem do caminho escolhido, de pé na mesma linha de chão do guardião */}
+            <image
+              className="hero-art hero-art-respira"
+              href={arteDoTraje(trajeAtual)}
+              x={158 - larguraHeroi / 2}
+              y={168 - ALTURA_HEROI}
+              width={larguraHeroi}
+              height={ALTURA_HEROI}
+            />
             <g transform={`translate(${420 - BOSS_VIEWBOX.width * 0.78 - 54} 16) scale(0.78)`}>
               <BossArt shape={quadro.forma} vencido={Boolean(quadro.venceu)} />
             </g>
           </svg>
 
-          <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-[linear-gradient(0deg,color-mix(in_oklab,var(--card)_94%,transparent),transparent)] p-4">
+          <div className="battle-caption flex items-end justify-between gap-3 p-4">
             <div className="min-w-0">
               <p className="gx-inscription">
                 {quadro.selo} · {quadro.venceu ? 'derrubado' : 'de pé'}

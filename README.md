@@ -355,7 +355,7 @@ Nada disso altera preço, XP, moedas ou qualquer regra de progresso: a figura s�
 
 São arquétipos de função, com nome, lema, equipamento e paleta escritos aqui — nenhuma classe, armadura, símbolo ou personagem de obra alguma foi copiado. Cada caminho aparece de dois jeitos: como **ilustração** (a figura da fogueira e a da escolha) e no **desenho vetorial**, que troca a arma e o acento de cor conforme o caminho e é quem mostra a armadura peça a peça. Escolher ou trocar não custa nada e não altera XP, moedas, conquistas nem qualquer regra. A troca fica na loja, em **A armadura do cavaleiro**. Quem havia escolhido um dos dez caminhos da versão anterior cai no mais próximo destes seis, sem perder nada (`HEROIS_ANTIGOS`, em `src/data/herois.ts`).
 
-**A fogueira.** A cena do topo é a fogueira em pixel art com o seu personagem ao lado, na mesma escala: a espada fincada passa pouco da cabeça dele, como numa fogueira de verdade. A imagem está em `public/assets/fogueira.png`, com a origem registrada em `public/assets/CREDITS.md`.
+**A fogueira.** A cena do topo é a fogueira em pixel art com o seu personagem ao lado, na mesma escala e no mesmo chão: a lenha bate na canela dele e a espada fincada passa da cabeça. O personagem respira — um vaivém lento do peito, com origem nos pés, que para quando o sistema pede menos movimento. A imagem está em `public/assets/fogueira.png`, com a origem registrada em `public/assets/CREDITS.md`.
 
 **O cavaleiro vetorial** continua existindo ao lado dos sprites, porque é ele que mostra a armadura peça a peça: aparece na loja, em guarda, e nas crônicas, em ataque. A figura nunca encara quem está vendo — fica de três quartos, montada por articulação (cada membro gira no próprio pivô, em `knight-pose.ts`).
 

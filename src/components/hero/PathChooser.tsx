@@ -26,7 +26,7 @@ export function PathChooser({ onConfirm, confirmLabel }: { onConfirm?: () => voi
       {/* retrato e ficha do caminho em foco */}
       <div className="flex min-w-0 flex-col gap-3 border border-border bg-[linear-gradient(160deg,var(--tint-strong),var(--card))] p-5">
         <div className="flex justify-center py-2">
-          <HeroArt heroi={heroi} traje={traje} altura={230} alt={`${heroi.nome}, traje ${heroi.trajes[traje].nome}: ${heroi.trajes[traje].descreve}`} />
+          <HeroArt heroi={heroi} traje={traje} altura={230} respira alt={`${heroi.nome}, traje ${heroi.trajes[traje].nome}: ${heroi.trajes[traje].descreve}`} />
         </div>
         <div>
           <p className="gx-inscription">Caminho</p>
