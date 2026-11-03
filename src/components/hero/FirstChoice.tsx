@@ -57,7 +57,7 @@ export function FirstChoice() {
           Escolha o seu caminho
         </h1>
         <p id="escolha-texto" className="mt-2 max-w-prose text-sm text-muted-foreground">
-          Dez arquétipos entram no santuário pela mesma porta. O caminho muda a sua figura ao lado da fogueira e nada mais: o estudo, o XP e as
+          Seis arquétipos entram no santuário pela mesma porta. O caminho muda a sua figura ao lado da fogueira e nada mais: o estudo, o XP e as
           conquistas são os mesmos para todos, e dá para trocar quando quiser, de graça, na loja.
         </p>
         <div className="mt-6">

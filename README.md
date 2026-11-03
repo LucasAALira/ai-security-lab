@@ -342,22 +342,18 @@ Os títulos acompanham o número de peças: **Andarilho**, **Escudeiro**, **Sent
 
 Nada disso altera preço, XP, moedas ou qualquer regra de progresso: a figura só lê o estado que já existe (`src/lib/knight.ts`). O desenho é original, em SVG de linha fina como o resto da catedral (`src/components/gothic/KnightArt.tsx`).
 
-**Os dez caminhos.** Na primeira visita, uma tela pergunta por qual caminho você entra no santuário. São dez arquétipos clássicos, cada um com três trajes, desenhados em pixel art neste projeto (`src/components/pixel`, montados a partir de peças: cabeça, torso, pernas, capa e arma):
+**Os seis caminhos.** Na primeira visita, uma tela pergunta por qual caminho você entra no santuário. São seis arquétipos clássicos, cada um com três trajes, em ilustração de pixel art (`public/assets/herois`, origem registrada em `public/assets/CREDITS.md`):
 
 | Caminho | Equipamento | Trilha que combina |
 | --- | --- | --- |
-| ⚔️ **Cavaleiro errante** | armadura média e gasta, espada e escudo | Ataques e defesa |
-| 🗡️ **Duelista** | roupa leve, duas lâminas | Fundamentos |
-| 🪓 **Bárbaro** | couro pesado, machado grande | Ataques e defesa |
-| 🥷 **Ladrão** | capuz, proteção leve, duas adagas | Fundamentos |
-| 🔮 **Astrólogo** | manto, cajado arcano | Fundamentos |
-| 📿 **Clérigo** | túnica reforçada, maça e símbolo próprio | Governança e Regulação |
-| 🤺 **Espadachim** | armadura leve, espada longa | Ataques e defesa |
-| ⛓️ **Prisioneiro arcano** | roupa simples, grilhões | Fundamentos |
-| 🎭 **Penitente** | manto escuro, máscara lisa | Governança e Regulação |
-| 🧵 **Sobrevivente** | roupas remendadas, bordão | Ataques e defesa |
+| ⚔️ **Cavaleiro** | armadura completa, espada e escudo | Ataques e defesa |
+| 🥷 **Ladrão** | capuz, couro leve, lâmina curta | Fundamentos |
+| 📿 **Clérigo** | túnica reforçada, maça e códice | Governança e Regulação |
+| 🔮 **Mago** | manto, cajado e grimório | Fundamentos |
+| 📖 **Sábio** | capa de viagem, bordão e anotações | Governança e Regulação |
+| 🪓 **Anão** | couro pesado e machado | Ataques e defesa |
 
-São arquétipos de função, com nome, lema, equipamento e paleta escritos aqui — nenhuma classe, armadura, símbolo ou personagem de obra alguma foi copiado. Cada caminho aparece de dois jeitos: como **sprite em pixel art** (a figura da fogueira e a da escolha) e no **desenho vetorial**, que troca a arma e o acento de cor conforme o caminho e é quem mostra a armadura peça a peça. Escolher ou trocar não custa nada e não altera XP, moedas, conquistas nem qualquer regra. A troca fica na loja, em **A armadura do cavaleiro**.
+São arquétipos de função, com nome, lema, equipamento e paleta escritos aqui — nenhuma classe, armadura, símbolo ou personagem de obra alguma foi copiado. Cada caminho aparece de dois jeitos: como **ilustração** (a figura da fogueira e a da escolha) e no **desenho vetorial**, que troca a arma e o acento de cor conforme o caminho e é quem mostra a armadura peça a peça. Escolher ou trocar não custa nada e não altera XP, moedas, conquistas nem qualquer regra. A troca fica na loja, em **A armadura do cavaleiro**. Quem havia escolhido um dos dez caminhos da versão anterior cai no mais próximo destes seis, sem perder nada (`HEROIS_ANTIGOS`, em `src/data/herois.ts`).
 
 **A fogueira.** A cena do topo é a fogueira em pixel art com o seu personagem ao lado, na mesma escala: a espada fincada passa pouco da cabeça dele, como numa fogueira de verdade. A imagem está em `public/assets/fogueira.png`, com a origem registrada em `public/assets/CREDITS.md`.
 
