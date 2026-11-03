@@ -7,8 +7,10 @@ import { SectionHeading } from '@/components/common/SectionHeading'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { bosses } from '@/data/bosses'
+import { errantes } from '@/data/errantes'
 import { inscricaoDoDia } from '@/data/inscricoes'
 import { heroOf } from '@/lib/hero'
+import { findMission, missionPassed } from '@/lib/progress'
 import { knightGear } from '@/lib/knight'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
@@ -22,25 +24,47 @@ const data = (dia: string) => (dia ? dia.split('-').reverse().join('/') : '')
 /** Crônicas do santuário: um quadro por guardião, com o seu cavaleiro diante dele.
  *  Só mostra o que já está no progresso — nada aqui concede XP nem muda regra alguma. */
 export function BattleGallery() {
-  const { state, derived, today } = useProgress()
+  const { state, ctx, derived, today } = useProgress()
   const cavaleiro = knightGear(state, derived.summary.xp)
   const classe = heroOf(state)
   const [atual, setAtual] = useState(0)
   const faixa = useRef<HTMLDivElement>(null)
 
-  const quadros = bosses.map((boss, i) => {
+  const guardioes = bosses.map((boss, i) => {
     const venceu = state.bosses[i]?.won ?? ''
     return {
-      modulo: i,
+      chave: `modulo-${i}`,
+      to: `/modulo/${i}`,
+      overlay: true,
+      selo: `Módulo ${String(i + 1).padStart(2, '0')}`,
       nome: boss.name,
       epiteto: boss.epithet,
-      forma: FORMA_DO_MODULO[i] ?? 'guardia',
+      forma: (FORMA_DO_MODULO[i] ?? 'guardia') as BossShape,
       venceu,
       legenda: venceu
         ? `Caiu em ${data(venceu)}${state.bosses[i]?.flawless ? ', sem um erro sequer' : ''}.`
         : inscricaoDoDia('batalha', today, i),
     }
   })
+
+  /* Os errantes não guardam módulo nenhum: entram no fim das crônicas, com a própria fala. */
+  const vagantes = errantes.map((e) => {
+    const spec = findMission(ctx, e.id)
+    const venceu = spec ? missionPassed(state, spec) : false
+    return {
+      chave: e.id,
+      to: `/errantes/${e.id}`,
+      overlay: false,
+      selo: `Errante · ${e.elemento === 'gelo' ? 'Gelo' : 'Veneno'}`,
+      nome: e.nome,
+      epiteto: e.epiteto,
+      forma: e.forma,
+      venceu: venceu ? 'sim' : '',
+      legenda: venceu ? 'Derrubado. O santuário respira mais fundo desde então.' : `“${e.fala}”`,
+    }
+  })
+
+  const quadros = [...guardioes, ...vagantes]
 
   const vencidos = quadros.filter((q) => q.venceu).length
   const ir = (passo: number) => setAtual((n) => (n + passo + quadros.length) % quadros.length)
@@ -59,7 +83,7 @@ export function BattleGallery() {
         eyebrow="Crônicas"
         id="cronicas-titulo"
         title="Crônicas do santuário"
-        description="Um quadro para cada guardião da trilha, com o seu cavaleiro diante dele. Os que você ainda não enfrentou ficam no escuro."
+        description="Um quadro para cada guardião: os nove da trilha e os errantes, que não guardam módulo nenhum. Os que você ainda não enfrentou ficam no escuro."
         aside={`${vencidos}/${quadros.length} derrubados`}
       />
 
@@ -106,14 +130,14 @@ export function BattleGallery() {
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-[linear-gradient(0deg,color-mix(in_oklab,var(--card)_94%,transparent),transparent)] p-4">
             <div className="min-w-0">
               <p className="gx-inscription">
-                Módulo {String(quadro.modulo + 1).padStart(2, '0')} · {quadro.venceu ? 'derrubado' : 'de pé'}
+                {quadro.selo} · {quadro.venceu ? 'derrubado' : 'de pé'}
               </p>
               <h3 className="mt-1 text-[19px] leading-tight font-semibold">{quadro.nome}</h3>
               <p className="text-[13px] text-muted-foreground">{quadro.epiteto}</p>
               <p className="mt-1 text-[13px] text-[var(--gold-anodized)] italic">{quadro.legenda}</p>
             </div>
             <Button asChild size="sm" variant="outline" className="shrink-0">
-              <Link to={`/modulo/${quadro.modulo}`} state={{ overlay: true }}>
+              <Link to={quadro.to} state={quadro.overlay ? { overlay: true } : undefined}>
                 <Swords aria-hidden="true" /> {quadro.venceu ? 'Reencontrar' : 'Enfrentar'}
               </Link>
             </Button>
@@ -128,7 +152,7 @@ export function BattleGallery() {
             {quadros.map((q, i) => (
               /* o rótulo começa pelo número que aparece no botão, para comando de voz funcionar */
               <button
-                key={q.nome}
+                key={q.chave}
                 type="button"
                 role="tab"
                 aria-selected={i === atual}

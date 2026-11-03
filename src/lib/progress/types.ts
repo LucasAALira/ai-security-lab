@@ -403,8 +403,9 @@ export interface ProgressContext {
 export interface MissionSpec {
   id: string
   /** `dossier`: exercício de um dossiê de caso real. `review`: amostra do treino de análise de código.
-   *  Os dois ficam fora da contagem de missões das campanhas e não dependem de missão anterior. */
-  kind: 'mission' | 'dossier' | 'review'
+   *  `errante`: combate contra um guardião errante. Nenhum deles conta na contagem de missões das
+   *  campanhas, e nenhum depende de missão anterior. */
+  kind: 'mission' | 'dossier' | 'review' | 'errante'
   campaign: string | null
   /** Posição na campanha, a partir de 1. */
   order: number

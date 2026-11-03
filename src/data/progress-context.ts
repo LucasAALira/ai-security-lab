@@ -4,6 +4,7 @@ import { bossAnswers } from './bosses'
 import { campaignSpecs, missionSpecs } from './campaigns'
 import { challengeSpecs } from './challenges'
 import { reviewSpecs } from './code-review'
+import { errantSpecs } from './errantes'
 import { curriculumSpec, lessonIds } from './curriculum'
 import { modules } from './modules'
 import { remediationCases } from './scenarios'
@@ -13,7 +14,7 @@ import { remediationCases } from './scenarios'
 export const progressContext: ProgressContext = buildContext(modules, remediationCases, {
   challenges: challengeSpecs,
   bosses: bossAnswers,
-  missions: [...missionSpecs, ...reviewSpecs],
+  missions: [...missionSpecs, ...reviewSpecs, ...errantSpecs],
   campaigns: campaignSpecs,
   lessons: lessonIds,
   architect: architectSpecs,

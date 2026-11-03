@@ -33,6 +33,7 @@ const ArchitectListPage = lazy(() => import('@/pages/ArchitectListPage').then((m
 const ArchitectProjectPage = lazy(() => import('@/pages/ArchitectProjectPage').then((m) => ({ default: m.ArchitectProjectPage })))
 const TrophyRoomPage = lazy(() => import('@/pages/TrophyRoomPage').then(m => ({ default: m.TrophyRoomPage })))
 const ShopPage = lazy(() => import('@/pages/ShopPage').then((m) => ({ default: m.ShopPage })))
+const ErrantePage = lazy(() => import('@/pages/ErrantePage').then((m) => ({ default: m.ErrantePage })))
 const SettingsPage = lazy(() => import('@/pages/SettingsPage').then((m) => ({ default: m.SettingsPage })))
 
 /** Rotas em hash (`#/materias/...`): o site funciona aberto de qualquer pasta ou servidor estático. */
@@ -63,6 +64,7 @@ export function App() {
           <Route path="arquiteto/:project" element={<ArchitectProjectPage />} />
           <Route path="analise" element={<CodeReviewPage />} />
           <Route path="analise/:amostra" element={<CodeReviewSamplePage />} />
+          <Route path="errantes/:errante" element={<ErrantePage />} />
           <Route path="casos" element={<DossiersPage />} />
           <Route path="casos/:dossier" element={<DossierPage />} />
           <Route path="casos/:dossier/simulacao" element={<DossierSimulationPage />} />

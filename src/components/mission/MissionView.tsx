@@ -61,12 +61,14 @@ function Stepper({ stage, reachable, onGo, rotulo }: { stage: number; reachable:
   )
 }
 
-/** Como cada tipo de conteúdo se chama na interface: campanhas têm missões, dossiês têm simulações
- *  e o treino de análise de código tem triagens. O motor é o mesmo; só o vocabulário muda. */
-const PALAVRA: Record<MissionSpec['kind'], { a: string; da: string; Titulo: string }> = {
-  mission: { a: 'a missão', da: 'da missão', Titulo: 'Missão' },
-  dossier: { a: 'a simulação', da: 'da simulação', Titulo: 'Simulação' },
-  review: { a: 'a triagem', da: 'da triagem', Titulo: 'Triagem' },
+/** Como cada tipo de conteúdo se chama na interface: campanhas têm missões, dossiês têm simulações,
+ *  o treino de análise de código tem triagens e os guardiões errantes têm combates.
+ *  O motor é o mesmo; só o vocabulário muda. */
+const PALAVRA: Record<MissionSpec['kind'], { a: string; da: string; desta: string; Titulo: string }> = {
+  mission: { a: 'a missão', da: 'da missão', desta: 'desta missão', Titulo: 'Missão' },
+  dossier: { a: 'a simulação', da: 'da simulação', desta: 'desta simulação', Titulo: 'Simulação' },
+  review: { a: 'a triagem', da: 'da triagem', desta: 'desta triagem', Titulo: 'Triagem' },
+  errante: { a: 'o combate', da: 'do combate', desta: 'deste combate', Titulo: 'Combate' },
 }
 
 const resultIcon = (r: ActivityResult | null) => (r === null ? Circle : r === 'revealed' ? Circle : isGood(r) ? CheckCircle2 : Circle)
@@ -83,7 +85,9 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
       ? { to: '/analise', label: 'Voltar ao treino de análise' }
       : spec.kind === 'dossier'
         ? { to: '/casos', label: 'Voltar aos casos reais' }
-        : { to: '/campanhas', label: 'Voltar às campanhas' }
+        : spec.kind === 'errante'
+          ? { to: '/?secao=cronicas', label: 'Voltar às crônicas' }
+          : { to: '/campanhas', label: 'Voltar às campanhas' }
   const total = spec.activities.length
   const pending = firstPending(state, spec, m)
   const flags = useMemo(() => runFlags(spec, m), [spec, m])
@@ -135,9 +139,11 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
         <p className="text-[10px] font-semibold tracking-[0.2em] text-primary uppercase">
           {spec.kind === 'review'
             ? 'Treino de análise de código · triagem de um achado'
-            : dossier
-              ? `Simulação fictícia · inspirada em ${dossier.title}`
-              : `Campanha ${campaign?.title ?? ''} · Missão ${content.order} de ${campaign?.missions.length ?? '?'}`}
+            : spec.kind === 'errante'
+              ? 'Guardião errante · combate em três fases'
+              : dossier
+                ? `Simulação fictícia · inspirada em ${dossier.title}`
+                : `Campanha ${campaign?.title ?? ''} · Missão ${content.order} de ${campaign?.missions.length ?? '?'}`}
         </p>
         <h1 className="mt-2 text-2xl leading-tight font-medium tracking-tight sm:text-3xl">{content.title}</h1>
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -147,13 +153,13 @@ export function MissionView({ content, spec }: { content: MissionContent; spec: 
           <span className="inline-flex items-center gap-1">
             <Clock className="size-3.5" aria-hidden="true" /> cerca de {content.minutes} min
           </span>
-          <span>{campaign?.company ? `Empresa fictícia: ${campaign.company}` : dossier ? 'Empresa, nomes e dados inventados' : ''}</span>
+          <span>{campaign?.company ? `Empresa fictícia: ${campaign.company}` : dossier || spec.kind === 'errante' ? 'Empresa, nomes e dados inventados' : ''}</span>
           {started ? (
             <span>
               Atividades: {pending} de {total}
             </span>
           ) : null}
-          <span>XP desta {palavra.a.replace('a ', '')}: {xp}</span>
+          <span>XP {palavra.desta}: {xp}</span>
         </div>
       </header>
 

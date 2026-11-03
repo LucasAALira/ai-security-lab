@@ -1,6 +1,6 @@
 import { isDecision, type ActivitySpec } from './activities'
 import { isChallengeDone } from './challenges'
-import { ARCHITECT_XP, DOSSIER_XP, LESSON_XP, MISSION_XP, REVIEW_XP } from './constants'
+import { ARCHITECT_XP, DOSSIER_XP, ERRANT_XP, LESSON_XP, MISSION_XP, REVIEW_XP } from './constants'
 import type { ActivityResult, CampaignSpec, MissionSpec, MissionState, ProgressContext, StudyState } from './types'
 
 /* Regras das campanhas, dos exercícios de dossiê e das amostras de análise de código. Tudo é derivado do estado salvo; o XP nunca é
@@ -110,7 +110,7 @@ const paying = (mission: MissionSpec) => mission.activities.filter((a) => a.kind
 
 /** XP máximo de uma missão (atividades próprias e bônus de conclusão), sem o dos desafios de código. */
 /** XP por etapa e por conclusão, conforme o tipo de missão. */
-const xpOf = (kind: MissionSpec['kind']) => (kind === 'dossier' ? DOSSIER_XP : kind === 'review' ? REVIEW_XP : MISSION_XP)
+const xpOf = (kind: MissionSpec['kind']) => (kind === 'dossier' ? DOSSIER_XP : kind === 'review' ? REVIEW_XP : kind === 'errante' ? ERRANT_XP : MISSION_XP)
 
 export function missionMaxXp(mission: MissionSpec): number {
   const xp = xpOf(mission.kind)
@@ -165,6 +165,8 @@ export interface LearningStats {
   dossiersPassed: number
   /** Amostras do treino de análise de código concluídas com todas as etapas creditadas. */
   reviewsPassed: number
+  /** Guardiões errantes derrotados. */
+  errantesPassed: number
   campaignsPassed: number
   lessons: number
   architectEvaluated: number
@@ -189,6 +191,7 @@ export function learningStats(s: StudyState, ctx: ProgressContext): LearningStat
     lessons: ctx.lessons.filter((id) => s.lessons[id]).length,
     architectEvaluated: 0,
     adrDone: 0,
+    errantesPassed: 0,
     byCampaign: {},
   }
   for (const mission of ctx.missions) {
@@ -199,6 +202,9 @@ export function learningStats(s: StudyState, ctx: ProgressContext): LearningStat
       if (passed && s.dossiers[mission.id]) out.dossiersPassed += 1
     } else if (mission.kind === 'review') {
       if (passed) out.reviewsPassed += 1
+    } else if (mission.kind === 'errante') {
+      // Errante não é missão de campanha: tem contagem própria e não entra nas conquistas de missão.
+      if (passed) out.errantesPassed += 1
     } else {
       if (m?.started) out.missionsStarted += 1
       if (m?.done) out.missionsDone += 1

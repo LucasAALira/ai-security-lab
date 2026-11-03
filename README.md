@@ -361,7 +361,20 @@ São arquétipos clássicos de RPG, com nome, lema e arte escritos para este pro
 
 Na página inicial, uma galeria com um quadro por guardião da trilha: o seu cavaleiro, na pose de ataque, diante do vulto do chefe. Quem já caiu aparece com a data da queda (e um elogio quando foi sem nenhum erro); quem ainda está de pé fica no escuro, com uma inscrição no lugar da data. Dá para percorrer pelos botões, pela faixa numerada ou pelas setas do teclado, e cada quadro leva ao módulo daquele chefe.
 
-Os guardiões são cinco silhuetas originais — torre, vulto encapuzado, cavaleiro inimigo, figura de coroa e balança, e máquina de um olho só — distribuídas pelos nove chefes conforme o que cada um representa. Os olhos acendem devagar e se apagam quando o chefe já foi derrotado; quem pede "reduzir movimento" vê tudo parado.
+Os guardiões são sete silhuetas originais — torre, vulto encapuzado, cavaleiro inimigo, figura de coroa e balança, máquina de um olho só, criatura de gelo e criatura de peçonha — distribuídas pelos nove chefes e pelos [errantes](#errantes) conforme o que cada um representa. Os olhos acendem devagar e se apagam quando o chefe já foi derrotado; quem pede "reduzir movimento" vê tudo parado.
+
+<a id="errantes"></a>
+
+### 🧊 Guardiões errantes
+
+Além dos nove chefes da trilha, há vilões que não guardam módulo nenhum e aparecem nas crônicas: os **errantes**. Cada um é um combate de três fases no mesmo motor das missões — reconhecer, conter e selar — com evidências, dicas, explicação e revisão da solução.
+
+| Errante | Elemento | Do que trata |
+| --- | --- | --- |
+| 🧊 **A Geada** · *que para o serviço sem derrubá-lo* | Gelo | Exaustão de recursos: validação com custo explosivo, entrada sem limite de tamanho, requisição sem prazo e repetição de cliente sem espera. |
+| ☠️ **A Peçonha** · *que envenena o poço de onde todos bebem* | Veneno | Envenenamento da fonte: base alimentada por pasta pública sem procedência, texto recuperado virando instrução e dependência com o mesmo nome em dois registros. |
+
+Cada combate vale XP próprio (12 por fase e 25 pela vitória) e **não** entra na contagem de missões das campanhas. Duas conquistas acompanham: **Caçador de Errantes** (prata) e **Fim dos Errantes** (ouro). Os cenários são sintéticos — empresa fictícia, host `.example` e IPs das faixas reservadas para documentação —, com referências a OWASP API Top 10, OWASP Top 10 para LLM, OWASP Top 10 e CWE.
 
 <a id="inscricoes"></a>
 
