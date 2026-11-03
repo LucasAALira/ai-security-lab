@@ -54,7 +54,7 @@ export function ambienceSamples(kind: AmbienceKind, rate: number, seconds: numbe
       value = low * 1.7 + leaves + Math.sin(chirpPhase) * chirp
     } else if (kind === 'ice') value = low * 2.2 + white * 0.12
     else if (kind === 'volcano') value = low * 2.6 + white * crackle
-    else value = low * 1.6 + white * (random() < 0.0008 ? 0.08 : 0.025)
+    else value = low * 1.6 + white * (random() < 0.8 / rate ? 0.08 : 0.025)
     data[i] = value * taper
   }
   return data
