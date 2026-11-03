@@ -2,19 +2,19 @@
 
 ```text
 ╔══════════════════════════════════════════════════════════════════╗
-║        /\   /\             A I   S E C U R I T Y   L A B         ║
-║       /  \_/  \                                                  ║
-║  .---(  o   o  )---.       AppSec + IA, em português             ║
-║ /     \   ^   /     \      offline · sem conta · sem servidor    ║
-║ |  ~~~  '--v--'  ~~~  |    aulas, missões, triagem de achados    ║
-║  \     __|   |__     /     casos reais e revisões de arquitetura ║
-║   '---'  '---'  '---'      `npm run arte` desenha no terminal    ║
+║      .-"""-.          (     A I   S E C U R I T Y   L A B        ║
+║     / ,---. \        ) )                                         ║
+║    | |== ==| |      ( ( )   AppSec + IA, em português            ║
+║    | |  |  | |      \\|//   offline · sem conta · sem servidor   ║
+║     \ '---' /       _/^\_   aulas, missões e triagem de achados  ║
+║    __`--^--'__     /_____\  casos reais, arquitetura e crônicas  ║
+║   /__________\    ~~~~~~~~~ `npm run arte` desenha no terminal   ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
 **Central de estudos de segurança de aplicações e de inteligência artificial para profissionais de AppSec, Security Champions e desenvolvedores.**
 
-![versão 2.6.0](https://img.shields.io/badge/vers%C3%A3o-2.6.0-ff3333?style=flat-square) ![2.258 testes](https://img.shields.io/badge/testes-2.258-dccb94?style=flat-square) ![português](https://img.shields.io/badge/idioma-portugu%C3%AAs-8a8f98?style=flat-square) ![funciona offline](https://img.shields.io/badge/offline-sim-8a8f98?style=flat-square) ![Android 7+](https://img.shields.io/badge/Android-7.0%2B-8a8f98?style=flat-square)
+![versão 2.6.0](https://img.shields.io/badge/vers%C3%A3o-2.6.0-ff3333?style=flat-square) ![2.342 testes](https://img.shields.io/badge/testes-2.342-dccb94?style=flat-square) ![português](https://img.shields.io/badge/idioma-portugu%C3%AAs-8a8f98?style=flat-square) ![funciona offline](https://img.shields.io/badge/offline-sim-8a8f98?style=flat-square) ![Android 7+](https://img.shields.io/badge/Android-7.0%2B-8a8f98?style=flat-square)
 
 Um site de aprendizado em português que reúne aulas, missões investigativas, desafios de código, casos reais e revisões de arquitetura. A proposta é conectar os conceitos de segurança Web, de APIs, Mobile, de IA e da cadeia de suprimentos às decisões do dia a dia das empresas. Funciona inteiro no navegador, sem conta e sem servidor. 🔌
 
