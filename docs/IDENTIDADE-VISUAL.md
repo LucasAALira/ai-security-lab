@@ -1,4 +1,4 @@
-# Identidade visual: Forja Dracônica (Dark Tech)
+# Identidade visual: Forja Dracônica — aço, cinza e brasa
 
 A Forja Dracônica combina carvão, aço frio, tecido gasto e luz de brasa. A imagem de referência orienta a atmosfera e a paleta — armaduras azul-acinzentadas, sombras profundas e reflexos quentes — enquanto a identidade AppSec aparece em selos, linhas técnicas e circuitos discretos. A interface mantém leitura clara, contraste, controles consistentes e arte original em CSS e SVG; não reproduz personagens nem assets da referência.
 
@@ -25,18 +25,18 @@ Arquivos:
 
 | Token | Valor | Uso |
 | --- | --- | --- |
-| `--void`, `--color-base-100` | `#0b0e12` | Fundo, preto absoluto |
+| `--void`, `--color-base-100` | `#0b0e12` | Fundo de carvão |
 | `--titanium-900` … `--titanium-200`, `--color-base-200/300` | `#151a1f` … `#bdc6ce` | Superfícies, bordas e titânio fosco |
-| `--ember-red`, `--color-primary` | `#d88b57` | Destaque: fogo de dragão e alerta crítico |
+| `--ember-red`, `--color-primary` | `#d88b57` | Destaque: luz de brasa e alerta crítico |
 | `--gold-anodized`, `--color-success` | `#c5b899` | Medalhas, conquistas e sucesso |
 | `--amber` | `#e3ad67` | Compra disponível, foco do teclado, preços |
-| `--heading` | `#edf1f4` | Títulos (21:1 sobre o fundo) |
+| `--heading` | `#edf1f4` | Títulos com contraste alto sobre o fundo |
 | `--spectral`, `--color-base-content` | `#cbd3da` | Texto de leitura |
 | `--muted-foreground` | texto 68% sobre a superfície | Texto secundário (≥ 5,5:1) |
 | `--line`, `--line-strong`, `--line-hot` | derivados | Linhas de 1 px (11%, 22% e a cor do tema) |
-| `--glass`, `--glass-strong`, `--blur` | 74%, 92%, 12 px | Vidro fumado |
+| `--glass`, `--glass-strong`, `--blur` | 74%, 92%, 8 px | Vidro fumado |
 | `--glow`, `--monitor` | derivados | Brilho e cor dos circuitos de fundo |
-| `--cut`, `--cut-sm` | 8 px, 5 px | Chanfro dos botões |
+| `--cut`, `--cut-sm` | 6 px, 4 px | Chanfro dos botões |
 | `--space-1` … `--space-7` | 4 a 48 px | Espaçamento |
 
 Os nomes antigos (`--bronze`, `--candle`, `--ember`, `--ivory`) continuam valendo e apontam para os novos.
@@ -68,8 +68,8 @@ Todas as fontes são SIL OFL 1.1, empacotadas pelo Fontsource (subconjuntos lati
 
 | Classe ou componente | O que é |
 | --- | --- |
-| `gx-glass` | Vidro fumado: preto translúcido, desfoque e borda de 1 px. |
-| `gx-panel` | O `Card`: vidro com um brilho fino no alto. |
+| `gx-glass` | Superfície fosca: carvão translúcido, desfoque curto e borda fria de 1 px. |
+| `gx-panel` | O `Card`: aço fosco com um reflexo frio discreto. |
 | `gx-frame` | Moldura de destaque com cantoneiras metálicas. As linhas pulsam (`dataPulse`) e um pacote de dados corre pela borda de cima (`dataRun`). |
 | `gx-pulse` | Adiciona o pacote de dados à borda de qualquer elemento. |
 | `gx-btn` | Botão de cantos vivos com chanfro. A linha é o `::before` e o preenchimento o `::after`, no mesmo polígono. O brilho é um `drop-shadow` que acende no hover. |
