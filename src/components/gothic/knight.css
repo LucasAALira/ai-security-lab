@@ -18,3 +18,14 @@
 
 .knight[data-paused="true"] *{animation-play-state:paused!important}
 @media(prefers-reduced-motion:reduce){.knight *{animation:none!important}.knight-visor{opacity:.9}.knight-glint{opacity:0}}
+
+/* Paleta individual dos arquétipos; a mesma luz fria e de brasa atravessa cada traje. */
+g[data-hero='duelista'] { --hero-accent: #91b4c8; }
+g[data-hero='barbaro'] { --hero-accent: #c18458; }
+g[data-hero='batedor'] { --hero-accent: #8da1a4; }
+g[data-hero='arcanista'] { --hero-accent: #a9a5cb; }
+g[data-hero='clerigo'] { --hero-accent: #c9bc98; }
+g[data-hero='espadachim'] { --hero-accent: #91aaa6; }
+g[data-hero='prisioneiro'] { --hero-accent: #a0a9b4; }
+g[data-hero='penitente'] { --hero-accent: #a67b82; }
+g[data-hero='sobrevivente'] { --hero-accent: #a9a080; }
