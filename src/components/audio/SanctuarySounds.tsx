@@ -24,7 +24,7 @@ const sceneMethods = {
   spider: { start: (s: Soundscape) => s.startSpiderDen(), stop: (s: Soundscape) => s.stopSpiderDen() },
 } satisfies Record<Landscape, { start: (s: Soundscape) => void; stop: (s: Soundscape) => void }>
 
-export function SanctuarySounds() {
+export function SanctuarySounds({ onPlayingChange }: { onPlayingChange?: (active: boolean) => void }) {
   const { store } = useProgress()
   const [prefs, setPrefs] = useState(initial)
   const [fire, setFire] = useState(false)
@@ -35,6 +35,7 @@ export function SanctuarySounds() {
   const engine = useRef<Soundscape | null>(null)
   const request = useRef(0)
   const current = useRef(prefs); current.current = prefs
+  useEffect(() => { onPlayingChange?.(fire || sea || landscape !== null) }, [fire, sea, landscape, onPlayingChange])
   useEffect(() => {
     const sound = new Soundscape(); engine.current = sound
     let clickTimer: ReturnType<typeof setTimeout> | undefined
