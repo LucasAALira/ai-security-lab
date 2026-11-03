@@ -79,6 +79,7 @@ describe('armadura na loja', () => {
     expect(itens.length).toBe(9)
     // a escolha de caminho vem junto: dez arquétipos e três trajes
     expect(screen.getAllByRole('radio', { name: /Traje/ }).length).toBe(3)
+    expect(screen.getAllByRole('radio').length).toBe(13)
     expect(screen.getByRole('radio', { name: 'Cavaleiro errante' })).toHaveAttribute('aria-checked', 'true')
     expect(screen.getByText('Botas de couro')).toBeInTheDocument()
     expect(screen.getByText('250 XP acumulados')).toBeInTheDocument()

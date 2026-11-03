@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { progressContext } from '@/data/progress-context'
 import { applyAction, cleanState, emptyState, type StudyState } from '@/lib/progress'
-import { DEFAULT_HERO, HEROIS, HERO_ANTIGOS, HERO_IDS, heroOf, isHeroId, normalizeHero } from './hero'
+import { DEFAULT_HERO, HEROIS, HERO_IDS, heroOf, isHeroId, normalizeHero } from './hero'
 
 const ctx = progressContext
 const agora = new Date(2026, 10, 2, 12)
@@ -20,11 +20,13 @@ describe('classes do santuário', () => {
     }
   })
 
-  it('os caminhos da versão anterior continuam valendo', () => {
-    for (const [antigo, novo] of Object.entries(HERO_ANTIGOS)) {
-      expect(normalizeHero(antigo), antigo).toBe(novo)
-      expect(HERO_IDS).toContain(novo)
+  it('os identificadores salvos antes continuam valendo', () => {
+    // são os mesmos ids de sempre: quem já tinha escolhido não perde a escolha
+    for (const id of ['cavaleiro', 'batedor', 'arcanista', 'clerigo', 'penitente']) {
+      expect(normalizeHero(id), id).toBe(id)
+      expect(HERO_IDS).toContain(id)
     }
+    expect(normalizeHero('astrologo')).toBeUndefined()
   })
 
   it('sem escolha, vale a classe padrão', () => {
@@ -45,9 +47,9 @@ describe('escolher a classe', () => {
 
   it('troca a classe e nada mais', () => {
     const antes = emptyState()
-    const r = trocar(antes, 'astrologo')
+    const r = trocar(antes, 'arcanista')
     expect(r.changed).toBe(true)
-    expect(heroOf(r.state).id).toBe('astrologo')
+    expect(heroOf(r.state).id).toBe('arcanista')
     // não é estudo: sem XP, sem evento, sem dia de estudo, sem sequência
     expect(r.events).toEqual([])
     expect(r.state.study).toEqual(antes.study)
@@ -57,10 +59,10 @@ describe('escolher a classe', () => {
   })
 
   it('recusa caminho desconhecido e repetição', () => {
-    const s = trocar(emptyState(), 'ladrao').state
-    expect(trocar(s, 'ladrao').changed).toBe(false)
+    const s = trocar(emptyState(), 'batedor').state
+    expect(trocar(s, 'batedor').changed).toBe(false)
     expect(trocar(s, 'necromante').changed).toBe(false)
-    expect(heroOf(s).id).toBe('ladrao')
+    expect(heroOf(s).id).toBe('batedor')
   })
 
   it('guarda o traje junto do caminho, e só de 0 a 2', () => {
@@ -74,8 +76,8 @@ describe('escolher a classe', () => {
     const salvo = cleanState({ prefs: { sound: true, hero: 'clerigo', heroTraje: 1 } })
     expect(salvo.prefs.hero).toBe('clerigo')
     expect(salvo.prefs.heroTraje).toBe(1)
-    // o id antigo de uma versão anterior cai no equivalente de hoje
-    expect(cleanState({ prefs: { hero: 'arcanista' } }).prefs.hero).toBe('astrologo')
+    expect(cleanState({ prefs: { hero: 'arcanista' } }).prefs.hero).toBe('arcanista')
+    expect(cleanState({ prefs: { hero: 'dragao-supremo' } }).prefs.hero).toBeUndefined()
     expect(salvo.prefs.sound).toBe(true)
     expect(cleanState({ prefs: { hero: 'dragao-supremo' } }).prefs.hero).toBeUndefined()
     expect(heroOf(cleanState({ prefs: { hero: 123 } })).id).toBe(DEFAULT_HERO)

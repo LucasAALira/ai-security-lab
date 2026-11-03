@@ -21,11 +21,11 @@
   default: true;
   prefersdark: true;
   color-scheme: dark;
-  --color-base-100: #050505;
-  --color-base-200: #0e0f11;
-  --color-base-300: #2a2c31;
-  --color-base-content: #c9ccd4;
-  --color-primary: #ff3333;
+  --color-base-100: #0b0e12;
+  --color-base-200: #151a1f;
+  --color-base-300: #303941;
+  --color-base-content: #cbd3da;
+  --color-primary: #d88b57;
   --color-primary-content: #050505;
   --color-secondary: #16171a;
   --color-secondary-content: #c9ccd4;
@@ -33,17 +33,17 @@
   --color-accent-content: #c9ccd4;
   --color-neutral: #111215;
   --color-neutral-content: #a9aeb8;
-  --color-info: #7fb4d8;
+  --color-info: #9bbbd0;
   --color-info-content: #04131d;
-  --color-success: #dccb94;
+  --color-success: #c5b899;
   --color-success-content: #1a1508;
-  --color-warning: #ffb340;
+  --color-warning: #e3ad67;
   --color-warning-content: #231500;
-  --color-error: #ff6b5a;
+  --color-error: #d9795e;
   --color-error-content: #230705;
-  --radius-selector: 0rem;
-  --radius-field: 0rem;
-  --radius-box: 0rem;
+  --radius-selector: 0.125rem;
+  --radius-field: 0.125rem;
+  --radius-box: 0.25rem;
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
   --border: 1px;
@@ -474,7 +474,9 @@
   .tier-prata { --tier: var(--color-silver); }
   .tier-ouro { --tier: var(--color-gold); }
   .tier-dragao { --tier: var(--color-dragon); }
-  .tier-none { --tier: var(--muted-foreground); }
+  /* O chip sem medalha usa um cinza um pouco mais claro que o texto apagado: com o véu de 15%
+     por trás, `--muted-foreground` fica em 4,46 de contraste, logo abaixo do mínimo de 4,5. */
+  .tier-none { --tier: color-mix(in oklab, var(--foreground) 80%, var(--card)); }
   .tier-bronze, .tier-prata, .tier-ouro, .tier-dragao, .tier-none {
     --tier-soft: color-mix(in oklab, var(--tier) 15%, transparent);
     --tier-line: color-mix(in oklab, var(--tier) 60%, transparent);

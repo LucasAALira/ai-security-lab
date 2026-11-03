@@ -1,34 +1,36 @@
-/** Classes do santuário: o caminho que a pessoa escolhe seguir no estudo.
+/** Arquétipos do santuário: o caminho que a pessoa escolhe seguir no estudo.
  *
- *  São dez arquétipos clássicos de RPG, com nome, lema, equipamento e arte próprios deste projeto
- *  (`src/data/herois.ts`). Nenhuma classe, armadura, símbolo ou nome de obra alguma foi copiado.
+ *  São dez arquétipos clássicos de RPG, com nome, lema, equipamento, trilha e arte próprios deste
+ *  projeto (`src/data/herois.ts`, desenho em `src/components/pixel`). Nenhuma classe, armadura,
+ *  símbolo ou nome de obra alguma foi copiado.
  *
- *  A escolha é só aparência: muda a figura do santuário e nada mais — não altera XP, moedas,
- *  preços, conquistas nem qualquer regra de progresso. */
+ *  Escolher um caminho é só aparência: muda a figura do santuário, a arma do desenho vetorial e o
+ *  acento de cor, e nada mais — não altera XP, moedas, preços, conquistas nem regra de progresso.
+ *  Os identificadores são os mesmos de antes, para não perder escolha já salva. */
 
 import { HEROIS, heroiById, type HeroiSpec } from '@/data/herois'
 import type { StudyState } from '@/lib/progress'
 
-export type HeroId = string
+/** Os dez caminhos. O identificador é o que entra no progresso e no `data-hero` do desenho. */
+export type HeroId =
+  | 'cavaleiro'
+  | 'duelista'
+  | 'barbaro'
+  | 'batedor'
+  | 'arcanista'
+  | 'clerigo'
+  | 'espadachim'
+  | 'prisioneiro'
+  | 'penitente'
+  | 'sobrevivente'
 
-export const HERO_IDS: readonly string[] = HEROIS.map((h) => h.id)
+export const HERO_IDS: readonly HeroId[] = HEROIS.map((h) => h.id as HeroId)
 
-/** As quatro classes da versão anterior viraram arquétipos com nome próprio: progresso salvo
- *  antes desta versão continua valendo e cai no equivalente mais próximo. */
-export const HERO_ANTIGOS: Record<string, string> = {
-  cavaleiro: 'cavaleiro-errante',
-  clerigo: 'clerigo',
-  arcanista: 'astrologo',
-  batedor: 'ladrao',
-}
+export const DEFAULT_HERO: HeroId = 'cavaleiro'
 
-export const DEFAULT_HERO: HeroId = 'cavaleiro-errante'
-
-/** Aceita os ids atuais e os antigos, devolvendo sempre um id atual. */
+/** Aceita o que estiver salvo e devolve um caminho conhecido, ou `undefined`. */
 export function normalizeHero(v: unknown): HeroId | undefined {
-  if (typeof v !== 'string') return undefined
-  if (HERO_IDS.includes(v)) return v
-  return HERO_ANTIGOS[v]
+  return typeof v === 'string' && (HERO_IDS as readonly string[]).includes(v) ? (v as HeroId) : undefined
 }
 
 export const isHeroId = (v: unknown): v is HeroId => normalizeHero(v) !== undefined
@@ -47,22 +49,6 @@ export function trajeOf(state: StudyState): number {
 
 /** Ainda não escolheu nenhum caminho: é o que abre a tela de escolha na primeira visita. */
 export const heroEscolhido = (state: StudyState): boolean => normalizeHero(state.prefs.hero) !== undefined
-
-/** Que arma o desenho vetorial da fogueira deve mostrar para este arquétipo. */
-export type HeroFamilia = 'cavaleiro' | 'clerigo' | 'arcanista' | 'batedor'
-const FAMILIA: Record<string, HeroFamilia> = {
-  'cavaleiro-errante': 'cavaleiro',
-  espadachim: 'cavaleiro',
-  penitente: 'cavaleiro',
-  barbaro: 'cavaleiro',
-  clerigo: 'clerigo',
-  sobrevivente: 'clerigo',
-  astrologo: 'arcanista',
-  prisioneiro: 'arcanista',
-  duelista: 'batedor',
-  ladrao: 'batedor',
-}
-export const familiaOf = (id: string): HeroFamilia => FAMILIA[id] ?? 'cavaleiro'
 
 export { HEROIS, heroiById }
 export type { HeroiSpec }

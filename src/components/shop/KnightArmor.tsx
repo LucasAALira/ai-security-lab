@@ -3,7 +3,8 @@ import { KnightArt, KNIGHT_VIEWBOX } from '@/components/gothic/KnightArt'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { Card } from '@/components/ui/card'
 import { PathChooser } from '@/components/hero/PathChooser'
-import { familiaOf, heroOf } from '@/lib/hero'
+import { heroOf } from '@/lib/hero'
+import type { HeroId } from '@/lib/hero'
 import { GEAR, knightGear } from '@/lib/knight'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
@@ -35,7 +36,7 @@ export function KnightArmor() {
             aria-label={`${classe.nome} ${cavaleiro.titulo}, de perfil e em guarda, com ${cavaleiro.completo} de ${cavaleiro.total} peças de equipamento.`}
             className="max-w-full text-[var(--foreground)]"
           >
-            <KnightArt gear={cavaleiro} hero={familiaOf(classe.id)} pose="guarda" />
+            <KnightArt gear={cavaleiro} hero={classe.id as HeroId} pose="guarda" />
           </svg>
           <p className="gx-inscription text-center">
             {classe.nome} · {cavaleiro.titulo}

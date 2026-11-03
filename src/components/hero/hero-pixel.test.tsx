@@ -85,7 +85,7 @@ describe('escolha do caminho na primeira visita', () => {
   it('não abre de novo para quem já escolheu', () => {
     const store = loja()
     const atual = store.getState()
-    store.replace({ ...atual, prefs: { ...atual.prefs, hero: 'ladrao' } })
+    store.replace({ ...atual, prefs: { ...atual.prefs, hero: 'batedor' } })
     abrir(store)
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })

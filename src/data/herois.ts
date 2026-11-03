@@ -20,6 +20,8 @@ export interface HeroiSpec {
   desc: string
   /** Frase do próprio personagem, no tom do santuário. */
   lema: string
+  /** Trilha do site com que o caminho mais combina. */
+  trilha: string
   /** Como o equipamento se chama na ficha. */
   ficha: [string, string][]
   /** Três trajes: mesma função, roupa diferente. */
@@ -28,7 +30,8 @@ export interface HeroiSpec {
 
 export const HEROIS: readonly HeroiSpec[] = [
   {
-    id: 'cavaleiro-errante',
+    id: 'cavaleiro',
+    trilha: 'Ataques e defesa',
     nome: 'Cavaleiro errante',
     desc: 'Armadura média e gasta, espada e escudo que já serviram a outro dono.',
     lema: 'Servi a um portão que já não existe. Sirvo ao próximo.',
@@ -53,6 +56,7 @@ export const HEROIS: readonly HeroiSpec[] = [
   },
   {
     id: 'duelista',
+    trilha: 'Fundamentos',
     nome: 'Duelista',
     desc: 'Roupa leve, duas lâminas curtas e peso na ponta dos pés.',
     lema: 'Quem erra o primeiro golpe não erra o segundo: não há segundo.',
@@ -77,6 +81,7 @@ export const HEROIS: readonly HeroiSpec[] = [
   },
   {
     id: 'barbaro',
+    trilha: 'Ataques e defesa',
     nome: 'Bárbaro',
     desc: 'Couro pesado, ombros largos e um machado que pede as duas mãos.',
     lema: 'Muro é só pedra que ainda não foi convencida.',
@@ -100,7 +105,8 @@ export const HEROIS: readonly HeroiSpec[] = [
     ],
   },
   {
-    id: 'ladrao',
+    id: 'batedor',
+    trilha: 'Fundamentos',
     nome: 'Ladrão',
     desc: 'Capuz baixo, proteção leve, duas adagas e bolsa de ferramentas no cinto.',
     lema: 'A porta mais segura é a que ninguém se lembra de trancar.',
@@ -124,7 +130,8 @@ export const HEROIS: readonly HeroiSpec[] = [
     ],
   },
   {
-    id: 'astrologo',
+    id: 'arcanista',
+    trilha: 'Fundamentos',
     nome: 'Astrólogo',
     desc: 'Manto com pontos de luz discretos e um cajado que não se apaga.',
     lema: 'As estrelas não respondem. Só confirmam o que eu já temia.',
@@ -149,6 +156,7 @@ export const HEROIS: readonly HeroiSpec[] = [
   },
   {
     id: 'clerigo',
+    trilha: 'Governança e Regulação',
     nome: 'Clérigo',
     desc: 'Túnica reforçada, maça de cerimônia e um símbolo próprio no peito.',
     lema: 'Registro o que vi. Quem vier depois que decida o nome disso.',
@@ -173,6 +181,7 @@ export const HEROIS: readonly HeroiSpec[] = [
   },
   {
     id: 'espadachim',
+    trilha: 'Ataques e defesa',
     nome: 'Espadachim',
     desc: 'Armadura leve, espada longa e economia de movimento.',
     lema: 'Um golpe, bem posto, poupa dez.',
@@ -197,6 +206,7 @@ export const HEROIS: readonly HeroiSpec[] = [
   },
   {
     id: 'prisioneiro',
+    trilha: 'Fundamentos',
     nome: 'Prisioneiro arcano',
     desc: 'Roupa simples, grilhões que não saíram e uma magia que ainda não obedece.',
     lema: 'Tiraram minhas correntes das mãos, não dos pulsos.',
@@ -221,6 +231,7 @@ export const HEROIS: readonly HeroiSpec[] = [
   },
   {
     id: 'penitente',
+    trilha: 'Governança e Regulação',
     nome: 'Penitente',
     desc: 'Manto escuro, máscara lisa e equipamento sem excesso.',
     lema: 'Carrego a máscara porque o rosto não bastava.',
@@ -245,6 +256,7 @@ export const HEROIS: readonly HeroiSpec[] = [
   },
   {
     id: 'sobrevivente',
+    trilha: 'Ataques e defesa',
     nome: 'Sobrevivente',
     desc: 'Roupas improvisadas, remendos por cima de remendos e um bordão de estrada.',
     lema: 'Não venci nada. Só continuei de pé mais tempo que o resto.',
