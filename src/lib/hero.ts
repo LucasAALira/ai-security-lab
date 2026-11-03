@@ -1,13 +1,17 @@
-/** Arquétipos do santuário: caminhos visuais para quem estuda.
+/** Arquétipos do santuário: o caminho que a pessoa escolhe seguir no estudo.
  *
- *  Os nomes são arquétipos genéricos de RPG. A arte, os lemas e as descrições são originais deste
- *  projeto. Os identificadores antigos são mantidos para preservar escolhas salvas.
+ *  São dez arquétipos clássicos de RPG, com nome, lema, equipamento, trilha e arte próprios deste
+ *  projeto (`src/data/herois.ts`, desenho em `src/components/pixel`). Nenhuma classe, armadura,
+ *  símbolo ou nome de obra alguma foi copiado.
  *
- *  A classe muda a arma, os acentos e a leitura visual do traje. O equipamento continua vindo do
- *  progresso (src/lib/knight.ts). Escolher uma classe não altera XP, preços ou moedas.
- */
+ *  Escolher um caminho é só aparência: muda a figura do santuário, a arma do desenho vetorial e o
+ *  acento de cor, e nada mais — não altera XP, moedas, preços, conquistas nem regra de progresso.
+ *  Os identificadores são os mesmos de antes, para não perder escolha já salva. */
+
+import { HEROIS, heroiById, type HeroiSpec } from '@/data/herois'
 import type { StudyState } from '@/lib/progress'
 
+/** Os dez caminhos. O identificador é o que entra no progresso e no `data-hero` do desenho. */
 export type HeroId =
   | 'cavaleiro'
   | 'duelista'
@@ -20,108 +24,31 @@ export type HeroId =
   | 'penitente'
   | 'sobrevivente'
 
-export interface HeroSpec {
-  id: HeroId
-  nome: string
-  lema: string
-  /** Equipamento principal, em uma frase curta. */
-  arma: string
-  descricao: string
-  /** Trilha do site com que a classe mais combina. */
-  trilha: string
-}
-
-export const HEROES: readonly HeroSpec[] = [
-  {
-    id: 'cavaleiro',
-    nome: 'Cavaleiro',
-    lema: 'Nenhuma porta se defende sozinha.',
-    arma: 'espada e escudo',
-    descricao: 'Armadura de aço, manto de brasa e defesa firme para proteger quem está atrás.',
-    trilha: 'Ataques e defesa',
-  },
-  {
-    id: 'duelista',
-    nome: 'Duelista',
-    lema: 'Um movimento preciso vale mais que força.',
-    arma: 'rapieira',
-    descricao: 'Traje leve em aço azulado, faixa curta e lâmina estreita para ataques calculados.',
-    trilha: 'Fundamentos',
-  },
-  {
-    id: 'barbaro',
-    nome: 'Bárbaro',
-    lema: 'A força abre caminho; a cautela mantém você vivo.',
-    arma: 'machado de guerra',
-    descricao: 'Couro reforçado, peles sobre os ombros e um machado pesado de duas mãos.',
-    trilha: 'Ataques e defesa',
-  },
-  {
-    id: 'batedor',
-    nome: 'Ladrão',
-    lema: 'Observe a fechadura antes de tocar na porta.',
-    arma: 'duas adagas',
-    descricao: 'Capuz de tecido escuro, proteção leve e lâminas curtas para agir sem chamar atenção.',
-    trilha: 'Fundamentos',
-  },
-  {
-    id: 'arcanista',
-    nome: 'Astrólogo',
-    lema: 'Toda instrução vinda de fora merece ser examinada.',
-    arma: 'cajado e foco',
-    descricao: 'Manto azul de cinza, capuz profundo e um foco cristalino para estudar o desconhecido.',
-    trilha: 'Fundamentos',
-  },
-  {
-    id: 'clerigo',
-    nome: 'Clérigo',
-    lema: 'O que não está escrito não aconteceu.',
-    arma: 'maça e códice',
-    descricao: 'Túnica clara sob placas gastas, códice no cinto e maça de cerimônia.',
-    trilha: 'Governança e Regulação',
-  },
-  {
-    id: 'espadachim',
-    nome: 'Espadachim',
-    lema: 'Conheça o alcance da lâmina e o limite da sua defesa.',
-    arma: 'espada curva',
-    descricao: 'Peitoral articulado, faixa de tecido e espada curva de aço frio.',
-    trilha: 'Ataques e defesa',
-  },
-  {
-    id: 'prisioneiro',
-    nome: 'Prisioneiro arcano',
-    lema: 'Uma restrição visível ainda pode esconder outra.',
-    arma: 'lâmina curta e correntes',
-    descricao: 'Capuz gasto, braçadeiras marcadas e correntes soltas sobre a roupa de viagem.',
-    trilha: 'Fundamentos',
-  },
-  {
-    id: 'penitente',
-    nome: 'Penitente',
-    lema: 'Assuma cada decisão e registre o que ela custou.',
-    arma: 'mangual',
-    descricao: 'Manto escuro, capuz fechado e arma de corrente feita para manter distância.',
-    trilha: 'Governança e Regulação',
-  },
-  {
-    id: 'sobrevivente',
-    nome: 'Sobrevivente',
-    lema: 'Use o que resta, aprenda e siga em frente.',
-    arma: 'lança improvisada',
-    descricao: 'Túnica remendada, capuz de viagem e lança montada com peças recuperadas.',
-    trilha: 'Ataques e defesa',
-  },
-]
-
-export const HERO_IDS: readonly HeroId[] = HEROES.map((h) => h.id)
-
-export const isHeroId = (v: unknown): v is HeroId => typeof v === 'string' && (HERO_IDS as readonly string[]).includes(v)
+export const HERO_IDS: readonly HeroId[] = HEROIS.map((h) => h.id as HeroId)
 
 export const DEFAULT_HERO: HeroId = 'cavaleiro'
 
-/** A classe em uso: a escolhida pela pessoa, ou a padrão para estados antigos. */
-export function heroOf(state: StudyState): HeroSpec {
-  const escolhida = state.prefs.hero
-  return HEROES.find((h) => h.id === escolhida) ?? HEROES.find((h) => h.id === DEFAULT_HERO)!
+/** Aceita o que estiver salvo e devolve um caminho conhecido, ou `undefined`. */
+export function normalizeHero(v: unknown): HeroId | undefined {
+  return typeof v === 'string' && (HERO_IDS as readonly string[]).includes(v) ? (v as HeroId) : undefined
 }
+
+export const isHeroId = (v: unknown): v is HeroId => normalizeHero(v) !== undefined
+
+/** O arquétipo em uso: o escolhido pela pessoa, ou o padrão enquanto ela não escolheu. */
+export function heroOf(state: StudyState): HeroiSpec {
+  const id = normalizeHero(state.prefs.hero) ?? DEFAULT_HERO
+  return heroiById(id) ?? heroiById(DEFAULT_HERO)!
+}
+
+/** O traje em uso (0 a 2). Fora da faixa, vale o primeiro. */
+export function trajeOf(state: StudyState): number {
+  const n = state.prefs.heroTraje
+  return typeof n === 'number' && Number.isInteger(n) && n >= 0 && n < 3 ? n : 0
+}
+
+/** Ainda não escolheu nenhum caminho: é o que abre a tela de escolha na primeira visita. */
+export const heroEscolhido = (state: StudyState): boolean => normalizeHero(state.prefs.hero) !== undefined
+
+export { HEROIS, heroiById }
+export type { HeroiSpec }

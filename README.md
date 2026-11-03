@@ -342,24 +342,26 @@ Os títulos acompanham o número de peças: **Andarilho**, **Escudeiro**, **Sent
 
 Nada disso altera preço, XP, moedas ou qualquer regra de progresso: a figura só lê o estado que já existe (`src/lib/knight.ts`). O desenho é original, em SVG de linha fina como o resto da catedral (`src/components/gothic/KnightArt.tsx`).
 
-**Classes.** Na loja dá para escolher o caminho, o que troca a arma e o traje da figura:
+**Os dez caminhos.** Na primeira visita, uma tela pergunta por qual caminho você entra no santuário. São dez arquétipos clássicos, cada um com três trajes, desenhados em pixel art neste projeto (`src/components/pixel`, montados a partir de peças: cabeça, torso, pernas, capa e arma):
 
-| Classe | Arma e traje | Caminho de estudo |
+| Caminho | Equipamento | Trilha que combina |
 | --- | --- | --- |
-| ⚔️ **Cavaleiro** | espada, escudo e manto de brasa | Defesa de aplicações |
-| 🗡️ **Duelista** | rapieira e aço azulado | Fundamentos |
-| 🪓 **Bárbaro** | machado pesado, couro e peles | Ataques e defesa |
-| 🗡️ **Ladrão** | duas adagas e capuz escuro | Fundamentos |
-| 🔮 **Astrólogo** | cajado, foco cristalino e manto frio | Fundamentos e segurança de IA |
-| 📿 **Clérigo** | maça, códice e túnica reforçada | Governança e regulação |
-| ⚔️ **Espadachim** | espada curva e faixa de tecido | Ataques e defesa |
-| ⛓️ **Prisioneiro arcano** | lâmina curta, correntes e capuz gasto | Fundamentos |
-| ⛓️ **Penitente** | mangual e manto fechado | Governança e regulação |
-| 🛠️ **Sobrevivente** | lança improvisada e roupa remendada | Ataques e defesa |
+| ⚔️ **Cavaleiro errante** | armadura média e gasta, espada e escudo | Ataques e defesa |
+| 🗡️ **Duelista** | roupa leve, duas lâminas | Fundamentos |
+| 🪓 **Bárbaro** | couro pesado, machado grande | Ataques e defesa |
+| 🥷 **Ladrão** | capuz, proteção leve, duas adagas | Fundamentos |
+| 🔮 **Astrólogo** | manto, cajado arcano | Fundamentos |
+| 📿 **Clérigo** | túnica reforçada, maça e símbolo próprio | Governança e Regulação |
+| 🤺 **Espadachim** | armadura leve, espada longa | Ataques e defesa |
+| ⛓️ **Prisioneiro arcano** | roupa simples, grilhões | Fundamentos |
+| 🎭 **Penitente** | manto escuro, máscara lisa | Governança e Regulação |
+| 🧵 **Sobrevivente** | roupas remendadas, bordão | Ataques e defesa |
 
-A paleta e a silhueta usam a imagem de referência como direção visual — aço frio, tecido gasto e luz de brasa — sem reproduzir personagem ou peça. Os dez arquétipos têm nomes genéricos e arte original. Trocar de classe não custa nada e não altera XP, moedas nem progresso.
+São arquétipos de função, com nome, lema, equipamento e paleta escritos aqui — nenhuma classe, armadura, símbolo ou personagem de obra alguma foi copiado. Cada caminho aparece de dois jeitos: como **sprite em pixel art** (a figura da fogueira e a da escolha) e no **desenho vetorial**, que troca a arma e o acento de cor conforme o caminho e é quem mostra a armadura peça a peça. Escolher ou trocar não custa nada e não altera XP, moedas, conquistas nem qualquer regra. A troca fica na loja, em **A armadura do cavaleiro**.
 
-**Poses.** A figura nunca encara quem está vendo: fica sempre de três quartos, voltada para a fogueira. São três poses, montadas por articulação (cada membro gira no próprio pivô, em `knight-pose.ts`): **descanso**, sentado na pedra ao lado do fogo, que é a do topo da página; **guarda**, de pé na loja; e **ataque**, nas crônicas de batalha.
+**A fogueira.** A cena do topo é a fogueira em pixel art com o seu personagem ao lado, na mesma escala: a espada fincada passa pouco da cabeça dele, como numa fogueira de verdade. A imagem está em `public/assets/fogueira.png`, com a origem registrada em `public/assets/CREDITS.md`.
+
+**O cavaleiro vetorial** continua existindo ao lado dos sprites, porque é ele que mostra a armadura peça a peça: aparece na loja, em guarda, e nas crônicas, em ataque. A figura nunca encara quem está vendo — fica de três quartos, montada por articulação (cada membro gira no próprio pivô, em `knight-pose.ts`).
 
 <a id="cronicas"></a>
 

@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 /* Cena original do Santuário do Conhecimento, versão "catedral digital": uma nave gótica desenhada
    só com linhas de circuito de 1 px. Arcos ogivais, colunas que são trilhas de placa, piso em grade,
    um friso de escamas de dragão e o vitral central, cuja rosácea é um circuito com nós de solda.
-   A fogueira digital (Bonfire) é desenhada no mesmo sistema de coordenadas, na base do vitral.
+   A fogueira e o personagem (BonfireScene) ficam por cima, no canto da nave.
    Tudo em SVG gerado aqui, nas cores do tema ativo: nenhuma imagem externa, sem animação contínua.
    É decorativa: os controles ficam por cima, sobre um véu escuro que garante o contraste. */
 

@@ -152,9 +152,11 @@ export interface Learner {
 export interface Prefs {
   /** Som opcional de conquista. Desligado por padrão. */
   sound: boolean
-  /** Classe do cavaleiro do santuário (`src/lib/hero.ts`). Sem escolha, vale a padrão.
+  /** Caminho escolhido no santuário (`src/lib/hero.ts`). Sem escolha, a tela de escolha abre.
    *  É só aparência: não muda XP, preço, moeda nem regra de progresso. */
   hero?: string
+  /** Traje do caminho (0 a 2). */
+  heroTraje?: number
 }
 
 export interface StudyState {

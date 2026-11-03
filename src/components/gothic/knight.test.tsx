@@ -77,14 +77,15 @@ describe('armadura na loja', () => {
     expect(screen.getByRole('heading', { level: 2, name: 'A armadura do cavaleiro' })).toBeInTheDocument()
     const itens = screen.getAllByRole('listitem')
     expect(itens.length).toBe(9)
-    // o seletor de classe vem junto, com as quatro classes
-    expect(screen.getAllByRole('radio').length).toBe(10)
-    expect(screen.getByRole('radio', { name: /Cavaleiro/ })).toHaveAttribute('aria-checked', 'true')
+    // a escolha de caminho vem junto: dez arquétipos e três trajes
+    expect(screen.getAllByRole('radio', { name: /Traje/ }).length).toBe(3)
+    expect(screen.getAllByRole('radio').length).toBe(13)
+    expect(screen.getByRole('radio', { name: 'Cavaleiro errante' })).toHaveAttribute('aria-checked', 'true')
     expect(screen.getByText('Botas de couro')).toBeInTheDocument()
     expect(screen.getByText('250 XP acumulados')).toBeInTheDocument()
     expect(screen.getByText('Compre uma relíquia na loja')).toBeInTheDocument()
     // Quem está começando só tem a faca.
     expect(screen.getAllByText(/— conquistada$/).length).toBe(1)
-    expect(screen.getByRole('img', { name: /Cavaleiro Andarilho, de perfil e em guarda, com 1 de 9 peças/ })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /Cavaleiro errante Andarilho, de perfil e em guarda, com 1 de 9 peças/ })).toBeInTheDocument()
   })
 })

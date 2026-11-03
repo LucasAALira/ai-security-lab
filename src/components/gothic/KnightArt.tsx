@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from 'react'
 import type { KnightGear } from '@/lib/knight'
-import { DEFAULT_HERO, type HeroId } from '@/lib/hero'
+import type { HeroId } from '@/lib/hero'
 import { giro, PIVOS, POSES, type PoseId } from './knight-pose'
 import './knight.css'
 
@@ -21,13 +21,14 @@ const TRACO = 'color-mix(in oklab, var(--foreground) 22%, #000)'
 
 interface Props {
   gear: KnightGear
+  /** Caminho escolhido: decide a arma, o traje e o acento de cor do desenho. */
   hero?: HeroId
   pose?: PoseId
   /** Desliga o movimento onde ele não cabe; quem pede menos movimento já fica sem ele pelo CSS. */
   animated?: boolean
 }
 
-export function KnightArt({ gear, hero = DEFAULT_HERO, pose = 'guarda', animated = true }: Props) {
+export function KnightArt({ gear, hero = 'cavaleiro', pose = 'guarda', animated = true }: Props) {
   const tem = gear.tem
   const id = useId().replace(/:/g, '')
   const oculta = usePageHidden()

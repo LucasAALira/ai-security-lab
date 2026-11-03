@@ -10,6 +10,7 @@ import { bosses } from '@/data/bosses'
 import { errantes } from '@/data/errantes'
 import { inscricaoDoDia } from '@/data/inscricoes'
 import { heroOf } from '@/lib/hero'
+import type { HeroId } from '@/lib/hero'
 import { findMission, missionPassed } from '@/lib/progress'
 import { knightGear } from '@/lib/knight'
 import { cn } from '@/lib/utils'
@@ -120,7 +121,7 @@ export function BattleGallery() {
             <ellipse cx="174" cy="169" rx="36" ry="6" fill="#05060a" opacity="0.5" />
             <ellipse cx="312" cy="169" rx="54" ry="7" fill="#05060a" opacity="0.55" />
             <g transform="translate(124 30) scale(0.70)" style={{ color: 'var(--foreground)' }}>
-              <KnightArt gear={cavaleiro} hero={classe.id} pose="ataque" />
+              <KnightArt gear={cavaleiro} hero={classe.id as HeroId} pose="ataque" />
             </g>
             <g transform={`translate(${420 - BOSS_VIEWBOX.width * 0.78 - 54} 16) scale(0.78)`}>
               <BossArt shape={quadro.forma} vencido={Boolean(quadro.venceu)} />

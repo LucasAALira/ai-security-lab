@@ -1,3 +1,4 @@
+import { FirstChoice } from '@/components/hero/FirstChoice'
 import { SanctuaryPlayer } from '@/components/audio/SanctuaryPlayer'
 import { Suspense, useEffect, useRef, type RefObject } from 'react'
 import { Outlet, useLocation } from 'react-router'
@@ -72,6 +73,8 @@ export function Shell() {
       </div>
       <PageVeil page={page} />
       <TrialBanner />
+      {/* Primeira visita: a escolha do caminho vem antes de tudo. */}
+      <FirstChoice />
     </div>
   )
 }

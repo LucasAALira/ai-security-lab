@@ -474,7 +474,9 @@
   .tier-prata { --tier: var(--color-silver); }
   .tier-ouro { --tier: var(--color-gold); }
   .tier-dragao { --tier: var(--color-dragon); }
-  .tier-none { --tier: var(--muted-foreground); }
+  /* O chip sem medalha usa um cinza um pouco mais claro que o texto apagado: com o véu de 15%
+     por trás, `--muted-foreground` fica em 4,46 de contraste, logo abaixo do mínimo de 4,5. */
+  .tier-none { --tier: color-mix(in oklab, var(--foreground) 80%, var(--card)); }
   .tier-bronze, .tier-prata, .tier-ouro, .tier-dragao, .tier-none {
     --tier-soft: color-mix(in oklab, var(--tier) 15%, transparent);
     --tier-line: color-mix(in oklab, var(--tier) 60%, transparent);
