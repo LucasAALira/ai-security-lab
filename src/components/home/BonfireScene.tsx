@@ -8,9 +8,13 @@ import './bonfire-scene.css'
 const ALTURA_HEROI = 176
 
 /** A fogueira: a arte tem 73 × 144 px, recortada rente ao conteúdo, então a base da lenha
- *  encosta no mesmo chão dos pés do personagem. Um pouco mais alta do que ele, porque é a
- *  espada fincada que passa da cabeça — a lenha em si bate na canela. */
-const LENHA = { largura: Math.round((73 / 144) * ALTURA_HEROI * 1.08), altura: Math.round(ALTURA_HEROI * 1.08) }
+ *  encosta no mesmo chão dos pés do personagem. Fica mais baixa do que ele: a lenha bate no
+ *  tornozelo e a espada fincada chega à altura do ombro, como quem a deixou ali ao sentar. */
+const PROPORCAO_LENHA = 0.8
+const LENHA = {
+  largura: Math.round((73 / 144) * ALTURA_HEROI * PROPORCAO_LENHA),
+  altura: Math.round(ALTURA_HEROI * PROPORCAO_LENHA),
+}
 
 /** A fogueira do santuário, com o seu personagem ao lado, na mesma escala.
  *  A fogueira e os personagens são ilustrações em pixel art trazidas pelo autor do projeto;
