@@ -129,7 +129,7 @@ Regras, dados salvos e como acrescentar conquistas ou desafios: [docs/APRENDIZAD
 
 ## 🎨 Identidade visual: Forja Dracônica
 
-Um gótico moderno, "Dark Tech": uma catedral desenhada em linhas de circuito, com preto absoluto, titânio fosco, vidro fumado, vermelho-brasa e ouro anodizado. Usa linhas de 1 px, cantos chanfrados e títulos nítidos, sem pergaminho nem madeira. A atmosfera lembra os soulslike, mas toda a arte é original, feita em CSS e SVG. Nenhum personagem, logotipo, trilha sonora ou asset de franquias foi usado.
+Uma identidade de carvão, aço frio, tecido gasto e luz de brasa. A imagem de referência orienta a atmosfera e a paleta; selos, linhas técnicas e circuitos discretos mantêm o vínculo com AppSec. A interface usa contraste claro e componentes consistentes. Toda a arte é original em CSS e SVG; nenhum personagem ou asset de franquia foi reproduzido.
 
 | Elemento | Como funciona |
 | --- | --- |
@@ -590,6 +590,6 @@ Na página `#/arquiteto`, os novos projetos incluem DAS interativo, seis compone
 | Análise sem uma cópia de todos os segredos | Minimização e exportação de dados |
 | A porta de manutenção temporária | Privilégios temporários e sessões |
 
-### 🌊 Ambiente de foco: fogueira e mar
+### 🌲 Paisagens sonoras do santuário
 
-No player do santuário, abra **Refúgio à beira-mar** e use **Foco: fogueira + mar**. O preset mistura chama baixa e ondas lentas, desliga os efeitos de menus e conquistas e permite ajustar separadamente os volumes de mar e fogueira. O áudio é sintetizado localmente, sem downloads ou trilha do jogo. Tem transições suaves, pausa ao ocultar a página e não retoma automaticamente. Preferências de volume são salvas, mas a reprodução exige ativação. A música importada no player continua independente; pause-a se quiser apenas o ambiente.
+No player do santuário, escolha **Foco: fogueira + mar** ou ative uma paisagem: **Floresta**, **Montanha gelada**, **Montanha de lava / vulcão** e **Toca da aranha na floresta**. Cada ambiente tem volume próprio, usa síntese de áudio local sem arquivos de trilha e funciona offline. A escolha exige ativação, pausa ao ocultar a página e não reinicia sozinha. A música local importada continua independente.
