@@ -11,7 +11,7 @@ export function HeroPicker() {
   const atual = heroOf(state)
   const cavaleiro = knightGear(state, derived.summary.xp)
   return (
-    <div role="radiogroup" aria-label="Classe do cavaleiro" className="grid gap-3 sm:grid-cols-2">
+    <div role="radiogroup" aria-label="Classe do cavaleiro" className="grid gap-3 sm:grid-cols-2 min-[1500px]:grid-cols-3">
       {HEROES.map((h) => {
         const escolhida = h.id === atual.id
         return (
@@ -22,7 +22,7 @@ export function HeroPicker() {
             aria-checked={escolhida}
             onClick={() => dispatch({ type: 'setHero', hero: h.id })}
             className={cn(
-              'gx-candle min-h-11 cursor-pointer border border-border bg-card p-4 text-left transition-colors',
+              'gx-candle min-h-[128px] cursor-pointer border border-border bg-card p-4 text-left transition-colors',
               escolhida && 'border-[var(--line-hot)] bg-[linear-gradient(135deg,var(--tint-strong),var(--card))]',
             )}
           >
