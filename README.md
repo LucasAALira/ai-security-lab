@@ -77,6 +77,7 @@ As matérias possuem páginas internas: o conteúdo de estudo pode ser lido dent
 - **Missões do dia, moedas, loja e revisão com vidas:** veja [Mecânicas de jogo](#jogo).
 - **Quiz:** perguntas de múltipla escolha com correção e explicações.
 - **Cenários de remediação:** situações fictícias organizadas por porte de empresa, com alternativas de solução e feedback.
+- **🛡️ O cavaleiro do santuário:** a figura ao lado da fogueira, no topo da página inicial, é quem está estudando. Começa descalço, de faca na mão, e veste nove peças ao longo do caminho — umas por XP acumulado, outras pelo que você compra na loja. Veja [O cavaleiro e sua armadura](#cavaleiro).
 - **⏳ Horas e dias de estudo:** na página inicial, o tempo medido ao todo, o tempo de hoje, os dias com atividade registrada e o recorde de dias seguidos. O relógio soma um minuto por vez, só com a aba à frente e com interação recente, no máximo 10 h por dia — aba esquecida aberta não vira hora de estudo. Tudo fica no navegador e entra no backup.
 - **Anotações e progresso:** armazenamento local no navegador.
 - **Ferramentas e pentest de LLMs:** material textual com exemplos técnicos e situações do cotidiano.
@@ -319,9 +320,80 @@ npm run build      # verifica os tipos e gera o site em dist/
 
 A pasta `dist/` é versionada de propósito, para que `iniciar.py` funcione sem Node. **Depois de alterar o código-fonte, rode `npm run build` e inclua `dist/` no commit.**
 
+<a id="cavaleiro"></a>
+
+### 🛡️ O cavaleiro e sua armadura
+
+A figura ao lado da fogueira é a sua. Ela muda sozinha conforme o progresso, e o topo da página inicial diz em texto quem ela é e o que falta para a próxima peça (`Andarilho · 1 de 9 peças · próxima: Botas de couro`). A lista completa, com a história de cada peça, fica na loja, em **A armadura do cavaleiro**.
+
+| Peça | Como se conquista |
+| --- | --- |
+| 🔪 Faca de sílex | Você já começa com ela |
+| 🥾 Botas de couro | 250 XP |
+| 🦿 Grevas de aço | 800 XP |
+| 💪 Braçadeiras | Comprar uma relíquia |
+| 🛡️ Peitoral | 2.000 XP |
+| 🪪 Escudo de silício | Comprar um Escudo de Silício |
+| 🧣 Manto do santuário | Comprar um tema (os gratuitos não contam) |
+| ⛑️ Elmo | 4.000 XP |
+| ⚔️ Espada longa | 7.000 XP — aposenta a faca |
+
+Os títulos acompanham o número de peças: **Andarilho**, **Escudeiro**, **Sentinela**, **Cavaleiro** e **Cavaleiro Dracônico**. Os marcos são calibrados pelo XP que o site oferece (cerca de 11.800 no total), então a armadura se completa com uns dois terços do caminho andado.
+
+Nada disso altera preço, XP, moedas ou qualquer regra de progresso: a figura só lê o estado que já existe (`src/lib/knight.ts`). O desenho é original, em SVG de linha fina como o resto da catedral (`src/components/gothic/KnightArt.tsx`).
+
+**Classes.** Na loja dá para escolher o caminho, o que troca a arma e o traje da figura:
+
+| Classe | Arma | Do que trata |
+| --- | --- | --- |
+| ⚔️ **Cavaleiro** | espada e escudo | Defesa de aplicações: aguenta o primeiro golpe |
+| 📿 **Clérigo** | maça e códice | Governança e regulação: registra, audita e impõe a regra |
+| 🔮 **Arcanista** | cajado | Segurança de IA: o que fala, alucina e obedece a quem não devia |
+| 🗡️ **Batedor** | adagas | Ofensiva e reconhecimento: entra primeiro e volta com o mapa |
+
+São arquétipos clássicos de RPG, com nome, lema e arte escritos para este projeto — nenhuma classe, brasão ou arte de jogo foi copiada. Trocar de classe não custa nada e não altera XP, moedas nem progresso.
+
+**Poses.** A figura nunca encara quem está vendo: fica sempre de três quartos, voltada para a fogueira. São três poses, montadas por articulação (cada membro gira no próprio pivô, em `knight-pose.ts`): **descanso**, sentado na pedra ao lado do fogo, que é a do topo da página; **guarda**, de pé na loja; e **ataque**, nas crônicas de batalha.
+
+<a id="cronicas"></a>
+
+### 🖼️ Crônicas do santuário
+
+Na página inicial, uma galeria com um quadro por guardião da trilha: o seu cavaleiro, na pose de ataque, diante do vulto do chefe. Quem já caiu aparece com a data da queda (e um elogio quando foi sem nenhum erro); quem ainda está de pé fica no escuro, com uma inscrição no lugar da data. Dá para percorrer pelos botões, pela faixa numerada ou pelas setas do teclado, e cada quadro leva ao módulo daquele chefe.
+
+Os guardiões são cinco silhuetas originais — torre, vulto encapuzado, cavaleiro inimigo, figura de coroa e balança, e máquina de um olho só — distribuídas pelos nove chefes conforme o que cada um representa. Os olhos acendem devagar e se apagam quando o chefe já foi derrotado; quem pede "reduzir movimento" vê tudo parado.
+
+<a id="inscricoes"></a>
+
+### 🕯️ Inscrições
+
+As frases curtas que aparecem sob a fogueira e nas crônicas vêm de `src/data/inscricoes.ts`. São originais, no tom de quem escreveu numa pedra fria — e nenhuma delas empurra quem está cansado a varar a noite: cansaço aqui é motivo de descanso, e há um teste que garante isso. A frase é estável ao longo do dia, para o texto não dançar a cada clique.
+
+**Animação.** O cavaleiro respira, o manto balança, a viseira do elmo acende e apaga e um lampejo desce pela lâmina. Tudo é lento e discreto, pausa quando a aba sai da frente e desaparece por completo para quem pede "reduzir movimento" no sistema.
+
+<a id="sons"></a>
+
+### 🔊 Sons do santuário
+
+Os efeitos são **sintetizados na hora pelo próprio site**, nota por nota, com a Web Audio API: não existe um único arquivo de áudio no projeto e nada foi amostrado ou copiado de trilhas de jogos. A atmosfera é a do gênero — sino grave, impacto e vozes em acorde menor — mas a composição é deste projeto (`src/lib/audio/cues.ts` descreve as vozes; `render.ts` as sintetiza).
+
+| Momento | O que você ouve |
+| --- | --- |
+| Menu, botão, link | Toque curto e seco, de couro e metal |
+| Voltar, cancelar, fechar | O mesmo toque, uma quarta abaixo e descendo |
+| XP ganho | Duas notas claras e discretas |
+| Desafio, missão ou revisão concluída | Terça e quinta subindo, com um sino atrás |
+| **Chefe derrotado** | Impacto grave, coral em lá menor em seis vozes e o sino que anuncia a queda — cerca de 4 s |
+| Conquista | Sino de ouro com a quinta logo atrás, cauda longa |
+| Item (relíquia ou sala) | Tinido de metal e duas notas |
+| Compra | Moedas trocando de mão |
+| Erro | Duas notas graves que descem, sem punir quem errou |
+
+A reverberação é a resposta de uma nave de pedra, também gerada por código. Os efeitos vêm **desligados**: ligue em **Refúgio à beira-mar**, no rodapé, onde também ficam a fogueira, o mar e os volumes. Nada toca sozinho ao abrir a página, e tudo pausa quando a aba sai da frente.
+
 ### 🎭 Desenho no terminal
 
-`npm run arte` sorteia uma das nove figuras em ASCII — hacker, cadeado, chave, escudo, inseto, terminal, dragão, caveira e fogueira — com uma inscrição curta de cada vez. O mesmo desenho aparece sozinho antes de `npm run dev`, pelo gancho `predev`.
+`npm run arte` sorteia uma das nove figuras em ASCII — hacker, cadeado, chave, escudo, inseto, terminal, dragão, caveira e fogueira — com uma inscrição curta de cada vez.
 
 ```sh
 npm run arte            # sorteia
@@ -329,7 +401,33 @@ npm run arte -- chave   # escolhe pelo nome
 npm run arte -- --lista # mostra os nomes
 ```
 
-Tudo é desenho original, com no máximo 46 colunas. A cor sai só quando o terminal aceita: com `NO_COLOR`, `TERM=dumb` ou saída redirecionada, o texto vai puro. O arquivo é `scripts/arte.mjs`, e os testes dele estão em `scripts/arte.test.mjs`.
+**Onde o desenho aparece sozinho:** antes de `npm run dev`, `npm run build` e `npm run preview` (ganchos `predev`, `prebuild` e `prepreview`), ao abrir o site pelos lançadores `iniciar-linux-mac.sh` e `iniciar-windows.bat`, e no começo de `scripts/build-apk.sh`.
+
+**Sem Node, direto no terminal.** Os mesmos desenhos existem em shell e em Prompt de Comando:
+
+```sh
+sh scripts/arte.sh            # sorteia (Linux, macOS, WSL, Git Bash)
+sh scripts/arte.sh chave      # escolhe pelo nome
+sh scripts/arte.sh --lista    # mostra os nomes
+```
+
+```bat
+scripts\arte.bat
+scripts\arte.bat chave
+scripts\arte.bat --lista
+```
+
+**Ao abrir o terminal.** Acrescente a linha ao arquivo de início do seu shell — nada é instalado por conta própria:
+
+| Terminal | Onde | Linha |
+| --- | --- | --- |
+| bash, zsh, sh | `~/.bashrc`, `~/.zshrc` | `[ -t 1 ] && sh "$HOME/ai-security-lab/scripts/arte.sh"` |
+| Prompt de Comando | AutoRun do CMD | `reg add "HKCU\Software\Microsoft\Command Processor" /v AutoRun /d "C:\caminho\scripts\arte.bat" /f` |
+| PowerShell | `$PROFILE` | `cmd /c "C:\caminho\scripts\arte.bat"` |
+
+Tudo é desenho original, com no máximo 46 colunas. A cor sai só quando o terminal aceita: com `NO_COLOR`, `TERM=dumb` ou saída redirecionada, o texto vai puro (`FORCE_COLOR` força). O `.bat` troca a página de código para UTF-8 por causa dos acentos e devolve a anterior ao sair.
+
+Os três arquivos vêm da mesma fonte: `scripts/arte.mjs` guarda os desenhos e gera os outros dois com `npm run arte:gerar`. Os testes em `scripts/arte.test.mjs` executam o `arte.sh` de verdade e conferem que `arte.sh` e `arte.bat` continuam iguais ao que o gerador produz — editar um deles à mão quebra a suíte.
 
 ### 🧱 Pilha
 
@@ -348,7 +446,8 @@ Tudo é desenho original, com no máximo 46 colunas. A cor sai só quando o term
 
 | Pasta ou arquivo | Finalidade |
 | --- | --- |
-| `iniciar.py`, `iniciar-*.sh/.bat` | Servidor local da pasta `dist/` e abertura do navegador. |
+| `iniciar.py`, `iniciar-*.sh/.bat` | Servidor local da pasta `dist/` e abertura do navegador, com o desenho de abertura. |
+| `scripts/arte.mjs`, `arte.sh`, `arte.bat` | Desenho de abertura do terminal: a fonte em Node e as versões geradas para shell e CMD. |
 | `dist/` | Site gerado, pronto para servir. |
 | `src/lib/progress/` | Regras do jogo em TypeScript puro: XP, medalhas, sequência, missões, moedas, revisão e a função única `applyAction`. |
 | `src/data/` | Conteúdo: módulos, matérias, cenários e pentest; `curriculum/` (áreas, módulos, submódulos, aulas e integradores), `campaigns/` (campanhas, missões e dossiês), `challenge-packs/` (desafios novos), `architect/` (projetos do modo Arquiteto), `frameworks.ts` (registro verificado) e `glossary.ts`. |
@@ -451,7 +550,9 @@ A fogueira da página inicial é um prisma digital com chama geométrica, arte o
 
 Os 13 projetos do Modo Arquiteto exibem um Desenho de Arquitetura de Segurança na etapa Projeto. Os componentes e fluxos vêm do próprio exercício; zonas tracejadas mostram fronteiras de confiança. Selecione um componente por toque ou teclado para destacar conexões e ler seu contexto. No celular, o mapa pode ser rolado horizontalmente. O DAS representa o cenário a revisar, sem antecipar o gabarito da avaliação.
 
-A fogueira é uma ilustração SVG original, com cavaleiro descansando, Arauto Esmeralda (interpretação vetorial de Dark Souls II), espada, chama translúcida, fumaça e brasas. A veste da Arauto e o escudo reutilizam o mesmo brasão de dragões do site. Funciona offline, pausa ao ocultar a página e respeita a preferência de movimento reduzido.
+A fogueira é uma ilustração SVG original: pedra, anel de cinzas, espada fincada, chama translúcida, fumaça e brasas, com o brasão de dragões do próprio site. Funciona offline, pausa ao ocultar a página e respeita a preferência de movimento reduzido.
+
+> **Correção de originalidade.** Até esta versão, ao lado da fogueira havia duas figuras que representavam personagens de Dark Souls II — uma delas nomeada no próprio código e no rótulo acessível. Isso contraria a regra do projeto (nada de personagens ou arte de franquias) e foi removido. No lugar entrou o cavaleiro do santuário, desenhado para o projeto, descrito abaixo. O teste `src/lib/originalidade.test.ts` varre o site inteiro e falha se o nome de uma franquia voltar a aparecer fora da página de referências.
 
 ### 🏛️ Dez novos exercícios de arquitetura
 

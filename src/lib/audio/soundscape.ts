@@ -1,10 +1,20 @@
 import type { ApplyResult } from '@/lib/progress'
-export type Cue = 'select' | 'xp' | 'victory' | 'medal' | 'purchase' | 'retry'
+import { cueVoices, REVERB, type Cue } from './cues'
+import { buildReverb, playVoice } from './render'
+export { CUES, cueLength, cuePeak, cueVoices, menuCue, REVERB, type Cue, type Voice } from './cues'
+export { reverbSamples } from './render'
+
+/** Compras que entregam um objeto na mão soam como item; as demais, como moeda. */
+const ITEMS = ['relic', 'room']
+
 export function cueFor(result: ApplyResult): Cue | null {
   const events = result.events
   if (events.some(e => e.kind === 'challenge-miss' || e.kind === 'boss-miss')) return 'retry'
   if (!result.changed) return null
+  // O chefe derrotado vem antes da medalha: é o acontecimento maior, e a medalha ainda aparece no aviso.
+  if (events.some(e => e.kind === 'boss' && e.first)) return 'boss'
   if (events.some(e => e.kind === 'medal')) return 'medal'
+  if (events.some(e => e.kind === 'purchase' && ITEMS.includes(e.item))) return 'item'
   if (events.some(e => e.kind === 'purchase' || e.kind === 'redeem')) return 'purchase'
   if (events.some(e => e.kind === 'xp' && e.amount > 0)) {
     if (events.some(e => e.kind === 'boss' || e.kind === 'mission' || e.kind === 'architect' || (e.kind === 'challenge' && e.phase === 'done'))) return 'victory'
@@ -38,6 +48,7 @@ export function ambienceSamples(kind: 'fire' | 'sea', rate: number, seconds: num
 export class Soundscape {
   private ctx?: AudioContext
   private effects?: GainNode
+  private tail?: GainNode
   private fireVolume?: GainNode
   private seaVolume?: GainNode
   private layers: Partial<Record<'fire' | 'sea', Layer>> = {}
@@ -49,6 +60,7 @@ export class Soundscape {
     if (!this.ctx) {
       this.ctx = new AudioContext()
       this.effects = this.ctx.createGain(); this.effects.gain.value = 0.25; this.effects.connect(this.ctx.destination)
+      this.tail = buildReverb(this.ctx, this.effects)
       this.fireVolume = this.ctx.createGain(); this.fireVolume.gain.value = 0.3; this.fireVolume.connect(this.ctx.destination)
       this.seaVolume = this.ctx.createGain(); this.seaVolume.gain.value = 0.22; this.seaVolume.connect(this.ctx.destination)
     }
@@ -60,21 +72,16 @@ export class Soundscape {
       if (node) node.gain.setTargetAtTime(audioLevel(level), at, 0.12)
     }
   }
-  private tone(hz: number, at: number, length: number, volume: number, destination: AudioNode, type: OscillatorType = 'sine') {
-    const ctx = this.ctx!
-    const osc = ctx.createOscillator(), gain = ctx.createGain()
-    osc.type = type; osc.frequency.setValueAtTime(hz, at)
-    gain.gain.setValueAtTime(0, at); gain.gain.linearRampToValueAtTime(volume, at + 0.015); gain.gain.exponentialRampToValueAtTime(0.0001, at + length)
-    osc.connect(gain); gain.connect(destination); osc.start(at); osc.stop(at + length + 0.02)
-    osc.onended = () => { osc.disconnect(); gain.disconnect() }
-  }
   cue(cue: Cue) {
     if (!this.ctx || this.ctx.state !== 'running' || !this.effects) return
     const now = this.ctx.currentTime
     if (now - this.lastCue < 0.09) return
     this.lastCue = now
-    const notes: Record<Cue, number[]> = { select: [230], xp: [440, 660], victory: [196, 294, 392], medal: [220, 330, 440, 660], purchase: [880, 1100], retry: [130, 110] }
-    notes[cue].forEach((hz, i) => this.tone(hz, now + i * 0.1, cue === 'select' ? 0.09 : cue === 'medal' || cue === 'victory' ? 1.3 : 0.35, 0.13, this.effects!, cue === 'select' ? 'triangle' : 'sine'))
+    try {
+      for (const v of cueVoices(cue)) playVoice(this.ctx, v, now + 0.01, this.effects, REVERB[cue] > 0 ? this.tail : undefined, REVERB[cue])
+    } catch {
+      // Sem áudio no aparelho: o progresso continua valendo, só não toca.
+    }
   }
   private start(kind: 'fire' | 'sea') {
     const ctx = this.ctx, destination = kind === 'fire' ? this.fireVolume : this.seaVolume

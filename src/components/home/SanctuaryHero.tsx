@@ -1,24 +1,28 @@
 import { Bonfire } from '@/components/audio/Bonfire'
-import { ArrowRight, Hourglass, Sparkles } from 'lucide-react'
+import { ArrowRight, Hourglass, Shield, Sparkles } from 'lucide-react'
 import { Link } from 'react-router'
 import { SanctuaryScene } from '@/components/gothic/SanctuaryScene'
 import { RiveSlot } from '@/components/rive/RiveSlot'
 import { Button } from '@/components/ui/button'
 import { formatNumber } from '@/lib/format'
 import { journeyOf } from '@/lib/journey'
+import { heroOf } from '@/lib/hero'
+import { knightGear } from '@/lib/knight'
 import { useProgress } from '@/state/ProgressProvider'
 
 /** Topo da página inicial: o Santuário do Conhecimento e a missão atual, com uma única ação principal.
  *  A cena fica atrás de um véu escuro e encolhe no celular para a ação aparecer logo. */
 export function SanctuaryHero() {
-  const { state, ctx, derived } = useProgress()
+  const { state, ctx, derived, today } = useProgress()
   const j = journeyOf(state, ctx, derived.objective, derived.summary.xp)
+  const cavaleiro = knightGear(state, derived.summary.xp)
+  const classe = heroOf(state)
   return (
     <section id="inicio" aria-labelledby="santuario-titulo" className="relative mt-4 mb-12 overflow-hidden border border-[var(--line)] md:mt-6">
       <div className="relative h-[210px] sm:h-[220px] xl:absolute xl:inset-0 xl:h-auto" aria-hidden="true">
         {/* Um `hero.riv` em src/assets/rive substitui a cena; sem ele, a cena em SVG, com a fogueira e o soldado descansando. */}
         <RiveSlot src="hero.riv" stateMachine="Hero" className="size-full" fallback={<SanctuaryScene />} />
-        <Bonfire />
+        <Bonfire knight={cavaleiro} hero={classe.id} dia={today} />
       </div>
       {/* véu: escurece a cena atrás do texto (contraste garantido) e a deixa respirar à direita */}
       <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,color-mix(in_oklab,var(--background)_96%,transparent)_0%,color-mix(in_oklab,var(--background)_88%,transparent)_46%,transparent_78%)] xl:block" aria-hidden="true" />
@@ -26,6 +30,20 @@ export function SanctuaryHero() {
         <h1 id="santuario-titulo" className="gx-display text-[24px] sm:text-[32px] [@media(max-height:520px)]:text-[21px]">
           Santuário do Conhecimento
         </h1>
+        {/* Quem é a figura ao lado da fogueira, e o que falta para a próxima peça dela. */}
+        <p className="-mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-muted-foreground">
+          <Shield className="size-4 text-primary" aria-hidden="true" />
+          <span>
+            <span className="font-semibold text-[var(--gold-anodized)]">{classe.nome}</span> · {cavaleiro.titulo} · {cavaleiro.completo} de {cavaleiro.total} peças
+          </span>
+          {cavaleiro.proxima ? (
+            <Link to="/loja#armadura-titulo" className="text-primary underline-offset-4 hover:underline">
+              próxima: {cavaleiro.proxima.peca.nome} ({cavaleiro.proxima.falta})
+            </Link>
+          ) : (
+            <span className="text-primary">equipamento completo</span>
+          )}
+        </p>
         <div className="gx-frame grid gap-3 p-5 sm:p-6 [@media(max-height:520px)]:gap-2 [@media(max-height:520px)]:p-4" data-testid="jornada">
           <p className="gx-inscription">{j.label}</p>
           <h2 className="text-[19px] leading-snug sm:text-[23px] [@media(max-height:520px)]:text-[17px]">{j.title}</h2>

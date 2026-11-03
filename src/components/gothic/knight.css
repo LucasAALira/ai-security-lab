@@ -1,0 +1,20 @@
+/* Animações do cavaleiro: respiração, manto ao vento, viseira acesa e um lampejo na lâmina.
+   Tudo discreto e lento, porque a figura fica parada no alto da página inicial. Pausa quando a
+   aba sai da frente e some por completo para quem pede menos movimento. */
+.knight{transform-box:view-box}
+.knight *{transform-box:view-box}
+
+.knight-breathe{transform-origin:60px 150px;animation:knight-breathe 5.2s ease-in-out infinite alternate}
+.knight-cloak{transform-origin:60px 50px;animation:knight-cloak 7s ease-in-out infinite alternate}
+.knight-arm{transform-origin:84px 52px;animation:knight-arm 6.4s ease-in-out infinite alternate}
+.knight-visor{animation:knight-visor 3.4s ease-in-out infinite alternate}
+.knight-glint{animation:knight-glint 6.5s ease-in-out infinite}
+
+@keyframes knight-breathe{from{transform:translateY(0) scaleY(1)}to{transform:translateY(-1.1px) scaleY(1.008)}}
+@keyframes knight-cloak{from{transform:rotate(-0.9deg)}to{transform:rotate(1.1deg)}}
+@keyframes knight-arm{from{transform:rotate(-0.6deg)}to{transform:rotate(1deg)}}
+@keyframes knight-visor{from{opacity:.55}to{opacity:1}}
+@keyframes knight-glint{0%,70%{transform:translateY(-70px);opacity:0}76%{opacity:.75}100%{transform:translateY(74px);opacity:0}}
+
+.knight[data-paused="true"] *{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.knight *{animation:none!important}.knight-visor{opacity:.9}.knight-glint{opacity:0}}

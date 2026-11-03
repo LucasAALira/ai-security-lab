@@ -11,11 +11,14 @@
     "dev": "vite",
     "predev": "node scripts/arte.mjs",
     "arte": "node scripts/arte.mjs",
+    "arte:gerar": "node scripts/arte.mjs --sh > scripts/arte.sh && node scripts/arte.mjs --bat > scripts/arte.bat && chmod +x scripts/arte.sh",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "prebuild": "node scripts/arte.mjs",
+    "preview": "vite preview",
+    "prepreview": "node scripts/arte.mjs"
   },
   "dependencies": {
     "@fontsource-variable/cinzel": "^5.3.0",

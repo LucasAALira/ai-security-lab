@@ -1,5 +1,11 @@
+import { execFileSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { aceitaCor, DESENHOS, escolher, montar, NOMES, principal } from './arte.mjs'
+import { aceitaCor, DESENHOS, escaparBat, escaparSh, escolher, gerarBat, gerarSh, montar, NOMES, principal } from './arte.mjs'
+
+const caminho = (nome) => fileURLToPath(new URL(nome, import.meta.url))
+const ler = (nome) => readFileSync(caminho(nome), 'utf8')
 
 describe('desenho do terminal', () => {
   it('cada figura tem nome único, inscrição e no máximo 46 colunas', () => {
@@ -57,5 +63,92 @@ describe('desenho do terminal', () => {
     expect(principal(['--lista'], {}).split('\n')).toEqual(NOMES)
     expect(principal(['nao-existe'], {})).toContain('Desenho desconhecido')
     expect(principal([], { NO_COLOR: '1' })).toContain('AI SECURITY LAB')
+  })
+
+  it('gera os arquivos de shell e de CMD a partir destes mesmos desenhos', () => {
+    expect(ler('arte.sh')).toBe(gerarSh())
+    expect(ler('arte.bat')).toBe(gerarBat())
+  })
+})
+
+describe('desenho em shell (scripts/arte.sh)', () => {
+  const rodar = (args, env = {}) =>
+    execFileSync('sh', [caminho('arte.sh'), ...args], { encoding: 'utf8', env: { PATH: process.env.PATH, ...env } })
+
+  it('escolhe pelo nome e mostra a inscrição', () => {
+    const saida = rodar(['cadeado'])
+    const cadeado = escolher('cadeado')
+    expect(saida).toContain('AI SECURITY LAB')
+    expect(saida).toContain(cadeado.inscricao)
+    for (const linha of cadeado.linhas) expect(saida).toContain(linha)
+  })
+
+  it('sem terminal, não escreve nenhum código de escape', () => {
+    // eslint-disable-next-line no-control-regex
+    expect(rodar(['hacker'])).not.toMatch(/\u001B\[/)
+  })
+
+  it('com FORCE_COLOR, abre e fecha a cor', () => {
+    const saida = rodar(['hacker'], { FORCE_COLOR: '1' })
+    expect(saida).toMatch(/\u001B\[38;5;\d+m/)
+    expect(saida).toContain('\u001B[0m')
+    expect(rodar(['hacker'], { FORCE_COLOR: '1', NO_COLOR: '1' })).not.toMatch(/\u001B\[38/)
+    expect(rodar(['hacker'], { FORCE_COLOR: '1', TERM: 'dumb' })).not.toMatch(/\u001B\[38/)
+  })
+
+  it('lista os nomes e recusa um desenho inexistente', () => {
+    expect(rodar(['--lista']).trim().split('\n')).toEqual(NOMES)
+    expect(() => rodar(['nao-existe'])).toThrow()
+  })
+
+  it('sorteia sem argumento, sempre dentro da lista', () => {
+    const inscricoes = DESENHOS.map((d) => d.inscricao)
+    for (let i = 0; i < 5; i++) {
+      const saida = rodar([])
+      expect(inscricoes.some((t) => saida.includes(t))).toBe(true)
+    }
+  })
+
+  it('escapa aspas simples do shell sem quebrar o texto', () => {
+    expect(escaparSh("d'Ávila")).toBe(`'d'\\''Ávila'`)
+  })
+})
+
+describe('desenho no Prompt de Comando (scripts/arte.bat)', () => {
+  const bat = ler('arte.bat')
+  const linhas = bat.split('\r\n')
+
+  it('usa quebra de linha do Windows', () => {
+    expect(bat).toContain('\r\n')
+    expect(bat.split('\n').every((l, i, todas) => i === todas.length - 1 || l.endsWith('\r'))).toBe(true)
+  })
+
+  it('tem um rótulo para cada desenho e nenhum salto sem destino', () => {
+    const rotulos = new Set(linhas.filter((l) => l.startsWith(':')).map((l) => l.slice(1).trim().toLowerCase()))
+    for (let i = 0; i < DESENHOS.length; i++) {
+      expect(rotulos.has(`figura_${i}`), `figura_${i}`).toBe(true)
+      expect(rotulos.has(`desenho_${i}`), `desenho_${i}`).toBe(true)
+    }
+    for (const l of linhas) {
+      // Saltos montados em tempo de execução (`call :figura_%ESCOLHA%`) são conferidos pelos rótulos acima.
+      const salto = /^\s*(?:goto|call)\s+:([a-z_]+)\s*$/i.exec(l)
+      if (!salto || salto[1].toLowerCase() === 'eof') continue
+      expect(rotulos.has(salto[1].toLowerCase()), l).toBe(true)
+    }
+  })
+
+  it('escapa os caracteres que o CMD comeria', () => {
+    expect(escaparBat('a&b|c<d>e^f%g')).toBe('a^&b^|c^<d^>e^^f%%g')
+    for (const linha of linhas.filter((l) => l.startsWith('echo(') && l.includes('%COR%'))) {
+      const texto = linha.replaceAll('%COR%', '').replaceAll('%COR_FIM%', '')
+      expect(texto.match(/(?<!\^)[&<>|]/), linha).toBeNull()
+    }
+  })
+
+  it('leva todos os nomes e todas as linhas de cada desenho', () => {
+    for (const d of DESENHOS) {
+      expect(bat).toContain(`if /i "%~1"=="${d.nome}"`)
+      for (const linha of d.linhas) expect(bat).toContain(escaparBat(linha))
+    }
   })
 })

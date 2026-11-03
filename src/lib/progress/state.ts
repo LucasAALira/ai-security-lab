@@ -18,6 +18,7 @@ import {
   STUDY_CLOCK,
 } from './constants'
 import { isDayKey } from './dates'
+import { isHeroId } from '@/lib/hero'
 import type { ThemeId } from './catalog'
 import type { ActivityResult, Answer, ArchitectState, BossState, ChallengeState, DecisionEntry, LearningEvent, MissionRun, MissionState, ModuleState, PersonalReward, Quality, StudyState } from './types'
 
@@ -35,6 +36,12 @@ const big = (v: unknown) => natural(v, LIMITS.big)
 const day = (v: unknown): string => (isDayKey(v) ? v : '')
 const str = (v: unknown): string => (typeof v === 'string' ? v : '')
 const text = (v: unknown, max: number): string => str(v).slice(0, max)
+
+/** Preferências de quem estuda. A classe entrou depois: um estado antigo simplesmente não a tem. */
+function cleanPrefs(raw: unknown): StudyState['prefs'] {
+  const hero = at(raw, 'hero')
+  return { sound: at(raw, 'sound') === true, ...(isHeroId(hero) ? { hero } : {}) }
+}
 
 export function emptyModule(): ModuleState {
   return {
@@ -438,7 +445,7 @@ export function cleanState(raw: unknown): StudyState {
     cards,
     study,
     events: cleanEvents(at(raw, 'events')),
-    prefs: { sound: at(at(raw, 'prefs'), 'sound') === true },
+    prefs: cleanPrefs(at(raw, 'prefs')),
     learner: { id: typeof learnerId === 'string' && ID_PATTERN.test(learnerId) ? learnerId : '', since: day(at(rawLearner, 'since')) },
     missions,
     dossiers: cleanDays(at(raw, 'dossiers'), LIMITS.dossiers),
