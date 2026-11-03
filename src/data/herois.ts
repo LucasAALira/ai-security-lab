@@ -44,9 +44,9 @@ export const HEROIS: readonly HeroiSpec[] = [
       ['Defesa', 'escudo com brasão'],
     ],
     trajes: [
-      { nome: 'Guarda', arte: 'cavaleiro-a.png', largura: 169, altura: 320, descreve: 'armadura completa e manto de brasa' },
-      { nome: 'Patrulha', arte: 'cavaleiro-b.png', largura: 204, altura: 320, descreve: 'elmo fechado e sobreveste de campanha' },
-      { nome: 'Recruta', arte: 'cavaleiro-c.png', largura: 210, altura: 320, descreve: 'cota de malha simples, sem placas' },
+      { nome: 'Guarda', arte: 'cavaleiro-a.png', largura: 205, altura: 320, descreve: 'armadura completa e manto de brasa' },
+      { nome: 'Patrulha', arte: 'cavaleiro-b.png', largura: 176, altura: 320, descreve: 'elmo fechado e sobreveste de campanha' },
+      { nome: 'Recruta', arte: 'cavaleiro-c.png', largura: 139, altura: 320, descreve: 'cota de malha simples, sem placas' },
     ],
   },
   {
@@ -63,9 +63,9 @@ export const HEROIS: readonly HeroiSpec[] = [
       ['Bolsa', 'ferramentas no cinto'],
     ],
     trajes: [
-      { nome: 'Sombra', arte: 'ladrao-a.png', largura: 174, altura: 320, descreve: 'capuz carmim e adaga em punho' },
-      { nome: 'Estrada', arte: 'ladrao-b.png', largura: 173, altura: 320, descreve: 'manto verde de viagem e bolsa' },
-      { nome: 'Cidade', arte: 'ladrao-c.png', largura: 141, altura: 320, descreve: 'couro escuro, sem capa' },
+      { nome: 'Sombra', arte: 'ladrao-a.png', largura: 189, altura: 320, descreve: 'capuz carmim e adaga em punho' },
+      { nome: 'Estrada', arte: 'ladrao-b.png', largura: 212, altura: 320, descreve: 'manto verde de viagem e bolsa' },
+      { nome: 'Cidade', arte: 'ladrao-c.png', largura: 194, altura: 320, descreve: 'couro escuro, sem capa' },
     ],
   },
   {
@@ -82,9 +82,9 @@ export const HEROIS: readonly HeroiSpec[] = [
       ['Registro', 'códice preso ao cinto'],
     ],
     trajes: [
-      { nome: 'Cerimônia', arte: 'clerigo-a.png', largura: 163, altura: 320, descreve: 'túnica clara, maça e códice' },
-      { nome: 'Peregrino', arte: 'clerigo-b.png', largura: 199, altura: 320, descreve: 'hábito de viagem e capuz' },
-      { nome: 'Prelado', arte: 'clerigo-c.png', largura: 179, altura: 320, descreve: 'paramento completo e mitra' },
+      { nome: 'Cerimônia', arte: 'clerigo-a.png', largura: 186, altura: 320, descreve: 'túnica clara, maça e códice' },
+      { nome: 'Peregrino', arte: 'clerigo-b.png', largura: 165, altura: 320, descreve: 'hábito de viagem e capuz' },
+      { nome: 'Prelado', arte: 'clerigo-c.png', largura: 174, altura: 320, descreve: 'paramento completo e mitra' },
     ],
   },
   {
@@ -101,9 +101,9 @@ export const HEROIS: readonly HeroiSpec[] = [
       ['Bolsa', 'frascos no cinto'],
     ],
     trajes: [
-      { nome: 'Arcano', arte: 'mago-a.png', largura: 159, altura: 320, descreve: 'manto roxo e chapéu de abas' },
-      { nome: 'Andarilho', arte: 'mago-b.png', largura: 207, altura: 320, descreve: 'capuz e peças de armadura leve' },
-      { nome: 'Conclave', arte: 'mago-c.png', largura: 228, altura: 320, descreve: 'veste carmim com estandarte' },
+      { nome: 'Arcano', arte: 'mago-a.png', largura: 184, altura: 320, descreve: 'manto roxo e chapéu de abas' },
+      { nome: 'Andarilho', arte: 'mago-b.png', largura: 184, altura: 320, descreve: 'capuz e peças de armadura leve' },
+      { nome: 'Conclave', arte: 'mago-c.png', largura: 171, altura: 320, descreve: 'veste carmim com estandarte' },
     ],
   },
   {
@@ -120,9 +120,9 @@ export const HEROIS: readonly HeroiSpec[] = [
       ['Registro', 'livro sempre aberto'],
     ],
     trajes: [
-      { nome: 'Biblioteca', arte: 'sabio-a.png', largura: 169, altura: 320, descreve: 'manto verde e livro aberto' },
-      { nome: 'Estrada', arte: 'sabio-b.png', largura: 207, altura: 320, descreve: 'capa de viagem e trouxa nas costas' },
-      { nome: 'Observatório', arte: 'sabio-c.png', largura: 243, altura: 320, descreve: 'manto estrelado e esfera armilar' },
+      { nome: 'Biblioteca', arte: 'sabio-a.png', largura: 188, altura: 320, descreve: 'manto verde e livro aberto' },
+      { nome: 'Estrada', arte: 'sabio-b.png', largura: 213, altura: 320, descreve: 'capa de viagem e trouxa nas costas' },
+      { nome: 'Observatório', arte: 'sabio-c.png', largura: 187, altura: 320, descreve: 'manto estrelado e esfera armilar' },
     ],
   },
   {
@@ -139,9 +139,9 @@ export const HEROIS: readonly HeroiSpec[] = [
       ['Ofício', 'martelo e ferramentas'],
     ],
     trajes: [
-      { nome: 'Vanguarda', arte: 'anao-a.png', largura: 172, altura: 320, descreve: 'placas, peles e machado grande' },
-      { nome: 'Baluarte', arte: 'anao-b.png', largura: 253, altura: 320, descreve: 'armadura pesada e escudo de bigorna' },
-      { nome: 'Forja', arte: 'anao-c.png', largura: 243, altura: 320, descreve: 'avental de oficina e martelo' },
+      { nome: 'Vanguarda', arte: 'anao-a.png', largura: 185, altura: 320, descreve: 'placas, peles e machado grande' },
+      { nome: 'Baluarte', arte: 'anao-b.png', largura: 190, altura: 320, descreve: 'armadura pesada e escudo de bigorna' },
+      { nome: 'Forja', arte: 'anao-c.png', largura: 201, altura: 320, descreve: 'avental de oficina e martelo' },
     ],
   },
 ]
