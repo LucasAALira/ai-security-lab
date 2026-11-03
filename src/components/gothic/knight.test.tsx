@@ -78,7 +78,7 @@ describe('armadura na loja', () => {
     const itens = screen.getAllByRole('listitem')
     expect(itens.length).toBe(9)
     // o seletor de classe vem junto, com as quatro classes
-    expect(screen.getAllByRole('radio').length).toBe(4)
+    expect(screen.getAllByRole('radio').length).toBe(10)
     expect(screen.getByRole('radio', { name: /Cavaleiro/ })).toHaveAttribute('aria-checked', 'true')
     expect(screen.getByText('Botas de couro')).toBeInTheDocument()
     expect(screen.getByText('250 XP acumulados')).toBeInTheDocument()
