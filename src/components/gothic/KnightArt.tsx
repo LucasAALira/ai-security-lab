@@ -104,9 +104,8 @@ export function KnightArt({ gear, hero = DEFAULT_HERO, pose = 'guarda', animated
     const transforma = `${giro(p.bracoDir, PIVOS.ombroDir)} ${giro(p.anteDir, PIVOS.cotoveloDir)} ${giro(p.arma, PIVOS.maoDir)}`
     const veterana = tem('espada')
     return (
-      <g transform={transforma} style={{ color: 'var(--gold-anodized, var(--foreground))' }}>
+      <g transform={transforma} style={{ color: 'var(--hero-accent, var(--primary))' }}>
         {hero === 'clerigo' ? (
-          // maça de cerimônia: haste, flanges e o anel do juramento
           <g>
             <path d="M85 104 V176" {...linha} strokeWidth={veterana ? 3.4 : 2.8} />
             <path d="M82 110 h6 M82 115 h6" {...linha} strokeWidth="0.9" strokeOpacity="0.6" />
@@ -115,25 +114,63 @@ export function KnightArt({ gear, hero = DEFAULT_HERO, pose = 'guarda', animated
             <circle cx="85" cy="99" r="2.2" fill="currentColor" fillOpacity="0.8" stroke="none" />
           </g>
         ) : hero === 'arcanista' ? (
-          // cajado com foco de cristal
           <g>
             <path d="M85 86 V186" {...linha} strokeWidth={veterana ? 3 : 2.4} />
             <path d="M82 112 h6 M82 117 h6" {...linha} strokeWidth="0.9" strokeOpacity="0.55" />
-            <path d="M85 68 l6 10 -6 10 -6 -10 Z" fill="color-mix(in oklab, var(--primary) 55%, var(--card))" stroke={TRACO} strokeWidth="1.1" strokeLinejoin="round" />
-            <circle className="knight-visor" cx="85" cy="78" r="2.6" fill="var(--primary)" stroke="none" />
+            <path d="M85 68 l6 10 -6 10 -6 -10 Z" fill="color-mix(in oklab, var(--hero-accent, var(--primary)) 55%, var(--card))" stroke={TRACO} strokeWidth="1.1" strokeLinejoin="round" />
+            <circle className="knight-visor" cx="85" cy="78" r="2.6" fill="var(--hero-accent, var(--primary))" stroke="none" />
             {veterana ? <path d="M78 84 q7 -5 14 0" {...linha} strokeWidth="1.4" strokeOpacity="0.7" /> : null}
           </g>
         ) : hero === 'batedor' ? (
-          // par de adagas: a segunda fica invertida, junto ao quadril
           <g>
             <path d={veterana ? 'M81 116 Q83 142 85 160 Q88 142 89 116 Z' : 'M82 116 Q84 134 85 148 Q87 134 88 116 Z'} fill={u('lamina')} stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
             <path d="M78 116 q7 -3 14 0" {...linha} strokeWidth="2" />
             <path d="M85 104 V115" {...linha} strokeWidth="2.8" />
             <path d="M82.6 107 h5 M82.6 111 h5" {...linha} strokeWidth="0.9" strokeOpacity="0.55" />
-            {veterana ? <path d="M90 118 Q92 132 93 142 Q95 132 95 118 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="0.9" strokeLinejoin="round" opacity="0.85" /> : null}
+            {veterana ? <path d="M90 118 Q92 132 93 142 Q95 132 95 118 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="0.9" strokeLinejoin="round" /> : null}
+          </g>
+        ) : hero === 'barbaro' ? (
+          <g>
+            <path d="M85 96 V182" {...linha} strokeWidth="4" />
+            <path d="M84 98 Q71 92 72 79 Q82 80 85 87 Q88 76 99 76 Q98 93 86 99 Z" fill={u('aco')} stroke={TRACO} strokeWidth="1.2" strokeLinejoin="round" />
+            <path d="M85 108 V178" {...linha} strokeWidth="1" strokeOpacity="0.45" />
+          </g>
+        ) : hero === 'duelista' ? (
+          <g>
+            <path d="M85 102 L84 190 L87 102 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
+            <path d="M77 106 Q85 101 93 106" {...linha} strokeWidth="1.6" />
+            <path d="M85 92 V104" {...linha} strokeWidth="2.4" />
+            <path d="M82 95 h6 M82 99 h6" {...linha} strokeWidth="0.8" strokeOpacity="0.6" />
+            <path d="M90 119 Q94 137 96 151 Q98 137 98 119 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="0.9" strokeLinejoin="round" opacity="0.85" />
+          </g>
+        ) : hero === 'espadachim' ? (
+          <g>
+            <path d="M81 120 Q75 140 80 160 Q82 176 85 192 Q89 176 90 160 Q94 140 88 120 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="1.1" strokeLinejoin="round" />
+            <path d="M84 126 Q80 150 85 184" {...linha} strokeWidth="0.9" strokeOpacity="0.5" />
+            <path d="M76 121 Q85 116 94 121" {...linha} strokeWidth="1.8" />
+            <path d="M85 104 V120" {...linha} strokeWidth="3" />
+          </g>
+        ) : hero === 'prisioneiro' ? (
+          <g>
+            <path d="M81 118 Q84 140 85 160 Q88 140 89 118 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
+            <path d="M78 118 q7 -3 14 0" {...linha} strokeWidth="2" />
+            <path d="M85 104 V117" {...linha} strokeWidth="3" />
+            <path d="M81 105 q-5 -7 -2 -11 M89 105 q5 -7 2 -11 M79 94 h4 M87 94 h4" {...linha} strokeWidth="1.4" />
+          </g>
+        ) : hero === 'penitente' ? (
+          <g>
+            <path d="M85 104 V130" {...linha} strokeWidth="2.7" />
+            <path d="M85 129 Q83 138 80 143 M85 129 Q87 138 90 143" {...linha} strokeWidth="1.1" />
+            <circle cx="85" cy="151" r={veterana ? 8 : 6.5} fill={u('aco')} stroke={TRACO} strokeWidth="1.1" />
+            <path d="M81 148 l8 6 M89 148 l-8 6" {...linha} strokeWidth="1" strokeOpacity="0.65" />
+          </g>
+        ) : hero === 'sobrevivente' ? (
+          <g>
+            <path d="M85 72 V188" {...linha} strokeWidth="2.8" />
+            <path d="M85 62 L78 78 L85 76 L92 78 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
+            <path d="M81 110 l8 5 M81 116 l8 5 M81 122 l8 5" {...linha} strokeWidth="1.4" strokeOpacity="0.65" />
           </g>
         ) : veterana ? (
-          // espada longa: lâmina com sulco, quilhões curvos, punho enrolado e pomo
           <g>
             <clipPath id={`${id}corte`}>
               <path d="M80 122 L84 192 L88 122 Z" />
@@ -149,7 +186,6 @@ export function KnightArt({ gear, hero = DEFAULT_HERO, pose = 'guarda', animated
             <circle cx="84" cy="101" r="3.4" fill="currentColor" stroke={TRACO} strokeWidth="0.8" />
           </g>
         ) : (
-          // faca de sílex: com o que dá para começar
           <g>
             <path d="M81 118 Q83 140 85 156 Q88 140 89 118 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
             <path d="M85 122 V150" {...linha} strokeWidth="0.8" strokeOpacity="0.45" />
@@ -170,7 +206,7 @@ export function KnightArt({ gear, hero = DEFAULT_HERO, pose = 'guarda', animated
       ? 'translate(18 2) scale(0.9)'
       : `${giro(p.bracoEsq, PIVOS.ombroEsq)} ${giro(p.anteEsq, PIVOS.cotoveloEsq)} ${giro(p.escudo, PIVOS.maoEsq)}`
     return (
-      <g style={{ color: 'var(--primary)' }} transform={transforma} opacity={nasCostas ? 0.75 : 1}>
+      <g style={{ color: 'var(--hero-accent, var(--primary))' }} transform={transforma} opacity={nasCostas ? 0.75 : 1}>
         <g transform="translate(14 60)">
           <path d="M1 6 Q15 -2 29 6 L28 28 Q27 44 15 52 Q3 44 2 28 Z" fill={u('manto')} stroke={TRACO} strokeWidth="1.4" strokeLinejoin="round" />
           <path d="M5 9 Q15 3 25 9 L24 27 Q23 39 15 45 Q7 39 6 27 Z" {...linha} strokeWidth="0.9" strokeOpacity="0.6" />
@@ -181,16 +217,18 @@ export function KnightArt({ gear, hero = DEFAULT_HERO, pose = 'guarda', animated
     )
   }
 
+  const usaCapuz = ['arcanista', 'batedor', 'prisioneiro', 'penitente', 'sobrevivente'].includes(hero)
+
   const cabeca = () => (
     <g transform={`${giro(p.cabeca, PIVOS.pescoco)} translate(62 0) scale(0.88 1) translate(-62 0)`}>
-      {tem('elmo') && hero !== 'batedor' ? (
+      {tem('elmo') && !usaCapuz ? (
         <g>
           <path d="M48 30 Q48 10 60 10 Q72 10 72 30 L71 37 Q60 44 49 37 Z" {...aco} />
           <path d="M60 10 Q63 20 62 32" {...linha} strokeWidth="1.6" strokeOpacity="0.5" />
           <path d="M48 24 Q60 20 72 24" {...linha} strokeWidth="1" strokeOpacity="0.5" />
           <path d="M46 34 Q60 42 74 34 L73 40 Q60 47 47 40 Z" {...aco} />
           {/* a viseira olha para o lado da fogueira, nunca para quem está vendo */}
-          <path className="knight-visor" d="M58 27 h8 M70 27 h2" {...linha} strokeWidth="2.2" style={{ color: 'var(--primary)' }} />
+          <path className="knight-visor" d="M58 27 h8 M70 27 h2" {...linha} strokeWidth="2.2" style={{ color: 'var(--hero-accent, var(--primary))' }} />
           <path d="M62 32 v3 M65 33 v3" {...linha} strokeWidth="0.9" strokeOpacity="0.5" />
           <Rebite x={50} y={31} />
           <Rebite x={70} y={31} />
@@ -199,11 +237,11 @@ export function KnightArt({ gear, hero = DEFAULT_HERO, pose = 'guarda', animated
         <g>
           <path d="M55 34 q5 4 10 0 l1 10 h-12 Z" {...pano} strokeWidth="1.1" />
           {/* capuz: o rosto fica de perfil, na sombra */}
-          <path d={hero === 'batedor' ? 'M48 26 Q48 10 60 10 Q74 10 74 26 Q74 34 64 38 Q50 36 48 26 Z' : 'M50 24 Q50 12 60 12 Q70 12 70 24 Q70 32 60 36 Q50 32 50 24 Z'} {...pano} />
-          <path d="M56 22 Q63 16 69 23 Q68 31 62 34 Q57 31 56 22 Z" fill={hero === 'batedor' ? 'color-mix(in oklab, var(--card) 86%, #000)' : 'color-mix(in oklab, var(--foreground) 42%, var(--card))'} stroke="none" />
+          <path d={usaCapuz ? 'M48 26 Q48 10 60 10 Q74 10 74 26 Q74 34 64 38 Q50 36 48 26 Z' : 'M50 24 Q50 12 60 12 Q70 12 70 24 Q70 32 60 36 Q50 32 50 24 Z'} {...pano} />
+          <path d="M56 22 Q63 16 69 23 Q68 31 62 34 Q57 31 56 22 Z" fill={usaCapuz ? 'color-mix(in oklab, var(--card) 86%, #000)' : 'color-mix(in oklab, var(--foreground) 42%, var(--card))'} stroke="none" />
           <path d="M54 20 Q58 11 62 14 Q66 11 70 20 Q66 17 62 19 Q58 17 54 20 Z" fill="color-mix(in oklab, var(--card) 88%, #000)" stroke="none" />
-          {hero === 'batedor' && tem('elmo') ? (
-            <path className="knight-visor" d="M62 24 h4" {...linha} strokeWidth="1.8" style={{ color: 'var(--primary)' }} />
+          {usaCapuz && tem('elmo') ? (
+            <path className="knight-visor" d="M62 24 h4" {...linha} strokeWidth="1.8" style={{ color: 'var(--hero-accent, var(--primary))' }} />
           ) : (
             <path d="M62 24 h3" {...linha} strokeWidth="1.5" strokeOpacity="0.75" style={{ color: 'color-mix(in oklab, var(--card) 80%, #000)' }} />
           )}
@@ -261,7 +299,7 @@ export function KnightArt({ gear, hero = DEFAULT_HERO, pose = 'guarda', animated
   )
 
   return (
-    <g className={animated ? 'knight' : undefined} data-paused={oculta ? 'true' : undefined}>
+    <g className={animated ? 'knight' : undefined} data-paused={oculta ? 'true' : undefined} data-hero={hero}>
       <defs>
         <linearGradient id={`${id}aco`} x1="0" y1="0" x2="1" y2="0.3">
           <stop offset="0" style={{ stopColor: 'color-mix(in oklab, var(--card) 86%, #000)' }} />
@@ -294,7 +332,7 @@ export function KnightArt({ gear, hero = DEFAULT_HERO, pose = 'guarda', animated
         {tem('manto') ? (
           <g
             className="knight-cloak"
-            style={{ color: 'var(--primary)' }}
+            style={{ color: 'var(--hero-accent, var(--primary))' }}
             transform={`${giro(p.tronco / 2 + (p.manto?.giro ?? 0), PIVOS.quadril)} translate(60 48) scale(1 ${p.manto?.escala ?? 1}) translate(-60 -48)`}
           >
             <path
