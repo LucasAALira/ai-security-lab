@@ -1,6 +1,6 @@
 # Identidade visual: Forja Dracônica (Dark Tech)
 
-Uma catedral gótica desenhada em linhas de circuito. É um "gótico moderno" (cyber-gothic, soulslike digital): preto absoluto, titânio fosco, vidro fumado, vermelho-brasa e ouro anodizado, com linhas de 1 px, cantos chanfrados e tipografia nítida. Não há pergaminho, madeira ou pedra. Toda a arte é original e feita em CSS e SVG.
+A Forja Dracônica combina carvão, aço frio, tecido gasto e luz de brasa. A imagem de referência orienta a atmosfera e a paleta — armaduras azul-acinzentadas, sombras profundas e reflexos quentes — enquanto a identidade AppSec aparece em selos, linhas técnicas e circuitos discretos. A interface mantém leitura clara, contraste, controles consistentes e arte original em CSS e SVG; não reproduz personagens nem assets da referência.
 
 Ela sucede a "Biblioteca dos Condenados", que continua disponível como tema gratuito.
 
@@ -25,13 +25,13 @@ Arquivos:
 
 | Token | Valor | Uso |
 | --- | --- | --- |
-| `--void`, `--color-base-100` | `#050505` | Fundo, preto absoluto |
-| `--titanium-900` … `--titanium-200`, `--color-base-200/300` | `#0e0f11` … `#a9aeb8` | Superfícies, bordas e titânio fosco |
-| `--ember-red`, `--color-primary` | `#ff3333` | Destaque: fogo de dragão e alerta crítico |
-| `--gold-anodized`, `--color-success` | `#dccb94` | Medalhas, conquistas e sucesso |
-| `--amber` | `#ffb340` | Compra disponível, foco do teclado, preços |
-| `--heading` | `#ffffff` | Títulos (21:1 sobre o fundo) |
-| `--spectral`, `--color-base-content` | `#c9ccd4` | Texto de leitura |
+| `--void`, `--color-base-100` | `#0b0e12` | Fundo, preto absoluto |
+| `--titanium-900` … `--titanium-200`, `--color-base-200/300` | `#151a1f` … `#bdc6ce` | Superfícies, bordas e titânio fosco |
+| `--ember-red`, `--color-primary` | `#d88b57` | Destaque: fogo de dragão e alerta crítico |
+| `--gold-anodized`, `--color-success` | `#c5b899` | Medalhas, conquistas e sucesso |
+| `--amber` | `#e3ad67` | Compra disponível, foco do teclado, preços |
+| `--heading` | `#edf1f4` | Títulos (21:1 sobre o fundo) |
+| `--spectral`, `--color-base-content` | `#cbd3da` | Texto de leitura |
 | `--muted-foreground` | texto 68% sobre a superfície | Texto secundário (≥ 5,5:1) |
 | `--line`, `--line-strong`, `--line-hot` | derivados | Linhas de 1 px (11%, 22% e a cor do tema) |
 | `--glass`, `--glass-strong`, `--blur` | 74%, 92%, 12 px | Vidro fumado |
@@ -43,8 +43,8 @@ Os nomes antigos (`--bronze`, `--candle`, `--ember`, `--ivory`) continuam valend
 
 ### Temas
 
-- **Forja Dracônica** (padrão): preto absoluto e vermelho-brasa.
-- **Código de Sangue** (90 moedas): ciano neon sobre preto puro, com linhas horizontais de monitoramento carmim.
+- **Forja Dracônica** (padrão): carvão, aço frio e cobre de brasa.
+- **Código de Sangue** (90 moedas): ciano neon sobre carvão, com linhas horizontais de monitoramento carmim.
 - **Catedral de Silício** (90 moedas): monocromático em branco espectral e titânio, com varredura vertical discreta.
 - **Outros temas:** Biblioteca dos Condenados e Dragão (gratuitos), Ciano, Arcano e os quatro da sala de troféus. Todos usam as mesmas linhas, vidro e chanfros na cor de cada um.
 
@@ -70,7 +70,7 @@ Todas as fontes são SIL OFL 1.1, empacotadas pelo Fontsource (subconjuntos lati
 | --- | --- |
 | `gx-glass` | Vidro fumado: preto translúcido, desfoque e borda de 1 px. |
 | `gx-panel` | O `Card`: vidro com um brilho fino no alto. |
-| `gx-frame` | Moldura de destaque com cantoneiras de HUD. As linhas pulsam (`dataPulse`) e um pacote de dados corre pela borda de cima (`dataRun`). |
+| `gx-frame` | Moldura de destaque com cantoneiras metálicas. As linhas pulsam (`dataPulse`) e um pacote de dados corre pela borda de cima (`dataRun`). |
 | `gx-pulse` | Adiciona o pacote de dados à borda de qualquer elemento. |
 | `gx-btn` | Botão de cantos vivos com chanfro. A linha é o `::before` e o preenchimento o `::after`, no mesmo polígono. O brilho é um `drop-shadow` que acende no hover. |
 | `gx-btn-plate`, `gx-btn-ember`, `gx-btn-outline`, `gx-btn-stone`, `gx-btn-ghost` | Variantes. |
