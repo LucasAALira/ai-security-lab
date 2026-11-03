@@ -293,6 +293,38 @@ export function KnightArt({ gear, hero = DEFAULT_HERO, pose = 'guarda', animated
             <path d="M49 85 V95 M46 88 h6" {...linha} strokeWidth="0.9" strokeOpacity="0.7" />
           </g>
         ) : null}
+        {/* O recorte do traje e os detalhes de cada arquétipo são originais e seguem a paleta fria da referência. */}
+        {hero === 'barbaro' ? (
+          <path d="M28 48 Q34 39 46 44 L50 52 L46 63 Q35 66 29 59 Z" fill="var(--hero-accent)" stroke={TRACO} strokeWidth="1.2" strokeLinejoin="round" />
+        ) : hero === 'duelista' ? (
+          <path d="M41 49 Q60 57 79 49 L77 56 Q60 64 43 56 Z" fill="var(--hero-accent)" stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
+        ) : hero === 'batedor' ? (
+          <path d="M43 54 L72 88 M40 57 L69 91" {...linha} strokeWidth="2" style={{ color: 'var(--hero-accent)' }} />
+        ) : hero === 'arcanista' ? (
+          <g style={{ color: 'var(--hero-accent)' }}>
+            <path d="M60 58 l3 5 6 1 -4 4 1 6 -6 -3 -5 3 1 -6 -4 -4 6 -1 Z" fill="none" stroke="currentColor" strokeWidth="1" />
+            <circle cx="60" cy="67" r="1.3" fill="currentColor" stroke="none" />
+          </g>
+        ) : hero === 'espadachim' ? (
+          <path d="M46 88 Q60 94 74 88 L73 96 Q60 102 47 96 Z" fill="var(--hero-accent)" stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
+        ) : hero === 'prisioneiro' ? (
+          <g style={{ color: 'var(--hero-accent)' }}>
+            <path d="M39 68 Q49 78 59 68 T79 68" {...linha} strokeWidth="1.6" />
+            <circle cx="41" cy="68" r="2" fill="currentColor" stroke="none" />
+            <circle cx="59" cy="68" r="2" fill="currentColor" stroke="none" />
+            <circle cx="78" cy="68" r="2" fill="currentColor" stroke="none" />
+          </g>
+        ) : hero === 'penitente' ? (
+          <g style={{ color: 'var(--hero-accent)' }}>
+            <path d="M60 58 l5 6 -5 6 -5 -6 Z" fill="none" stroke="currentColor" strokeWidth="1.2" />
+            <path d="M60 72 V83" {...linha} strokeWidth="1.4" />
+          </g>
+        ) : hero === 'sobrevivente' ? (
+          <g style={{ color: 'var(--hero-accent)' }}>
+            <path d="M46 62 l10 3 -3 9 -10 -3 Z M67 78 l10 3 -3 9 -10 -3 Z" fill="currentColor" fillOpacity="0.55" stroke={TRACO} strokeWidth="1" />
+            <path d="M45 63 l8 2 M66 79 l8 2" {...linha} strokeWidth="0.8" />
+          </g>
+        ) : null}
         {cabeca()}
       </g>
     </g>
@@ -304,7 +336,7 @@ export function KnightArt({ gear, hero = DEFAULT_HERO, pose = 'guarda', animated
         <linearGradient id={`${id}aco`} x1="0" y1="0" x2="1" y2="0.3">
           <stop offset="0" style={{ stopColor: 'color-mix(in oklab, var(--card) 86%, #000)' }} />
           <stop offset="0.55" style={{ stopColor: 'color-mix(in oklab, var(--card) 55%, var(--foreground))' }} />
-          <stop offset="1" style={{ stopColor: 'color-mix(in oklab, var(--foreground) 80%, var(--primary))' }} />
+          <stop offset="1" style={{ stopColor: 'color-mix(in oklab, var(--foreground) 80%, var(--info))' }} />
         </linearGradient>
         {/* A luz vem da fogueira, à direita: o lado esquerdo cai na sombra. */}
         <linearGradient id={`${id}pano`} x1="0" y1="0" x2="1" y2="0.2">
