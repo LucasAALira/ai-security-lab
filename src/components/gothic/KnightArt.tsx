@@ -114,7 +114,7 @@ export function KnightArt({ gear, hero = 'cavaleiro', pose = 'guarda', animated 
             {veterana ? <path d="M78 99 h14 M85 88 v4" {...linha} strokeWidth="1.6" strokeOpacity="0.8" /> : null}
             <circle cx="85" cy="99" r="2.2" fill="currentColor" fillOpacity="0.8" stroke="none" />
           </g>
-        ) : hero === 'arcanista' ? (
+        ) : hero === 'mago' ? (
           <g>
             <path d="M85 86 V186" {...linha} strokeWidth={veterana ? 3 : 2.4} />
             <path d="M82 112 h6 M82 117 h6" {...linha} strokeWidth="0.9" strokeOpacity="0.55" />
@@ -122,7 +122,7 @@ export function KnightArt({ gear, hero = 'cavaleiro', pose = 'guarda', animated 
             <circle className="knight-visor" cx="85" cy="78" r="2.6" fill="var(--hero-accent, var(--primary))" stroke="none" />
             {veterana ? <path d="M78 84 q7 -5 14 0" {...linha} strokeWidth="1.4" strokeOpacity="0.7" /> : null}
           </g>
-        ) : hero === 'batedor' ? (
+        ) : hero === 'ladrao' ? (
           <g>
             <path d={veterana ? 'M81 116 Q83 142 85 160 Q88 142 89 116 Z' : 'M82 116 Q84 134 85 148 Q87 134 88 116 Z'} fill={u('lamina')} stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
             <path d="M78 116 q7 -3 14 0" {...linha} strokeWidth="2" />
@@ -130,42 +130,13 @@ export function KnightArt({ gear, hero = 'cavaleiro', pose = 'guarda', animated 
             <path d="M82.6 107 h5 M82.6 111 h5" {...linha} strokeWidth="0.9" strokeOpacity="0.55" />
             {veterana ? <path d="M90 118 Q92 132 93 142 Q95 132 95 118 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="0.9" strokeLinejoin="round" /> : null}
           </g>
-        ) : hero === 'barbaro' ? (
+        ) : hero === 'anao' ? (
           <g>
             <path d="M85 96 V182" {...linha} strokeWidth="4" />
             <path d="M84 98 Q71 92 72 79 Q82 80 85 87 Q88 76 99 76 Q98 93 86 99 Z" fill={u('aco')} stroke={TRACO} strokeWidth="1.2" strokeLinejoin="round" />
             <path d="M85 108 V178" {...linha} strokeWidth="1" strokeOpacity="0.45" />
           </g>
-        ) : hero === 'duelista' ? (
-          <g>
-            <path d="M85 102 L84 190 L87 102 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
-            <path d="M77 106 Q85 101 93 106" {...linha} strokeWidth="1.6" />
-            <path d="M85 92 V104" {...linha} strokeWidth="2.4" />
-            <path d="M82 95 h6 M82 99 h6" {...linha} strokeWidth="0.8" strokeOpacity="0.6" />
-            <path d="M90 119 Q94 137 96 151 Q98 137 98 119 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="0.9" strokeLinejoin="round" opacity="0.85" />
-          </g>
-        ) : hero === 'espadachim' ? (
-          <g>
-            <path d="M81 120 Q75 140 80 160 Q82 176 85 192 Q89 176 90 160 Q94 140 88 120 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="1.1" strokeLinejoin="round" />
-            <path d="M84 126 Q80 150 85 184" {...linha} strokeWidth="0.9" strokeOpacity="0.5" />
-            <path d="M76 121 Q85 116 94 121" {...linha} strokeWidth="1.8" />
-            <path d="M85 104 V120" {...linha} strokeWidth="3" />
-          </g>
-        ) : hero === 'prisioneiro' ? (
-          <g>
-            <path d="M81 118 Q84 140 85 160 Q88 140 89 118 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
-            <path d="M78 118 q7 -3 14 0" {...linha} strokeWidth="2" />
-            <path d="M85 104 V117" {...linha} strokeWidth="3" />
-            <path d="M81 105 q-5 -7 -2 -11 M89 105 q5 -7 2 -11 M79 94 h4 M87 94 h4" {...linha} strokeWidth="1.4" />
-          </g>
-        ) : hero === 'penitente' ? (
-          <g>
-            <path d="M85 104 V130" {...linha} strokeWidth="2.7" />
-            <path d="M85 129 Q83 138 80 143 M85 129 Q87 138 90 143" {...linha} strokeWidth="1.1" />
-            <circle cx="85" cy="151" r={veterana ? 8 : 6.5} fill={u('aco')} stroke={TRACO} strokeWidth="1.1" />
-            <path d="M81 148 l8 6 M89 148 l-8 6" {...linha} strokeWidth="1" strokeOpacity="0.65" />
-          </g>
-        ) : hero === 'sobrevivente' ? (
+        ) : hero === 'sabio' ? (
           <g>
             <path d="M85 72 V188" {...linha} strokeWidth="2.8" />
             <path d="M85 62 L78 78 L85 76 L92 78 Z" fill={u('lamina')} stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
@@ -199,10 +170,10 @@ export function KnightArt({ gear, hero = 'cavaleiro', pose = 'guarda', animated 
     )
   }
 
-  /** O escudo acompanha o braço do escudo; o arcanista o leva às costas, para as mãos ficarem livres. */
+  /** O escudo acompanha o braço do escudo; o mago o leva às costas, para as mãos ficarem livres. */
   const escudo = () => {
     if (!tem('escudo')) return null
-    const nasCostas = hero === 'arcanista'
+    const nasCostas = hero === 'mago'
     const transforma = nasCostas
       ? 'translate(18 2) scale(0.9)'
       : `${giro(p.bracoEsq, PIVOS.ombroEsq)} ${giro(p.anteEsq, PIVOS.cotoveloEsq)} ${giro(p.escudo, PIVOS.maoEsq)}`
@@ -218,7 +189,7 @@ export function KnightArt({ gear, hero = 'cavaleiro', pose = 'guarda', animated 
     )
   }
 
-  const usaCapuz = ['arcanista', 'batedor', 'prisioneiro', 'penitente', 'sobrevivente'].includes(hero)
+  const usaCapuz = ['mago', 'ladrao', 'sabio'].includes(hero)
 
   const cabeca = () => (
     <g transform={`${giro(p.cabeca, PIVOS.pescoco)} translate(62 0) scale(0.88 1) translate(-62 0)`}>
@@ -291,36 +262,21 @@ export function KnightArt({ gear, hero = 'cavaleiro', pose = 'guarda', animated 
         {hero === 'clerigo' ? (
           <g>
             <path d="M44 84 h10 l1 12 h-11 Z" fill={u('aco')} stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
-            <path d="M49 85 V95 M46 88 h6" {...linha} strokeWidth="0.9" strokeOpacity="0.7" />
+            <circle cx="49" cy="90" r="2.6" fill="none" stroke={TRACO} strokeWidth="0.9" strokeOpacity="0.7" />
+            <path d="M49 86 v1.4 M49 92.6 v1.4 M45.6 90 h1.4 M51 90 h1.4" {...linha} strokeWidth="0.8" strokeOpacity="0.7" />
           </g>
         ) : null}
         {/* O recorte do traje e os detalhes de cada arquétipo são originais e seguem a paleta fria da referência. */}
-        {hero === 'barbaro' ? (
+        {hero === 'anao' ? (
           <path d="M28 48 Q34 39 46 44 L50 52 L46 63 Q35 66 29 59 Z" fill="var(--hero-accent)" stroke={TRACO} strokeWidth="1.2" strokeLinejoin="round" />
-        ) : hero === 'duelista' ? (
-          <path d="M41 49 Q60 57 79 49 L77 56 Q60 64 43 56 Z" fill="var(--hero-accent)" stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
-        ) : hero === 'batedor' ? (
+        ) : hero === 'ladrao' ? (
           <path d="M43 54 L72 88 M40 57 L69 91" {...linha} strokeWidth="2" style={{ color: 'var(--hero-accent)' }} />
-        ) : hero === 'arcanista' ? (
+        ) : hero === 'mago' ? (
           <g style={{ color: 'var(--hero-accent)' }}>
             <path d="M60 58 l3 5 6 1 -4 4 1 6 -6 -3 -5 3 1 -6 -4 -4 6 -1 Z" fill="none" stroke="currentColor" strokeWidth="1" />
             <circle cx="60" cy="67" r="1.3" fill="currentColor" stroke="none" />
           </g>
-        ) : hero === 'espadachim' ? (
-          <path d="M46 88 Q60 94 74 88 L73 96 Q60 102 47 96 Z" fill="var(--hero-accent)" stroke={TRACO} strokeWidth="1" strokeLinejoin="round" />
-        ) : hero === 'prisioneiro' ? (
-          <g style={{ color: 'var(--hero-accent)' }}>
-            <path d="M39 68 Q49 78 59 68 T79 68" {...linha} strokeWidth="1.6" />
-            <circle cx="41" cy="68" r="2" fill="currentColor" stroke="none" />
-            <circle cx="59" cy="68" r="2" fill="currentColor" stroke="none" />
-            <circle cx="78" cy="68" r="2" fill="currentColor" stroke="none" />
-          </g>
-        ) : hero === 'penitente' ? (
-          <g style={{ color: 'var(--hero-accent)' }}>
-            <path d="M60 58 l5 6 -5 6 -5 -6 Z" fill="none" stroke="currentColor" strokeWidth="1.2" />
-            <path d="M60 72 V83" {...linha} strokeWidth="1.4" />
-          </g>
-        ) : hero === 'sobrevivente' ? (
+        ) : hero === 'sabio' ? (
           <g style={{ color: 'var(--hero-accent)' }}>
             <path d="M46 62 l10 3 -3 9 -10 -3 Z M67 78 l10 3 -3 9 -10 -3 Z" fill="currentColor" fillOpacity="0.55" stroke={TRACO} strokeWidth="1" />
             <path d="M45 63 l8 2 M66 79 l8 2" {...linha} strokeWidth="0.8" />

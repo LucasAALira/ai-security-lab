@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { Check } from 'lucide-react'
-import { HeroSprite } from './HeroSprite'
+import { HeroArt } from './HeroArt'
 import { Button } from '@/components/ui/button'
 import { HEROIS } from '@/data/herois'
 import { heroOf, trajeOf } from '@/lib/hero'
 import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
 
-/** Escolha do caminho: os dez arquétipos, três trajes cada e a ficha do equipamento.
+/** Escolha do caminho: os seis arquétipos, três trajes cada e a ficha do equipamento.
  *  Trocar de caminho não custa nada e não altera o progresso — é a sua cara no santuário. */
 export function PathChooser({ onConfirm, confirmLabel }: { onConfirm?: () => void; confirmLabel?: string }) {
   const { state, dispatch } = useProgress()
@@ -26,7 +26,7 @@ export function PathChooser({ onConfirm, confirmLabel }: { onConfirm?: () => voi
       {/* retrato e ficha do caminho em foco */}
       <div className="flex min-w-0 flex-col gap-3 border border-border bg-[linear-gradient(160deg,var(--tint-strong),var(--card))] p-5">
         <div className="flex justify-center py-2">
-          <HeroSprite heroi={heroi} traje={traje} scale={4} title={`${heroi.nome}, ${heroi.trajes[traje].nome}`} />
+          <HeroArt heroi={heroi} traje={traje} altura={230} alt={`${heroi.nome}, traje ${heroi.trajes[traje].nome}: ${heroi.trajes[traje].descreve}`} />
         </div>
         <div>
           <p className="gx-inscription">Caminho</p>
@@ -49,6 +49,7 @@ export function PathChooser({ onConfirm, confirmLabel }: { onConfirm?: () => voi
               type="button"
               role="radio"
               aria-checked={i === traje}
+              aria-label={`Traje ${t.nome}: ${t.descreve}`}
               onClick={() => setTraje(i)}
               className={cn(
                 'min-h-11 border px-3 py-1.5 font-mono text-[11px] tracking-[0.08em] uppercase transition-colors',
@@ -64,8 +65,8 @@ export function PathChooser({ onConfirm, confirmLabel }: { onConfirm?: () => voi
         </Button>
       </div>
 
-      {/* os dez caminhos */}
-      <div role="radiogroup" aria-label="Caminhos do santuário" className="grid grid-cols-2 gap-2 sm:grid-cols-3 min-[900px]:grid-cols-5">
+      {/* os seis caminhos */}
+      <div role="radiogroup" aria-label="Caminhos do santuário" className="grid auto-rows-min content-start grid-cols-2 gap-2 sm:grid-cols-3">
         {HEROIS.map((h) => {
           const ativo = h.id === escolhido
           return (
@@ -83,7 +84,7 @@ export function PathChooser({ onConfirm, confirmLabel }: { onConfirm?: () => voi
                 ativo ? 'border-[var(--line-hot)] bg-[linear-gradient(160deg,var(--tint-strong),var(--card))]' : 'border-border hover:border-[var(--line-strong)]',
               )}
             >
-              <HeroSprite heroi={h} traje={ativo ? traje : 0} scale={2} />
+              <HeroArt heroi={h} traje={ativo ? traje : 0} altura={96} />
               <span className={cn('text-center text-[12px] leading-tight', ativo ? 'text-primary' : 'text-muted-foreground')}>{h.nome}</span>
             </button>
           )
