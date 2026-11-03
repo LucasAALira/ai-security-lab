@@ -28,7 +28,8 @@ export function HeroArt({
 }: {
   heroi: HeroiSpec | string
   traje?: number
-  /** Altura em pixels; a largura acompanha a proporção da arte. */
+  /** Altura em pixels. A largura acompanha a proporção da arte, e o CSS pode trocar as duas
+   *  mexendo só na altura — os atributos `width`/`height` seguram a proporção. */
   altura?: number
   respira?: boolean
   className?: string
@@ -48,7 +49,6 @@ export function HeroArt({
       loading="lazy"
       decoding="async"
       className={cn('hero-art', respira && 'hero-art-respira', className)}
-      style={{ width: largura, height: altura }}
     />
   )
 }

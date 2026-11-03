@@ -2,14 +2,18 @@
    a arte da fogueira foi recortada rente ao conteúdo, então `align-items:flex-end` já encosta
    a base da lenha na linha dos pés. A fogueira é mais baixa do que o personagem: a lenha bate
    no tornozelo e a espada fincada chega à altura do ombro. */
-.bonfire-scene{position:absolute;right:4%;bottom:6%;margin:0;pointer-events:none;z-index:1}
+.bonfire-scene{--altura-heroi:264px;position:absolute;right:5%;bottom:7%;margin:0;pointer-events:none;z-index:1}
+/* a altura manda na cena inteira: a lenha sai dela e a largura vem da proporção da arte */
+.bonfire-scene .hero-art{height:var(--altura-heroi);width:auto}
+.bonfire-scene-fogo{height:calc(var(--altura-heroi) * 0.8);width:auto}
 .bonfire-scene-palco{position:relative;display:flex;align-items:flex-end;gap:4px}
 .bonfire-scene-palco img,.bonfire-scene-palco svg{display:block}
 .bonfire-scene-fogo{filter:drop-shadow(0 0 18px color-mix(in oklab,#ff8a3c 45%,transparent));animation:bonfire-scene-brasa 3.4s ease-in-out infinite alternate}
-.bonfire-scene-halo{position:absolute;right:-6%;bottom:-6%;width:170px;height:130px;border-radius:50%;background:radial-gradient(circle,color-mix(in oklab,#ff8a3c 24%,transparent),transparent 70%);animation:bonfire-scene-luz 4.2s ease-in-out infinite alternate}
+.bonfire-scene-halo{position:absolute;right:-6%;bottom:-6%;width:calc(var(--altura-heroi) * 0.95);height:calc(var(--altura-heroi) * 0.72);border-radius:50%;background:radial-gradient(circle,color-mix(in oklab,#ff8a3c 24%,transparent),transparent 70%);animation:bonfire-scene-luz 4.2s ease-in-out infinite alternate}
 .bonfire-scene figcaption{margin-top:10px;text-align:center;color:color-mix(in oklab,var(--foreground) 70%,transparent);font:500 10px var(--font-mono);letter-spacing:.08em;text-shadow:0 2px 4px #000}
 @keyframes bonfire-scene-brasa{from{filter:drop-shadow(0 0 12px color-mix(in oklab,#ff8a3c 30%,transparent))}to{filter:drop-shadow(0 0 22px color-mix(in oklab,#ffae4c 55%,transparent))}}
 @keyframes bonfire-scene-luz{from{opacity:.55}to{opacity:1}}
 .bonfire-scene[data-paused="true"] *{animation-play-state:paused!important}
-@media(max-width:1199px){.bonfire-scene{position:static;display:flex;flex-direction:column;align-items:center;margin:6px auto 0}.bonfire-scene figcaption{display:none}}
+@media(max-width:1199px){.bonfire-scene{--altura-heroi:170px;position:static;display:flex;flex-direction:column;align-items:center;margin:6px auto 0}.bonfire-scene figcaption{display:none}}
+@media(max-width:640px){.bonfire-scene{--altura-heroi:138px}}
 @media(prefers-reduced-motion:reduce){.bonfire-scene *{animation:none!important}}

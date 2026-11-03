@@ -1,0 +1,7 @@
+/* A nave ocupa todo o painel e é cortada pelas beiradas; o lado da fogueira é o que interessa,
+   então a imagem se ancora à direita. `pixelated` aqui é de propósito: a arte tem 480 px de
+   largura e aparece ampliada, que é quando o pixel grande é o desenho, e não defeito. */
+.sanctuary-backdrop{position:absolute;inset:0;overflow:hidden}
+.sanctuary-backdrop img{width:100%;height:100%;object-fit:cover;object-position:72% 100%;image-rendering:pixelated}
+/* véu da cor do tema: o fundo acompanha quem trocou de tema na loja */
+.sanctuary-backdrop-tinta{position:absolute;inset:0;background:color-mix(in oklab,var(--primary) 16%,transparent);mix-blend-mode:soft-light}
