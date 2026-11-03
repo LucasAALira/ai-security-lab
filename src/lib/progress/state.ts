@@ -18,7 +18,7 @@ import {
   STUDY_CLOCK,
 } from './constants'
 import { isDayKey } from './dates'
-import { isHeroId } from '@/lib/hero'
+import { normalizeHero } from '@/lib/hero'
 import type { ThemeId } from './catalog'
 import type { ActivityResult, Answer, ArchitectState, BossState, ChallengeState, DecisionEntry, LearningEvent, MissionRun, MissionState, ModuleState, PersonalReward, Quality, StudyState } from './types'
 
@@ -39,8 +39,13 @@ const text = (v: unknown, max: number): string => str(v).slice(0, max)
 
 /** Preferências de quem estuda. A classe entrou depois: um estado antigo simplesmente não a tem. */
 function cleanPrefs(raw: unknown): StudyState['prefs'] {
-  const hero = at(raw, 'hero')
-  return { sound: at(raw, 'sound') === true, ...(isHeroId(hero) ? { hero } : {}) }
+  const hero = normalizeHero(at(raw, 'hero'))
+  const traje = at(raw, 'heroTraje')
+  return {
+    sound: at(raw, 'sound') === true,
+    ...(hero ? { hero } : {}),
+    ...(typeof traje === 'number' && Number.isInteger(traje) && traje >= 0 && traje < 3 ? { heroTraje: traje } : {}),
+  }
 }
 
 export function emptyModule(): ModuleState {

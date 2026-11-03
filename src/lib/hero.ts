@@ -1,71 +1,68 @@
 /** Classes do santuário: o caminho que a pessoa escolhe seguir no estudo.
  *
- *  São arquétipos clássicos de RPG (cavaleiro, clérigo, arcanista, batedor), com nome, lema, arma
- *  e arte próprios deste projeto e ligados às trilhas do site. Nenhuma classe, nome, brasão ou
- *  arte de jogo foi copiado.
+ *  São dez arquétipos clássicos de RPG, com nome, lema, equipamento e arte próprios deste projeto
+ *  (`src/data/herois.ts`). Nenhuma classe, armadura, símbolo ou nome de obra alguma foi copiado.
  *
- *  A classe muda o que o cavaleiro do santuário empunha e veste; o equipamento em si continua
- *  vindo do progresso (`src/lib/knight.ts`). Escolher uma classe não altera XP, preços, moedas
- *  nem qualquer regra: é a sua cara no santuário. */
+ *  A escolha é só aparência: muda a figura do santuário e nada mais — não altera XP, moedas,
+ *  preços, conquistas nem qualquer regra de progresso. */
 
+import { HEROIS, heroiById, type HeroiSpec } from '@/data/herois'
 import type { StudyState } from '@/lib/progress'
 
-export type HeroId = 'cavaleiro' | 'clerigo' | 'arcanista' | 'batedor'
+export type HeroId = string
 
-export interface HeroSpec {
-  id: HeroId
-  nome: string
-  lema: string
-  /** O que a classe carrega na mão principal, em uma palavra. */
-  arma: string
-  descricao: string
-  /** Trilha do site com que a classe mais combina, usada na sugestão inicial. */
-  trilha: string
+export const HERO_IDS: readonly string[] = HEROIS.map((h) => h.id)
+
+/** As quatro classes da versão anterior viraram arquétipos com nome próprio: progresso salvo
+ *  antes desta versão continua valendo e cai no equivalente mais próximo. */
+export const HERO_ANTIGOS: Record<string, string> = {
+  cavaleiro: 'cavaleiro-errante',
+  clerigo: 'clerigo',
+  arcanista: 'astrologo',
+  batedor: 'ladrao',
 }
 
-export const HEROES: readonly HeroSpec[] = [
-  {
-    id: 'cavaleiro',
-    nome: 'Cavaleiro',
-    lema: 'Nenhuma porta se defende sozinha.',
-    arma: 'espada e escudo',
-    descricao: 'Defesa de aplicações: aguenta o primeiro golpe e protege quem está atrás. Espada na mão direita, escudo erguido na esquerda.',
-    trilha: 'Ataques e defesa',
-  },
-  {
-    id: 'clerigo',
-    nome: 'Clérigo',
-    lema: 'O que não está escrito não aconteceu.',
-    arma: 'maça e códice',
-    descricao: 'Governança e regulação: registra, audita e impõe a regra. Carrega a maça de cerimônia e o códice preso ao cinto.',
-    trilha: 'Governança e Regulação',
-  },
-  {
-    id: 'arcanista',
-    nome: 'Arcanista',
-    lema: 'Toda instrução vinda de fora é suspeita.',
-    arma: 'cajado',
-    descricao: 'Segurança de IA: lida com o que fala, alucina e obedece a quem não devia. Cajado com um foco de cristal no alto.',
-    trilha: 'Fundamentos',
-  },
-  {
-    id: 'batedor',
-    nome: 'Batedor',
-    lema: 'Ande o caminho do invasor antes dele.',
-    arma: 'adagas',
-    descricao: 'Ofensiva e reconhecimento: entra primeiro, sem fazer barulho, e volta com o mapa. Duas adagas e o capuz sempre erguido.',
-    trilha: 'Fundamentos',
-  },
-]
+export const DEFAULT_HERO: HeroId = 'cavaleiro-errante'
 
-export const HERO_IDS: readonly HeroId[] = HEROES.map((h) => h.id)
-
-export const isHeroId = (v: unknown): v is HeroId => typeof v === 'string' && (HERO_IDS as readonly string[]).includes(v)
-
-export const DEFAULT_HERO: HeroId = 'cavaleiro'
-
-/** A classe em uso: a escolhida pela pessoa, ou a sugerida pelo que ela mais estudou. */
-export function heroOf(state: StudyState): HeroSpec {
-  const escolhida = state.prefs.hero
-  return HEROES.find((h) => h.id === escolhida) ?? HEROES.find((h) => h.id === DEFAULT_HERO)!
+/** Aceita os ids atuais e os antigos, devolvendo sempre um id atual. */
+export function normalizeHero(v: unknown): HeroId | undefined {
+  if (typeof v !== 'string') return undefined
+  if (HERO_IDS.includes(v)) return v
+  return HERO_ANTIGOS[v]
 }
+
+export const isHeroId = (v: unknown): v is HeroId => normalizeHero(v) !== undefined
+
+/** O arquétipo em uso: o escolhido pela pessoa, ou o padrão enquanto ela não escolheu. */
+export function heroOf(state: StudyState): HeroiSpec {
+  const id = normalizeHero(state.prefs.hero) ?? DEFAULT_HERO
+  return heroiById(id) ?? heroiById(DEFAULT_HERO)!
+}
+
+/** O traje em uso (0 a 2). Fora da faixa, vale o primeiro. */
+export function trajeOf(state: StudyState): number {
+  const n = state.prefs.heroTraje
+  return typeof n === 'number' && Number.isInteger(n) && n >= 0 && n < 3 ? n : 0
+}
+
+/** Ainda não escolheu nenhum caminho: é o que abre a tela de escolha na primeira visita. */
+export const heroEscolhido = (state: StudyState): boolean => normalizeHero(state.prefs.hero) !== undefined
+
+/** Que arma o desenho vetorial da fogueira deve mostrar para este arquétipo. */
+export type HeroFamilia = 'cavaleiro' | 'clerigo' | 'arcanista' | 'batedor'
+const FAMILIA: Record<string, HeroFamilia> = {
+  'cavaleiro-errante': 'cavaleiro',
+  espadachim: 'cavaleiro',
+  penitente: 'cavaleiro',
+  barbaro: 'cavaleiro',
+  clerigo: 'clerigo',
+  sobrevivente: 'clerigo',
+  astrologo: 'arcanista',
+  prisioneiro: 'arcanista',
+  duelista: 'batedor',
+  ladrao: 'batedor',
+}
+export const familiaOf = (id: string): HeroFamilia => FAMILIA[id] ?? 'cavaleiro'
+
+export { HEROIS, heroiById }
+export type { HeroiSpec }

@@ -22,7 +22,7 @@ import { logEvent } from './events'
 import { recordMedals, summary } from './medals'
 import { rollDay, settleQuests, type ChestEvent, type QuestEvent } from './quests'
 import { canReview } from './review'
-import { isHeroId } from '@/lib/hero'
+import { normalizeHero } from '@/lib/hero'
 import { tickStudyClock, touchStreak, touchStudy } from './streak'
 import { emptyBoss, emptyChallenge } from './state'
 import { isChallengeOpen, isModuleUnlocked } from './trail'
@@ -74,8 +74,8 @@ export type Action =
   /** Marca um flashcard como sabido ou para revisar. Não rende XP. */
   | { type: 'card'; id: string; known: boolean }
   | { type: 'setSound'; on: boolean }
-  /** Classe do cavaleiro do santuário. Só aparência: não rende XP nem muda regra alguma. */
-  | { type: 'setHero'; hero: string }
+  /** Caminho do santuário e o traje dele. Só aparência: não rende XP nem muda regra alguma. */
+  | { type: 'setHero'; hero: string; traje?: number }
   /** Minuto(s) de uso medidos pelo relógio da interface. Soma tempo de estudo e nada mais:
    *  não rende XP, não cumpre missão e não conta dia de estudo nem sequência. */
   | { type: 'studyTick'; minutes?: number }
@@ -408,10 +408,15 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
     case 'studyTick':
       return tickStudyClock(s, now, action.minutes ?? STUDY_CLOCK.tick) ? { changed: true } : nothing
 
-    case 'setHero':
-      if (!isHeroId(action.hero) || s.prefs.hero === action.hero) return nothing
-      s.prefs.hero = action.hero
+    case 'setHero': {
+      const hero = normalizeHero(action.hero)
+      if (!hero) return reject('invalid')
+      const traje = typeof action.traje === 'number' && Number.isInteger(action.traje) && action.traje >= 0 && action.traje < 3 ? action.traje : undefined
+      if (s.prefs.hero === hero && (traje === undefined || s.prefs.heroTraje === traje)) return nothing
+      s.prefs.hero = hero
+      if (traje !== undefined) s.prefs.heroTraje = traje
       return { changed: true }
+    }
 
     case 'setSound':
       if (typeof action.on !== 'boolean' || s.prefs.sound === action.on) return nothing

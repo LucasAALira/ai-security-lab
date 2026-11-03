@@ -342,18 +342,26 @@ Os títulos acompanham o número de peças: **Andarilho**, **Escudeiro**, **Sent
 
 Nada disso altera preço, XP, moedas ou qualquer regra de progresso: a figura só lê o estado que já existe (`src/lib/knight.ts`). O desenho é original, em SVG de linha fina como o resto da catedral (`src/components/gothic/KnightArt.tsx`).
 
-**Classes.** Na loja dá para escolher o caminho, o que troca a arma e o traje da figura:
+**Os dez caminhos.** Na primeira visita, uma tela pergunta por qual caminho você entra no santuário. São dez arquétipos clássicos, cada um com três trajes, desenhados em pixel art neste projeto (`src/components/pixel`, montados a partir de peças: cabeça, torso, pernas, capa e arma):
 
-| Classe | Arma | Do que trata |
-| --- | --- | --- |
-| ⚔️ **Cavaleiro** | espada e escudo | Defesa de aplicações: aguenta o primeiro golpe |
-| 📿 **Clérigo** | maça e códice | Governança e regulação: registra, audita e impõe a regra |
-| 🔮 **Arcanista** | cajado | Segurança de IA: o que fala, alucina e obedece a quem não devia |
-| 🗡️ **Batedor** | adagas | Ofensiva e reconhecimento: entra primeiro e volta com o mapa |
+| Caminho | Equipamento |
+| --- | --- |
+| ⚔️ **Cavaleiro errante** | armadura média e gasta, espada e escudo |
+| 🗡️ **Duelista** | roupa leve, duas lâminas |
+| 🪓 **Bárbaro** | couro pesado, machado grande |
+| 🥷 **Ladrão** | capuz, proteção leve, duas adagas |
+| 🔮 **Astrólogo** | manto, cajado arcano |
+| 📿 **Clérigo** | túnica reforçada, maça e símbolo próprio |
+| 🤺 **Espadachim** | armadura leve, espada longa |
+| ⛓️ **Prisioneiro arcano** | roupa simples, grilhões |
+| 🎭 **Penitente** | manto escuro, máscara lisa |
+| 🧵 **Sobrevivente** | roupas remendadas, bordão |
 
-São arquétipos clássicos de RPG, com nome, lema e arte escritos para este projeto — nenhuma classe, brasão ou arte de jogo foi copiada. Trocar de classe não custa nada e não altera XP, moedas nem progresso.
+São arquétipos de função, com nome, lema, equipamento e paleta escritos aqui — nenhuma classe, armadura, símbolo ou personagem de obra alguma foi copiado. Escolher ou trocar não custa nada e não altera XP, moedas, conquistas nem qualquer regra: muda a sua figura ao lado da fogueira e nada mais. A troca fica na loja, em **A armadura do cavaleiro**; quem já tinha escolhido uma das quatro classes da versão anterior cai no equivalente de hoje, sem perder nada.
 
-**Poses.** A figura nunca encara quem está vendo: fica sempre de três quartos, voltada para a fogueira. São três poses, montadas por articulação (cada membro gira no próprio pivô, em `knight-pose.ts`): **descanso**, sentado na pedra ao lado do fogo, que é a do topo da página; **guarda**, de pé na loja; e **ataque**, nas crônicas de batalha.
+**A fogueira.** A cena do topo é a fogueira em pixel art com o seu personagem ao lado, na mesma escala: a espada fincada passa pouco da cabeça dele, como numa fogueira de verdade. A imagem está em `public/assets/fogueira.png`, com a origem registrada em `public/assets/CREDITS.md`.
+
+**O cavaleiro vetorial** continua existindo ao lado dos sprites, porque é ele que mostra a armadura peça a peça: aparece na loja, em guarda, e nas crônicas, em ataque. A figura nunca encara quem está vendo — fica de três quartos, montada por articulação (cada membro gira no próprio pivô, em `knight-pose.ts`).
 
 <a id="cronicas"></a>
 

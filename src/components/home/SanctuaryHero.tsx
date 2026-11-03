@@ -1,4 +1,4 @@
-import { Bonfire } from '@/components/audio/Bonfire'
+import { BonfireScene } from './BonfireScene'
 import { ArrowRight, Hourglass, Shield, Sparkles } from 'lucide-react'
 import { Link } from 'react-router'
 import { SanctuaryScene } from '@/components/gothic/SanctuaryScene'
@@ -13,7 +13,7 @@ import { useProgress } from '@/state/ProgressProvider'
 /** Topo da página inicial: o Santuário do Conhecimento e a missão atual, com uma única ação principal.
  *  A cena fica atrás de um véu escuro e encolhe no celular para a ação aparecer logo. */
 export function SanctuaryHero() {
-  const { state, ctx, derived, today } = useProgress()
+  const { state, ctx, derived } = useProgress()
   const j = journeyOf(state, ctx, derived.objective, derived.summary.xp)
   const cavaleiro = knightGear(state, derived.summary.xp)
   const classe = heroOf(state)
@@ -22,7 +22,7 @@ export function SanctuaryHero() {
       <div className="relative h-[210px] sm:h-[220px] xl:absolute xl:inset-0 xl:h-auto" aria-hidden="true">
         {/* Um `hero.riv` em src/assets/rive substitui a cena; sem ele, a cena em SVG, com a fogueira e o soldado descansando. */}
         <RiveSlot src="hero.riv" stateMachine="Hero" className="size-full" fallback={<SanctuaryScene />} />
-        <Bonfire knight={cavaleiro} hero={classe.id} dia={today} />
+        <BonfireScene />
       </div>
       {/* véu: escurece a cena atrás do texto (contraste garantido) e a deixa respirar à direita */}
       <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,color-mix(in_oklab,var(--background)_96%,transparent)_0%,color-mix(in_oklab,var(--background)_88%,transparent)_46%,transparent_78%)] xl:block" aria-hidden="true" />
