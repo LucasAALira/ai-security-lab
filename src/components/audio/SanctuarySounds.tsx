@@ -123,7 +123,7 @@ export function SanctuarySounds() {
     if (landscape && engine.current) sceneMethods[landscape].stop(engine.current)
     setFire(false); setSea(false); setLandscape(null); setBusy(false)
   }
-  const landscapeName = landscape === 'forest' ? 'floresta' : landscape === 'ice' ? 'montanha gelada' : landscape === 'volcano' ? 'vulcão' : landscape === 'spider' ? 'toca da aranha' : null
+  const landscapeName = landscape === 'forest' ? 'floresta' : landscape === 'ice' ? 'montanha gelada' : landscape === 'volcano' ? 'montanha de lava / vulcão' : landscape === 'spider' ? 'toca da aranha na floresta' : null
   return <fieldset className="sanctuary-body" data-sound-controls>
     <legend className="sanctuary-track">Refúgio à beira-mar</legend>
     <p className="sanctuary-note">Fogueira baixa e ondas lentas, inspiradas na atmosfera de um refúgio costeiro. Ajuste a mistura para acompanhar seu estudo.</p>
@@ -138,12 +138,12 @@ export function SanctuarySounds() {
     <label className="sanctuary-volume">Fogueira<input aria-label="Volume da fogueira" type="range" min="0" max="1" step="0.01" value={prefs.fireVolume} onChange={e => setPrefs(p => ({ ...p, fireVolume: +e.target.value }))} /></label>
     <label className="sanctuary-volume">Mar<input aria-label="Volume do mar" type="range" min="0" max="1" step="0.01" value={prefs.seaVolume} onChange={e => setPrefs(p => ({ ...p, seaVolume: +e.target.value }))} /></label>
     <h3 className="mt-6 mb-2 text-sm font-semibold">Outras paisagens sonoras</h3>
-    <p className="sanctuary-note">Sons ambientes originais, gerados no aparelho: vento entre árvores, rajadas de altitude, atividade vulcânica e uma caverna tomada por aranhas.</p>
+    <p className="sanctuary-note">Sons ambientes originais, gerados no aparelho: vento entre árvores, rajadas de altitude, atividade vulcânica e uma toca de aranha escondida na floresta.</p>
     <div className="sanctuary-controls">
       <button type="button" disabled={busy} aria-pressed={landscape === 'forest'} onClick={() => void toggleLandscape('forest')}>{landscape === 'forest' ? 'Pausar floresta' : 'Ouvir floresta'}</button>
       <button type="button" disabled={busy} aria-pressed={landscape === 'ice'} onClick={() => void toggleLandscape('ice')}>{landscape === 'ice' ? 'Pausar montanha gelada' : 'Ouvir montanha gelada'}</button>
-      <button type="button" disabled={busy} aria-pressed={landscape === 'volcano'} onClick={() => void toggleLandscape('volcano')}>{landscape === 'volcano' ? 'Pausar vulcão' : 'Ouvir vulcão'}</button>
-      <button type="button" disabled={busy} aria-pressed={landscape === 'spider'} onClick={() => void toggleLandscape('spider')}>{landscape === 'spider' ? 'Pausar toca da aranha' : 'Ouvir toca da aranha'}</button>
+      <button type="button" disabled={busy} aria-pressed={landscape === 'volcano'} onClick={() => void toggleLandscape('volcano')}>{landscape === 'volcano' ? 'Pausar montanha de lava / vulcão' : 'Ouvir montanha de lava / vulcão'}</button>
+      <button type="button" disabled={busy} aria-pressed={landscape === 'spider'} onClick={() => void toggleLandscape('spider')}>{landscape === 'spider' ? 'Pausar toca da aranha na floresta' : 'Ouvir toca da aranha na floresta'}</button>
     </div>
     <label className="sanctuary-volume">Volume das paisagens<input aria-label="Volume das paisagens" type="range" min="0" max="1" step="0.01" value={prefs.landscapeVolume} onChange={e => setPrefs(p => ({ ...p, landscapeVolume: +e.target.value }))} /></label>
     <div className="sanctuary-controls"><button type="button" disabled={busy} aria-pressed={prefs.effects} onClick={() => void enable('effects')}>{prefs.effects ? 'Desativar efeitos' : 'Ativar efeitos'}</button></div>
