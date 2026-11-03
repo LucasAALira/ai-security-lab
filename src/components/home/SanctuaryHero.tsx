@@ -1,7 +1,9 @@
+import { useRef } from 'react'
 import { BonfireScene } from './BonfireScene'
 import { ArrowRight, Hourglass, Shield, Sparkles } from 'lucide-react'
 import { Link } from 'react-router'
 import { SanctuaryBackdrop } from '@/components/gothic/SanctuaryBackdrop'
+import { usePointerParallax } from '@/components/gothic/use-pointer-parallax'
 import { RiveSlot } from '@/components/rive/RiveSlot'
 import { Button } from '@/components/ui/button'
 import { formatNumber } from '@/lib/format'
@@ -11,14 +13,19 @@ import { knightGear } from '@/lib/knight'
 import { useProgress } from '@/state/ProgressProvider'
 
 /** Topo da página inicial: o Santuário do Conhecimento e a missão atual, com uma única ação principal.
- *  A cena fica atrás de um véu escuro e encolhe no celular para a ação aparecer logo. */
+ *  A cena fica atrás de um véu escuro e encolhe no celular para a ação aparecer logo.
+ *  Passar o ponteiro por cima move as camadas: a parede quase nada, o céu um pouco mais, a
+ *  fogueira e o personagem na frente — e a luz da tocha acompanha o ponteiro. */
 export function SanctuaryHero() {
+  const painel = useRef<HTMLElement>(null)
+  // o ponteiro sobre o painel move as camadas da cena em profundidades diferentes
+  usePointerParallax(painel)
   const { state, ctx, derived } = useProgress()
   const j = journeyOf(state, ctx, derived.objective, derived.summary.xp)
   const cavaleiro = knightGear(state, derived.summary.xp)
   const classe = heroOf(state)
   return (
-    <section id="inicio" aria-labelledby="santuario-titulo" className="relative mt-4 mb-12 overflow-hidden border border-[var(--line)] md:mt-6">
+    <section ref={painel} id="inicio" aria-labelledby="santuario-titulo" className="relative mt-4 mb-12 overflow-hidden border border-[var(--line)] md:mt-6">
       <div className="relative h-[210px] sm:h-[220px] xl:absolute xl:inset-0 xl:h-auto" aria-hidden="true">
         {/* Um `hero.riv` em src/assets/rive substitui a cena; sem ele, a nave em pixel art, com a fogueira e o personagem. */}
         <RiveSlot src="hero.riv" stateMachine="Hero" className="size-full" fallback={<SanctuaryBackdrop />} />

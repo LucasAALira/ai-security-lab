@@ -6,14 +6,42 @@
 /* a altura manda na cena inteira: a lenha sai dela e a largura vem da proporção da arte */
 .bonfire-scene .hero-art{height:var(--altura-heroi);width:auto}
 .bonfire-scene-fogo{height:calc(var(--altura-heroi) * 0.8);width:auto}
-.bonfire-scene-palco{position:relative;display:flex;align-items:flex-end;gap:4px}
+.bonfire-scene-palco{position:relative;display:flex;align-items:flex-end;gap:4px;
+  transform:translate3d(calc(var(--px,0) * 14px),calc(var(--py,0) * 8px),0);transition:transform .5s cubic-bezier(.2,.7,.3,1)}
 .bonfire-scene-palco img,.bonfire-scene-palco svg{display:block}
-.bonfire-scene-fogo{filter:drop-shadow(0 0 18px color-mix(in oklab,#ff8a3c 45%,transparent));animation:bonfire-scene-brasa 3.4s ease-in-out infinite alternate}
-.bonfire-scene-halo{position:absolute;right:-6%;bottom:-6%;width:calc(var(--altura-heroi) * 0.95);height:calc(var(--altura-heroi) * 0.72);border-radius:50%;background:radial-gradient(circle,color-mix(in oklab,#ff8a3c 24%,transparent),transparent 70%);animation:bonfire-scene-luz 4.2s ease-in-out infinite alternate}
+.bonfire-scene-lenha{position:relative;display:block}
+.bonfire-scene-fogo{filter:drop-shadow(0 0 18px color-mix(in oklab,#ff8a3c 45%,transparent));animation:bonfire-scene-brasa 2.6s ease-in-out infinite alternate}
+
+/* faíscas: sobem da lenha, tortas, e apagam no meio do caminho */
+.bonfire-scene-faiscas{position:absolute;inset:0;overflow:visible}
+.bonfire-scene-faisca{position:absolute;bottom:14%;left:var(--x);width:var(--tamanho);height:var(--tamanho);border-radius:1px;
+  background:#fff0c0;box-shadow:0 0 8px #ffa23c,0 0 20px color-mix(in oklab,#ff7a2c 75%,transparent);opacity:0;
+  /* a subida sai da altura do personagem: a faísca passa da cabeça dele em telas grandes e
+     encurta junto com a cena no celular */
+  --subida:calc(var(--altura-heroi) * -0.62);
+  animation:bonfire-scene-faisca var(--tempo) var(--atraso) ease-out infinite}
+@keyframes bonfire-scene-faisca{
+  0%{transform:translate3d(0,0,0) scale(1.1);opacity:0}
+  8%{opacity:1}
+  65%{opacity:.85}
+  100%{transform:translate3d(var(--lado),var(--subida),0) scale(.35);opacity:0}
+}
+.bonfire-scene-halo{position:absolute;right:-6%;bottom:-6%;animation-duration:3.2s;width:calc(var(--altura-heroi) * 0.95);height:calc(var(--altura-heroi) * 0.72);border-radius:50%;background:radial-gradient(circle,color-mix(in oklab,#ff8a3c 24%,transparent),transparent 70%);animation:bonfire-scene-luz 4.2s ease-in-out infinite alternate}
 .bonfire-scene figcaption{margin-top:10px;text-align:center;color:color-mix(in oklab,var(--foreground) 70%,transparent);font:500 10px var(--font-mono);letter-spacing:.08em;text-shadow:0 2px 4px #000}
-@keyframes bonfire-scene-brasa{from{filter:drop-shadow(0 0 12px color-mix(in oklab,#ff8a3c 30%,transparent))}to{filter:drop-shadow(0 0 22px color-mix(in oklab,#ffae4c 55%,transparent))}}
-@keyframes bonfire-scene-luz{from{opacity:.55}to{opacity:1}}
+/* o fogo pulsa de verdade: o halo cresce e a chama clareia junto */
+@keyframes bonfire-scene-brasa{
+  from{filter:drop-shadow(0 0 10px color-mix(in oklab,#ff8a3c 28%,transparent)) brightness(0.94)}
+  to{filter:drop-shadow(0 0 26px color-mix(in oklab,#ffae4c 62%,transparent)) brightness(1.1)}
+}
+@keyframes bonfire-scene-luz{from{opacity:.45;transform:scale(.94)}to{opacity:1;transform:scale(1.06)}}
 .bonfire-scene[data-paused="true"] *{animation-play-state:paused!important}
-@media(max-width:1199px){.bonfire-scene{--altura-heroi:170px;position:static;display:flex;flex-direction:column;align-items:center;margin:6px auto 0}.bonfire-scene figcaption{display:none}}
+/* sem a tarja de texto ao lado, a cena fica no meio da faixa. O espaço de cima é padding, e
+   não margem: a margem do filho colapsaria com a da faixa e a cabeça encostaria na borda ao
+   inchar o peito na respiração. */
+@media(max-width:1199px){.bonfire-scene{--altura-heroi:170px;position:static;display:flex;flex-direction:column;align-items:center;margin:0 auto;padding-top:18px}.bonfire-scene figcaption{display:none}}
 @media(max-width:640px){.bonfire-scene{--altura-heroi:138px}}
-@media(prefers-reduced-motion:reduce){.bonfire-scene *{animation:none!important}}
+@media(prefers-reduced-motion:reduce){
+  .bonfire-scene *{animation:none!important}
+  .bonfire-scene-palco{transform:none;transition:none}
+  .bonfire-scene-faisca{display:none}
+}
