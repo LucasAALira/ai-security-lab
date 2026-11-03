@@ -313,8 +313,8 @@ export function KnightArt({ gear, hero = DEFAULT_HERO, pose = 'guarda', animated
           <stop offset="1" style={{ stopColor: 'color-mix(in oklab, var(--foreground) 72%, var(--primary))' }} />
         </linearGradient>
         <linearGradient id={`${id}manto`} x1="0.1" y1="0" x2="1" y2="0.4">
-          <stop offset="0" style={{ stopColor: 'color-mix(in oklab, var(--primary) 30%, #000)' }} />
-          <stop offset="1" style={{ stopColor: 'color-mix(in oklab, var(--primary) 62%, var(--card))' }} />
+          <stop offset="0" style={{ stopColor: 'color-mix(in oklab, var(--hero-accent, var(--primary)) 30%, #000)' }} />
+          <stop offset="1" style={{ stopColor: 'color-mix(in oklab, var(--hero-accent, var(--primary)) 62%, var(--card))' }} />
         </linearGradient>
         <linearGradient id={`${id}lamina`} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" style={{ stopColor: 'color-mix(in oklab, var(--card) 70%, #000)' }} />
