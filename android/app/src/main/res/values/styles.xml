@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Tema escuro do próprio Android (sem bibliotecas): fundo carvão desde o primeiro quadro,
-         barras do sistema carvão com ícones claros. -->
+    <!-- Tema escuro do próprio Android, sem bibliotecas: pedra desde o primeiro quadro, barras do
+         sistema na mesma cor e ícones claros sobre elas. -->
     <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/coal</item>
         <item name="android:colorBackground">@color/coal</item>
         <item name="android:colorAccent">@color/ember</item>
+        <item name="android:textColorHighlight">@color/amber</item>
         <item name="android:statusBarColor">@color/coal</item>
         <item name="android:navigationBarColor">@color/coal</item>
     </style>

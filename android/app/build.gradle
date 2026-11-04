@@ -8,10 +8,15 @@ android {
 
     defaultConfig {
         applicationId 'io.github.lucasaalira.aisecuritylab'
+        // 24 (Android 7.0) é onde o WebView já tem shouldInterceptRequest com WebResourceRequest.
         minSdk 24
         targetSdk 34
         versionCode 9
         versionName '2.7.0'
+    }
+
+    buildFeatures {
+        buildConfig false
     }
 
     buildTypes {
@@ -20,13 +25,16 @@ android {
         }
     }
 
+    // Java 8, que é o que o scripts/build-apk.sh passa ao javac. Os dois caminhos de montagem
+    // precisam gerar o mesmo bytecode; o código não usa nada mais novo do que isso.
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
-// Copia o site gerado (npm run build) para dentro do app antes de empacotar.
+// O site gerado (npm run build) entra em assets/public antes de empacotar. É a mesma cópia que o
+// scripts/build-apk.sh faz na mão, para os dois caminhos produzirem o mesmo conteúdo.
 tasks.register('copyWeb', Copy) {
     from "${rootDir}/../dist"
     into "${projectDir}/src/main/assets/public"

@@ -284,6 +284,17 @@ No Windows, substitua `python3` por `py -3`. O servidor aceita conexões da rede
 
 O site também vira um app Android: um WebView em Java puro, sem bibliotecas de terceiros, que leva o site inteiro dentro do APK. Funciona sem internet e guarda o progresso no próprio aparelho. O projeto fica em `android/`.
 
+O site é servido de dentro do pacote por um endereço https reservado pelo Android para conteúdo local (`appassets.androidplatform.net`), e não por `file://`: assim a página roda numa origem de verdade, com `localStorage`, `fetch` e módulos funcionando como no navegador — e é ali que o progresso fica. Nada sai do aparelho; o que não está no pacote devolve 404 e endereços de outros domínios abrem no navegador.
+
+| Arquivo (`android/app/src/main/java/.../`) | O que faz |
+| --- | --- |
+| `MainActivity.java` | A tela: cria e configura o WebView, ciclo de vida, botão Voltar, links externos e o seletor de arquivos da importação. |
+| `SiteAssets.java` | Serve `assets/public` pelo endereço local. Arquivos de `/assets/` (nome com assinatura do Vite) ficam no cache para sempre; o resto é sempre relido. |
+| `SiteChrome.java` | O que a página pede ao sistema: hoje, só o seletor de arquivos de "Importar progresso". |
+| `SiteBridge.java` | `window.AslNative`: a versão instalada (lida do pacote) e o compartilhamento do backup. |
+| `ShareBackup.java`, `BackHandler.java` | A abertura do compartilhamento e a resposta da página ao botão Voltar. |
+| `BackupProvider.java` | Entrega o arquivo de backup, só para leitura, ao app escolhido no compartilhamento. |
+
 **Instalar.** Copie o APK para o celular e abra. O Android pede para permitir "instalar apps desconhecidos" para o app que abriu o arquivo (Arquivos, Chrome...). O APK é assinado com uma chave de depuração: serve para uso pessoal e testes, não para a Play Store, que exige uma versão assinada com uma chave sua. Para atualizar, instale o APK novo por cima; se a chave mudar, o Android pede para desinstalar antes (exporte o progresso primeiro).
 
 | No app | Como funciona |
