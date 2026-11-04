@@ -1,11 +1,10 @@
 import { Lock, Sword } from 'lucide-react'
-import { Link, Outlet, useSearchParams } from 'react-router'
+import { Link } from 'react-router'
 import { NewSeal } from '@/components/common/NewSeal'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { NextObjective } from '@/components/gamification/NextObjective'
 import { XpBar } from '@/components/gamification/XpBar'
 import { Checkpoint } from '@/components/trail/Checkpoint'
-import { BossDialog } from '@/components/trail/BossDialog'
 import { TrailStep } from '@/components/trail/TrailStep'
 import { Card } from '@/components/ui/card'
 import { bossOfModule } from '@/data/bosses'
@@ -47,7 +46,7 @@ function stepTarget(step: StepId, module: number): string | undefined {
   }
 }
 
-function ModuleNode({ t, onBoss }: { t: TrailModule; onBoss: (module: number) => void }) {
+function ModuleNode({ t }: { t: TrailModule }) {
   const m = modules[t.module]
   const required = t.steps.filter((s) => !s.optional && s.id !== 'fogueira' && s.id !== 'chefe')
   const requiredDone = required.filter((s) => s.status === 'done').length
@@ -151,7 +150,7 @@ function ModuleNode({ t, onBoss }: { t: TrailModule; onBoss: (module: number) =>
                   xp={s.xp}
                   cta="Enfrentar"
                   doneCta="Repetir"
-                  onSelect={() => onBoss(t.module)}
+                  to={`/chefe/${t.module}`}
                 />
               )
             }
@@ -182,18 +181,12 @@ function ModuleNode({ t, onBoss }: { t: TrailModule; onBoss: (module: number) =>
 export function TrailPage() {
   useDocumentTitle('Trilha de módulos')
   const { derived } = useProgress()
-  const [params, setParams] = useSearchParams()
   const trail = derived.trail
   const core = trail.filter((t) => t.module < CORE_MODULE_COUNT)
   const fires = core.filter((t) => t.fire.lit).length
   const bossesWon = core.filter((t) => t.boss.won).length
   const bossTotal = core.filter((t) => t.boss.exists).length
   const extra = trail.filter((t) => t.module >= CORE_MODULE_COUNT)
-
-  const bossParam = params.get('chefe')
-  const bossModule = bossParam !== null && /^\d+$/.test(bossParam) && Number(bossParam) < trail.length && trail[Number(bossParam)].boss.exists ? Number(bossParam) : null
-  const openBoss = (module: number) => setParams({ chefe: String(module) })
-  const closeBoss = () => setParams({}, { replace: true })
 
   return (
     <div className="py-8 md:py-10">
@@ -218,12 +211,10 @@ export function TrailPage() {
       <h2 className="sr-only">Módulos da trilha</h2>
       <ol aria-label="Módulos da trilha" className="relative mt-8 grid grid-cols-[minmax(0,1fr)] gap-4 before:absolute before:top-6 before:bottom-6 before:left-[13px] before:w-px before:bg-border max-sm:before:left-[13px]">
         {trail.map((t) => (
-          <ModuleNode key={t.module} t={t} onBoss={openBoss} />
+          <ModuleNode key={t.module} t={t} />
         ))}
       </ol>
 
-      <Outlet />
-      {bossModule !== null ? <BossDialog key={bossModule} module={bossModule} onClose={closeBoss} /> : null}
     </div>
   )
 }

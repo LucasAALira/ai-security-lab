@@ -1,3 +1,5 @@
+// Projeto de um módulo só: o aplicativo. Nenhuma biblioteca de terceiros entra aqui — o pacote é o
+// site de dist/ dentro de um WebView, e tudo o que ele usa vem do próprio Android.
 pluginManagement {
     repositories {
         google()
@@ -5,6 +7,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -12,5 +15,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
 rootProject.name = 'ai-security-lab'
 include ':app'

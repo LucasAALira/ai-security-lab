@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pacote, versão e SDKs vêm do app/build.gradle (Gradle) ou do scripts/build-apk.sh (build sem Gradle). -->
+<!-- Pacote, versão e SDKs vêm do app/build.gradle (Gradle) ou do scripts/build-apk.sh (sem Gradle). -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- O conteúdo é todo local; a permissão só existe porque o WebView a exige para endereços https,
-         mesmo os servidos de dentro do app. Links externos abrem no navegador do aparelho. -->
+    <!-- Todo o conteúdo é local. A permissão existe porque o WebView a exige para endereços https,
+         mesmo os servidos de dentro do pacote. Links externos abrem no navegador do aparelho. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Entrega o arquivo de backup ao app escolhido no compartilhamento, só para leitura. -->
+        <!-- Entrega o arquivo de backup ao aplicativo escolhido no compartilhamento, só para leitura. -->
         <provider
             android:name=".BackupProvider"
             android:authorities="io.github.lucasaalira.aisecuritylab.backups"

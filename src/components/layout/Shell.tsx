@@ -1,4 +1,4 @@
-import { FirstChoice } from '@/components/hero/FirstChoice'
+import { Abertura } from '@/components/onboarding/Abertura'
 import { SanctuaryPlayer } from '@/components/audio/SanctuaryPlayer'
 import { Suspense, useEffect, useRef, type RefObject } from 'react'
 import { Outlet, useLocation } from 'react-router'
@@ -73,8 +73,8 @@ export function Shell() {
       </div>
       <PageVeil page={page} />
       <TrialBanner />
-      {/* Primeira visita: a escolha do caminho vem antes de tudo. */}
-      <FirstChoice />
+      {/* Primeira visita: caminho, tutorial e trilha inicial vêm antes do santuário. */}
+      <Abertura />
     </div>
   )
 }

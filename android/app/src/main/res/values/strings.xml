@@ -2,5 +2,6 @@
 <resources>
     <string name="app_name">AI Security Lab</string>
     <string name="share_backup">Salvar ou enviar o backup</string>
+    <string name="backup_subject">Backup do AI Security Lab</string>
     <string name="no_browser">Nenhum navegador encontrado para abrir o link.</string>
 </resources>

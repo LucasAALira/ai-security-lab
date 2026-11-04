@@ -1,6 +1,5 @@
 import { lazy, useEffect } from 'react'
-import { HashRouter, Route, Routes } from 'react-router'
-import { LessonRoute } from '@/components/lesson/LessonRoute'
+import { HashRouter, Navigate, Route, Routes, useParams } from 'react-router'
 import { AppSplash } from '@/components/gothic/AppSplash'
 import { Shell } from '@/components/layout/Shell'
 import { setupBackButton } from '@/lib/native'
@@ -27,6 +26,8 @@ const CoveragePage = lazy(() => import('@/pages/CoveragePage').then((m) => ({ de
 const AreasPage = lazy(() => import('@/pages/AreasPage').then((m) => ({ default: m.AreasPage })))
 const AreaPage = lazy(() => import('@/pages/AreaPage').then((m) => ({ default: m.AreaPage })))
 const ModulePage = lazy(() => import('@/pages/ModulePage').then((m) => ({ default: m.ModulePage })))
+const StudyModulePage = lazy(() => import('@/pages/StudyModulePage').then((m) => ({ default: m.StudyModulePage })))
+const BossPage = lazy(() => import('@/pages/BossPage').then((m) => ({ default: m.BossPage })))
 const SubmodulePage = lazy(() => import('@/pages/SubmodulePage').then((m) => ({ default: m.SubmodulePage })))
 const ExplorePage = lazy(() => import('@/pages/ExplorePage').then((m) => ({ default: m.ExplorePage })))
 const ArchitectListPage = lazy(() => import('@/pages/ArchitectListPage').then((m) => ({ default: m.ArchitectListPage })))
@@ -35,6 +36,12 @@ const TrophyRoomPage = lazy(() => import('@/pages/TrophyRoomPage').then(m => ({ 
 const ShopPage = lazy(() => import('@/pages/ShopPage').then((m) => ({ default: m.ShopPage })))
 const ErrantePage = lazy(() => import('@/pages/ErrantePage').then((m) => ({ default: m.ErrantePage })))
 const SettingsPage = lazy(() => import('@/pages/SettingsPage').then((m) => ({ default: m.SettingsPage })))
+
+/** `#/trilha/modulo/2` era o módulo aberto sobre a trilha; hoje o estudo tem página própria. */
+function LegacyModuleRedirect() {
+  const { n } = useParams()
+  return <Navigate to={`/modulo/${n ?? ''}`} replace />
+}
 
 /** Rotas em hash (`#/materias/...`): o site funciona aberto de qualquer pasta ou servidor estático. */
 export function App() {
@@ -45,12 +52,11 @@ export function App() {
       <AppSplash />
       <Routes>
         <Route element={<Shell />}>
-          <Route path="/" element={<HomePage />}>
-            <Route path="modulo/:n" element={<LessonRoute />} />
-          </Route>
-          <Route path="trilha" element={<TrailPage />}>
-            <Route path="modulo/:n" element={<LessonRoute />} />
-          </Route>
+          <Route path="/" element={<HomePage />} />
+          <Route path="trilha" element={<TrailPage />} />
+          <Route path="modulo/:n" element={<StudyModulePage />} />
+          <Route path="trilha/modulo/:n" element={<LegacyModuleRedirect />} />
+          <Route path="chefe/:n" element={<BossPage />} />
           <Route path="areas" element={<AreasPage />} />
           <Route path="areas/:area" element={<AreaPage />} />
           <Route path="areas/:area/:module" element={<ModulePage />} />

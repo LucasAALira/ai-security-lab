@@ -39,7 +39,7 @@ export function TaskList({ filter, onOpenCase }: { filter: TaskFilter; onOpenCas
           ))}
         </ul>
         <Button asChild variant="outline" size="sm">
-          <Link to={`/modulo/${i}`} state={{ overlay: true }}>{done ? 'Revisar conteúdo' : 'Abrir tarefas'}</Link>
+          <Link to={`/modulo/${i}`}>{done ? 'Revisar conteúdo' : 'Abrir tarefas'}</Link>
         </Button>
       </TaskRow>,
     )
