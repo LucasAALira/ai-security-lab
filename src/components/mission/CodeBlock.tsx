@@ -31,12 +31,12 @@ interface Props {
 export function CodeBlock({ lines, language, title, className }: Props) {
   return (
     <figure className={cn('m-0', className)}>
-      <figcaption className="flex items-center justify-between rounded-t-lg border border-b-0 border-border bg-muted/60 px-3 py-1.5 font-mono text-[11px] text-muted-foreground">
+      <figcaption className="flex items-center justify-between rounded-t-lg border border-b-0 border-border bg-muted/60 px-3 py-1.5 font-code text-[11px] text-muted-foreground">
         <span>{title}</span>
         <span>{languageName(language)}</span>
       </figcaption>
       <div className="overflow-x-auto rounded-b-lg border border-border bg-[#120a0b]" tabIndex={0} role="region" aria-label={`${title} (${languageName(language)}), rolável`}>
-        <ol className="m-0 min-w-max list-none p-0 py-1.5 font-mono text-[12.5px] leading-6">
+        <ol className="m-0 min-w-max list-none p-0 py-1.5 font-code text-[12.5px] leading-6">
           {lines.map((text, i) => {
             const diff = language === 'diff'
             const added = diff && text.startsWith('+') && !text.startsWith('+++')

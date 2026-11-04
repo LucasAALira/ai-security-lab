@@ -23,12 +23,12 @@ const markLabel: Record<LineMark, string> = { picked: 'marcada', wrong: 'não é
 export function CodeLines({ code, file, language, selectable, marks, onToggle }: Props) {
   return (
     <figure className="m-0">
-      <figcaption className="flex items-center justify-between rounded-t-lg border border-b-0 border-border bg-muted/60 px-3 py-1.5 font-mono text-[11px] text-muted-foreground">
+      <figcaption className="flex items-center justify-between rounded-t-lg border border-b-0 border-border bg-muted/60 px-3 py-1.5 font-code text-[11px] text-muted-foreground">
         <span>{file}</span>
         {language ? <span>{languageName(language)}</span> : null}
       </figcaption>
       <div className="overflow-x-auto rounded-b-lg border border-border bg-[#120a0b]" {...(selectable ? {} : { tabIndex: 0, role: 'region', 'aria-label': `${file}, rolável` })}>
-        <ol aria-label={`Linhas do arquivo ${file}`} className="m-0 min-w-max list-none p-0 py-1.5 font-mono text-[12.5px] leading-6">
+        <ol aria-label={`Linhas do arquivo ${file}`} className="m-0 min-w-max list-none p-0 py-1.5 font-code text-[12.5px] leading-6">
           {code.map((text, i) => {
             const mark = marks.get(i)
             const blank = text.trim() === ''

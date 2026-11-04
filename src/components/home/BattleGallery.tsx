@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, Swords } from 'lucide-react'
 import { Link } from 'react-router'
-import { BossArt, BOSS_VIEWBOX, type BossShape } from '@/components/gothic/BossArt'
+import { BossArt, BOSS_VIEWBOX, formaDoModulo, type BossShape } from '@/components/gothic/BossArt'
 import { arteDoTraje, trajeDoHeroi } from '@/components/hero/HeroArt'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { Button } from '@/components/ui/button'
@@ -16,14 +16,16 @@ import { useProgress } from '@/state/ProgressProvider'
 import '@/components/hero/hero-art.css'
 import './battle-gallery.css'
 
-/** Que vulto cabe a cada guardião, pelo que ele representa no site. */
-const FORMA_DO_MODULO: BossShape[] = ['guardia', 'sombra', 'sombra', 'cavaleiro', 'juiza', 'juiza', 'guardia', 'juiza', 'maquina']
-
 const data = (dia: string) => (dia ? dia.split('-').reverse().join('/') : '')
 
 /** Altura do personagem dentro do quadro, nas unidades do `viewBox` de 420 × 180.
  *  O guardião tem 156 e fica mais alto de propósito: quem chega é menor do que o que guarda. */
 const ALTURA_HEROI = 106
+
+/** O guardião no quadro: o sprite ocupa 200 × 200 e é reduzido para ficar um palmo acima do personagem. */
+const ESCALA_CHEFE = 0.82
+const CHEFE_X = 420 - BOSS_VIEWBOX.width * ESCALA_CHEFE - 36
+const CHEFE_Y = 170 - BOSS_VIEWBOX.height * ESCALA_CHEFE
 
 /** Crônicas do santuário: um quadro por guardião, com o seu personagem diante dele.
  *  Só mostra o que já está no progresso — nada aqui concede XP nem muda regra alguma. */
@@ -44,7 +46,7 @@ export function BattleGallery() {
       selo: `Módulo ${String(i + 1).padStart(2, '0')}`,
       nome: boss.name,
       epiteto: boss.epithet,
-      forma: (FORMA_DO_MODULO[i] ?? 'guardia') as BossShape,
+      forma: formaDoModulo(i) as BossShape,
       venceu,
       legenda: venceu
         ? `Caiu em ${data(venceu)}${state.bosses[i]?.flawless ? ', sem um erro sequer' : ''}.`
@@ -117,13 +119,12 @@ export function BattleGallery() {
                 <stop offset="1" style={{ stopColor: 'var(--primary)', stopOpacity: 0 }} />
               </radialGradient>
             </defs>
-            <rect width="420" height="180" fill="color-mix(in oklab, var(--card) 82%, #000)" />
+            {/* as ruínas atrás: o piso de lajes e as tochas ficam à vista, e um véu escuro deixa os sprites se destacarem */}
+            <image href={`${import.meta.env.BASE_URL}assets/cursemark/ruinas.png`} x="0" y="0" width="420" height="180" preserveAspectRatio="xMidYMax slice" />
+            <rect width="420" height="180" fill="var(--background)" opacity="0.38" />
             <rect width="420" height="180" fill="url(#battle-halo)" />
-            {/* chão e colunas, só para dar profundidade */}
-            <path d="M0 168 H420" stroke="color-mix(in oklab, var(--foreground) 18%, transparent)" strokeWidth="1" fill="none" />
-            <path d="M36 168 V26 M392 168 V26" stroke="color-mix(in oklab, var(--foreground) 10%, transparent)" strokeWidth="1" fill="none" />
-            <ellipse cx="158" cy="169" rx="30" ry="6" fill="#05060a" opacity="0.5" />
-            <ellipse cx="312" cy="169" rx="54" ry="7" fill="#05060a" opacity="0.55" />
+            <ellipse cx="158" cy="169" rx="30" ry="6" fill="#05060a" opacity="0.55" />
+            <ellipse cx={CHEFE_X + (BOSS_VIEWBOX.width * ESCALA_CHEFE) / 2} cy="170" rx="58" ry="7" fill="#05060a" opacity="0.6" />
             {/* o personagem do caminho escolhido, de pé na mesma linha de chão do guardião */}
             <image
               className="hero-art hero-art-respira"
@@ -133,7 +134,7 @@ export function BattleGallery() {
               width={larguraHeroi}
               height={ALTURA_HEROI}
             />
-            <g transform={`translate(${420 - BOSS_VIEWBOX.width * 0.78 - 54} 16) scale(0.78)`}>
+            <g transform={`translate(${CHEFE_X} ${CHEFE_Y}) scale(${ESCALA_CHEFE})`}>
               <BossArt shape={quadro.forma} vencido={Boolean(quadro.venceu)} />
             </g>
           </svg>
