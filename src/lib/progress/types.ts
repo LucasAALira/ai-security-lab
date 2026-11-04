@@ -157,7 +157,17 @@ export interface Prefs {
   hero?: string
   /** Traje do caminho (0 a 2). */
   heroTraje?: number
+  /** Como terminou o tutorial de abertura (a primeira matéria de Fundamentos): concluído ou
+   *  pulado. Sem valor, o tutorial ainda vai abrir. Quem pulou continua vendo o convite na
+   *  jornada. É só a abertura: o módulo 01 segue valendo XP como qualquer outro. */
+  tutorial?: 'feito' | 'pulado'
+  /** Trilha escolhida para começar a jornada, entre as três ofertas da abertura. Não tranca nada:
+   *  os outros módulos continuam abrindo pelas regras de sempre. */
+  caminho?: CaminhoId
 }
+
+/** As três trilhas oferecidas na abertura, pelo tema dos módulos. */
+export type CaminhoId = 'ataques' | 'governanca' | 'regulacao'
 
 export interface StudyState {
   version: 4

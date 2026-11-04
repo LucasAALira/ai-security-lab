@@ -99,7 +99,8 @@ A direção visual é a de um gótico moderno em linhas de circuito (veja [Ident
 | **Em breve** (`#/em-breve`) | O que está por vir, por situação (acesso antecipado, em planejamento, ideia em avaliação), e o cartão de desbloqueio do módulo 09. |
 | **Conquistas** (`#/conquistas`) | Resumo (desbloqueadas e progresso geral), filtros *Todas, Desbloqueadas, Pendentes e Secretas*, filtro por categoria, detalhes de cada conquista, atividade recente, som opcional e backup. |
 | **Laboratório de código** (`#/desafios`) | Os desafios de identificar a falha e corrigir, com metas das conquistas à vista. |
-| **Aula do módulo** (`#/modulo/N`) | Abas Conceito, Exemplo, Como corrigir, Revisar (flashcards), Praticar e Quiz. |
+| **Aula do módulo** (`#/modulo/N`) | Página do módulo, com as abas Conceito, Exemplo, Como corrigir, Revisar (flashcards), Praticar e Quiz. |
+| **Chefe do módulo** (`#/chefe/N`) | Página do enfrentamento: três cenários, um por vez, com a explicação de cada erro. Vencido, ela oferece os próximos guardiões e os demais temas num submenu. |
 
 **As oito conquistas iniciais**
 
@@ -134,7 +135,7 @@ Uma identidade de carvão, aço frio, tecido gasto e luz de brasa. A imagem de r
 | Elemento | Como funciona |
 | --- | --- |
 | **Início (Santuário do Conhecimento)** | Primeiro vem a missão atual, com uma ação principal. Atrás dela fica a nave do santuário em pixel art — arcos ogivais, pilares, cornija e piso de lajes em perspectiva —, com a fogueira acesa e o seu personagem ao lado dela. |
-| **Navegação** | Nomes temáticos com a função escrita ao lado: Jornada, Arquivos, Contratos, Provações, Relicário, Sala de troféus e Mercador (mercado negro). No app Android aparece também Configurações. |
+| **Navegação** | Cinco entradas, cada uma com a função escrita ao lado: **Jornada** (link direto) e os submenus **Estudar**, **Praticar**, **Progresso** e **Biblioteca**, que abrem ao clicar — um de cada vez, e já aberto na página em que se está. Dentro deles seguem os nomes temáticos de sempre: Arquivos, Contratos, Provações, Relicário, Sala de troféus e Mercador (mercado negro). No app Android aparece também Configurações. |
 | **Componentes** | Cartões de vidro fumado com borda de 1 px; botões de cantos vivos com chanfro e brilho no hover; medidores de XP em blocos de luz que pulsam quando o XP sobe; molduras cujas linhas pulsam como dados (`dataPulse`). |
 | **Fogueiras** | Na trilha, os pontos de controle e os módulos concluídos são prismas flutuantes sobre nós de servidor. Apagados, aparecem tracejados; acesos, mostram a chama. |
 | **Fontes** | Cinzel em maiúsculas espaçadas nos títulos (H1 a H3), Inter no texto e nos controles e JetBrains Mono no código e nos dados. A fonte fraktur, pouco legível, saiu. Todas vão empacotadas para uso offline. |
@@ -355,9 +356,18 @@ Nada disso altera preço, XP, moedas ou qualquer regra de progresso: a figura s�
 
 São arquétipos de função, com nome, lema, equipamento e paleta escritos aqui — nenhuma classe, armadura, símbolo ou personagem de obra alguma foi copiado. Cada caminho aparece de dois jeitos: como **ilustração** (a figura da fogueira e a da escolha) e no **desenho vetorial**, que troca a arma e o acento de cor conforme o caminho e é quem mostra a armadura peça a peça. Escolher ou trocar não custa nada e não altera XP, moedas, conquistas nem qualquer regra. A troca fica na loja, em **A armadura do cavaleiro**. Quem havia escolhido um dos dez caminhos da versão anterior cai no mais próximo destes seis, sem perder nada (`HEROIS_ANTIGOS`, em `src/data/herois.ts`).
 
-**A fogueira.** A cena do topo é a fogueira em pixel art com o seu personagem ao lado, na mesma escala e no mesmo chão: a lenha bate no tornozelo dele e a espada fincada chega à altura do ombro. O fundo da nave é da mesma família: pixel art gerada por `scripts/cena-santuario.py`, só com geometria — arcos ogivais, pilares, cornija e lajes em perspectiva, com a brasa acesa do lado da fogueira e um véu da cor do tema por cima, para acompanhar quem trocou de tema na loja.
+**A abertura.** Escolhido o caminho, a primeira visita segue por mais duas telas, uma de cada vez, antes de o santuário aparecer:
 
-A cena é viva: o personagem respira (o peito incha e os ombros sobem, com origem nos pés), o fogo pulsa, faíscas sobem da lenha e passam da cabeça dele, e nuvens atravessam devagar o céu dentro dos vidros — a máscara recorta o caixilho fora, então elas passam atrás das barras. Passar o ponteiro pelo painel move as camadas em profundidades diferentes (a parede quase nada, o céu um pouco mais, a fogueira e o personagem na frente) e a luz da tocha acompanha o ponteiro. Nada disso roda para quem pediu menos movimento no sistema, e no toque não há paralaxe. O personagem respira — um vaivém lento do peito, com origem nos pés, que para quando o sistema pede menos movimento. A imagem está em `public/assets/fogueira.png`, com a origem registrada em `public/assets/CREDITS.md`.
+1. **Tutorial.** A primeira matéria de Fundamentos (módulo 01, OWASP Top 10 para LLM), uma ideia por tela: as três etapas da aula e a primeira questão. Não é conteúdo à parte — são as mesmas etapas do módulo, com o mesmo progresso e o mesmo XP; muda só a forma, para a primeira visita não começar por um mapa de vinte páginas. Dá para **pular**: quem pula não perde nada e continua vendo o convite na jornada.
+2. **Por onde começar.** Três trilhas saem dos fundamentos — **Ataques e defesa**, **Governança** e **Regulação** —, cada uma com os seus módulos e o primeiro guardião à vista. A escolha não tranca nada: as regras de pré-requisito continuam as mesmas e todos os temas seguem na trilha de módulos. Ela só diz para onde o santuário aponta agora.
+
+Quem já estudava antes disso não vê nenhuma das duas: o progresso salvo mostra que a pessoa passou dessa parte.
+
+**Depois do primeiro guardião.** Quando a primeira fogueira acende, a página inicial ganha **O próximo passo é seu**: os chefes liberados (fogueira acesa e ainda de pé) ficam à vista, para a ordem ser de quem estuda, e os demais temas ficam num submenu fechado, que não disputa a atenção. A mesma escolha aparece no fim da página do chefe, logo depois da vitória.
+
+**A fogueira.** A cena do topo é a fogueira em pixel art com o seu personagem ao lado, na mesma escala e no mesmo chão: a lenha bate no tornozelo dele e a espada fincada chega à altura do ombro. Atrás vêm as ruínas góticas em pixel art (`public/assets/cursemark/ruinas.png`, origem registrada em `public/assets/CREDITS.md`), com a luz da tocha acompanhando o ponteiro e um véu da cor do tema por cima, para acompanhar quem trocou de tema na loja.
+
+A cena é viva: o personagem respira (o peito incha e os ombros sobem, com origem nos pés), o fogo pulsa e faíscas sobem da lenha e passam da cabeça dele, em passos (`steps`), como pede o pixel. Passar o ponteiro pelo painel move as camadas em profundidades diferentes (a parede quase nada, a fogueira e o personagem na frente) e a luz da tocha acompanha o ponteiro. Nada disso roda para quem pediu menos movimento no sistema, e no toque não há paralaxe. O personagem respira — um vaivém lento do peito, com origem nos pés, que para quando o sistema pede menos movimento. A imagem está em `public/assets/fogueira.png`, com a origem registrada em `public/assets/CREDITS.md`.
 
 **O cavaleiro vetorial** continua existindo ao lado dos sprites, porque é ele que mostra a armadura peça a peça: aparece na loja, em guarda, e nas crônicas, em ataque. A figura nunca encara quem está vendo — fica de três quartos, montada por articulação (cada membro gira no próprio pivô, em `knight-pose.ts`).
 
@@ -365,9 +375,9 @@ A cena é viva: o personagem respira (o peito incha e os ombros sobem, com orige
 
 ### 🖼️ Crônicas do santuário
 
-Na página inicial, uma galeria com um quadro por guardião da trilha: o seu cavaleiro, na pose de ataque, diante do vulto do chefe. Quem já caiu aparece com a data da queda (e um elogio quando foi sem nenhum erro); quem ainda está de pé fica no escuro, com uma inscrição no lugar da data. Dá para percorrer pelos botões, pela faixa numerada ou pelas setas do teclado, e cada quadro leva ao módulo daquele chefe.
+Na página inicial, uma galeria com um quadro por guardião da trilha: o seu personagem diante do chefe, nas ruínas. Quem já caiu aparece com a data da queda (e um elogio quando foi sem nenhum erro); quem ainda está de pé fica com uma inscrição no lugar da data. Dá para percorrer pelos botões, pela faixa numerada ou pelas setas do teclado, e **Enfrentar** leva direto à página do chefe.
 
-Os guardiões são sete silhuetas originais — torre, vulto encapuzado, cavaleiro inimigo, figura de coroa e balança, máquina de um olho só, criatura de gelo e criatura de peçonha — distribuídas pelos nove chefes e pelos [errantes](#errantes) conforme o que cada um representa. Os olhos acendem devagar e se apagam quando o chefe já foi derrotado; quem pede "reduzir movimento" vê tudo parado.
+Os guardiões são sete figuras em pixel art — sentinela, sombra, cavaleiro, juíza, máquina, gelo e peçonha — distribuídas pelos nove chefes e pelos [errantes](#errantes) conforme o que cada um representa. Quem está de pé aparece em cores e respira num vaivém de dois quadros; quem já caiu fica parado, em cinza de pedra. Com "reduzir movimento", tudo para.
 
 <a id="errantes"></a>
 

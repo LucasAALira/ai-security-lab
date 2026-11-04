@@ -41,8 +41,7 @@ export function BattleGallery() {
     const venceu = state.bosses[i]?.won ?? ''
     return {
       chave: `modulo-${i}`,
-      to: `/modulo/${i}`,
-      overlay: true,
+      to: `/chefe/${i}`,
       selo: `Módulo ${String(i + 1).padStart(2, '0')}`,
       nome: boss.name,
       epiteto: boss.epithet,
@@ -61,7 +60,6 @@ export function BattleGallery() {
     return {
       chave: e.id,
       to: `/errantes/${e.id}`,
-      overlay: false,
       selo: `Errante · ${e.elemento === 'gelo' ? 'Gelo' : 'Veneno'}`,
       nome: e.nome,
       epiteto: e.epiteto,
@@ -149,7 +147,7 @@ export function BattleGallery() {
               <p className="mt-1 text-[13px] text-[var(--gold-anodized)] italic">{quadro.legenda}</p>
             </div>
             <Button asChild size="sm" variant="outline" className="shrink-0">
-              <Link to={quadro.to} state={quadro.overlay ? { overlay: true } : undefined}>
+              <Link to={quadro.to}>
                 <Swords aria-hidden="true" /> {quadro.venceu ? 'Reencontrar' : 'Enfrentar'}
               </Link>
             </Button>

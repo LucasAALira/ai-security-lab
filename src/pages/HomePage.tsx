@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Outlet, useLocation } from 'react-router'
+import { useLocation } from 'react-router'
 import { AreasSection } from '@/components/home/AreasSection'
 import { BattleGallery } from '@/components/home/BattleGallery'
 import { DailyPanel } from '@/components/home/DailyPanel'
+import { JourneyNext } from '@/components/home/JourneyNext'
 import { RecentRelics } from '@/components/home/RecentRelics'
 import { SanctuaryHero } from '@/components/home/SanctuaryHero'
 import { LabSection } from '@/components/home/LabSection'
@@ -19,7 +20,7 @@ import type { CompanySize } from '@/data/types'
 import { useDocumentTitle } from '@/lib/use-document-title'
 
 /** Seções que os links de navegação (`/?secao=...`) sabem alcançar. */
-export const HOME_SECTIONS = ['inicio', 'areas', 'hoje', 'tempo', 'cronicas', 'relicario', 'tarefas', 'medalhas', 'requisitos', 'trilhas', 'laboratorio', 'cenarios', 'pentest', 'fontes'] as const
+export const HOME_SECTIONS = ['inicio', 'proximo', 'areas', 'hoje', 'tempo', 'cronicas', 'relicario', 'tarefas', 'medalhas', 'requisitos', 'trilhas', 'laboratorio', 'cenarios', 'pentest', 'fontes'] as const
 
 export function HomePage() {
   useDocumentTitle()
@@ -46,6 +47,7 @@ export function HomePage() {
   return (
     <>
       <SanctuaryHero />
+      <JourneyNext />
       <AreasSection />
       <DailyPanel />
       <StudyTimeSection />
@@ -68,7 +70,6 @@ export function HomePage() {
       />
       <PentestSection />
       <LibrarySection />
-      <Outlet />
     </>
   )
 }

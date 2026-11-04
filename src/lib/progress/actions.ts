@@ -15,6 +15,7 @@ import {
   READS_PER_MODULE,
   STUDY_CLOCK,
 } from './constants'
+import { isCaminho } from '@/lib/caminhos'
 import { coinBalance } from './coins'
 import { isModuleComplete, levelFor, trackProgress } from './core'
 import { dayKey } from './dates'
@@ -29,7 +30,7 @@ import { isChallengeOpen, isModuleUnlocked } from './trail'
 import { mutateMission, type MissionAction } from './mission-actions'
 import { mutateArchitect, type ArchitectAction } from './architect'
 import { nothing, reject, type Outcome } from './outcome'
-import type { LevelInfo, Medal, ProgressContext, Quality, StudyState, Tier } from './types'
+import type { CaminhoId, LevelInfo, Medal, ProgressContext, Quality, StudyState, Tier } from './types'
 
 export type Action =
   | { type: 'buyRelic'; id: string }
@@ -76,6 +77,8 @@ export type Action =
   | { type: 'setSound'; on: boolean }
   /** Caminho do santuário e o traje dele. Só aparência: não rende XP nem muda regra alguma. */
   | { type: 'setHero'; hero: string; traje?: number }
+  /** Abertura: o tutorial terminou (ou foi pulado) e, depois, a trilha escolhida para começar. */
+  | { type: 'setAbertura'; tutorial?: 'feito' | 'pulado'; caminho?: CaminhoId }
   /** Minuto(s) de uso medidos pelo relógio da interface. Soma tempo de estudo e nada mais:
    *  não rende XP, não cumpre missão e não conta dia de estudo nem sequência. */
   | { type: 'studyTick'; minutes?: number }
@@ -418,6 +421,22 @@ function mutate(s: StudyState, action: Action, ctx: ProgressContext, now: Date):
       return { changed: true }
     }
 
+    case 'setAbertura': {
+      let mudou = false
+      if (action.tutorial && s.prefs.tutorial !== action.tutorial) {
+        s.prefs.tutorial = action.tutorial
+        mudou = true
+      }
+      if (action.caminho !== undefined) {
+        if (!isCaminho(action.caminho)) return reject('invalid')
+        if (s.prefs.caminho !== action.caminho) {
+          s.prefs.caminho = action.caminho
+          mudou = true
+        }
+      }
+      return mudou ? { changed: true } : nothing
+    }
+
     case 'setSound':
       if (typeof action.on !== 'boolean' || s.prefs.sound === action.on) return nothing
       s.prefs.sound = action.on
@@ -523,7 +542,7 @@ export function applyAction(state: StudyState, action: Action, ctx: ProgressCont
   // Trocar a dificuldade recalcula valores, mas não é estudo: não conta como XP do dia, não cumpre
   // missões nem rende baú. Só registra a data das conquistas que passarem a valer.
   // Relógio e troca de classe não são estudo: nada de XP, missão, baú ou dia de estudo.
-  if (action.type === 'studyTick' || action.type === 'setHero') return { state: draft, events: [], changed: true }
+  if (action.type === 'studyTick' || action.type === 'setHero' || action.type === 'setAbertura') return { state: draft, events: [], changed: true }
 
   if (action.type === 'setEconomy') {
     recordMedals(draft, ctx, dayKey(now))

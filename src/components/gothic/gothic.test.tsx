@@ -100,7 +100,14 @@ describe('brasas de XP', () => {
 })
 
 describe('navegação temática', () => {
-  const items = navGroups.flatMap((g) => g.items)
+  /* Uma entrada do menu pode ser um grupo com submenu ou um link direto (a Jornada). Os dois
+     contam: o que importa é o destino continuar alcançável pelo menu. */
+  const items = navGroups.flatMap((g) => [...(g.to ? [{ label: g.label, hint: g.hint, to: g.to }] : []), ...g.items])
+
+  it('mostra no máximo cinco entradas no primeiro nível', () => {
+    expect(navGroups.length).toBeLessThanOrEqual(5)
+    for (const g of navGroups) expect(Boolean(g.to) !== g.items.length > 0, g.label).toBe(true)
+  })
 
   it('mantém todos os destinos das versões anteriores', () => {
     const before = [
