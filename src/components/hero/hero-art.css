@@ -1,10 +1,11 @@
-/* O vaivém do peito: sobe um fio de nada a partir dos pés, no compasso de uma respiração
-   tranquila (perto de 14 por minuto). Nada de deslocar a figura do chão. */
+/* O vaivém do peito, com origem nos pés, no compasso de uma respiração tranquila (perto de
+   17 por minuto). O peito incha e os ombros sobem um fio: dá para ver sem a figura sair do
+   chão nem deformar a silhueta. */
 .hero-art{display:block;transform-box:fill-box;transform-origin:50% 100%}
-.hero-art-respira{animation:hero-art-respira 4.2s ease-in-out infinite alternate;will-change:transform}
+.hero-art-respira{animation:hero-art-respira 3.6s ease-in-out infinite alternate;will-change:transform}
 @keyframes hero-art-respira{
-  from{transform:scaleY(1) scaleX(1)}
-  to{transform:scaleY(1.018) scaleX(0.994)}
+  from{transform:scaleY(1) scaleX(1) translateY(0)}
+  to{transform:scaleY(1.035) scaleX(0.986) translateY(-1.5%)}
 }
 [data-paused="true"] .hero-art-respira{animation-play-state:paused}
 @media(prefers-reduced-motion:reduce){.hero-art-respira{animation:none}}

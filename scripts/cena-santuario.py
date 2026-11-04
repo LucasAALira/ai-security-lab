@@ -8,7 +8,10 @@ janelas e quente no chão, do lado em que a fogueira fica.
 Pixel art quer poucas cores e degradê por trama, não por mistura: as rampas abaixo têm seis
 tons cada e o meio-tom entre dois vizinhos sai de uma matriz de Bayer 4 × 4.
 
-    python3 scripts/cena-santuario.py public/assets/santuario.png
+Saem três arquivos de uma vez: a nave, a máscara dos vidros (para as nuvens aparecerem só
+dentro dos vãos, atrás do caixilho) e uma faixa de nuvens que repete sem emenda.
+
+    python3 scripts/cena-santuario.py public/assets
 """
 import sys
 
@@ -53,6 +56,9 @@ def ogiva(cx, larg, nascenca, base):
     return corpo | (faixa & (Y < nascenca) & esq & dir)
 
 
+VIDROS = np.zeros((A, L), dtype=bool)   # onde o céu aparece: preenchido ao desenhar os vãos
+
+
 def cena():
     img = np.zeros((A, L, 3), dtype=np.uint8)
 
@@ -75,6 +81,7 @@ def cena():
         montante = np.abs(((X - cx + larg / 2) % 13) - 0.5) < 1.1
         travessa = np.abs(Y - (nasc + 16)) < 1.1
         pinta(img, vao & (montante | travessa), 1.2, PEDRA)
+        VIDROS[vao & ~(montante | travessa)] = True
 
     # pilares com capitel e base; a face voltada para a fogueira pega a luz
     for cx in (24, 168, 312, 456):
@@ -118,7 +125,36 @@ def cena():
     return Image.fromarray(img, 'RGB')
 
 
+def mascara_dos_vidros():
+    """Branco onde o céu aparece, transparente no resto. É o recorte das nuvens."""
+    a = np.zeros((A, L, 4), dtype=np.uint8)
+    a[VIDROS] = (255, 255, 255, 255)
+    return Image.fromarray(a, 'RGBA')
+
+
+def nuvens(larg=240, alt=168):
+    """Faixa de nuvens que repete sem emenda: soma de ondas de período inteiro em x, para a
+    borda direita encostar na esquerda, com a mesma trama de Bayer do resto da cena."""
+    yy, xx = np.mgrid[0:alt, 0:larg]
+    u = xx / larg * 2 * np.pi
+    campo = np.zeros((alt, larg))
+    rng = np.random.default_rng(5)
+    for periodo, peso in ((1, 1.0), (2, 0.6), (3, 0.45), (5, 0.3), (8, 0.18)):
+        fase, fy = rng.uniform(0, 2 * np.pi), rng.uniform(0.012, 0.05)
+        campo += peso * np.sin(u * periodo + fase) * np.cos(yy * fy + fase)
+    campo = (campo - campo.min()) / (float(np.ptp(campo)) or 1)
+    # as nuvens ficam na metade de cima e somem na parte baixa do vão
+    campo *= np.clip(1.25 - yy / (alt * 0.72), 0, 1)
+    bayer = np.tile(BAYER, (alt // 4 + 1, larg // 4 + 1))[:alt, :larg]
+    faixa = np.clip(np.floor(campo * 4 + bayer), 0, 3).astype(int)
+    tons = np.array([[0, 0, 0, 0], [0x3d, 0x5f, 0x93, 70], [0x50, 0x76, 0xad, 120], [0x6d, 0x90, 0xc4, 170]], dtype=np.uint8)
+    return Image.fromarray(tons[faixa], 'RGBA')
+
+
 if __name__ == '__main__':
+    pasta = sys.argv[1]
     im = cena()
-    im.quantize(colors=48, method=Image.MAXCOVERAGE).save(sys.argv[1], optimize=True)
-    print(sys.argv[1], im.size)
+    im.quantize(colors=48, method=Image.MAXCOVERAGE).save(f'{pasta}/santuario.png', optimize=True)
+    mascara_dos_vidros().save(f'{pasta}/santuario-vidros.png', optimize=True)
+    nuvens().save(f'{pasta}/santuario-nuvens.png', optimize=True)
+    print('nave', im.size, '· vidros', VIDROS.sum(), 'px · nuvens prontas')

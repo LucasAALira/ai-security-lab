@@ -77,7 +77,7 @@ Todas as fontes são SIL OFL 1.1, empacotadas pelo Fontsource (subconjuntos lati
 | `gx-buy` / `gx-denied`, `BuyButton` | Compra com saldo (brilho âmbar) ou "Acesso negado · saldo insuficiente" (carmim apagado, legível). |
 | `gx-gauge` + `gx-gauge-fill`, `Gauge`, `Progress` | Medidor em blocos de luz. Quando o valor sobe (`useRise`), o preenchimento ganha `is-charging`: uma onda de brasa corre pelos blocos. |
 | `PrismFlame` | Fogueira digital: um prisma de 1 px sobre um nó de servidor, que acende uma chama geométrica. Aparece nos pontos de controle e nos marcadores da trilha. |
-| `SanctuaryBackdrop` + `BonfireScene` | A nave em pixel art (gerada por `scripts/cena-santuario.py`): arcos ogivais, pilares, cornija e lajes em perspectiva, com a fogueira e o personagem do caminho escolhido por cima, no mesmo chão. |
+| `SanctuaryBackdrop` + `BonfireScene` | A nave em pixel art (gerada por `scripts/cena-santuario.py`): arcos ogivais, pilares, cornija e lajes em perspectiva, com a fogueira e o personagem do caminho escolhido por cima, no mesmo chão. Nuvens dentro dos vidros, faíscas subindo da lenha, respiração do personagem e paralaxe pelo ponteiro — tudo desligado em `prefers-reduced-motion`. |
 | `RelicArt`, `HoloPedestal` | Relíquia flutuando sobre um pedestal de luz holográfica (projetor, feixe e anéis em SVG). |
 | `gx-niche`, `.trophy-niche` | Nichos de vidro do relicário e da sala de troféus. |
 | `gx-counter` | Terminal do mercador: vidro com linhas de varredura e linha de brasa. |
