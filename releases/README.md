@@ -4,8 +4,9 @@ O aplicativo é o mesmo site, empacotado: todo o conteúdo vai dentro do APK e f
 
 ## Versão atual
 
-A **2.7.0** (versionCode 9) é gerada pelo fluxo **APK** em *Actions*: abra o fluxo, clique em
-*Run workflow* e baixe o arquivo em *Artifacts* ao terminar. O resumo da execução mostra o tamanho
+A **2.7.0** (versionCode 9) é gerada pelo fluxo **APK** em *Actions*. Ele roda sozinho a cada
+mudança no que entra no pacote (`src/`, `public/`, `android/`, `index.html`) nas branches `Dev` e
+`main`, e também pelo botão *Run workflow*. O arquivo fica em *Artifacts*, na execução. O resumo da execução mostra o tamanho
 e o SHA-256 para conferir o download:
 
 ```sh

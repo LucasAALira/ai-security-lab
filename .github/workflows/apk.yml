@@ -18,6 +18,9 @@
 name: APK
 
 on:
+  push:
+    branches: [Dev, main]
+    paths: ['src/**', 'public/**', 'android/**', 'scripts/build-apk.sh', 'index.html', 'package.json', 'package-lock.json', '.github/workflows/apk.yml']
   workflow_dispatch:
     inputs:
       publicar:
@@ -53,8 +56,15 @@ jobs:
           set -eu
           sdk=${ANDROID_SDK_ROOT:-$ANDROID_HOME}
           jar=$sdk/platforms/android-34/android.jar
-          [ -f "$jar" ] || yes | "$sdk/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-34' >/dev/null
-          bt=$(ls -d "$sdk"/build-tools/* | sort -V | tail -1)
+          if [ ! -f "$jar" ]; then
+            gerente=$(find "$sdk/cmdline-tools" -name sdkmanager -type f 2>/dev/null | head -1)
+            [ -n "$gerente" ] || { echo "Sem android-34 e sem sdkmanager em $sdk" >&2; exit 1; }
+            yes | "$gerente" 'platforms;android-34' >/dev/null
+          fi
+          # a 34 combina com o compileSdk do projeto; se não houver, vale a mais nova
+          bt=$(ls -d "$sdk"/build-tools/34.* 2>/dev/null | sort -V | tail -1)
+          [ -n "$bt" ] || bt=$(ls -d "$sdk"/build-tools/* | sort -V | tail -1)
+          echo "Plataforma: $jar"
           echo "Build tools: $bt"
           {
             echo "ANDROID_JAR=$jar"
@@ -117,7 +127,7 @@ jobs:
           if-no-files-found: error
 
       - name: Publicar
-        if: inputs.publicar
+        if: inputs.publicar && github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
