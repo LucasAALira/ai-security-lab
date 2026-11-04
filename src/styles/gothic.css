@@ -1,37 +1,45 @@
 /* ==========================================================================
-   Forja Dracônica — aço frio, cinza de carvão, tecido gasto e luz de brasa.
-   A imagem de referência orienta a atmosfera; selos e circuitos discretos preservam a identidade
-   AppSec. Superfícies e controles seguem os mesmos tokens em todas as páginas. Arte original em CSS e SVG.
+   Cursemark — pedra úmida, musgo, brasa de tocha e ouro velho, em pixel art.
+   A paleta vem das ruínas góticas do cenário (`public/assets/cursemark/ruinas.png`) e dos chefes:
+   preto-azulado de caverna, pedra marrom, névoa verde-acinzentada e o laranja das tochas.
+   A interface é feita de "pixels" de 2 e 3 px: molduras com cantos escalonados, bisel de 2 tons,
+   sombra dura, barras em blocos e fontes bitmap. Nada de vidro, desfoque ou cantos arredondados.
+
+   Os nomes das classes (gx-*) vêm da identidade anterior e foram mantidos: os componentes não
+   mudam, só a aparência. Cada tema da loja continua só trocando as cores (tokens do daisyUI).
 
    Regras:
-   - O vidro e os circuitos ficam atrás; a área de leitura é sempre sólida o bastante para o contraste AA.
-   - Cinzel só em títulos, sempre em maiúsculas espaçadas; Inter na leitura e nos controles;
-     JetBrains Mono em código, preços e dados.
-   - Toda animação é curta ou discreta, não bloqueia e some com prefers-reduced-motion.
+   - A leitura vem primeiro: a área de texto é sempre sólida o bastante para o contraste AA.
+   - Pixelify Sans na leitura, nos controles e nos títulos de seção; Press Start 2P só na marca, no
+     título da página e em inscrições curtas; JetBrains Mono só em código.
+   - Toda animação é curta, em passos (steps) e some com prefers-reduced-motion.
    ========================================================================== */
 
 /* --- Paleta e tokens que valem para todos os temas ------------------------- */
 :root {
-  /* Base: preto absoluto e titânio fosco. */
-  --void: #0b0e12;
-  --titanium-950: #0f1317;
-  --titanium-900: #151a1f;
-  --titanium-800: #1c2228;
-  --titanium-700: #272f36;
-  --titanium-600: #333c44;
-  --titanium-400: #77838d;
-  --titanium-200: #bdc6ce;
+  /* Base: preto-azulado de caverna e pedra. */
+  --void: #0a0e0f;
+  --titanium-950: #0d1213;
+  --titanium-900: #151b1c;
+  --titanium-800: #1c2325;
+  --titanium-700: #2b3030;
+  --titanium-600: #3d3e35;
+  --titanium-400: #8a8774;
+  --titanium-200: #cfc7b0;
 
-  /* Luzes: vermelho-brasa digital, âmbar (ação disponível) e ouro anodizado (conquista, sucesso). */
-  --ember-red: #d88b57;
-  --ember-deep: #713e2a;
-  --amber: #e3ad67;
-  --gold-anodized: #c5b899;
-  --gold-deep: #78664d;
+  /* Luzes: brasa de tocha, âmbar (ação disponível) e ouro velho (conquista, sucesso). */
+  --ember-red: #e0773a;
+  --ember-deep: #6b3a20;
+  --amber: #f2b04a;
+  --gold-anodized: #d9b866;
+  --gold-deep: #7a6638;
+  /* Musgo e névoa: apoio para sucesso e informação. */
+  --moss: #9fb04a;
+  --fog: #8fb0ad;
 
-  /* Texto: branco puro nos títulos, cinza espectral na leitura. */
-  --heading: #edf1f4;
-  --spectral: #cbd3da;
+  /* Texto: osso quente nos títulos, pergaminho gasto na leitura. */
+  --heading: #f4ead0;
+  --spectral: #d9d0b9;
 
   /* Nomes antigos, mantidos para quem ainda os usa (medalhas, brasões, selos). */
   --bronze: var(--gold-anodized);
@@ -39,7 +47,7 @@
   --ember: var(--ember-red);
   --candle: var(--amber);
   --violet: #a493cf;
-  --ivory: #f4f5f7;
+  --ivory: #f4ead0;
 
   /* Espaçamento em degraus de 4 px. */
   --space-1: 4px;
@@ -50,15 +58,17 @@
   --space-6: 32px;
   --space-7: 48px;
 
-  /* Geometria: cantos vivos, chanfros nas quinas, linhas de 1 px. */
+  /* O "pixel" da interface: 2 px nos controles, 3 px nas molduras grandes. */
+  --px: 2px;
+  --px-lg: 3px;
   --radius-frame: 0px;
   --frame-gap: 5px;
-  --cut: 8px;
-  --cut-sm: 5px;
+  --cut: 3px;
+  --cut-sm: 2px;
   --hairline: 1px;
 
-  /* Vidro fumado. */
-  --blur: 12px;
+  /* Sem vidro: pixel art é nítida. */
+  --blur: 0px;
 
   /* Áreas seguras (entalhes e barras do sistema em telas de ponta a ponta). No navegador valem as
      variáveis env(); um app que as injete como --safe-area-inset-* também é atendido. */
@@ -67,40 +77,47 @@
   --sab: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
   --sal: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
 
-  /* Tempo: curto e preciso, nunca obrigatório. */
-  --dur-fast: 120ms;
-  --dur: 200ms;
-  --dur-slow: 420ms;
-  --ease-solemn: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Tempo: curto e preciso, nunca obrigatório. O movimento usa passos, como um sprite. */
+  --dur-fast: 100ms;
+  --dur: 160ms;
+  --dur-slow: 360ms;
+  --ease-solemn: steps(6, end);
+  --ease-out: steps(8, end);
 
-  /* Circuito de fundo: escamas de dragão em trilhas de 1 px, com nós de solda. Desenho original. */
-  --circuit-scales: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='84' viewBox='0 0 96 84' fill='none' stroke='%23000' stroke-width='1'%3E%3Cpath d='M0 42a24 24 0 0 1 48 0M48 42a24 24 0 0 1 48 0M-24 84a24 24 0 0 1 48 0M24 84a24 24 0 0 1 48 0M72 84a24 24 0 0 1 48 0M-24 0a24 24 0 0 0 48 0M24 0a24 24 0 0 0 48 0M72 0a24 24 0 0 0 48 0'/%3E%3Cpath d='M24 18v8l6 6M72 18v8l-6 6M48 60v8M0 60v8' stroke-opacity='.7'/%3E%3Cg fill='%23000' stroke='none'%3E%3Ccircle cx='30' cy='32' r='1.6'/%3E%3Ccircle cx='66' cy='32' r='1.6'/%3E%3Ccircle cx='48' cy='68' r='1.6'/%3E%3Ccircle cx='0' cy='68' r='1.6'/%3E%3Ccircle cx='96' cy='68' r='1.6'/%3E%3C/g%3E%3C/svg%3E");
-  /* Arcos ogivais em linha de circuito, para faixas largas de fundo. */
-  --circuit-arches: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='320' viewBox='0 0 240 320' fill='none' stroke='%23000' stroke-width='1'%3E%3Cpath d='M20 320V150C20 80 70 34 120 10c50 24 100 70 100 140v170'/%3E%3Cpath d='M44 320V156c0-56 36-96 76-118 40 22 76 62 76 118v164' stroke-opacity='.6'/%3E%3Cpath d='M120 10v40M120 50l-18 18v40M120 50l18 18v40M102 108h36' stroke-opacity='.8'/%3E%3Cpath d='M20 210h24M196 210h24M20 260h24M196 260h24' stroke-opacity='.6'/%3E%3Cg fill='%23000' stroke='none'%3E%3Ccircle cx='120' cy='50' r='2'/%3E%3Ccircle cx='102' cy='108' r='1.6'/%3E%3Ccircle cx='138' cy='108' r='1.6'/%3E%3Ccircle cx='44' cy='210' r='1.6'/%3E%3Ccircle cx='196' cy='260' r='1.6'/%3E%3C/g%3E%3C/svg%3E");
+  /* Tramado de 2 × 2 px: o sombreado em xadrez dos jogos de 16 bits. Fica sobre os painéis. */
+  --dither: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h2v2H0zM2 2h2v2H2z' fill='%23000' fill-opacity='.17'/%3E%3C/svg%3E");
+  /* Arcos ogivais em linha, para faixas largas de fundo (sala de troféus). */
+  --circuit-arches: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='320' viewBox='0 0 240 320' fill='none' stroke='%23000' stroke-width='2' shape-rendering='crispEdges'%3E%3Cpath d='M20 320V150C20 80 70 34 120 10c50 24 100 70 100 140v170'/%3E%3Cpath d='M44 320V156c0-56 36-96 76-118 40 22 76 62 76 118v164' stroke-opacity='.6'/%3E%3Cpath d='M120 10v40M120 50l-18 18v40M120 50l18 18v40M102 108h36' stroke-opacity='.8'/%3E%3Cpath d='M20 210h24M196 210h24M20 260h24M196 260h24' stroke-opacity='.6'/%3E%3C/svg%3E");
 }
 
-/* Derivados do tema ativo: cada tema ganha as mesmas linhas, vidro e brilho, na sua cor. */
+/* Derivados do tema ativo: cada tema ganha as mesmas molduras, bisel e brilho, na sua cor. */
 :root,
 [data-theme] {
-  --line: color-mix(in oklab, var(--foreground) 11%, transparent);
-  --line-strong: color-mix(in oklab, var(--foreground) 22%, transparent);
-  --line-hot: color-mix(in oklab, var(--primary) 70%, transparent);
-  --glass: color-mix(in oklab, var(--card) 74%, transparent);
-  --glass-strong: color-mix(in oklab, var(--card) 92%, transparent);
+  --line: color-mix(in oklab, var(--foreground) 15%, transparent);
+  --line-strong: color-mix(in oklab, var(--foreground) 28%, transparent);
+  --line-hot: color-mix(in oklab, var(--primary) 80%, transparent);
+  --glass: color-mix(in oklab, var(--card) 90%, transparent);
+  --glass-strong: color-mix(in oklab, var(--card) 96%, transparent);
   --glow: color-mix(in oklab, var(--primary) 45%, transparent);
   --glow-soft: color-mix(in oklab, var(--primary) 22%, transparent);
-  /* Cor dos circuitos de fundo e das linhas de monitoramento (cada tema pode trocar). */
+  /* Cor das linhas de monitoramento de alguns temas da loja (cada tema pode trocar). */
   --monitor: var(--primary);
   --monitor-opacity: 0.035;
 
-  --ornament: color-mix(in oklab, var(--primary) 48%, var(--border));
-  --ornament-soft: color-mix(in oklab, var(--primary) 22%, transparent);
+  --ornament: color-mix(in oklab, var(--primary) 52%, var(--border));
+  --ornament-soft: color-mix(in oklab, var(--primary) 26%, transparent);
   --plate-hi: color-mix(in oklab, var(--primary) 70%, white);
   --plate-lo: color-mix(in oklab, var(--primary) 45%, black);
   --plate-edge: color-mix(in oklab, var(--primary) 40%, black);
   --stone: color-mix(in oklab, var(--background) 70%, var(--card));
   --stone-line: var(--line);
+
+  /* Moldura de pixel: contorno escuro, anel de pedra com um toque de bronze e bisel de 2 tons. */
+  --edge: color-mix(in oklab, #000 72%, var(--background));
+  --frame: color-mix(in oklab, var(--primary) 22%, color-mix(in oklab, var(--color-base-300) 80%, var(--foreground)));
+  --frame-hi: color-mix(in oklab, var(--foreground) 24%, var(--frame));
+  --frame-lo: color-mix(in oklab, #000 38%, var(--frame));
+  --frame-hot: color-mix(in oklab, var(--primary) 78%, var(--edge));
 }
 /* Código de Sangue: ciano no código, linhas de monitoramento carmim. */
 [data-theme='bloodcode'] {
@@ -117,16 +134,17 @@
 @layer base {
   body {
     padding: var(--sat) var(--sar) var(--sab) var(--sal);
-    font-size: 15px;
-    line-height: 1.65;
-    font-feature-settings: 'cv11', 'ss01';
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: auto;
     background-color: var(--background);
     background-image: none;
   }
 
-  /* Fundo da catedral digital: escamas em circuito (na cor do tema), brasa no alto e vinheta.
-     Fica numa camada fixa atrás de tudo; nunca dentro da área de leitura. */
+  /* Fundo: as ruínas, escurecidas, numa camada fixa atrás de tudo — e um véu com vinheta e tramado
+     por cima. A área de leitura nunca fica direto sobre a imagem: os cartões são sólidos. */
   body::before,
   body::after {
     content: '';
@@ -136,81 +154,120 @@
     pointer-events: none;
   }
   body::before {
-    background: var(--monitor);
-    opacity: var(--monitor-opacity);
-    -webkit-mask: var(--circuit-scales) 0 0 / 96px 84px repeat;
-    mask: var(--circuit-scales) 0 0 / 96px 84px repeat;
+    background: url('/assets/cursemark/ruinas.png') 50% 100% / cover no-repeat;
+    image-rendering: pixelated;
+    filter: brightness(0.62) saturate(0.85);
   }
   body::after {
     background:
-      radial-gradient(ellipse 60% 38% at 62% -6%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 72%),
-      radial-gradient(ellipse 120% 80% at 50% 50%, transparent 55%, color-mix(in oklab, black 70%, transparent) 100%);
+      var(--dither),
+      radial-gradient(ellipse 70% 46% at 62% 0%, color-mix(in oklab, var(--primary) 14%, transparent), transparent 72%),
+      radial-gradient(ellipse 120% 90% at 50% 50%, transparent 40%, color-mix(in oklab, #000 62%, transparent) 100%),
+      linear-gradient(180deg, color-mix(in oklab, var(--background) 56%, transparent), color-mix(in oklab, var(--background) 80%, transparent));
   }
   /* Código de Sangue: linhas horizontais de monitoramento. Catedral de Silício: varredura vertical. */
   [data-theme='bloodcode'] body::after {
     background:
-      repeating-linear-gradient(180deg, color-mix(in oklab, #ff2d55 9%, transparent) 0 1px, transparent 1px 56px),
-      radial-gradient(ellipse 60% 38% at 62% -6%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 72%),
-      radial-gradient(ellipse 120% 80% at 50% 50%, transparent 55%, color-mix(in oklab, black 70%, transparent) 100%);
+      var(--dither),
+      repeating-linear-gradient(180deg, color-mix(in oklab, #ff2d55 10%, transparent) 0 2px, transparent 2px 56px),
+      radial-gradient(ellipse 120% 90% at 50% 50%, transparent 40%, color-mix(in oklab, #000 62%, transparent) 100%),
+      linear-gradient(180deg, color-mix(in oklab, var(--background) 60%, transparent), color-mix(in oklab, var(--background) 82%, transparent));
   }
   [data-theme='silicon'] body::after {
     background:
-      repeating-linear-gradient(90deg, color-mix(in oklab, white 3.5%, transparent) 0 1px, transparent 1px 7px),
-      radial-gradient(ellipse 60% 38% at 50% -6%, color-mix(in oklab, white 7%, transparent), transparent 72%),
-      radial-gradient(ellipse 120% 80% at 50% 50%, transparent 55%, color-mix(in oklab, black 70%, transparent) 100%);
+      var(--dither),
+      repeating-linear-gradient(90deg, color-mix(in oklab, white 4%, transparent) 0 2px, transparent 2px 8px),
+      radial-gradient(ellipse 120% 90% at 50% 50%, transparent 40%, color-mix(in oklab, #000 62%, transparent) 100%),
+      linear-gradient(180deg, color-mix(in oklab, var(--background) 60%, transparent), color-mix(in oklab, var(--background) 82%, transparent));
   }
 
-  /* --- Títulos: Cinzel calibrada para leitura imediata --------------------
-     O problema antigo: fonte fraktur nos títulos principais e Cinzel em caixa mista (minúsculas
-     viram versaletes miúdos). Agora: só Cinzel, sempre em maiúsculas, com espaçamento e entrelinha
-     generosos, peso 600–700 e branco puro (21:1 sobre o fundo). */
+  /* --- Títulos -------------------------------------------------------------
+     h1 (título da página): Press Start 2P num tamanho controlado, com sombra dura.
+     h2/h3: Pixelify Sans em negrito e sombra dura curta. Sem caixa alta: nessa fonte o "C", o "G"
+     e o "O" maiúsculos quase se confundem; em caixa mista ela é nítida. */
   h1,
   h2,
   h3 {
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    line-height: 1.28;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
     color: var(--heading);
     text-wrap: balance;
-    font-kerning: normal;
+    text-shadow: 2px 2px 0 color-mix(in oklab, #000 80%, transparent);
   }
   h1 {
-    font-weight: 700;
-    letter-spacing: 0.07em;
-    line-height: 1.2;
-  }
-  h3 {
-    letter-spacing: 0.05em;
+    font-family: var(--font-pixel);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+    /* a fonte é larga (1 em por letra): o tamanho é fixado aqui para não estourar a coluna */
+    font-size: clamp(16px, 2.1vw, 24px) !important;
+    text-shadow: 3px 3px 0 color-mix(in oklab, #000 85%, transparent);
   }
   /* Conteúdo das aulas e matérias: títulos internos na fonte de leitura, sem caixa alta. */
   .study-prose :is(h2, h3, h4),
   .pentest-prose :is(h2, h3, h4, h5),
   .gx-plain-heading {
     font-family: var(--font-sans);
+    font-weight: 700;
     text-transform: none;
-    letter-spacing: 0;
-    line-height: 1.4;
+    letter-spacing: 0.01em;
+    line-height: 1.35;
+    text-shadow: none;
   }
 
   code,
   kbd,
   pre,
   samp {
-    font-family: var(--font-mono);
+    font-family: var(--font-code);
     font-variant-ligatures: none;
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--primary) 40%, transparent);
+    background: color-mix(in oklab, var(--primary) 55%, #000);
     color: var(--heading);
   }
 
-  /* Foco: anel âmbar contínuo e afastado do elemento, visível sobre vidro, linha e brasa. */
+  /* Foco: contorno âmbar de 3 px, afastado do elemento, visível sobre pedra, linha e brasa. */
   :focus-visible {
-    outline: 2px solid var(--amber);
+    outline: 3px solid var(--amber);
     outline-offset: 2px;
+  }
+
+  /* Barras de rolagem em blocos de pedra. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--frame) color-mix(in oklab, var(--background) 70%, #000);
+  }
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: color-mix(in oklab, var(--background) 70%, #000);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--frame);
+    border: 2px solid color-mix(in oklab, var(--background) 70%, #000);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--frame-hi);
+  }
+  ::-webkit-scrollbar-corner {
+    background: color-mix(in oklab, var(--background) 70%, #000);
+  }
+
+  /* Toda imagem de pixel art aparece ampliada sem suavização. */
+  img[src$='.png'],
+  .pixelated {
+    image-rendering: pixelated;
+  }
+  /* Ícones e desenhos vetoriais sem serrilhado suave: os traços ficam quadrados, como pixels. */
+  svg {
+    shape-rendering: crispEdges;
   }
 }
 
@@ -218,77 +275,84 @@
 @layer components {
   /* Classes de título, para quando o elemento não é h1–h3 ou precisa de um tamanho fixo. */
   .gx-title,
-  .gx-h1,
   .gx-h2,
   .gx-h3 {
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    line-height: 1.28;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
     color: var(--heading);
     text-wrap: balance;
+    text-shadow: 2px 2px 0 color-mix(in oklab, #000 80%, transparent);
   }
   .gx-h1 {
-    font-size: clamp(24px, 3.4vw, 36px);
-    font-weight: 700;
-    letter-spacing: 0.07em;
-    line-height: 1.2;
+    font-family: var(--font-pixel);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--heading);
+    text-wrap: balance;
+    text-shadow: 3px 3px 0 color-mix(in oklab, #000 85%, transparent);
+    font-size: clamp(16px, 2.1vw, 24px);
+    line-height: 1.5;
   }
   .gx-h2 {
-    font-size: clamp(19px, 2.4vw, 24px);
+    font-size: clamp(19px, 2.2vw, 24px);
   }
   .gx-h3 {
-    font-size: 15px;
-    letter-spacing: 0.05em;
+    font-size: 16px;
   }
-  /* Marca e títulos de cena: maiúsculas largas, com brilho de brasa discreto. */
+  /* Marca e títulos de cena: Press Start 2P, com sombra dura. */
   .gx-brand {
-    font-family: var(--font-display);
-    font-weight: 700;
+    font-family: var(--font-pixel);
+    font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    line-height: 1.15;
+    letter-spacing: 0;
+    line-height: 1.5;
     color: var(--heading);
+    text-shadow: 2px 2px 0 #000;
+    font-size: 11px !important;
   }
   .gx-display {
-    font-family: var(--font-display);
-    font-weight: 700;
+    font-family: var(--font-pixel);
+    font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    line-height: 1.16;
+    letter-spacing: 0.01em;
+    line-height: 1.55;
     color: var(--heading);
     text-shadow:
-      0 0 24px color-mix(in oklab, var(--primary) 35%, transparent),
-      0 2px 8px black;
+      3px 3px 0 #000,
+      0 0 22px color-mix(in oklab, var(--primary) 32%, transparent);
   }
 
-  /* Inscrição: rótulo curto em maiúsculas, entre dois marcadores quadrados. Substitui o "eyebrow" genérico. */
+  /* Inscrição: rótulo curto, em maiúsculas, entre dois marcadores quadrados de pixel. */
   .gx-inscription {
     display: inline-flex;
     align-items: center;
-    gap: 0.6em;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
+    gap: 0.7em;
+    font-family: var(--font-pixel);
+    font-size: 9px;
+    font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.06em;
+    line-height: 1.6;
     color: var(--primary);
+    text-shadow: 1px 1px 0 #000;
   }
   .gx-inscription::before,
   .gx-inscription::after {
     content: '';
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
     flex-shrink: 0;
-    transform: rotate(45deg);
-    border: 1px solid var(--ornament);
+    background: var(--ornament);
+    box-shadow: 1px 1px 0 #000;
   }
   .font-display {
     font-family: var(--font-display);
   }
 
-  /* Divisor: linha de 1 px que se apaga nas pontas, com um nó no meio. */
+  /* Divisor: linha pontilhada de pixels com um nó no meio. */
   .gx-rule {
     display: flex;
     align-items: center;
@@ -298,231 +362,261 @@
   .gx-rule::before,
   .gx-rule::after {
     content: '';
-    height: 1px;
+    height: 2px;
     flex: 1;
-    background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
+    background: repeating-linear-gradient(90deg, var(--line-strong) 0 4px, transparent 4px 8px);
   }
 
-  /* --- Vidro fumado ----------------------------------------------------------
-     Preto translúcido, desfoque de fundo e borda de 1 px semitransparente. Sem suporte a desfoque,
-     ou com "menos transparência", vira titânio sólido. */
-  .gx-glass {
-    border: 1px solid var(--line);
-    background: var(--glass);
-    -webkit-backdrop-filter: blur(var(--blur)) saturate(1.15);
-    backdrop-filter: blur(var(--blur)) saturate(1.15);
-    box-shadow: inset 0 1px 0 color-mix(in oklab, white 5%, transparent);
-  }
-
-  /* Cartão de todo o site: vidro fumado com linha de 1 px e um brilho fino no alto. */
-  .gx-panel {
-    border-radius: 0;
-    border-color: var(--line);
-    background:
-      linear-gradient(90deg, transparent, color-mix(in oklab, var(--foreground) 9%, transparent) 50%, transparent) top / 100% 1px no-repeat,
-      var(--glass);
-    -webkit-backdrop-filter: blur(var(--blur)) saturate(1.15);
-    backdrop-filter: blur(var(--blur)) saturate(1.15);
-    box-shadow: 0 24px 40px -32px black;
-  }
-
-  /* Moldura de destaque: vidro, linha de 1 px e cantoneiras de HUD que pulsam como dados. */
-  .gx-frame {
+  /* --- Molduras de pixel -------------------------------------------------------
+     Todas as superfícies (cartão, moldura de destaque, parede, nicho, balcão) seguem a mesma receita:
+       1. cantos escalonados (clip-path de --n px, igual à espessura do anel);
+       2. fundo de pedra com tramado;
+       3. um anel de pedra e bronze desenhado num ::after por cima do conteúdo (assim ele também
+          aparece sobre cenas e imagens que encostam na borda);
+       4. contorno escuro por fora (a borda de 1 px do elemento).
+     O ::after não recebe cliques. */
+  .gx-glass,
+  .gx-panel,
+  .gx-frame,
+  .gx-niche,
+  .gx-counter {
+    --n: var(--px-lg);
     position: relative;
-    border: 1px solid var(--line-strong);
     border-radius: 0;
-    background-color: var(--glass-strong);
-    -webkit-backdrop-filter: blur(var(--blur)) saturate(1.15);
-    backdrop-filter: blur(var(--blur)) saturate(1.15);
+    border-color: var(--edge);
+    background:
+      var(--dither),
+      linear-gradient(180deg, color-mix(in oklab, var(--foreground) 5%, transparent), transparent 56px),
+      var(--glass-strong);
+    clip-path: polygon(0 var(--n), var(--n) var(--n), var(--n) 0, calc(100% - var(--n)) 0, calc(100% - var(--n)) var(--n), 100% var(--n), 100% calc(100% - var(--n)), calc(100% - var(--n)) calc(100% - var(--n)), calc(100% - var(--n)) 100%, var(--n) 100%, var(--n) calc(100% - var(--n)), 0 calc(100% - var(--n)));
+  }
+  .gx-glass::after,
+  .gx-panel::after,
+  .gx-frame::after,
+  .gx-niche::after,
+  .gx-counter::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    /* o anel tem bisel: 1 px claro em cima e à esquerda, 1 px escuro embaixo e à direita */
     box-shadow:
-      inset 0 0 0 1px color-mix(in oklab, black 50%, transparent),
-      0 24px 48px -30px black;
+      inset 1px 1px 0 0 var(--frame-hi),
+      inset -1px -1px 0 0 var(--frame-lo),
+      inset 0 0 0 var(--n) var(--frame),
+      inset 0 0 0 calc(var(--n) + 1px) var(--edge);
+  }
+
+  /* Parede (barra lateral): pedra mais escura. */
+  .gx-glass {
+    background:
+      var(--dither),
+      linear-gradient(90deg, color-mix(in oklab, var(--primary) 5%, transparent), transparent 40%),
+      color-mix(in oklab, var(--background) 92%, var(--card));
+  }
+
+  /* Cartão de todo o site. */
+  .gx-panel {
+    box-shadow: none;
+  }
+
+  /* Moldura de destaque: anel tingido de brasa e quatro cravos de pixel nos cantos. */
+  .gx-frame {
+    --n: var(--px-lg);
+    background:
+      var(--dither),
+      linear-gradient(135deg, color-mix(in oklab, var(--primary) 9%, transparent), transparent 56%),
+      var(--glass-strong);
+  }
+  .gx-frame::after {
+    box-shadow:
+      inset 1px 1px 0 0 color-mix(in oklab, var(--frame-hot) 70%, white),
+      inset -1px -1px 0 0 color-mix(in oklab, var(--frame-hot) 60%, black),
+      inset 0 0 0 var(--n) var(--frame-hot),
+      inset 0 0 0 calc(var(--n) + 1px) var(--edge),
+      inset 0 0 0 calc(var(--n) + 3px) color-mix(in oklab, var(--primary) 10%, transparent);
   }
   .gx-frame::before {
     content: '';
     position: absolute;
-    inset: -1px;
+    inset: calc(var(--n) + 3px);
+    z-index: 1;
     pointer-events: none;
-    --c: var(--primary);
-    --l: 14px;
-    --w: 1px;
+    --c: var(--amber);
+    --s: 5px;
     background:
-      linear-gradient(var(--c), var(--c)) top left / var(--l) var(--w) no-repeat,
-      linear-gradient(var(--c), var(--c)) top left / var(--w) var(--l) no-repeat,
-      linear-gradient(var(--c), var(--c)) top right / var(--l) var(--w) no-repeat,
-      linear-gradient(var(--c), var(--c)) top right / var(--w) var(--l) no-repeat,
-      linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--w) no-repeat,
-      linear-gradient(var(--c), var(--c)) bottom left / var(--w) var(--l) no-repeat,
-      linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--w) no-repeat,
-      linear-gradient(var(--c), var(--c)) bottom right / var(--w) var(--l) no-repeat;
-    filter: drop-shadow(0 0 3px var(--glow));
-  }
-  /* Pacote de dados correndo pela linha de cima de uma moldura ou cartão. */
-  .gx-frame::after,
-  .gx-pulse::after {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: 0;
-    right: 0;
-    height: 1px;
-    pointer-events: none;
-    background: linear-gradient(90deg, transparent, var(--primary), transparent) -40% 0 / 40% 1px no-repeat;
-    opacity: 0;
+      linear-gradient(var(--c), var(--c)) top left / var(--s) var(--s) no-repeat,
+      linear-gradient(var(--c), var(--c)) top right / var(--s) var(--s) no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom left / var(--s) var(--s) no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom right / var(--s) var(--s) no-repeat;
   }
   .gx-pulse {
     position: relative;
   }
 
-  /* --- Botões: retângulos de cantos vivos, chanfrados nas quinas, linha que acende ---------
-     A linha é o ::before, o preenchimento o ::after (1 px para dentro), ambos com o mesmo
-     polígono chanfrado. O brilho é um drop-shadow no botão, que segue o chanfro. */
+  /* --- Botões: bisel de 2 tons, contorno escalonado e sombra dura ------------------
+     O contorno são quatro sombras de 2 px (uma por lado, sem as quinas), o bisel são duas sombras
+     internas e a base é uma sombra dura de 2 px. Ao apertar, o botão desce e o bisel inverte. */
   .gx-btn {
-    --btn-line: var(--line-strong);
-    --btn-fill: var(--glass-strong);
-    --btn-glow: transparent;
+    --btn-line: var(--edge);
+    --btn-fill: color-mix(in oklab, var(--card) 88%, var(--foreground));
+    --btn-hi: color-mix(in oklab, var(--btn-fill) 78%, white);
+    --btn-lo: color-mix(in oklab, var(--btn-fill) 55%, black);
+    --btn-drop: color-mix(in oklab, #000 70%, transparent);
     position: relative;
     isolation: isolate;
     border: 0;
     border-radius: 0;
-    background: transparent;
+    background: var(--btn-fill);
     font-family: var(--font-sans);
     font-weight: 600;
-    letter-spacing: 0.02em;
-    filter: none;
+    letter-spacing: 0.03em;
+    text-shadow: 0 2px 0 color-mix(in oklab, #000 55%, transparent);
+    box-shadow:
+      0 calc(var(--px) * -1) 0 0 var(--btn-line),
+      0 var(--px) 0 0 var(--btn-line),
+      calc(var(--px) * -1) 0 0 0 var(--btn-line),
+      var(--px) 0 0 0 var(--btn-line),
+      inset var(--px) var(--px) 0 0 var(--btn-hi),
+      inset calc(var(--px) * -1) calc(var(--px) * -1) 0 0 var(--btn-lo),
+      0 calc(var(--px) * 2) 0 0 var(--btn-drop);
     transition:
-      filter var(--dur) ease,
-      color var(--dur-fast) ease,
-      transform var(--dur-fast) ease;
-  }
-  .gx-btn::before,
-  .gx-btn::after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    pointer-events: none;
-    clip-path: polygon(var(--k) 0, 100% 0, 100% calc(100% - var(--k)), calc(100% - var(--k)) 100%, 0 100%, 0 var(--k));
-    transition: background-color var(--dur-fast) ease;
-  }
-  .gx-btn::before {
-    --k: var(--cut);
-    inset: 0;
-    background: var(--btn-line);
-  }
-  /* 1 px para dentro: o chanfro interno é um pouco menor para a linha diagonal ter a mesma espessura. */
-  .gx-btn::after {
-    --k: calc(var(--cut) - 0.6px);
-    inset: 1px;
-    background: var(--btn-fill);
+      background-color var(--dur-fast) steps(2, end),
+      color var(--dur-fast) steps(2, end);
   }
   .gx-btn:hover:not(:disabled),
   .gx-btn:focus-visible {
-    --btn-glow: var(--glow);
-    filter: drop-shadow(0 0 7px var(--btn-glow));
+    --btn-fill: color-mix(in oklab, var(--btn-base, var(--card)) 70%, var(--btn-accent, var(--primary)));
+    --btn-hi: color-mix(in oklab, var(--btn-fill) 70%, white);
   }
   .gx-btn:active:not(:disabled) {
-    transform: translateY(1px);
-  }
-  .gx-btn[data-size^='icon'],
-  .gx-btn[data-size='xs'] {
-    --cut: var(--cut-sm);
-  }
-  .gx-btn[data-variant='link']::before,
-  .gx-btn[data-variant='link']::after {
-    display: none;
+    transform: translateY(var(--px));
+    box-shadow:
+      0 calc(var(--px) * -1) 0 0 var(--btn-line),
+      0 var(--px) 0 0 var(--btn-line),
+      calc(var(--px) * -1) 0 0 0 var(--btn-line),
+      var(--px) 0 0 0 var(--btn-line),
+      inset var(--px) var(--px) 0 0 var(--btn-lo),
+      inset calc(var(--px) * -1) calc(var(--px) * -1) 0 0 var(--btn-hi);
   }
   .gx-btn[data-variant='link'] {
-    filter: none;
+    box-shadow: none;
+    background: transparent;
+    text-shadow: none;
+    letter-spacing: 0.02em;
+  }
+  .gx-btn[data-variant='link']:active {
+    transform: none;
   }
 
-  /* Ação principal: linha de brasa, vidro tingido e texto branco. */
+  /* Ação principal: bronze com brasa, texto claro. */
   .gx-btn-plate {
+    --btn-base: color-mix(in oklab, var(--primary) 44%, #1a0e08);
+    --btn-accent: var(--primary);
+    --btn-fill: var(--btn-base);
+    --btn-hi: color-mix(in oklab, var(--primary) 62%, white);
+    --btn-lo: color-mix(in oklab, var(--primary) 28%, black);
     color: var(--heading);
-    --btn-line: var(--primary);
-    --btn-fill: color-mix(in oklab, var(--primary) 18%, var(--void));
   }
-  .gx-btn-plate:hover:not(:disabled) {
-    --btn-fill: color-mix(in oklab, var(--primary) 30%, var(--void));
+  .gx-btn-plate:hover:not(:disabled),
+  .gx-btn-plate:focus-visible {
+    --btn-fill: color-mix(in oklab, var(--primary) 56%, #1a0e08);
+    --btn-hi: color-mix(in oklab, var(--primary) 72%, white);
   }
 
   /* Ação importante ou irreversível: brasa intensa. */
   .gx-btn-ember {
+    --btn-base: color-mix(in oklab, var(--ember-red) 46%, #1c0b06);
+    --btn-accent: var(--ember-red);
+    --btn-fill: var(--btn-base);
+    --btn-hi: color-mix(in oklab, var(--ember-red) 62%, white);
+    --btn-lo: color-mix(in oklab, var(--ember-red) 26%, black);
     color: var(--heading);
-    --btn-line: var(--ember-red);
-    --btn-fill: color-mix(in oklab, var(--ember-red) 26%, var(--void));
   }
-  .gx-btn-ember:hover:not(:disabled) {
-    --btn-fill: color-mix(in oklab, var(--ember-red) 40%, var(--void));
-    --btn-glow: color-mix(in oklab, var(--ember-red) 55%, transparent);
+  .gx-btn-ember:hover:not(:disabled),
+  .gx-btn-ember:focus-visible {
+    --btn-fill: color-mix(in oklab, var(--ember-red) 58%, #1c0b06);
   }
 
-  /* Secundária: só a linha, que acende na cor do tema. */
+  /* Secundária: pedra escura com o anel de bronze. */
   .gx-btn-outline {
+    --btn-base: color-mix(in oklab, var(--background) 82%, var(--card));
+    --btn-accent: var(--primary);
+    --btn-fill: var(--btn-base);
+    --btn-line: var(--frame);
+    --btn-hi: color-mix(in oklab, var(--frame) 80%, var(--btn-fill));
+    --btn-lo: color-mix(in oklab, #000 40%, var(--btn-fill));
     color: var(--foreground);
-    --btn-line: var(--line-strong);
-    --btn-fill: color-mix(in oklab, var(--background) 80%, transparent);
   }
-  .gx-btn-outline:hover:not(:disabled) {
+  .gx-btn-outline:hover:not(:disabled),
+  .gx-btn-outline:focus-visible {
+    --btn-line: var(--frame-hot);
+    --btn-fill: color-mix(in oklab, var(--btn-base) 84%, var(--primary));
     color: var(--heading);
-    --btn-line: var(--primary);
-    --btn-fill: var(--tint);
   }
 
   .gx-btn-stone {
+    --btn-base: var(--secondary);
+    --btn-accent: var(--primary);
+    --btn-fill: var(--btn-base);
     color: var(--secondary-foreground);
-    --btn-line: var(--line);
-    --btn-fill: var(--secondary);
   }
-  .gx-btn-stone:hover:not(:disabled) {
-    --btn-line: var(--line-hot);
+  .gx-btn-stone:hover:not(:disabled),
+  .gx-btn-stone:focus-visible {
+    --btn-line: var(--frame);
   }
 
   .gx-btn-ghost {
+    --btn-base: transparent;
     color: var(--foreground);
-    --btn-line: transparent;
-    --btn-fill: transparent;
+    background: transparent;
+    box-shadow: none;
+    text-shadow: none;
   }
-  .gx-btn-ghost:hover:not(:disabled) {
+  .gx-btn-ghost:hover:not(:disabled),
+  .gx-btn-ghost:focus-visible {
     color: var(--heading);
-    --btn-line: var(--ornament-soft);
-    --btn-fill: var(--tint-strong);
+    background: var(--tint-strong);
+    box-shadow:
+      0 calc(var(--px) * -1) 0 0 var(--frame),
+      0 var(--px) 0 0 var(--frame),
+      calc(var(--px) * -1) 0 0 0 var(--frame),
+      var(--px) 0 0 0 var(--frame);
+  }
+  .gx-btn-ghost:active:not(:disabled) {
+    transform: translateY(var(--px));
   }
 
-  /* Compra com saldo: brilho âmbar. Sem saldo: "acesso negado", carmim apagado (mas legível). */
+  /* Compra com saldo: âmbar. Sem saldo: "acesso negado", carmim apagado (mas legível). */
   .gx-buy {
+    --btn-base: color-mix(in oklab, var(--amber) 40%, #1c1206);
+    --btn-accent: var(--amber);
+    --btn-fill: var(--btn-base);
+    --btn-hi: color-mix(in oklab, var(--amber) 60%, white);
+    --btn-lo: color-mix(in oklab, var(--amber) 24%, black);
     color: #fff3df;
-    --btn-line: var(--amber);
-    --btn-fill: color-mix(in oklab, var(--amber) 16%, var(--void));
-    --btn-glow: color-mix(in oklab, var(--amber) 38%, transparent);
-    filter: drop-shadow(0 0 5px var(--btn-glow));
-  }
-  .gx-buy:hover:not(:disabled),
-  .gx-buy:focus-visible {
-    --btn-fill: color-mix(in oklab, var(--amber) 28%, var(--void));
-    --btn-glow: color-mix(in oklab, var(--amber) 60%, transparent);
-    filter: drop-shadow(0 0 9px var(--btn-glow));
   }
   .gx-btn.gx-denied,
   .gx-btn.gx-denied:disabled {
     opacity: 1;
-    color: color-mix(in oklab, #ff8a8a 82%, var(--foreground));
-    --btn-line: color-mix(in oklab, var(--ember-red) 38%, transparent);
-    --btn-fill: color-mix(in oklab, var(--ember-red) 9%, var(--void));
-    filter: none;
-    font-family: var(--font-mono);
-    font-size: 11px;
+    color: color-mix(in oklab, #ff9a8a 82%, var(--foreground));
+    --btn-line: var(--edge);
+    --btn-fill: color-mix(in oklab, var(--ember-red) 12%, var(--void));
+    --btn-hi: color-mix(in oklab, var(--ember-red) 22%, var(--btn-fill));
+    --btn-lo: color-mix(in oklab, #000 50%, var(--btn-fill));
+    font-family: var(--font-sans);
+    font-size: 13px;
     letter-spacing: 0.03em;
-    text-transform: uppercase;
   }
 
-  /* Seleção: linha acesa, brilho e o estado em ARIA (nunca só a cor). */
+  /* Seleção: anel aceso, fundo tingido e o estado em ARIA (nunca só a cor). */
   .gx-btn[aria-pressed='true'],
   .gx-btn[aria-current='page'],
   .gx-btn[data-state='on'] {
     color: var(--heading);
     --btn-line: var(--primary);
     --btn-fill: var(--tint-strong);
-    filter: drop-shadow(0 0 6px var(--glow-soft));
   }
   [data-slot='tabs-trigger'][data-state='active'],
   [data-slot='toggle-group-item'][data-state='on'] {
@@ -530,8 +624,8 @@
     border-color: var(--primary);
     background: var(--tint-strong);
     box-shadow:
-      inset 0 -1px 0 var(--primary),
-      0 0 14px -6px var(--glow);
+      inset 0 calc(var(--px) * -1) 0 0 var(--primary),
+      inset 0 var(--px) 0 0 color-mix(in oklab, var(--primary) 30%, transparent);
   }
 
   /* Alvo de toque confortável em telas de toque, sem mudar o desenho no desktop. */
@@ -544,25 +638,81 @@
     }
   }
 
-  /* Terminal do mercador: vidro com cabeçalho de dados e linha de brasa embaixo. */
-  .gx-counter {
-    position: relative;
-    border: 1px solid var(--line-strong);
+  /* Campos de texto, seleção e caixas: afundados na pedra (sombra interna em cima e à esquerda). */
+  .gx-field {
+    border: 0;
+    border-radius: 0;
+    background: color-mix(in oklab, var(--background) 72%, #000);
+    color: var(--foreground);
+    box-shadow:
+      0 calc(var(--px) * -1) 0 0 var(--edge),
+      0 var(--px) 0 0 var(--edge),
+      calc(var(--px) * -1) 0 0 0 var(--edge),
+      var(--px) 0 0 0 var(--edge),
+      inset var(--px) var(--px) 0 0 color-mix(in oklab, #000 62%, transparent),
+      inset calc(var(--px) * -1) calc(var(--px) * -1) 0 0 color-mix(in oklab, var(--frame) 70%, transparent);
+    transition: background-color var(--dur-fast) steps(2, end);
+  }
+  .gx-field:hover:not(:disabled) {
+    background: color-mix(in oklab, var(--background) 62%, var(--card));
+  }
+  .gx-field:focus-visible,
+  .gx-field:focus-within {
+    outline: 3px solid var(--amber);
+    outline-offset: 2px;
+  }
+  .gx-field[aria-invalid='true'] {
+    box-shadow:
+      0 calc(var(--px) * -1) 0 0 var(--destructive),
+      0 var(--px) 0 0 var(--destructive),
+      calc(var(--px) * -1) 0 0 0 var(--destructive),
+      var(--px) 0 0 0 var(--destructive),
+      inset var(--px) var(--px) 0 0 color-mix(in oklab, #000 62%, transparent);
+  }
+
+  /* Superfícies flutuantes (diálogos, menus, dicas): pedra com anel de bronze e sombra dura. */
+  .gx-pop {
+    border: 0;
     border-radius: 0;
     background:
-      linear-gradient(90deg, transparent, var(--primary), transparent) bottom / 100% 1px no-repeat,
-      repeating-linear-gradient(180deg, color-mix(in oklab, var(--foreground) 2.5%, transparent) 0 1px, transparent 1px 4px),
-      var(--glass-strong);
-    -webkit-backdrop-filter: blur(var(--blur));
-    backdrop-filter: blur(var(--blur));
-    box-shadow: 0 24px 40px -30px black;
+      var(--dither),
+      var(--popover);
+    color: var(--popover-foreground);
+    box-shadow:
+      0 calc(var(--px-lg) * -1) 0 0 var(--edge),
+      0 var(--px-lg) 0 0 var(--edge),
+      calc(var(--px-lg) * -1) 0 0 0 var(--edge),
+      var(--px-lg) 0 0 0 var(--edge),
+      inset 0 0 0 var(--px-lg) var(--frame),
+      inset 0 0 0 calc(var(--px-lg) + 1px) var(--edge),
+      calc(var(--px-lg) * 2) calc(var(--px-lg) * 2) 0 0 color-mix(in oklab, #000 62%, transparent);
   }
-  /* Etiqueta de preço: dado em mono, linha âmbar fina. */
+
+  /* Etiqueta pequena (selos, contagens, dicas de teclas): bloco de 2 px. */
+  .gx-chip {
+    border: 0;
+    border-radius: 0;
+    box-shadow:
+      0 calc(var(--px) * -1) 0 0 var(--frame),
+      0 var(--px) 0 0 var(--frame),
+      calc(var(--px) * -1) 0 0 0 var(--frame),
+      var(--px) 0 0 0 var(--frame);
+  }
+
+  /* Terminal do mercador: pedra com cabeçalho de ouro e linha de brasa embaixo. */
+  .gx-counter {
+    --frame: var(--frame-hot);
+    background:
+      var(--dither),
+      linear-gradient(180deg, color-mix(in oklab, var(--primary) 9%, transparent), transparent 80px),
+      var(--glass-strong);
+  }
+  /* Etiqueta de preço: dado em fonte pixel, bloco âmbar de 2 px. */
   .gx-price {
     padding: 1px 8px 1px 6px;
-    border: 1px solid color-mix(in oklab, var(--amber) 40%, transparent);
+    border: 2px solid color-mix(in oklab, var(--amber) 55%, #000);
     border-radius: 0;
-    background: color-mix(in oklab, var(--amber) 7%, transparent);
+    background: color-mix(in oklab, var(--amber) 12%, var(--void));
     font-family: var(--font-mono);
   }
 
@@ -588,16 +738,17 @@
   }
 
   /* --- Medidor (XP e progresso): blocos de luz ------------------------------
-     A máscara corta trilho e preenchimento nos mesmos blocos. Quando o valor sobe, o preenchimento
-     ganha a classe is-charging: uma onda de brasa corre pelos blocos ("carregando dados de fogo"). */
+     A máscara corta trilho e preenchimento nos mesmos blocos de 8 px. O preenchimento tem três
+     faixas (luz, corpo e sombra), como um sprite. Quando o valor sobe, o preenchimento ganha a
+     classe is-charging: uma onda de brasa corre pelos blocos. */
   .gx-gauge {
-    --seg: 9px;
+    --seg: 10px;
     --seg-gap: 2px;
     position: relative;
     overflow: hidden;
     border: 0;
     border-radius: 0;
-    background: color-mix(in oklab, var(--foreground) 9%, transparent);
+    background: color-mix(in oklab, #000 55%, var(--background));
     -webkit-mask: repeating-linear-gradient(90deg, #000 0 calc(var(--seg) - var(--seg-gap)), transparent calc(var(--seg) - var(--seg-gap)) var(--seg));
     mask: repeating-linear-gradient(90deg, #000 0 calc(var(--seg) - var(--seg-gap)), transparent calc(var(--seg) - var(--seg-gap)) var(--seg));
   }
@@ -605,9 +756,12 @@
     position: relative;
     height: 100%;
     overflow: hidden;
-    background:
-      linear-gradient(180deg, color-mix(in oklab, white 22%, transparent), transparent 60%),
-      linear-gradient(90deg, color-mix(in oklab, var(--primary) 45%, black), var(--primary) 70%, color-mix(in oklab, var(--primary) 55%, var(--amber)));
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--primary) 60%, white) 0 25%,
+      var(--primary) 25% 68%,
+      color-mix(in oklab, var(--primary) 55%, black) 68% 100%
+    );
     transition: transform var(--dur-slow) var(--ease-out);
   }
   .gx-gauge-fill::after {
@@ -619,26 +773,22 @@
     opacity: 0;
   }
 
-  /* --- Pedestal holográfico (relicário e sala de troféus) -------------------- */
+  /* --- Nicho do relicário e da sala de troféus ------------------------------- */
   .gx-niche {
-    position: relative;
-    border: 1px solid var(--line);
-    border-radius: 0;
+    --n: var(--px);
     background:
       radial-gradient(ellipse 50% 30% at 50% 100%, var(--tier-soft, var(--ornament-soft)), transparent 75%),
+      var(--dither),
       linear-gradient(180deg, color-mix(in oklab, var(--card) 40%, transparent), var(--glass-strong));
-    -webkit-backdrop-filter: blur(var(--blur));
-    backdrop-filter: blur(var(--blur));
-    clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, 0 100%, 0 var(--cut));
   }
   .gx-niche.is-locked {
     --tier-soft: transparent;
     --tier-line: color-mix(in oklab, var(--border) 60%, transparent);
   }
 
-  /* Ogiva: arco pontiagudo usado como brasão de área e moldura de cena. */
+  /* Ogiva: arco pontiagudo usado como brasão de área e moldura de cena (em degraus de pixel). */
   .gx-arch {
-    clip-path: polygon(0 100%, 0 38%, 6% 22%, 16% 10%, 30% 3%, 50% 0, 70% 3%, 84% 10%, 94% 22%, 100% 38%, 100% 100%);
+    clip-path: polygon(0 100%, 0 40%, 4% 28%, 8% 20%, 14% 12%, 22% 6%, 34% 2%, 50% 0, 66% 2%, 78% 6%, 86% 12%, 92% 20%, 96% 28%, 100% 40%, 100% 100%);
   }
 
   /* --- Transição de página e tela de carregamento ---------------------------- */
@@ -653,25 +803,27 @@
     place-items: center;
     pointer-events: none;
     background:
-      radial-gradient(ellipse 40% 35% at 50% 46%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 70%),
-      repeating-linear-gradient(180deg, color-mix(in oklab, var(--foreground) 3%, transparent) 0 1px, transparent 1px 4px),
+      var(--dither),
+      radial-gradient(ellipse 40% 35% at 50% 46%, color-mix(in oklab, var(--primary) 14%, transparent), transparent 70%),
       color-mix(in oklab, var(--void) 94%, transparent);
     animation: gx-veil var(--veil-ms, 720ms) var(--ease-solemn) both;
   }
   .gx-veil-mark {
-    width: 104px;
-    height: 104px;
+    width: 96px;
+    height: 96px;
     background: linear-gradient(170deg, var(--plate-hi), var(--primary) 45%, var(--plate-lo));
-    -webkit-mask: url('/assets/dragon-lock.png') center / contain no-repeat;
-    mask: url('/assets/dragon-lock.png') center / contain no-repeat;
-    filter: drop-shadow(0 0 18px var(--glow));
+    -webkit-mask: url('/assets/cursemark/dragon-lock-pixel.png') center / contain no-repeat;
+    mask: url('/assets/cursemark/dragon-lock-pixel.png') center / contain no-repeat;
+    image-rendering: pixelated;
+    filter: drop-shadow(3px 3px 0 #000);
     animation: gx-mark var(--veil-ms, 720ms) var(--ease-solemn) both;
   }
   .gx-veil-line {
     width: 132px;
-    height: 1px;
+    height: 4px;
     margin-top: 18px;
-    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    background: var(--primary);
+    box-shadow: 0 0 0 2px #000;
     transform-origin: left center;
     animation: gx-line var(--veil-ms, 720ms) var(--ease-out) both;
   }
@@ -687,32 +839,40 @@
     cursor: pointer;
     outline: none;
     background:
-      radial-gradient(ellipse 55% 40% at 50% 42%, color-mix(in oklab, var(--primary) 14%, transparent), transparent 70%),
-      var(--void);
+      var(--dither),
+      radial-gradient(ellipse 55% 40% at 50% 42%, color-mix(in oklab, var(--primary) 16%, transparent), transparent 70%),
+      linear-gradient(180deg, color-mix(in oklab, var(--void) 70%, transparent), var(--void)),
+      url('/assets/cursemark/ruinas.png') 50% 100% / cover no-repeat;
+    image-rendering: pixelated;
   }
   .gx-splash[data-phase='fade'] {
-    animation: gx-fade-out var(--fade-ms, 260ms) ease forwards;
+    animation: gx-fade-out var(--fade-ms, 260ms) steps(4, end) forwards;
   }
   .gx-splash-track {
     position: relative;
     display: block;
-    width: 180px;
-    height: 4px;
+    width: 192px;
+    height: 12px;
     overflow: hidden;
-    background: color-mix(in oklab, var(--foreground) 10%, transparent);
-    -webkit-mask: repeating-linear-gradient(90deg, #000 0 7px, transparent 7px 9px);
-    mask: repeating-linear-gradient(90deg, #000 0 7px, transparent 7px 9px);
+    background: color-mix(in oklab, #000 60%, var(--background));
+    box-shadow:
+      0 -2px 0 0 var(--frame),
+      0 2px 0 0 var(--frame),
+      -2px 0 0 0 var(--frame),
+      2px 0 0 0 var(--frame);
+    -webkit-mask: repeating-linear-gradient(90deg, #000 0 10px, transparent 10px 12px);
+    mask: repeating-linear-gradient(90deg, #000 0 10px, transparent 10px 12px);
   }
   .gx-splash-fill {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, var(--ember-deep), var(--primary) 60%, var(--amber));
+    background: linear-gradient(180deg, var(--amber) 0 30%, var(--primary) 30% 70%, var(--ember-deep) 70% 100%);
     transform-origin: left center;
-    animation: gx-fill var(--splash-ms, 2000ms) linear both;
+    animation: gx-fill var(--splash-ms, 2000ms) steps(16, end) both;
   }
 
   /* --- Recompensas ---------------------------------------------------------- */
-  /* Faíscas digitais que sobem de um ponto (XP recebido). Poucas, curtas, uma vez só. */
+  /* Faíscas de pixel que sobem de um ponto (XP recebido). Poucas, curtas, uma vez só. */
   .gx-ember {
     position: absolute;
     left: 50%;
@@ -720,13 +880,13 @@
     width: 4px;
     height: 4px;
     background: var(--amber);
-    box-shadow: 0 0 6px 1px var(--primary);
+    box-shadow: 2px 2px 0 var(--ember-deep);
     opacity: 0;
-    animation: gx-ember 900ms var(--ease-out) forwards;
+    animation: gx-ember 900ms steps(8, end) forwards;
     animation-delay: var(--d, 0ms);
   }
 
-  /* Faixa solene: "PROVAÇÃO SUPERADA", em ouro anodizado entre duas linhas de brasa. */
+  /* Faixa solene: "PROVAÇÃO SUPERADA", em ouro velho entre duas linhas de brasa. */
   .gx-banner {
     position: fixed;
     left: 0;
@@ -735,54 +895,54 @@
     z-index: 80; /* acima dos diálogos (z-50) para a faixa aparecer também no chefe */
     display: grid;
     place-items: center;
-    padding: 26px 16px;
+    padding: 28px 16px;
     pointer-events: none;
     background:
-      linear-gradient(90deg, transparent, var(--primary), transparent) top / 100% 1px no-repeat,
-      linear-gradient(90deg, transparent, var(--primary), transparent) bottom / 100% 1px no-repeat,
-      color-mix(in oklab, black 80%, transparent);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    animation: gx-banner 2600ms var(--ease-solemn) both;
+      linear-gradient(var(--primary), var(--primary)) top / 100% 4px no-repeat,
+      linear-gradient(var(--primary), var(--primary)) bottom / 100% 4px no-repeat,
+      var(--dither),
+      color-mix(in oklab, #000 82%, transparent);
+    animation: gx-banner 2600ms steps(26, end) both;
   }
   .gx-banner-text {
     position: relative;
-    font-family: var(--font-display);
-    font-size: clamp(24px, 5vw, 52px);
-    font-weight: 700;
+    font-family: var(--font-pixel);
+    font-size: clamp(16px, 3.4vw, 34px);
+    font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    line-height: 1.15;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
     text-align: center;
     color: var(--gold-anodized);
     text-shadow:
-      0 0 18px color-mix(in oklab, var(--gold-anodized) 45%, transparent),
-      0 2px 6px black;
+      4px 4px 0 #000,
+      0 0 22px color-mix(in oklab, var(--gold-anodized) 40%, transparent);
   }
   .gx-banner-ghost {
     position: absolute;
     inset: 0;
     opacity: 0.35;
-    animation: gx-ghost 2600ms var(--ease-out) both;
+    animation: gx-ghost 2600ms steps(13, end) both;
   }
   .gx-banner-sub {
-    margin-top: 6px;
-    font-family: var(--font-mono);
-    font-size: 13px;
+    margin-top: 8px;
+    font-family: var(--font-sans);
+    font-size: 15px;
     letter-spacing: 0.04em;
-    color: color-mix(in oklab, var(--ivory) 85%, transparent);
+    color: color-mix(in oklab, var(--ivory) 88%, transparent);
+    text-shadow: 2px 2px 0 #000;
   }
 
-  /* Medalhão revelado: surge da sombra com um halo. */
+  /* Medalhão revelado: surge da sombra, em passos. */
   .gx-reveal {
-    animation: gx-reveal 700ms var(--ease-out) both;
+    animation: gx-reveal 700ms steps(7, end) both;
   }
 
-  /* Destaque ao passar ou selecionar um item: a linha acende. */
+  /* Destaque ao passar ou selecionar um item: o anel acende. */
   .gx-candle {
     transition:
-      box-shadow var(--dur) ease,
-      border-color var(--dur) ease;
+      box-shadow var(--dur) steps(2, end),
+      border-color var(--dur) steps(2, end);
   }
   .gx-candle:hover,
   .gx-candle:focus-within,
@@ -790,16 +950,16 @@
   .gx-candle[data-selected='true'] {
     border-color: var(--line-hot);
     box-shadow:
-      0 0 0 1px var(--ornament-soft),
-      0 0 24px -10px var(--glow);
+      0 0 0 2px var(--ornament-soft),
+      4px 4px 0 0 color-mix(in oklab, #000 60%, transparent);
   }
 }
 
-/* --- Fogueira digital (PrismFlame): prisma de 1 px sobre um nó de servidor ---------------- */
+/* --- Fogueira digital (PrismFlame): prisma sobre um nó de servidor, em linhas de pixel ------ */
 .gx-prism-art {
   fill: none;
-  stroke-width: 1;
-  stroke-linejoin: round;
+  stroke-width: 1.5;
+  stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
 }
 .gx-prism-art path,
@@ -839,12 +999,11 @@
 }
 .gx-prism-halo {
   fill: var(--primary);
-  opacity: 0.14;
-  filter: blur(6px);
+  opacity: 0.16;
 }
 .gx-prism-flame-outer {
   fill: var(--primary);
-  opacity: 0.9;
+  opacity: 0.95;
 }
 .gx-prism-flame-inner {
   fill: var(--amber);
@@ -868,13 +1027,13 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .gx-prism-art[data-lit='true'] .gx-prism-float {
-    animation: gx-prism-float 4.2s ease-in-out infinite alternate;
+    animation: gx-prism-float 4.2s steps(4, jump-none) infinite alternate;
   }
   .gx-prism-art[data-lit='true'] .gx-prism-fire {
     animation: gx-prism-flicker 1.4s steps(4, jump-none) infinite alternate;
   }
   .gx-prism-art[data-lit='true'] .gx-prism-sparks rect {
-    animation: gx-prism-spark 2.6s ease-out infinite;
+    animation: gx-prism-spark 2.6s steps(8, end) infinite;
   }
   .gx-prism-art[data-lit='true'] .gx-prism-sparks .s2 {
     animation-delay: -0.9s;
@@ -922,80 +1081,41 @@
   }
 }
 
-/* Telas pequenas: o vidro fica mais opaco e sem desfoque nos cartões (lista longa no celular
-   e no app Android), para rolar leve. Molduras e diálogos mantêm o desfoque. */
+/* Telas pequenas: sem tramado pesado nos cartões longos, para rolar leve no celular e no app Android. */
 @media (max-width: 767px) {
   .gx-panel,
   .gx-niche,
   .gx-counter {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    background-color: var(--glass-strong);
-  }
-  .gx-panel {
     background:
-      linear-gradient(90deg, transparent, color-mix(in oklab, var(--foreground) 9%, transparent) 50%, transparent) top / 100% 1px no-repeat,
+      linear-gradient(180deg, color-mix(in oklab, var(--foreground) 5%, transparent), transparent 56px),
       var(--glass-strong);
-  }
-}
-/* Sem desfoque disponível, ou com pedido de menos transparência: superfícies sólidas. */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .gx-glass,
-  .gx-frame,
-  .gx-niche {
-    background-color: var(--card);
-  }
-  .gx-panel {
-    background: var(--card);
-  }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .gx-glass,
-  .gx-panel,
-  .gx-frame,
-  .gx-niche,
-  .gx-counter,
-  .gx-banner {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    background-color: var(--card);
-  }
-  .gx-panel {
-    background: var(--card);
   }
 }
 
 /* Movimento, só para quem não pediu menos movimento. */
 @media (prefers-reduced-motion: no-preference) {
-  /* As linhas de 1 px das molduras pulsam como energia; um pacote de dados corre pela borda de cima. */
-  .gx-frame::before {
-    animation: dataPulse 3.6s ease-in-out infinite;
-  }
-  .gx-frame::after,
-  .gx-pulse::after {
-    animation: dataRun 4.8s linear infinite;
-  }
-  .gx-btn-plate:hover:not(:disabled)::before,
-  .gx-btn-plate:focus-visible::before,
-  .gx-buy:not(:disabled)::before {
-    animation: dataPulse 1.8s ease-in-out infinite;
+  /* A linha de brasa dos botões principais e de compra pulsa, em dois passos. */
+  .gx-btn-plate:hover:not(:disabled),
+  .gx-btn-plate:focus-visible,
+  .gx-buy:not(:disabled) {
+    animation: dataPulse 1.8s steps(2, jump-none) infinite;
   }
   .gx-gauge-fill.is-charging {
-    animation: gx-charge 1.2s var(--ease-out) both;
+    animation: gx-charge 1.2s steps(6, end) both;
   }
   .gx-gauge-fill.is-charging::after {
-    animation: gx-sweep 1.2s var(--ease-out) both;
+    animation: gx-sweep 1.2s steps(10, end) both;
   }
 }
 
-/* Linhas de 1 px pulsando como energia ou dados correndo. */
+/* Pulso de brilho em dois passos, como um sprite piscando. */
 @keyframes dataPulse {
   0%,
   100% {
-    opacity: 0.55;
+    filter: brightness(1);
   }
   50% {
-    opacity: 1;
+    filter: brightness(1.18);
   }
 }
 @keyframes dataRun {
@@ -1100,14 +1220,14 @@
 @keyframes gx-ember {
   0% {
     opacity: 0;
-    transform: translate(0, 0) rotate(45deg) scale(1);
+    transform: translate(0, 0) scale(1);
   }
   15% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    transform: translate(var(--x, 0), -46px) rotate(45deg) scale(0.4);
+    transform: translate(var(--x, 0), -46px) scale(0.4);
   }
 }
 @keyframes gx-banner {
@@ -1142,11 +1262,11 @@
   0% {
     opacity: 0;
     transform: scale(0.82);
-    filter: brightness(0.2) drop-shadow(0 0 0 transparent);
+    filter: brightness(0.2);
   }
   60% {
     opacity: 1;
-    filter: brightness(1.15) drop-shadow(0 0 14px var(--tier, var(--primary)));
+    filter: brightness(1.15);
   }
   100% {
     transform: none;
@@ -1182,46 +1302,17 @@
   }
 }
 
-/* Coesão visual: aço fosco, bordas frias e luz de brasa em todas as páginas. */
-:root,
-[data-theme] {
-  --monitor-opacity: 0.035;
-  --blur: 8px;
-  --cut: 6px;
-  --cut-sm: 4px;
-}
-
-.gx-glass,
-.gx-panel,
-.gx-frame,
-.gx-niche,
-.gx-counter {
-  border-radius: 3px;
-  border-color: color-mix(in oklab, var(--info) 16%, var(--line));
-}
-
-.gx-panel {
-  background:
-    linear-gradient(135deg, color-mix(in oklab, var(--info) 5%, transparent), transparent 48%),
-    var(--glass-strong);
-}
-
-.gx-frame {
-  background:
-    linear-gradient(135deg, color-mix(in oklab, var(--info) 5%, transparent), transparent 54%),
-    var(--glass-strong);
-}
-
-.gx-glass {
-  box-shadow:
-    inset 0 1px 0 color-mix(in oklab, white 7%, transparent),
-    0 14px 32px -28px black;
-}
-
-@media (max-width: 767px) {
+/* Sem tramado em quem pede menos transparência: superfícies sólidas e sem desenho de fundo. */
+@media (prefers-reduced-transparency: reduce) {
+  .gx-glass,
   .gx-panel,
+  .gx-frame,
   .gx-niche,
-  .gx-counter {
-    background-color: var(--glass-strong);
+  .gx-counter,
+  .gx-pop {
+    background: var(--card);
+  }
+  body::before {
+    filter: brightness(0.35);
   }
 }

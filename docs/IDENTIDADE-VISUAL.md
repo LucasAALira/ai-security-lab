@@ -1,110 +1,73 @@
-# Identidade visual: Forja Dracônica — aço, cinza e brasa
+# Identidade visual: Cursemark — pixel art gótica, pedra e brasa
 
-A Forja Dracônica combina carvão, aço frio, tecido gasto e luz de brasa. A imagem de referência orienta a atmosfera e a paleta — armaduras azul-acinzentadas, sombras profundas e reflexos quentes — enquanto a identidade AppSec aparece em selos, linhas técnicas e circuitos discretos. A interface mantém leitura clara, contraste, controles consistentes e arte original em CSS e SVG; não reproduz personagens nem assets da referência.
+O site veste o visual de um RPG de ação em pixel art: ruínas góticas cobertas de musgo, pedra escura, luz de tocha e molduras de bronze com cantos chanfrados em degraus. **Só a aparência muda**: títulos, textos, rotas, regras de XP e dados continuam os mesmos. O nome "Forja Dracônica" segue como o nome do tema padrão (`draconic`) e dos rótulos do site.
 
-Ela sucede a "Biblioteca dos Condenados", que continua disponível como tema gratuito.
+A arte do cenário e dos chefes foi fornecida pelo autor do projeto (veja `public/assets/CREDITS.md`). Nenhum nome de franquia aparece em `src/`: o teste `src/lib/originalidade.test.ts` barra isso.
 
 Arquivos:
 
-- `src/styles/gothic.css`: tokens e componentes;
+- `src/styles/gothic.css`: tokens e componentes (`gx-*`);
 - `src/styles/fonts.css`: fontes;
-- `src/components/gothic/`: componentes React;
-- `src/index.css`: temas, sala de troféus e pedestais;
-- `scripts/make-relics.py`: arte das relíquias.
+- `src/index.css`: temas (daisyUI), raios zerados, prosa das aulas, sala de troféus;
+- `src/components/gothic/`: `BossArt`, `SanctuaryBackdrop`, selos, medalhas;
+- `public/assets/cursemark/`: cenário (`ruinas.png`, `ruinas-faixa.png`), marca em pixel (`dragon-lock-pixel.png`) e os sete chefes (`chefes/`);
+- `scripts/cursemark-assets.py`: recorta a folha de chefes e reduz o cenário a partir de `design/cursemark/`.
 
 ## Regras
 
-1. **A leitura vem primeiro.** Vidro e circuitos ficam atrás. A área de leitura é sempre sólida o bastante para o contraste AA.
-2. **Nome temático sempre com a função.** Por exemplo, "Provações" vem com "Desafios de código". Termos técnicos nunca são trocados por ficção.
-3. **Nada depende só da cor.** Seleção tem linha acesa, brilho e `aria-pressed`/`aria-current`. Raridade aparece no desenho, no símbolo e no nome.
-4. **Bloqueio tem selo e requisito.** Sem saldo, o botão de compra diz "Acesso negado · saldo insuficiente" e quanto falta.
-5. **Animação curta ou discreta, e opcional.** Nada bloqueia nem toca som sozinho. Com "reduzir movimento", tudo para.
+1. **O pixel é o desenho.** Nada de cantos arredondados, blur ou degradê suave: cantos chanfrados por `clip-path`, sombras duras (`2px 2px 0`), `image-rendering: pixelated` nas imagens e `shape-rendering: crispEdges` nos SVG.
+2. **A leitura vem primeiro.** O cenário fica atrás de um véu com granulado e vinheta; a área de leitura é sólida o bastante para o contraste AA.
+3. **Nome temático sempre com a função.** "Provações" vem com "Desafios de código". Termos técnicos nunca são trocados por ficção.
+4. **Nada depende só da cor.** Seleção tem linha acesa e `aria-pressed`/`aria-current`; chefe vencido fica em cinza de pedra, mas também diz "vitórias" no texto.
+5. **Movimento em passos (`steps()`), curto e opcional.** Com `prefers-reduced-motion`, tudo para.
 6. **Nada inventado.** Duração, recompensa e progresso só aparecem quando vêm do conteúdo ou do progresso salvo.
 
 ## Paleta (tema padrão `draconic`)
 
 | Token | Valor | Uso |
 | --- | --- | --- |
-| `--void`, `--color-base-100` | `#0b0e12` | Fundo de carvão |
-| `--titanium-900` … `--titanium-200`, `--color-base-200/300` | `#151a1f` … `#bdc6ce` | Superfícies, bordas e titânio fosco |
-| `--ember-red`, `--color-primary` | `#d88b57` | Destaque: luz de brasa e alerta crítico |
-| `--gold-anodized`, `--color-success` | `#c5b899` | Medalhas, conquistas e sucesso |
-| `--amber` | `#e3ad67` | Compra disponível, foco do teclado, preços |
-| `--heading` | `#edf1f4` | Títulos com contraste alto sobre o fundo |
-| `--spectral`, `--color-base-content` | `#cbd3da` | Texto de leitura |
-| `--muted-foreground` | texto 68% sobre a superfície | Texto secundário (≥ 5,5:1) |
-| `--line`, `--line-strong`, `--line-hot` | derivados | Linhas de 1 px (11%, 22% e a cor do tema) |
-| `--glass`, `--glass-strong`, `--blur` | 74%, 92%, 8 px | Vidro fumado |
-| `--glow`, `--monitor` | derivados | Brilho e cor dos circuitos de fundo |
-| `--cut`, `--cut-sm` | 6 px, 4 px | Chanfro dos botões |
-| `--space-1` … `--space-7` | 4 a 48 px | Espaçamento |
+| `--void`, `--color-base-100` | `#0a0e0f` | Fundo: preto-azulado de caverna |
+| `--titanium-950` … `--titanium-200` | `#0d1213` … `#cfc7b0` | Pedra: superfícies, bordas e texto de apoio |
+| `--ember-red`, `--color-primary` | `#e0773a` | Brasa de tocha: destaque e foco de leitura |
+| `--amber` | `#f2b04a` | Ação disponível, foco do teclado, preços |
+| `--gold-anodized` | `#d9b866` | Ouro velho: conquistas e medalhas |
+| `--moss`, `--fog` | `#9fb04a`, `#8fb0ad` | Sucesso e informação (musgo e névoa) |
+| `--heading`, `--spectral` | `#f4ead0`, `#d9d0b9` | Osso nos títulos, pergaminho na leitura |
+| `--px`, `--px-lg` | 2 px, 3 px | O "pixel" da interface: controles e molduras grandes |
 
-Os nomes antigos (`--bronze`, `--candle`, `--ember`, `--ivory`) continuam valendo e apontam para os novos.
-
-### Temas
-
-- **Forja Dracônica** (padrão): carvão, aço frio e cobre de brasa.
-- **Código de Sangue** (90 moedas): ciano neon sobre carvão, com linhas horizontais de monitoramento carmim.
-- **Catedral de Silício** (90 moedas): monocromático em branco espectral e titânio, com varredura vertical discreta.
-- **Outros temas:** Biblioteca dos Condenados e Dragão (gratuitos), Ciano, Arcano e os quatro da sala de troféus. Todos usam as mesmas linhas, vidro e chanfros na cor de cada um.
-
-Quem nunca escolheu um tema e estava num padrão anterior (Biblioteca ou Dragão) passa à Forja Dracônica. Compras e escolhas feitas de propósito continuam valendo.
+Os temas da loja continuam sendo recolorações da mesma paleta, escolhidas por `data-theme`; as molduras, os chanfros e as fontes são os mesmos em todos.
 
 ## Tipografia
 
-O problema antigo era a fonte fraktur nos títulos principais e o Cinzel em caixa mista (as minúsculas viram versaletes miúdos). Agora:
-
 | Papel | Fonte | Ajuste |
 | --- | --- | --- |
-| Títulos `h1`–`h3`, `gx-h1`/`gx-h2`/`gx-h3`, `gx-title`, `gx-display`, `gx-brand` | Cinzel | Maiúsculas, `letter-spacing` de .05–.1em, `line-height` de 1,2–1,28, peso 600–700, branco puro |
-| Leitura e controles | Inter | 15 px, entrelinha 1,65 |
-| Código, preços, rótulos e dados | JetBrains Mono | Sem ligaduras |
+| `h1`, `gx-display`, `gx-brand`, `gx-inscription`, faixas | Press Start 2P (`--font-pixel`) | Maiúsculas, tamanho controlado (`clamp(16px, 2.1vw, 24px)` no `h1`) |
+| Leitura, `h2`/`h3`, botões, rótulos e dados (`--font-sans`, `--font-mono`) | Pixelify Sans | Caixa mista: em maiúsculas o C, o O e o G ficam iguais |
+| Código (`font-code`) | JetBrains Mono | Só código: linhas, `<code>`, payloads |
 
-Os títulos internos das aulas (`.study-prose`, `.pentest-prose`) e `.gx-plain-heading` ficam em Inter, sem caixa alta.
-
-Todas as fontes são SIL OFL 1.1, empacotadas pelo Fontsource (subconjuntos latino e latino estendido).
+Todas as fontes são SIL OFL 1.1, empacotadas pelo Fontsource (latino e latino estendido). Cinzel e Inter continuam empacotadas só para os temas antigos.
 
 ## Componentes
 
 | Classe ou componente | O que é |
 | --- | --- |
-| `gx-glass` | Superfície fosca: carvão translúcido, desfoque curto e borda fria de 1 px. |
-| `gx-panel` | O `Card`: aço fosco com um reflexo frio discreto. |
-| `gx-frame` | Moldura de destaque com cantoneiras metálicas. As linhas pulsam (`dataPulse`) e um pacote de dados corre pela borda de cima (`dataRun`). |
-| `gx-pulse` | Adiciona o pacote de dados à borda de qualquer elemento. |
-| `gx-btn` | Botão de cantos vivos com chanfro. A linha é o `::before` e o preenchimento o `::after`, no mesmo polígono. O brilho é um `drop-shadow` que acende no hover. |
-| `gx-btn-plate`, `gx-btn-ember`, `gx-btn-outline`, `gx-btn-stone`, `gx-btn-ghost` | Variantes. |
-| `gx-buy` / `gx-denied`, `BuyButton` | Compra com saldo (brilho âmbar) ou "Acesso negado · saldo insuficiente" (carmim apagado, legível). |
-| `gx-gauge` + `gx-gauge-fill`, `Gauge`, `Progress` | Medidor em blocos de luz. Quando o valor sobe (`useRise`), o preenchimento ganha `is-charging`: uma onda de brasa corre pelos blocos. |
-| `PrismFlame` | Fogueira digital: um prisma de 1 px sobre um nó de servidor, que acende uma chama geométrica. Aparece nos pontos de controle e nos marcadores da trilha. |
-| `SanctuaryBackdrop` + `BonfireScene` | A nave em pixel art (gerada por `scripts/cena-santuario.py`): arcos ogivais, pilares, cornija e lajes em perspectiva, com a fogueira e o personagem do caminho escolhido por cima, no mesmo chão. Nuvens dentro dos vidros, faíscas subindo da lenha, respiração do personagem e paralaxe pelo ponteiro — tudo desligado em `prefers-reduced-motion`. |
-| `RelicArt`, `HoloPedestal` | Relíquia flutuando sobre um pedestal de luz holográfica (projetor, feixe e anéis em SVG). |
-| `gx-niche`, `.trophy-niche` | Nichos de vidro do relicário e da sala de troféus. |
-| `gx-counter` | Terminal do mercador: vidro com linhas de varredura e linha de brasa. |
-| `gx-inscription`, `gx-rule` | Rótulo em mono entre marcadores; divisor de 1 px. |
-| `Seal`, `SealMark`, `Crest` | Selo de bloqueio e brasão de área. |
+| `gx-glass`, `gx-panel` | Superfície de pedra: fundo sólido, canto chanfrado, anel interno em sombras `inset` e bisel. |
+| `gx-frame` | Moldura de destaque em bronze, com pinos nos quatro cantos. |
+| `gx-btn` + `-plate`/`-ember`/`-outline`/`-stone`/`-ghost` | Botões com bisel; ao apertar, descem 2 px. O foco é um contorno de 2 px em degraus, desenhado por sombras (o `clip-path` cortaria um `outline`). |
+| `gx-buy` / `gx-denied` | Compra com saldo (âmbar) ou "Acesso negado · saldo insuficiente". |
+| `gx-field`, `gx-pop`, `gx-chip` | Campos, menus e etiquetas (`Input`, `Select`, `Tooltip`, `Badge`, `Tabs`…). |
+| `gx-gauge` | Medidor em blocos de 10 px, com três faixas de cor. |
+| `SanctuaryBackdrop` + `BonfireScene` | As ruínas ao fundo do topo da página inicial, com a fogueira e o personagem no piso; faíscas em passos e luz de tocha que segue o ponteiro. |
+| `BossArt`, `BossPortrait` | O chefe de cada módulo, um sprite por arquétipo (`BossShape`): sentinela, sombra, cavaleiro, juíza, máquina, gelo e peçonha. Chefe que ainda não caiu aparece em cores; o vencido fica em cinza de pedra. |
+| `BattleGallery` | Cenário das ruínas com o herói e o chefe frente a frente, e o seletor de quadros. |
 
-O fundo da página é uma camada fixa com as escamas em circuito (`--circuit-scales`, mascarada na cor `--monitor`), a brasa no alto e uma vinheta. A sala de troféus usa os arcos ogivais em circuito (`--circuit-arches`).
-
-**Desempenho.** Em telas de até 767 px (celular e app Android), cartões, nichos e o terminal trocam o desfoque por vidro mais opaco, para a rolagem ficar leve. Sem suporte a `backdrop-filter`, ou com `prefers-reduced-transparency`, as superfícies ficam sólidas.
-
-## Animações
-
-| Efeito | Quando | Duração |
-| --- | --- | --- |
-| `dataPulse` | Linhas das molduras, botão principal em hover e botão de compra | 1,8–3,6 s, contínuo e discreto |
-| `dataRun` | Pacote de dados na borda das molduras | 4,8 s |
-| Carga do medidor (`gx-charge`, `gx-sweep`) | O XP ou o progresso subiu | 1,2 s, uma vez |
-| Prisma da fogueira | Flutua, a chama cintila e soltam-se faíscas | Contínuo; pausa com a página oculta |
-| Relíquia flutuando | Sobre o pedestal | 4,5 s |
-| Tela de carregamento, entrada da página, brasas, medalhão e "Provação superada" | Como antes | 720 ms, 420 ms, < 1 s, 700 ms, 2,6 s |
-
-Com `prefers-reduced-motion: reduce`, nada disso se move.
+O fundo da página é uma camada fixa com as ruínas, véu escuro, granulado de 2 × 2 px e vinheta. Em telas de até 767 px o desfoque some e as superfícies ficam mais opacas, para a rolagem ficar leve.
 
 ## Como usar em uma tela nova
 
-- Use `Card` (já é vidro) e `Button` (já tem chanfro e brilho).
-- Para compras, use `BuyButton`.
-- Para um título de seção, use `SectionHeading`, ou `h2`/`h3` direto: a calibração já vem no CSS base.
-- Para progresso, use `Progress` ou `Gauge`, sempre com o número escrito.
-- Não crie cores novas fora dos tokens. Derive de `--primary`, `--ember-red`, `--gold-anodized` ou `--amber`.
+- Use `Card` e `Button`: já trazem chanfro, bisel e foco.
+- Para compras, `BuyButton`; para progresso, `Progress` ou `Gauge`, sempre com o número escrito.
+- Para título de seção, `SectionHeading` ou `h2`/`h3` direto: a calibração vem do CSS base.
+- Código vai em `font-code`; rótulos e dados em `font-mono` (que agora é a Pixelify Sans).
+- Não crie cores fora dos tokens; derive de `--primary`, `--ember-red`, `--gold-anodized` ou `--amber`.
+- Não use `rounded-*`, blur nem sombra suave: o CSS zera os raios, mas o desenho deve nascer reto.

@@ -1,6 +1,7 @@
 import { ArrowRight, Check, RotateCcw, Skull, Swords, Trophy } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
+import { BossPortrait, formaDoModulo } from '@/components/gothic/BossArt'
 import { QuestionCard } from '@/components/study/QuestionCard'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
@@ -49,6 +50,9 @@ export function BossDialog({ module, onClose }: { module: number; onClose: () =>
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-h-[88vh] overflow-y-auto border-tint-line bg-card sm:max-w-[640px]">
+        <div className="boss-dialog-banner" data-vencido={run.won ? 'true' : undefined}>
+          <BossPortrait shape={formaDoModulo(module)} vencido={Boolean(run.won)} className="boss-dialog-sprite" />
+        </div>
         <div className="text-[10px] font-semibold tracking-[0.2em] text-primary uppercase">
           Chefe do módulo {m.number} · {m.title}
         </div>

@@ -68,7 +68,7 @@ export function LabSection() {
             <SelectItem value="clean">Documento legítimo</SelectItem>
           </SelectContent>
         </Select>
-        <pre className="my-3.5 border-l-2 border-primary bg-tint p-3.5 font-mono text-xs leading-[1.8] break-words whitespace-pre-wrap text-foreground/85">{payloads[scenario]}</pre>
+        <pre className="my-3.5 border-l-2 border-primary bg-tint p-3.5 font-code text-xs leading-[1.8] break-words whitespace-pre-wrap text-foreground/85">{payloads[scenario]}</pre>
 
         <Label htmlFor="defense" className="mb-1.5 text-[10px] text-muted-foreground">
           Estratégia de proteção
