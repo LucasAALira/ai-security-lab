@@ -69,7 +69,7 @@ export function UnlockModuleCard({ module, className, onUnlocked }: Props) {
             <p className="mt-1 text-xs text-muted-foreground">{t.purchased ? 'Desbloqueado com moedas.' : 'Liberado pelos módulos recomendados, sem gastar moedas.'}</p>
           </div>
           <Button asChild size="sm">
-            <Link ref={openRef} to={`/modulo/${module}`} state={{ overlay: true }}>
+            <Link ref={openRef} to={`/modulo/${module}`}>
               Abrir módulo <ArrowRight aria-hidden="true" />
             </Link>
           </Button>

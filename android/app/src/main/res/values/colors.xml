@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- A mesma paleta do site (src/styles/gothic.css): pedra escura de caverna e brasa de tocha.
+     Ela veste o que é do Android — fundo da janela, barras do sistema e a tela de abertura —, para
+     o aplicativo não começar com uma cor e seguir com outra. -->
 <resources>
-    <!-- Identidade "Forja Dracônica" (Dark Tech). -->
-    <color name="coal">#FF050505</color>
-    <color name="ember">#FFFF3333</color>
+    <color name="coal">#FF0A0E0F</color>
+    <color name="ember">#FFE0773A</color>
+    <color name="amber">#FFF2B04A</color>
 </resources>

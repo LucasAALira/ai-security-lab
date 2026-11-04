@@ -56,7 +56,8 @@ describe('crônicas do santuário', () => {
     await user.click(marca)
     expect(marca).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByText(/Caiu em 10\/10\/2026\./)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /Reencontrar/ })).toHaveAttribute('href', '/modulo/2')
+    // "Reencontrar" leva ao enfrentamento do chefe, não à aula do módulo
+    expect(screen.getByRole('link', { name: /Reencontrar/ })).toHaveAttribute('href', '/chefe/2')
   })
 
   it('guardião ainda de pé ganha uma inscrição, não uma data', () => {

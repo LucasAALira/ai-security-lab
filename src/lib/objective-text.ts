@@ -36,7 +36,7 @@ export function describeObjective(o: Objective): ObjectiveView {
       return {
         title: `Enfrentar o chefe do módulo ${modules[o.module].number}`,
         detail: `${modules[o.module].title} · fogueira acesa · +${o.xp} XP na primeira vitória`,
-        to: `/trilha?chefe=${o.module}`,
+        to: `/chefe/${o.module}`,
         cta: 'Enfrentar',
       }
     case 'lab':

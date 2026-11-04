@@ -56,7 +56,7 @@ export function ImprovementsCard() {
                   {v.text} <span className="font-semibold whitespace-nowrap text-primary">+{x.xp} XP</span>
                 </span>
                 <Button asChild variant="outline" size="sm">
-                  <Link to={v.to} state={v.to.startsWith('/modulo/') ? { overlay: true } : undefined}>{v.label}</Link>
+                  <Link to={v.to}>{v.label}</Link>
                 </Button>
               </li>
             )

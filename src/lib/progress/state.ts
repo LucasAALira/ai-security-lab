@@ -19,6 +19,7 @@ import {
 } from './constants'
 import { isDayKey } from './dates'
 import { normalizeHero } from '@/lib/hero'
+import { isCaminho } from '@/lib/caminhos'
 import type { ThemeId } from './catalog'
 import type { ActivityResult, Answer, ArchitectState, BossState, ChallengeState, DecisionEntry, LearningEvent, MissionRun, MissionState, ModuleState, PersonalReward, Quality, StudyState } from './types'
 
@@ -41,10 +42,14 @@ const text = (v: unknown, max: number): string => str(v).slice(0, max)
 function cleanPrefs(raw: unknown): StudyState['prefs'] {
   const hero = normalizeHero(at(raw, 'hero'))
   const traje = at(raw, 'heroTraje')
+  const tutorial = at(raw, 'tutorial')
+  const caminho = at(raw, 'caminho')
   return {
     sound: at(raw, 'sound') === true,
     ...(hero ? { hero } : {}),
     ...(typeof traje === 'number' && Number.isInteger(traje) && traje >= 0 && traje < 3 ? { heroTraje: traje } : {}),
+    ...(tutorial === 'feito' || tutorial === 'pulado' ? { tutorial } : {}),
+    ...(isCaminho(caminho) ? { caminho } : {}),
   }
 }
 

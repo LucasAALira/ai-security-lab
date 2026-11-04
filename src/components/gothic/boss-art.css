@@ -11,13 +11,14 @@
 .boss-portrait{display:block;max-width:none;object-fit:contain;object-position:50% 100%;filter:drop-shadow(3px 3px 0 rgb(0 0 0 / .6));image-rendering:auto;user-select:none}
 .boss-portrait[data-vencido="true"]{filter:grayscale(.9) brightness(.65) drop-shadow(3px 3px 0 #000)}
 
-/* Faixa do diálogo do chefe: as ruínas atrás e o guardião de pé no chão. */
-.boss-dialog-banner{position:relative;height:150px;overflow:hidden;
+/* Faixa da página do chefe: as ruínas atrás e o guardião de pé no chão. Ela não passa de 640 px
+   para o guardião não virar um ponto no meio de uma faixa larga em tela grande. */
+.boss-dialog-banner{position:relative;height:190px;max-width:640px;overflow:hidden;
   background:linear-gradient(180deg,transparent 45%,color-mix(in oklab,var(--card) 70%,transparent)),
     linear-gradient(color-mix(in oklab,var(--background) 40%,transparent),color-mix(in oklab,var(--background) 40%,transparent)),
     url('/assets/cursemark/ruinas.png') 50% 88% / cover no-repeat;
   box-shadow:0 0 0 2px var(--edge),0 0 0 4px var(--frame)}
-.boss-dialog-sprite{position:absolute;left:50%;bottom:0;height:146px;width:auto;transform:translateX(-50%)}
+.boss-dialog-sprite{position:absolute;left:50%;bottom:0;height:186px;width:auto;transform:translateX(-50%)}
 .boss-dialog-banner[data-vencido="true"]::after{content:'';position:absolute;inset:0;background:var(--dither)}
 
 /* Miniatura na trilha: um pouco maior que o marcador de 28 px, para o rosto aparecer. */
