@@ -13,3 +13,11 @@ coverage/
 npm-debug.log*
 
 tsconfig.tsbuildinfo
+
+# Android (saída do Gradle e do scripts/build-apk.sh)
+android/build/
+android/app/build/
+android/.gradle/
+android/local.properties
+*.keystore
+*.jks

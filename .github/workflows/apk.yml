@@ -1,0 +1,133 @@
+# Gera o APK do AI Security Lab no runner do GitHub, que já traz o SDK do Android.
+#
+# Por que aqui: o pacote é o site inteiro dentro de um WebView, então ele precisa ser montado
+# depois de `npm run build`. O script `scripts/build-apk.sh` faz isso sem Gradle, com as
+# ferramentas do SDK — este fluxo só aponta as variáveis para onde elas estão no runner.
+#
+# A ASSINATURA é o que decide se dá para instalar por cima da versão anterior. O Android só
+# aceita a atualização quando a chave é a mesma. Então:
+#
+#   * Com os segredos do repositório `ANDROID_KEYSTORE_BASE64` e `ANDROID_KEYSTORE_PASSWORD`,
+#     o APK sai assinado com a sua chave e instala por cima, preservando o progresso.
+#   * Sem eles, o fluxo cria uma chave de depuração nova a cada execução. O APK funciona, mas
+#     é outro aplicativo para o Android: exporte o progresso no Relicário, desinstale o antigo
+#     e instale este. O resumo da execução avisa quando isso acontece.
+#
+# Para guardar a sua chave: base64 -w0 minha.keystore  →  cole em Settings › Secrets › Actions.
+
+name: APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      publicar:
+        description: 'Publicar o APK como release do GitHub (além do artefato da execução)'
+        type: boolean
+        default: false
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Site
+        run: |
+          npm ci
+          npm run build
+
+      - name: Ferramentas do SDK
+        run: |
+          set -eu
+          sdk=${ANDROID_SDK_ROOT:-$ANDROID_HOME}
+          jar=$sdk/platforms/android-34/android.jar
+          [ -f "$jar" ] || yes | "$sdk/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-34' >/dev/null
+          bt=$(ls -d "$sdk"/build-tools/* | sort -V | tail -1)
+          echo "Build tools: $bt"
+          {
+            echo "ANDROID_JAR=$jar"
+            echo "AAPT2=$bt/aapt2"
+            echo "ZIPALIGN=$bt/zipalign"
+            echo "D8_JAR=$bt/lib/d8.jar"
+            echo "APKSIGNER_JAR=$bt/lib/apksigner.jar"
+          } >> "$GITHUB_ENV"
+
+      - name: Chave de assinatura
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          set -eu
+          if [ -n "${KS_B64:-}" ]; then
+            printf '%s' "$KS_B64" | base64 -d > "$RUNNER_TEMP/assinatura.keystore"
+            echo "KEYSTORE=$RUNNER_TEMP/assinatura.keystore" >> "$GITHUB_ENV"
+            echo "KS_PASS=${KS_PASS:-android}" >> "$GITHUB_ENV"
+            echo "PROPRIA=1" >> "$GITHUB_ENV"
+          else
+            echo "KEYSTORE=$RUNNER_TEMP/depuracao.keystore" >> "$GITHUB_ENV"
+            echo "KS_PASS=android" >> "$GITHUB_ENV"
+            echo "PROPRIA=0" >> "$GITHUB_ENV"
+          fi
+
+      - name: Montar o APK
+        run: |
+          set -eu
+          versao=$(node -p "require('./package.json').version")
+          echo "VERSAO=$versao" >> "$GITHUB_ENV"
+          sh scripts/build-apk.sh "$RUNNER_TEMP/ai-security-lab-$versao.apk"
+          echo "APK=$RUNNER_TEMP/ai-security-lab-$versao.apk" >> "$GITHUB_ENV"
+
+      - name: Resumo
+        run: |
+          set -eu
+          soma=$(sha256sum "$APK" | cut -d' ' -f1)
+          echo "SHA256=$soma" >> "$GITHUB_ENV"
+          {
+            echo "## APK $VERSAO"
+            echo
+            echo "| Campo | Valor |"
+            echo "| --- | --- |"
+            echo "| Arquivo | \`ai-security-lab-$VERSAO.apk\` |"
+            echo "| Tamanho | $(du -h "$APK" | cut -f1) |"
+            echo "| SHA-256 | \`$soma\` |"
+            echo
+            if [ "$PROPRIA" = "1" ]; then
+              echo "Assinado com a chave do repositório: instale por cima do aplicativo atual; o progresso é preservado."
+            else
+              echo "> **Chave nova.** Não há segredo \`ANDROID_KEYSTORE_BASE64\` neste repositório, então o APK foi assinado com uma chave de depuração criada agora. Para o Android ele é outro aplicativo: exporte o progresso no Relicário, desinstale o anterior e instale este. Guarde uma chave fixa nos segredos para que as próximas versões instalem por cima."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ai-security-lab-${{ env.VERSAO }}
+          path: ${{ env.APK }}
+          if-no-files-found: error
+
+      - name: Publicar
+        if: inputs.publicar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          cat > "$RUNNER_TEMP/notas.md" <<FIM
+          Pacote Android gerado pelo fluxo APK.
+
+          SHA-256: \`$SHA256\`
+
+          Confira antes de instalar: \`sha256sum ai-security-lab-$VERSAO.apk\`
+          FIM
+          sed -i 's/^          //' "$RUNNER_TEMP/notas.md"
+          gh release create "v$VERSAO" "$APK" --title "AI Security Lab $VERSAO" --notes-file "$RUNNER_TEMP/notas.md"

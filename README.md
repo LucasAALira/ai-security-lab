@@ -300,7 +300,7 @@ O APK permanece independente do servidor do computador: o acesso pela rede local
 
 **Baixar o APK.** O pacote pronto fica em [`releases/`](releases/), com o resumo SHA-256 e as instruções de instalação. É um pacote de depuração, assinado com chave de teste: ele não vem de loja e não se atualiza sozinho.
 
-**Gerar o APK.**
+**Gerar o APK.** O caminho mais curto é o fluxo **APK** em *Actions*, no GitHub: ele monta o site, usa o SDK do runner e deixa o pacote em *Artifacts*, com o SHA-256 no resumo. Localmente:
 
 - Com Android Studio ou Gradle: `npm run build`, depois `cd android && ./gradlew assembleDebug` (a tarefa `copyWeb` copia `dist/` para dentro do app). O APK sai em `android/app/build/outputs/apk/debug/`.
 - Sem Gradle: `npm run build && sh scripts/build-apk.sh`, com as variáveis `ANDROID_JAR`, `AAPT2`, `ZIPALIGN`, `D8_JAR`, `APKSIGNER_JAR` e `KEYSTORE` apontando para as ferramentas do Android SDK (veja o cabeçalho do script).
