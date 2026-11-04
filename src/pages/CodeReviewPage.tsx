@@ -46,7 +46,7 @@ export function CodeReviewPage() {
         ))}
       </div>
       <p className="mt-3 text-xs text-muted-foreground">
-        Todo código é fictício e escrito para o treino; os endereços usam o domínio reservado <code className="font-mono">.example</code>. Cada amostra rende {REVIEW_XP.activity} XP por etapa e {REVIEW_XP.passed} XP ao concluir, uma única vez.
+        Todo código é fictício e escrito para o treino; os endereços usam o domínio reservado <code className="font-code">.example</code>. Cada amostra rende {REVIEW_XP.activity} XP por etapa e {REVIEW_XP.passed} XP ao concluir, uma única vez.
       </p>
 
       <div className="mt-6 flex flex-wrap items-center gap-2">
@@ -94,7 +94,7 @@ export function CodeReviewPage() {
                 </div>
                 <div className="flex flex-wrap gap-x-2">
                   <dt className="font-medium">Arquivo:</dt>
-                  <dd className="font-mono break-all text-muted-foreground">{s.file}</dd>
+                  <dd className="font-code break-all text-muted-foreground">{s.file}</dd>
                 </div>
               </dl>
               <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">

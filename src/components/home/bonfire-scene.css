@@ -7,27 +7,27 @@
 .bonfire-scene .hero-art{height:var(--altura-heroi);width:auto}
 .bonfire-scene-fogo{height:calc(var(--altura-heroi) * 0.8);width:auto}
 .bonfire-scene-palco{position:relative;display:flex;align-items:flex-end;gap:4px;
-  transform:translate3d(calc(var(--px,0) * 14px),calc(var(--py,0) * 8px),0);transition:transform .5s cubic-bezier(.2,.7,.3,1)}
-.bonfire-scene-palco img,.bonfire-scene-palco svg{display:block}
+  transform:translate3d(calc(var(--px,0) * 14px),calc(var(--py,0) * 8px),0);transition:transform .5s steps(8,end)}
+.bonfire-scene-palco img,.bonfire-scene-palco svg{display:block;image-rendering:pixelated}
 .bonfire-scene-lenha{position:relative;display:block}
-.bonfire-scene-fogo{filter:drop-shadow(0 0 18px color-mix(in oklab,#ff8a3c 45%,transparent));animation:bonfire-scene-brasa 2.6s ease-in-out infinite alternate}
+.bonfire-scene-fogo{filter:drop-shadow(0 0 14px color-mix(in oklab,#ff8a3c 45%,transparent));animation:bonfire-scene-brasa 2.6s steps(5,jump-none) infinite alternate}
 
 /* faíscas: sobem da lenha, tortas, e apagam no meio do caminho */
 .bonfire-scene-faiscas{position:absolute;inset:0;overflow:visible}
-.bonfire-scene-faisca{position:absolute;bottom:14%;left:var(--x);width:var(--tamanho);height:var(--tamanho);border-radius:1px;
-  background:#fff0c0;box-shadow:0 0 8px #ffa23c,0 0 20px color-mix(in oklab,#ff7a2c 75%,transparent);opacity:0;
+.bonfire-scene-faisca{position:absolute;bottom:14%;left:var(--x);width:var(--tamanho);height:var(--tamanho);border-radius:0;
+  background:#fff0c0;box-shadow:0 0 0 2px #ffa23c;opacity:0;
   /* a subida sai da altura do personagem: a faísca passa da cabeça dele em telas grandes e
      encurta junto com a cena no celular */
   --subida:calc(var(--altura-heroi) * -0.62);
-  animation:bonfire-scene-faisca var(--tempo) var(--atraso) ease-out infinite}
+  animation:bonfire-scene-faisca var(--tempo) var(--atraso) steps(14,end) infinite}
 @keyframes bonfire-scene-faisca{
   0%{transform:translate3d(0,0,0) scale(1.1);opacity:0}
   8%{opacity:1}
   65%{opacity:.85}
   100%{transform:translate3d(var(--lado),var(--subida),0) scale(.35);opacity:0}
 }
-.bonfire-scene-halo{position:absolute;right:-6%;bottom:-6%;animation-duration:3.2s;width:calc(var(--altura-heroi) * 0.95);height:calc(var(--altura-heroi) * 0.72);border-radius:50%;background:radial-gradient(circle,color-mix(in oklab,#ff8a3c 24%,transparent),transparent 70%);animation:bonfire-scene-luz 4.2s ease-in-out infinite alternate}
-.bonfire-scene figcaption{margin-top:10px;text-align:center;color:color-mix(in oklab,var(--foreground) 70%,transparent);font:500 10px var(--font-mono);letter-spacing:.08em;text-shadow:0 2px 4px #000}
+.bonfire-scene-halo{position:absolute;right:-6%;bottom:-6%;animation-duration:3.2s;width:calc(var(--altura-heroi) * 0.95);height:calc(var(--altura-heroi) * 0.72);border-radius:50%;background:radial-gradient(circle,color-mix(in oklab,#ff8a3c 24%,transparent),transparent 70%);animation:bonfire-scene-luz 4.2s steps(7,jump-none) infinite alternate}
+.bonfire-scene figcaption{margin-top:10px;text-align:center;color:color-mix(in oklab,var(--foreground) 70%,transparent);font:500 12px var(--font-mono);letter-spacing:.04em;text-shadow:2px 2px 0 #000}
 /* o fogo pulsa de verdade: o halo cresce e a chama clareia junto */
 @keyframes bonfire-scene-brasa{
   from{filter:drop-shadow(0 0 10px color-mix(in oklab,#ff8a3c 28%,transparent)) brightness(0.94)}

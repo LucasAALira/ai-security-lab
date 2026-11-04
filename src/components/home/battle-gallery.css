@@ -1,14 +1,8 @@
 /* A legenda cobre o pé do quadro no monitor, onde sobra altura. Na tela estreita o quadro
    encolhe e a legenda passaria por cima do personagem inteiro, então ela desce para baixo do
    desenho, com fundo próprio — assim dá para ler o texto e ver quem está de pé. */
-.battle-caption{position:absolute;inset-inline:0;bottom:0;background:linear-gradient(0deg,color-mix(in oklab,var(--card) 94%,transparent),transparent)}
+.battle-caption{position:absolute;inset-inline:0;bottom:0;background:linear-gradient(0deg,color-mix(in oklab,var(--card) 96%,transparent) 30%,transparent)}
 @media(max-width:699px){
-  .battle-caption{position:static;background:color-mix(in oklab,var(--card) 94%,#000);border-top:1px solid var(--border)}
+  .battle-caption{position:static;background:color-mix(in oklab,var(--card) 96%,#000);border-top:3px solid var(--frame)}
 }
-
-/* Os olhos dos guardiões respiram devagar, como brasa. Quem já caiu fica quieto. */
-.battle-frame:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
-.boss-eye{animation:boss-eye 3.8s ease-in-out infinite alternate}
-.boss[data-vencido="true"] .boss-eye{animation:none;opacity:.3}
-@keyframes boss-eye{from{opacity:.45}to{opacity:1}}
-@media(prefers-reduced-motion:reduce){.boss-eye{animation:none!important}}
+.battle-frame:focus-visible{outline:3px solid var(--amber);outline-offset:-3px}

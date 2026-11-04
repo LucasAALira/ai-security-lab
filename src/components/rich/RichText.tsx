@@ -45,7 +45,7 @@ export function RichText({ text, as: Tag = 'p', className, cites }: Props) {
                 [{t.n}]
               </button>
             )
-          if (t.kind === 'code') return <code key={i} className="rounded border border-border bg-tint px-1 py-px font-mono text-[0.88em] break-words">{t.text}</code>
+          if (t.kind === 'code') return <code key={i} className="rounded border border-border bg-tint px-1 py-px font-code text-[0.88em] break-words">{t.text}</code>
           if (t.kind === 'term') {
             const entry = glossaryById(t.id)
             if (!entry) return <span key={i}>{t.label}</span>

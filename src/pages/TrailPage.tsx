@@ -1,4 +1,4 @@
-import { Lock, Skull, Sword } from 'lucide-react'
+import { Lock, Sword } from 'lucide-react'
 import { Link, Outlet, useSearchParams } from 'react-router'
 import { NewSeal } from '@/components/common/NewSeal'
 import { SectionHeading } from '@/components/common/SectionHeading'
@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils'
 import { useProgress } from '@/state/ProgressProvider'
 import { SealMark } from '@/components/gothic/Seal'
 import { PrismFlame } from '@/components/gothic/PrismFlame'
+import { BossPortrait, formaDoModulo } from '@/components/gothic/BossArt'
 
 const stepLabel: Record<StepId, string> = {
   aulas: 'Aulas: Conceito, Exemplo e Como corrigir',
@@ -143,7 +144,7 @@ function ModuleNode({ t, onBoss }: { t: TrailModule; onBoss: (module: number) =>
               return (
                 <TrailStep
                   key={s.id}
-                  icon={<Skull className="size-3.5" />}
+                  icon={<BossPortrait shape={formaDoModulo(t.module)} vencido={Boolean(t.boss.won)} className="trail-boss-icon" />}
                   label={boss ? `Chefe: ${boss.name}` : stepLabel.chefe}
                   detail={t.boss.won ? `${t.boss.wins} ${t.boss.wins === 1 ? 'vitória' : 'vitórias'}${t.boss.flawless ? ' · sem erros' : ''}` : `${t.boss.total} cenários`}
                   status={s.status}

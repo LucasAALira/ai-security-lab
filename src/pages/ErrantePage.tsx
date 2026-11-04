@@ -47,8 +47,8 @@ export function ErrantePage() {
       <Card className="mb-8 gap-4 border-tint-line bg-[linear-gradient(135deg,var(--tint-strong),var(--card))] p-5 sm:flex-row sm:items-center">
         <svg
           viewBox={`0 0 ${BOSS_VIEWBOX.width} ${BOSS_VIEWBOX.height}`}
-          width="120"
-          height="150"
+          width="168"
+          height="168"
           role="img"
           aria-label={`${e.nome}, ${e.epiteto}. ${vencido ? 'Já derrotado.' : 'Ainda de pé.'}`}
           className="shrink-0"
